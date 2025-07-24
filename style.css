@@ -267,4 +267,64 @@ footer p {
     opacity: 0.8;
 }
 
+/* Announcement Article Section */
+
+.card-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 8rem 1rem; 
+}
+
+.card {
+    border-radius: 15px; 
+    overflow: hidden; 
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+}
+
+.card img {
+    height: 250px;          
+    border-top-left-radius: 12px;
+    border-top-right-radius: 12px;
+}
+
+.card-title {
+    font-size: 40px;
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+    color: #2C2C2C;
+    padding-top: 2rem;
+}
+
+.card-subtitle {
+    font-size: 16px;
+    color: #2C2C2C;
+    margin-bottom: 1rem;
+    font-weight: 600;
+    padding-bottom: 2rem;
+}
+
+.card-text {
+    font-size: 16px;
+    color: #000000;
+    margin: 0rem 2;
+    font-weight: 500;
+}
+
+.card-title, .card-subtitle, .card-text {
+     padding-left: 4rem;
+     padding-right: 4rem;
+}
+
+.arrow-left-icon {
+position: relative;
+bottom: 93rem;
+left: 14rem;
+width: 45px;
+height: 45px;
+cursor: pointer;
+}
+
+
+
 
