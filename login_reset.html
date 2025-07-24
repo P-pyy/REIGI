@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Reset Password - University of Rizal System</title>
+  <link rel="stylesheet" href="login.css" />
+</head>
+<body>
+  <main class="login-container" role="main" aria-label="Reset Password Form">
+    <div class="logo-container">
+      <img src="img/URS LOGO.png" alt="URS logo" onerror="this.style.display='none'" />
+      <div class="logo-text">
+        <span>University of</span>
+        <span><strong>Rizal System</strong></span>
+        <span class="campus">Antipolo campus</span>
+      </div>
+    </div>
+    <h2>Reset Password</h2>
+    <form id="resetPasswordForm" autocomplete="off">
+      <input id="newPassword" type="password" placeholder="New Password" required minlength="8" />
+      <div class="error-message" id="new-password-error" hidden>Min 8 characters required.</div>
+
+      <input id="reenterPassword" type="password" placeholder="Re-enter New Password" required minlength="8" />
+      <div class="error-message" id="reenter-password-error" hidden>Passwords do not match.</div>
+
+      <label><input type="checkbox" id="showPassword" /> Show Password</label>
+      <button type="submit">Submit</button>
+    </form>
+  </main>
+  <script>
+    const form = document.getElementById('resetPasswordForm');
+    const newPass = document.getElementById('newPassword');
+    const rePass = document.getElementById('reenterPassword');
+    const showPwd = document.getElementById('showPassword');
+
+    showPwd.addEventListener('change', () => {
+      const type = showPwd.checked ? 'text' : 'password';
+      newPass.type = rePass.type = type;
+    });
+
+    form.addEventListener('submit', e => {
+      e.preventDefault();
+      let valid = true;
+
+      if (newPass.value.length < 8) {
+        document.getElementById('new-password-error').hidden = false;
+        valid = false;
+      } else {
+        document.getElementById('new-password-error').hidden = true;
+      }
+
+      if (newPass.value !== rePass.value) {
+        document.getElementById('reenter-password-error').hidden = false;
+        valid = false;
+      } else {
+        document.getElementById('reenter-password-error').hidden = true;
+      }
+
+      if (valid) {
+        alert('Password successfully reset.');
+        form.reset();
+      }
+    });
+  </script>
+</body>
+</html>

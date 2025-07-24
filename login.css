@@ -1,0 +1,178 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap');
+
+
+/* Reset & base */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: 'Montserrat', sans-serif;
+  background-color: #f9fafb;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  padding: 1rem;
+}
+
+/* Main container */
+.login-container {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+  padding: 2.5rem 2rem;
+  width: 100%;
+  max-width: 400px;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Logo section */
+.logo-container {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+  user-select: none;
+  justify-content: center;
+}
+
+.logo-container img {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  object-fit: contain;
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.1);
+}
+
+.logo-text {
+  display: flex;
+  flex-direction: column;
+  font-weight: 600;
+  color: #111;
+  line-height: 1.2;
+}
+
+.logo-text .campus {
+  font-weight: 400;
+  font-style: montserrat;
+  font-size: 0.75rem;
+  color: #6b7280;
+  margin-top: 2px;
+}
+
+/* Headings */
+h1, h2 {
+  text-align: center;
+  color: #111;
+  font-weight: 700;
+  font-size: 1.75rem;
+  margin-bottom: 1.5rem;
+}
+
+/* Form layout */
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+/* Inputs */
+input[type="text"],
+input[type="email"],
+input[type="password"] {
+  padding: 0.75rem 1rem;
+  font-size: 1rem;
+  font-weight: 400;
+  color: #111;
+  background-color: #f9fafb;
+  border: 1.8px solid #e5e7eb;
+  border-radius: 0.5rem;
+  transition: border-color 0.25s ease;
+}
+
+input:focus {
+  border-color: #2563eb;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.3);
+}
+
+input::placeholder {
+  color: #9ca3af;
+}
+
+/* Buttons */
+button {
+  padding: 0.85rem 1rem;
+  font-size: 1.1rem;
+  font-weight: 500;
+  background-color: #2563eb;
+  color: white;
+  border: none;
+  border-radius: 0.75rem;
+  cursor: pointer;
+  transition: background-color 0.25s ease;
+}
+
+button:hover {
+  background-color: #1d4ed8;
+}
+
+button:focus-visible {
+  outline: 3px solid #93c5fd;
+  outline-offset: 2px;
+}
+
+/* Labels and extras */
+label {
+  font-size: 0.95rem;
+  color: #374151;
+}
+
+.extras {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.9rem;
+}
+
+.forgot-password {
+  color: #111;
+  font-weight: 600;
+  cursor: pointer;
+  user-select: none;
+}
+
+.forgot-password:hover {
+  text-decoration: underline;
+  color: #2563eb;
+}
+
+/* Error messages */
+.error-message {
+  color: #dc2626;
+  font-size: 0.875rem;
+}
+
+#resendBtn {
+    font-size: 0.875rem; /* text-sm */
+    color: #374151;       /* text-gray-700 */
+    background: none;
+    border: none;
+    padding: 0;
+    align-self: flex-start;
+    cursor: pointer;
+    border-radius: 0.375rem;
+  }
+  
+  #resendBtn:hover {
+    color: #1d4ed8;       /* hover:text-blue-700 */
+  }
+  
+  #resendBtn:focus {
+    outline: 2px solid #2563eb; /* focus:ring-2 focus:ring-blue-600 */
+    outline-offset: 2px;
+  }
+  
