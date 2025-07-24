@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Forgot Password - University of Rizal System</title>
+  <link rel="stylesheet" href="login.css" />
+</head>
+<body>
+  <main class="login-container" role="main" aria-label="Forgot Password Form">
+    <div class="logo-container">
+      <img src="img/URS LOGO.png" alt="URS logo" onerror="this.style.display='none'" />
+      <div class="logo-text">
+        <span>University of</span>
+        <span><strong>Rizal System</strong></span>
+        <span class="campus">Antipolo campus</span>
+      </div>
+    </div>
+    <h1>Forgot Password?</h1>
+    <form id="forgotForm">
+      <input id="code" name="code" type="text" placeholder="Enter Code" required />
+      <button type="button" id="resendBtn">Resend Code</button>
+      <button type="submit">Submit</button>
+    </form>
+  </main>
+  <script>
+    document.getElementById('resendBtn').addEventListener('click', () => {
+      alert('A new code has been sent to your registered email or phone.');
+    });
+
+    document.getElementById('forgotForm').addEventListener('submit', function (e) {
+      e.preventDefault();
+      const code = this.code.value.trim();
+      if (code) {
+        alert('Code submitted: ' + code);
+      } else {
+        alert('Please enter the code.');
+      }
+    });
+  </script>
+</body>
+</html>
