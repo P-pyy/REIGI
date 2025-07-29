@@ -22,24 +22,57 @@
       <input id="password" name="password" type="password" placeholder="Password" required />
 
       <div class="extras">
-          <label><input type="checkbox" id="showPassword" /> Show Password</label>
-          <a href="login_forgot.html" class="forgot-password" role="link">Forgot Password?</a>
+        <label><input type="checkbox" id="showPassword" /> Show Password</label>
+        <a href="login_forgot.html" class="forgot-password" role="link">Forgot Password?</a>
       </div>
 
       <button type="submit">Sign In</button>
     </form>
   </main>
 
+  <!-- Firebase and login logic -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
+    import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyBuQHu8PgSNBYivZSw07tgeKpIVWcBxang",
+      authDomain: "reigi-b78a6.firebaseapp.com",
+      projectId: "reigi-b78a6",
+      storageBucket: "reigi-b78a6.appspot.com",
+      messagingSenderId: "601396882172",
+      appId: "1:601396882172:web:87b792abab906d2e864579"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    const loginForm = document.getElementById('loginForm');
+
+    loginForm.addEventListener('submit', function (e) {
+      e.preventDefault();
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+
+      signInWithEmailAndPassword(auth, email, password)
+        .then(() => {
+          alert("Login successful!");
+          window.location.href = "admin.html"; 
+        })
+        .catch((error) => {
+          alert("Login failed: " + error.message);
+        });
+    });
+  </script>
+
+  <!-- Show Password Logic -->
   <script>
     document.getElementById('showPassword').addEventListener('change', function () {
       const pwd = document.getElementById('password');
       pwd.type = this.checked ? 'text' : 'password';
     });
-
-    document.getElementById('loginForm').addEventListener('submit', function (e) {
-      e.preventDefault();
-      alert("Form submitted. Replace with your own logic.");
-    });
   </script>
 </body>
 </html>
+
+
