@@ -30,7 +30,7 @@ main {
     align-items: center;
     padding: 0.5rem 1rem;
     line-height: 1.2;
-    margin-left: 1rem;
+    margin-left: 4rem;
 }
 
     .navbar-brand img {
@@ -40,7 +40,7 @@ main {
 .campus-name {
     font-size: 12px;
     font-style: italic;
-    color: #001926;
+    color: #0154A4;
     pointer-events: none;
     display: block;
     line-height: 1.2;
@@ -260,54 +260,75 @@ body, .container-fluid {
 
 /* Footer section */
 
-footer .footer-container {
+.footer-container {
     padding-top: 2rem;
 }
 
-footer .footer-row {
+.footer-row {
     display: flex;
     flex-wrap: wrap;
     gap: 2rem;
 }
 
-footer .footer-col {
+.footer-col {
     flex: 1 1 150px;
 }
 
-footer .footer-col h6 {
-    font-weight: 700;
-    margin-bottom: 1rem;
-    color: #FCFCFC;
-}
-
-footer .footer-col ul {
+.footer-col ul {
     padding-left: 0;
     list-style: none;
 }
 
-footer .footer-col ul li {
+.footer-col ul li {
     margin-bottom: 0.5rem;
 }
 
-footer .footer-col ul li a {
+.footer-col ul li a {
     color: #FCFCFC;
     text-decoration: none;
 }
 
-footer .footer-col ul li a:hover {
-    text-decoration: underline;
+.col-md-9 ul.list-unstyled li {
+    margin-bottom: 10px;
 }
 
-footer .footer-col.campus-info img {
+.urs-logo-footer {
     width: 60px;
-    margin-bottom: 0.5rem;
+    margin-bottom: 1rem;
+    margin-top: -5px;
+}
+
+.campus-name1-footer, .campus-name2-footer {
+    margin-bottom: 26px;
+    margin-left: -10px; 
+}
+
+.campus-name1-footer{
+    line-height: 1.2;
+    font-weight: 600;
+}
+
+.campus-name2-footer{
+    font-weight: 300;
+    font-size: 11px;
+    font-style: italic;
+    display: block;    
+    top: -20px;
+    line-height: 1; 
+    position: relative;
+}
+
+.custom-line {            
+  border-top: 2px solid #BFDCFE; 
+  opacity: 0.5;
 }
 
 footer p {
-    text-align: center;
+    text-align: start;
     margin-top: 1rem;
-    font-size: 0.85rem;
-    opacity: 0.8;
+    font-size: 13px;
+    color: #FCFCFC;
+    font-weight: 100px;
 }
 
 /* Announcement Article Section */
