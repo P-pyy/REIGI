@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>REIGI - Home</title>
+
+        <script>
+            fetch('head.html')
+                .then(res => res.text())
+                .then(html => document.head.insertAdjacentHTML('beforeend', html));
+        </script>
+
+</head>
+
+<body>
+    <!-- Include Navbar -->
+    <div id="navbar-placeholder"></div>
+
+    <!-- Main content -->
+    <main>
+        <section class="info-hub">
+            <div class="info-text">
+                <h2>REIGI : The general <br>information hub</h2>
+                <p>The University of Rizal System- Antipolo Campus <br>registrar information kiosk and website. Browse your <br>inquiries with the button below! </p>
+                <button id="faq-btn">See FAQ's</button>
+            </div>
+
+            <div class="faq-image-container">
+                <img src="img/flag.gif" alt="Frequently Asked Questions by REIGI">
+            </div>
+        </section>
+
+        <div class="faq-image">
+            <img src="img/flag.gif" alt="Frequently Asked Questions by REIGI">
+        </div>
+    </main>
+
+    <!-- Include Footer -->
+    <div id="footer-placeholder"></div>
+
+    <!-- JS Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.min.js"></script>
+
+    <!-- Load navbar and footer -->
+    <script>
+        fetch('navbar.html')
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('navbar-placeholder').innerHTML = data;
+            });
+
+        fetch('footer.html')
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('footer-placeholder').innerHTML = data;
+            });
+    </script>
+</body>
+</html>
