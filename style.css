@@ -102,10 +102,11 @@ footer .col-md-3.d-flex.align-items-start {
 .announcement-header {
     background-color: #FCFCFC;
     color: #0055A5;
-    padding: 3rem 0 2rem 0;
+    padding: 6rem 0 4rem 0;
     text-align: center;
     font-weight: 600;
     font-size: 2rem;
+    margin-top: 0 !important;   
 }
 
 .announcement-page {
@@ -360,6 +361,14 @@ footer p {
     padding-top: 2rem;
 }
 
+.card-title2 {
+    font-size: 40px;
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+    color: #2C2C2C;
+    padding-top: 1rem;
+}
+
 .card-subtitle {
     font-size: 16px;
     color: #2C2C2C;
@@ -375,16 +384,44 @@ footer p {
     font-weight: 500;
 }
 
-.card-title, .card-subtitle, .card-text {
+.card-title, .card-title2, .card-subtitle, .card-text {
      padding-left: 4rem;
      padding-right: 4rem;
 }
 
-.arrow-left-icon {
-position: relative;
-bottom: 93rem;
-left: 14rem;
-width: 45px;
-height: 45px;
-cursor: pointer;
+.read-more-2 {
+
+    display: inline-flex;      
+    align-items: center;       
+    gap: 4px;                 
+    margin-top: 30px;          
 }
+
+.arrow-left-icon {
+   position: relative;
+   bottom: 93rem;
+   left: 14rem;
+   width: 45px;
+   height: 45px;
+   cursor: pointer;
+}
+
+.other-announcements-scroll {
+  display: flex;
+  gap: 1rem;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  padding: 0 0.5rem;
+  scrollbar-width: none; 
+  margin-top: 3rem;
+}
+
+.other-announcements-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+.other-announcements-scroll .card {
+  flex: 0 0 calc(50% - 0.5rem); 
+}
+
+
