@@ -8,6 +8,7 @@ html, body {
     overflow-x: hidden; /*delete this if necessary there is a scroll-horizontally*/
 }
 
+
 main {
     flex: 1;
 }
@@ -71,8 +72,8 @@ main {
     flex-wrap: wrap;
 }
 
-.faq-image-container img {
-    max-width: 150%;
+.faq-image-container video {
+    max-width: 100%;
     height: auto;
     border-radius: 25px;
     object-fit: cover;
@@ -90,12 +91,136 @@ main {
     padding: 40px 0;
 }
 
-.faq-image img{
+.faq-image video{
     max-width: none;
     width: 80%;
     height: auto;
     border-radius: 25px;
     object-fit: cover;
+}
+
+.updates-section {
+    padding: 40px;
+    text-align: center;
+    margin: 60px 0;
+    background-color: white;
+}
+
+.updates-section h2 {
+    font-size: 38px;
+    color: #222;
+    margin-top: 75px;
+    margin-bottom: 5px;
+
+}
+
+.card-container {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
+    position: relative;
+}
+
+.update-card{
+    position: relative;
+    background: white;
+    width: 375px;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    overflow: hidden;
+    padding-bottom: 20px;
+}
+
+.card-bg-shape{
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    top: 0;
+    left: 0;
+    border-radius: 12px;
+}
+
+.shape1{
+    background: #004aad;
+    clip-path: ellipse(60% 60% at 50% 40%);
+}
+
+.shap2{
+    background: #aad1f4;
+    clip-path: ellipse(55% 50% at 40% 50%);
+}
+
+.shape3{
+    background: #062d4e;
+    clip-path: ellipse(70% 65% at 60% 50%);
+}
+
+.card-image{
+    width: 100%;
+    height: 160px;
+    object-fit: cover;
+    border-top-left-radius: 12px;
+    border-top-right-radius: 12px;
+}
+
+.card-content{
+    padding: 15px;
+    text-align: left;
+}
+
+.card-content h3{
+    font-size: 16px;
+    margin: 10px 0 5px;
+}
+
+.card-content .date{
+    font-size : 12px;
+    color: #777;
+    margin-bottom: 10px;
+}
+
+.card-content .description{
+    font-size: 14px;
+    color: #555;
+    margin-bottom: 10px;
+    line-height: 1.4;
+}
+
+.read-more{
+    color: #004aad;
+    font-weight: bold;
+    font-size: 14px;
+    text-decoration: none;
+}
+
+.read-more:hover{
+    text-decoration: underline;
+}
+
+.see-more {
+    margin-top: 10px;
+}
+
+.see-announcement-btn{
+    background: #d3e9ff;
+    padding: 12px 40px;
+    border-radius: 12px;
+    text-decoration: none;
+    font-size: 18px;
+    color: #2e2e2e;
+    font-weight: 500;
+    border: none;
+    cursor: pointer;
+    transition: background 0.3s ease;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+    min-width: 240px;
+    text-align: center;
+}
+
+.see-announcement-btn:hover{
+    background: #c7e1fd;
 }
 
 
