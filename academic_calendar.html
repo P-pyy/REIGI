@@ -5,17 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>REIGI - Academic Calendar</title>
 
-    <script>
-        fetch('head.html')
-            .then(res => res.text())
-            .then(html => document.head.insertAdjacentHTML('beforeend', html));
-    </script>
-
 </head>
 <body>
     <main>
-        <!-- Navbar Include -->
-        <div id="navbar-container"></div>
 
   <section id="calendar-section">
   <h2>Academic Calendar</h2>
@@ -28,28 +20,9 @@
 
     </main>
 
-    <!-- Footer Include -->
-    <div id="footer-container"></div>
-
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.min.js"></script>
-
-    <!-- JavaScript to Load Navbar and Footer -->
-    <script>
-        // Load navbar
-        fetch('navbar.html')
-            .then(res => res.text())
-            .then(data => {
-                document.getElementById('navbar-container').innerHTML = data;
-            });
-
-        // Load footer
-        fetch('footer.html')
-            .then(res => res.text())
-            .then(data => {
-                document.getElementById('footer-container').innerHTML = data;
-            });
-    </script>
+    <script src="script.js"></script>
 </body>
 </html>
