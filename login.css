@@ -176,3 +176,37 @@ label {
     outline-offset: 2px;
   }
   
+/* Make all page titles the same size */
+h1, h2 {
+  font-size: 1.75rem !important;
+  margin-bottom: 1.5rem !important;
+}
+
+/* Keep all login boxes the same height */
+.login-container {
+  min-height: 500px; /* adjust value until all 3 align */
+  justify-content: flex-start;
+}
+
+/* Ensure forms align even if fewer fields */
+form {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+/* Move only the Enter Code textbox up (Forgot Password page only) */
+main[aria-label="Forgot Password Form"] #code {
+  margin-top: -55px; /* pull the textbox upward */
+}
+
+/* Move only the Resend Code button down on Forgot Password page */
+main[aria-label="Forgot Password Form"] #resendBtn {
+  margin-top: 5px; /* adjust px value until it looks right */
+}
+
+/* Move the Submit button down on Forgot Password page */
+main[aria-label="Forgot Password Form"] form button[type="submit"] {
+  margin-top: 9.5px; /* adjust as needed */
+}
