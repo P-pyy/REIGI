@@ -44,7 +44,7 @@ body {
   height: 64px;
   border-radius: 50%;
   object-fit: contain;
-  box-shadow: 0 0 4px rgba(0, 0, 0, 0.1);
+  
 }
 
 .logo-text {
@@ -184,7 +184,7 @@ h1, h2 {
 
 /* Keep all login boxes the same height */
 .login-container {
-  min-height: 500px; /* adjust value until all 3 align */
+  min-height: 500px; 
   justify-content: flex-start;
 }
 
@@ -196,17 +196,58 @@ form {
   justify-content: center;
 }
 
-/* Move only the Enter Code textbox up (Forgot Password page only) */
+/* Move only the Enter Code textbox  (Forgot Password page) */
 main[aria-label="Forgot Password Form"] #code {
-  margin-top: -55px; /* pull the textbox upward */
+  margin-top: -55px; 
 }
 
-/* Move only the Resend Code button down on Forgot Password page */
+/* Move only the Resend Code button  (Forgot Password page) */
 main[aria-label="Forgot Password Form"] #resendBtn {
-  margin-top: 5px; /* adjust px value until it looks right */
+  margin-top: 5px; 
 }
 
-/* Move the Submit button down on Forgot Password page */
+/* Move the Submit button (Forgot Password page) */
 main[aria-label="Forgot Password Form"] form button[type="submit"] {
-  margin-top: 9.5px; /* adjust as needed */
+  margin-top: 9.5px; 
+}
+
+/*Enter your Email */
+
+/* Back link */
+.back-link {
+  font-size: 0.9rem;
+  color: #374151; /* gray-700 */
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  text-decoration: none;
+  transition: color 0.2s ease;
+  user-select: none;
+  margin-top: -10px;
+}
+
+.back-link svg {
+  width: 16px;
+  height: 16px;
+  stroke-width: 2.3;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  fill: none;
+}
+
+.back-link:hover {
+  color: #2563eb;
+  text-decoration: underline;
+}
+
+/* Ensure button spacing matches layout */
+main[aria-label="University of Rizal System Email Verification Form"] form button.submit-btn {
+  margin-top: 5px;
+}
+
+/* Only for Enter Email page (margin between h1 and textbox)*/
+main[aria-label="University of Rizal System Email Verification Form"] h1 {
+  margin-bottom: -2.9rem !important;
 }
