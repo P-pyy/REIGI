@@ -251,3 +251,18 @@ main[aria-label="University of Rizal System Email Verification Form"] form butto
 main[aria-label="University of Rizal System Email Verification Form"] h1 {
   margin-bottom: -2.9rem !important;
 }
+
+/* success/error messages */
+#message {
+  margin-top: 15px;
+  font-weight: 600;
+  text-align: center;
+}
+
+#message.success {
+  color: #2e7d32; /* green */
+}
+
+#message.error {
+  color: #c62828; /* red */
+}
