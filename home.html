@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>REIGI - Home</title>
 
+        <script src="https://unpkg.com/@phosphor-icons/web"></script>
+
+
         <script>
             fetch('head.html')
                 .then(res => res.text())
@@ -19,7 +22,7 @@
 
     <!-- Main content -->
     <main>
-        <section class="info-hub">
+        <section id="home" class="info-hub">
             <div class="info-text">
                 <h2>REIGI : The general <br>information hub</h2>
                 <p>The University of Rizal System- Antipolo Campus <br>registrar information kiosk and website. Browse your <br>inquiries with the button below! </p>
@@ -28,18 +31,18 @@
 
             <div class="faq-image-container">
                 <video autoplay muted loop playsinline aria-label="Frequently Asked Questions by REIGI">
-                     <source src="img/TF-exe.mp4" type="video/mp4">
+                    <source src="img/TF-exe.mp4" type="video/mp4">
                 </video>
             </div>
         </section>
 
-        <div class="faq-image">
+        <section id="faqs" class="faq-image">
             <video autoplay muted loop playsinline aria-label="Frequently Asked Questions by REIGI">
                 <source src="img/TF-exe.mp4" type="video/mp4">
             </video>
-        </div>
+        </section>
 
-        <section class="updates-section">
+        <section id="announcements" class="updates-section">
             <h2><b>Today's Updates</b></h2>
 
             <div class="card-container">
@@ -86,8 +89,33 @@
             <div class="see-more">
                 <a href="#" class="see-announcement-btn">See Announcements</a>
             </div>
-
         </section>
+
+        <section id="academic-calendar" class="calendar-wrapper">
+            <div class="calendar-card">
+                <h2>Academic Calendar</h2>
+                <h3>2025-2026</h3>
+                <p class="subtitle">Click arrow to view calendar</p>
+
+                <ul>
+                    <li>
+                        <div class="list-item-content">
+                            <i class="ph-light ph-greater-than arrow"></i>
+                            <span>Undergraduate</span>
+                        </div>
+                        <img src="/img/Calendar.png" alt="Undergraduate Calendar" class="calendar-image">
+                    </li>
+                    <li>
+                        <div class="list-item-content">
+                            <i class="ph-light ph-greater-than arrow"></i>
+                            <span>Graduate School</span>
+                        </div>
+                        <img src="/img/Calendar.png" alt="Graduate Calendar" class="calendar-image">
+                    </li>
+                </ul>
+            </div>
+        </section>
+
     </main>
 
     <!-- Include Footer -->
@@ -104,6 +132,30 @@
             .then(data => {
                 document.getElementById('navbar-placeholder').innerHTML = data;
             });
+
+
+        const listItems = document.querySelectorAll('.list-item-content');
+
+        listItems.forEach(item =>{
+            item.addEventListener('click', (e) =>{
+                e.stopPropagation();
+
+                const currentLi = item.closest('li');
+                const currentImg = currentLi.querySelector('.calendar-image');
+                const arrow = currentLi.querySelector('.arrow');
+                const isVisible = window.getComputedStyle(currentImg).display === 'block';
+
+                document.querySelectorAll('.calendar-image').forEach(img => {
+                    img.style.display = 'none';
+                });
+                document.querySelectorAll('.arrow').forEach(a => a.classList.remove('open'));
+
+                if (!isVisible){
+                    currentImg.style.display = 'block';
+                    arrow.classList.add('open');
+                };
+            });
+        });
 
         fetch('footer.html')
             .then(response => response.text())
