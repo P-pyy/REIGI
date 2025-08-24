@@ -545,13 +545,14 @@ footer p {
 /* Announcement Article Section */
 
 .card-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 8rem 1rem; 
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 8rem 1rem;
 }
 
 .card {
+    width: 100%;
     border-radius: 15px; 
     overflow: hidden; 
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
@@ -608,31 +609,88 @@ footer p {
 }
 
 .arrow-left-icon {
-   position: relative;
-   bottom: 93rem;
-   left: 14rem;
-   width: 45px;
-   height: 45px;
-   cursor: pointer;
+  position: absolute;
+  top: 0rem!important;
+  left: -3.5rem!important; 
+  font-size: clamp(24px, 4vw, 45px);
+  cursor: pointer;
+  color: #333;
+  z-index: 9999;
 }
 
-.other-announcements-scroll {
-  display: flex;
-  gap: 1rem;
-  overflow-x: auto;
-  scroll-snap-type: x mandatory;
-  padding: 0 0.5rem;
-  scrollbar-width: none; 
-  margin-top: 3rem;
+.card-wrapper {
+  position: relative; 
+  display: inline-block; 
+  max-width: 60rem;  
+  width: 100%;      
+  margin: 0 auto;
 }
 
 .other-announcements-scroll::-webkit-scrollbar {
   display: none;
 }
 
-.other-announcements-scroll .card {
-  flex: 0 0 calc(50% - 0.5rem); 
+
+.other-announcements-scroll {
+  display: flex;
+  gap: 1rem;
+  overflow-x: auto;
+  overflow-y: hidden;                
+  padding: 0 0.5rem;
+  margin-top: 3rem;
+  scroll-snap-type: none;            
 }
+
+.other-announcements-scroll .card {
+  flex: 0 0 calc(50% - 0.5rem);
+}
+
+@media (max-width: 768px) {
+  .card-wrapper {
+    max-width: 80%;   
+    margin: 0 auto;   
+  }
+
+  .card {
+    width: 100%;      
+  }
+
+  .arrow-left-icon {
+    left: -2rem !important; 
+    top: 0.75rem !important;
+    font-size: 28px !important;
+    z-index: 10000 !important; 
+  }
+
+  .arrow-right-icon {
+    right: -1rem !important;  
+    top: 0.75rem !important;
+    font-size: 28px !important;
+    z-index: 10000 !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .other-announcements-scroll {
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch; 
+    overscroll-behavior-x: contain;    
+    scrollbar-width: none;             
+    -ms-overflow-style: none;         
+  }
+
+  .other-announcements-scroll::-webkit-scrollbar {
+    display: none;    
+    width: 0;
+    height: 0;
+    background: transparent;
+  }
+
+  .other-announcements-scroll .card {
+    scroll-snap-align: start;          
+  }
+}
+
 
 /* Calendar Section */
 #calendar-section {
@@ -664,6 +722,132 @@ footer p {
   border-radius: 10px; 
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15); 
 }
+
+/* admin announcement section   */
+.admin-announcement-navbar {
+  height: 150px !important;
+  background-color: #FCFCFC !important;
+  border-bottom: 1px solid #E0E0E0;
+}
+
+.admin-announcement-text {
+  font-size: 32px;     
+  font-weight: 600;     
+  color: #0055A5;        
+}
+
+.admin-announcement-card {
+  width: 95%;         
+  max-width: 1800px; 
+  margin: 0 auto;
+}
+
+.table-title th {
+  font-size: 16px;   
+  font-weight: 600;     
+  color: #2C2C2C;        
+  padding-bottom: 30px; 
+}
+
+.announcement-table td {
+  font-size: 14px;     
+  font-weight: 400;      
+  color: #2C2C2C;        
+}
+
+.announcement-table th,
+.announcement-table td {
+  border: none !important;
+  background-color: transparent; 
+}
+
+.announcement-table tbody tr:nth-child(odd) {
+  background-color: inherit;
+}
+
+.announcement-table tbody tr:nth-child(even) {
+  background-color: #F2F6FC;
+}
+
+.edit-link {
+  text-decoration: none !important; 
+  color: #0055A5 !important;
+  font-size: 14px !important;
+  font-weight: 400 !important;
+}
+
+.edit-link:hover {
+  text-decoration: none !important;  
+}
+
+.trash-icon {
+  text-decoration: none !important; 
+}
+
+.trash-icon:hover {
+  text-decoration: none !important;
+  color: #dc3545; 
+}
+
+.add-announcement-btn{
+    background-color: #CDE4FF;   
+}
+
+.btn-text {
+  font-size: 14px;    
+  font-weight: 500;  
+  color: #2C2C2C;    
+}
+
+.ph-plus {
+  vertical-align: middle;  
+  margin-right: 8px;    
+}
+
+
+.add-announcement-btn{
+    border-radius: 8px;
+    padding: 10px;
+}
+
+.table-wrapper {
+  overflow-y: auto;
+  max-height: 420px;    
+  overflow-y: auto;       
+  overflow-x: hidden;     
+  padding-right: 10px;    
+}
+
+.table-wrapper::-webkit-scrollbar {
+  width: 8px; 
+}
+
+.table-wrapper::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.table-wrapper::-webkit-scrollbar-thumb {
+  background: #1565c0; 
+  border-radius: 10px;
+}
+
+.table-wrapper::-webkit-scrollbar-thumb:hover {
+  background: #0d47a1;  
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
