@@ -789,10 +789,6 @@ footer p {
   color: #dc3545; 
 }
 
-.add-announcement-btn{
-    background-color: #CDE4FF;   
-}
-
 .btn-text {
   font-size: 14px;    
   font-weight: 500;  
@@ -806,6 +802,7 @@ footer p {
 
 
 .add-announcement-btn{
+    background-color: #CDE4FF; 
     border-radius: 8px;
     padding: 10px;
 }
