@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>REIGI - Admin - Announcement - Edit</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="admin_announcement_edit.css">
+</head>
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar sticky-top admin-announcement-edit-navbar">
+        <div class="container-fluid justify-content-center">
+            <span class="navbar-brand mb-0 h4 admin-announcement-edit-text">Announcements Edit</span>
+        </div>
+    </nav>
+
+    <main class="container-fluid my-4">
+        <div class="row justify-content-center">
+            <!-- Left Card - Form -->
+            <div class="col-lg-4 form-section">
+                <div class="card shadow-sm admin-announcement-card">
+                    <div class="card-body">
+                        <h5 class="card-title mb-4 announcement-post-text">Announcement Post</h5>
+                        
+                        <!-- Image Upload -->
+                        <div class="mb-4">
+                        <!-- Upload Area -->
+                        <div id="uploadArea"
+                          class="image-upload-area d-flex flex-column align-items-center justify-content-center"
+                          onclick="document.getElementById('imageInput').click()">
+
+                        <!-- Button -->
+                        <button type="button" class="btn btn-light border shadow-sm mb-2 admin-edit-btn">
+                          <i class="ph-bold ph-image"></i>
+                          <span class="btn1-text">Choose Image</span>
+                        </button>
+
+                        <!-- Drag & Drop Text -->
+                        <p class="mb-1 drag-drop-text">Drag & Drop the Image here</p>
+                        <p class="text-muted small image-format">PNG / JPG / Webp</p>
+                        </div>
+
+                        <!-- Hidden File Input -->
+                        <input type="file" id="imageInput" class="d-none" accept="image/*">
+                    </div>
+
+                        <div class="divider"></div>
+                        
+                        <!-- Announcement Title -->
+                        <div class="mb-3">
+                         <div class="input-box">
+                           <input type="text" class="form-control custom-input" id="announcementTitle" placeholder="Announcement Title">
+                         </div>
+                        </div>
+                        
+                        <!-- Date & Time (combined in one box) -->
+                        <div class="mb-3">
+                          <div class="input-box">
+                            <input type="datetime-local" class="form-control custom-input" id="scheduledDateTime" placeholder="Date & Time">
+                          </div>
+                        </div>
+                        
+                        <div class="divider"></div>
+                        
+                        <!-- Details -->
+                        <div class="mb-3">
+                          <div class="input-box">
+                              <textarea class="form-control custom-input" id="announcementDetails" rows="4" placeholder="Put the details here..."></textarea>
+                          </div>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <div class="text-center mt-4">
+                          <button class="btn add-announcement-btn">
+                            <span class="btn2-text">Submit</span>
+                          </button>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Card - Preview -->
+            <div class="col-lg-5 preview-section">
+                <div class="sticky-top" style="top: 80px;">
+                    <h5 class="mb-3 preview-text">POST PREVIEW</h5>
+                    <div class="preview-card">
+                      <img id="previewImage" src="your-image.jpg" alt="preview">
+                        <div class="preview-content">
+                            <h4 id="previewTitle" class="preview-title">ANNOUNCEMENT TITLE</h4>
+                            <p id="previewDateTime"><strong>MM/DD/YY</strong> • <span class="text-muted">--:--</span></p>
+                            <p id="previewContent">Your announcement details will appear here...</p>
+                      </div>
+                 </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.min.js"></script>
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+
+    <script>
+
+  // Title
+  document.getElementById("announcementTitle").addEventListener("input", function() {
+    document.getElementById("previewTitle").textContent = this.value || "ANNOUNCEMENT TITLE";
+  });
+
+  // Date & Time (combined in one line)
+  document.getElementById("scheduledDateTime").addEventListener("input", function() {
+    if (this.value) {
+      const dateObj = new Date(this.value);
+
+      // Format Date
+      const optionsDate = { year: "2-digit", month: "2-digit", day: "2-digit" };
+      const formattedDate = dateObj.toLocaleDateString("en-US", optionsDate);
+
+      // Format Time
+      const optionsTime = { hour: "2-digit", minute: "2-digit", hour12: true };
+      const formattedTime = dateObj.toLocaleTimeString("en-US", optionsTime);
+
+      // Update Preview in one line
+      document.getElementById("previewDateTime").innerHTML =
+        `<strong>${formattedDate}</strong> • <span class="text-muted">${formattedTime}</span>`;
+    } else {
+      document.getElementById("previewDateTime").innerHTML =
+        `<strong>MM/DD/YY</strong> • <span class="text-muted">--:--</span>`;
+    }
+  });
+
+  // Details
+  document.getElementById("announcementDetails").addEventListener("input", function() {
+    document.getElementById("previewContent").textContent = this.value || "Your announcement details will appear here...";
+  });
+
+  // Image
+  document.getElementById("imageInput").addEventListener("change", function(event) {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        document.getElementById("previewImage").src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+  });
+</script>
+</body>
+</html>
