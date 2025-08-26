@@ -832,6 +832,39 @@ footer p {
   background: #0d47a1;  
 }
 
+/* Spinner overlay */
+#loading-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(255, 255, 255, 0.8);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 1050;
+      visibility: hidden;
+      opacity: 0;
+      transition: opacity .3s ease, visibility .3s ease;
+}
+
+#loading-overlay.show {
+      visibility: visible;
+      opacity: 1;
+}
+
+/* Script.js section */
+/* Smooth page transition */
+#main-container {
+  opacity: 1;
+  transition: opacity 0.3s ease;
+}
+#main-container.fade-out {
+  opacity: 0;
+}
+#main-container.fade-in {
+  opacity: 1;
+}
+
+
 
 
 
