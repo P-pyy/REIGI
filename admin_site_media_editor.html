@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Site Media Editor</title>
+  <link rel="stylesheet" href="admin_site_media.css">
+</head>
+<body class="site-media-editor-page">
+  <!-- Navbar -->
+  <header class="navbar">
+    <div class="nav-left">
+      <a href="admin_site_media.html" class="back-arrow">⭠</a>
+      <h1>Site Media Editor</h1>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="content">
+    <div class="editor-grid">
+      <!-- Preview Card -->
+      <div class="card editor">
+        <h2>Homepage FAQ Video</h2>
+        <p class="preview-label">PREVIEW</p>
+        <img src="faq-video-thumbnail.png" alt="FAQ Video">
+        <p class="file-name">VID_01234_5678abcdefgh</p>
+      </div>
+
+      <!-- Upload Card -->
+      <div class="card upload-card">
+        <label class="upload-box">
+          <input type="file" hidden>
+          <span>📷 Choose Video</span>
+          <p>Drag & Drop the video file here<br>Mp4 / WebMD</p>
+        </label>
+        <button class="btn submit-btn">Submit Change</button>
+      </div>
+    </div>
+  </main>
+</body>
+</html>
