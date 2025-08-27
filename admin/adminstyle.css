@@ -1,0 +1,260 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Montserrat', sans-serif;
+}
+
+body {
+  background: #f7f8fc;
+  overflow-x: hidden;
+}
+
+.container-fluid {
+  display: flex;
+  min-height: 100vh;
+  width: 100%;
+  padding: 0; 
+}
+
+
+.main-content {
+  margin-left: 250px;
+  width: 100%;
+  min-height: 100vh;
+  transition: margin-left 0.3s ease;
+  padding: 120px 20px 20px 20px; 
+  flex-grow: 1;
+}
+
+/* Header */
+.main-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #fff;
+  padding: 40px 80px;
+  border-bottom: 1px solid #e3e3e3;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  position: fixed;
+  top: 0;
+  z-index: 1000;
+  height: 120px;
+  width: calc(100% - 250px); 
+  margin-left: 250px; 
+  transition: width 0.3s ease, margin-left 0.3s ease;
+}
+
+.main-header h1 {
+  font-size: 35px;
+  font-weight: 600;
+  color: #0055A5;
+}
+
+.main-header .notif {
+  font-size: 24px;
+  cursor: pointer;
+  color: #000;
+}
+
+/* Card Styles */
+.card {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  margin-bottom: 1rem;
+}
+
+.summary-card {
+  height: 120px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 15px 20px;
+  width: 100%;
+}
+
+.card-icon {
+  font-size: 24px;
+  color: #0056b3;
+  margin-right: 15px;
+  flex-shrink: 0;
+}
+
+.card-text {
+  flex-grow: 1;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 100%;
+  margin-right: 20px;
+}
+
+.card-title {
+  font-size: 14px;
+  color: #555;
+  margin: 0;
+  line-height: 1.2;
+  font-weight: 400;
+}
+
+.card-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: center;
+  height: 100%;
+}
+
+.card-number {
+  font-size: 32px;
+  font-weight: 700;
+  color: #0056b3;
+  margin: 0 0 5px 0;
+}
+
+.card-subtext {
+  font-size: 12px;
+  color: #28a745;
+  margin: 0;
+}
+
+.card-subtext.up {
+  color: #28a745;
+}
+
+.card-subtext.down {
+  color: #dc3545;
+}
+
+/* Chart Section */
+.chart-container {
+  background: #fff;
+  padding: 15px;
+  border-radius: 10px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  height: 350px;
+  width: 100%;
+}
+
+/* Side Card */
+.side-card {
+  background: #fff;
+  padding: 15px;
+  border-radius: 10px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  width: 100%;
+  margin-bottom: 1rem;
+}
+
+.side-card h5,
+.side-card h6 {
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+
+.side-card ul li {
+  font-size: 14px;
+  margin-bottom: 6px;
+}
+
+.side-card button {
+  background: #87c3fb;
+  border: none;
+  color: #000;
+  padding: 8px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  width: 100%;
+}
+
+.side-card button:hover {
+  background: #0055A5;
+  color: white;
+}
+
+/* Bootstrap Grid Adjustments */
+.row {
+  margin-left: 0;
+  margin-right: 0;
+  width: 100%;
+}
+
+.row > [class*="col-"] {
+  padding-left: 15px;
+  padding-right: 15px;
+}
+
+/* Responsive Improvements */
+@media (max-width: 768px) {
+  .sidebar {
+    width: 80px;
+  }
+
+  .main-content {
+    margin-left: 80px;
+    padding: 80px 10px 10px 10px;
+  }
+
+  .sidebar:not(.small-sidebar) {
+    width: 250px;
+  }
+
+  .sidebar:not(.small-sidebar) + .main-content {
+    margin-left: 250px;
+  }
+
+  .main-header {
+    padding: 20px 15px;
+    height: 80px;
+    width: calc(100% - 80px);
+    margin-left: 80px;
+  }
+
+  .sidebar.small-sidebar + .main-header {
+    width: calc(100% - 80px);
+    margin-left: 80px;
+  }
+
+  .row {
+    margin: 0;
+  }
+
+  .col-lg-4,
+  .col-lg-8,
+  .col-md-6 {
+    padding-left: 8px;
+    padding-right: 8px;
+  }
+
+  .chart-container {
+    height: 300px;
+    width: 100%;
+  }
+
+  .side-card {
+    width: 100%;
+  }
+
+  .summary-card {
+    height: 160px;
+    padding: 10px 15px;
+    width: 100%;
+  }
+
+  .card-icon {
+    font-size: 20px;
+    margin-right: 10px;
+  }
+
+  .card-number {
+    font-size: 28px;
+  }
+
+  .card-text {
+    margin-right: 15px;
+  }
+}

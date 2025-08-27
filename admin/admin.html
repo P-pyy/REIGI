@@ -1,0 +1,207 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Admin Dashboard</title>
+
+  <!-- BOOTSTRAP CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="adminstyle.css" />
+  <link rel="icon" type="image/png" href="img/URS LOGO.png">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet"/>
+
+  <!-- Icons & Chart.js -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css" integrity="sha512-DxV+EoADOkOygM4IR9yXP8Sb2qwgidEmeqAEmDKIOfPRQZOWbXCzLC6vjbZyy0vPisbH2SyW27+ddLVCN+OMzQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/css/phosphor.css">
+  <script src="https://unpkg.com/phosphor-icons"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+  <div class="container-fluid d-flex p-0 min-vh-100">
+    
+    <!-- SIDEBAR LOAD -->
+    <div id="sidebar-container"></div>
+
+     <!-- HEADER -->
+      <header class="main-header d-flex justify-content-between align-items-center">
+        <h1 class="mb-0">Hello, Admin</h1>
+        <i class="ph-bell notif" style="font-weight: 600; font-size: 1.8rem; text-shadow: 0 0 1.5px black;"></i>
+      </header>
+
+    <!-- MAIN CONTENT -->
+    <main class="main-content flex-grow-1">
+
+      <!-- SUMMARY CARDS -->
+      <div class="row g-3 p-3">
+        <div class="col-md-4">
+          <div class="card summary-card shadow-sm p-3">
+            <i class="ph ph-chart-line card-icon"></i>
+            <div class="card-text">
+              <h3 class="card-title">Total Website</h3><span>Visits</span>
+            </div>
+            <div class="card-right">
+              <div class="card-number">100</div>
+              <span class="card-subtext up">⬆ +10 visits</span>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="card summary-card shadow-sm p-3">
+            <i class="ph ph-play card-icon"></i>
+            <div class="card-text">
+              <h3 class="card-title">Homepage <br> FAQ’s Video</h3><span>Replays</span>
+            </div>
+            <div class="card-right">
+              <div class="card-number">98</div>
+              <span class="card-subtext"></span>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="card summary-card shadow-sm p-3">
+            <i class="ph ph-eye card-icon"></i>
+            <div class="card-text">
+              <h3 class="card-title">Total FAQ</h3><span>Views</span>
+            </div>
+            <div class="card-right">
+              <div class="card-number">100</div>
+              <span class="card-subtext up">⬆ +10 visits</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CHART & TOP 5 FAQs -->
+      <div class="row g-2 px-3 pb-2">
+        <div class="col-lg-8">
+          <!-- Line Chart -->
+          <div class="chart-container p-3 shadow-sm mb-3">
+            <canvas id="myChart"></canvas>
+          </div>
+          <!-- Device Types, Announcements, Bounce Rate -->
+          <div class="row g-2">
+            <div class="col-md-6">
+              <div class="side-card text-center p-3 shadow-sm">
+                <h6 class="mb-3">Device Types</h6>
+                <canvas id="deviceChart" style="max-height: 150px;"></canvas>
+                <p class="mb-0 mt-2">Mobile 35% | Computer 65%</p>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="side-card p-3 shadow-sm text-center mb-2">
+                <h6 class="mb-2">Announcements</h6>
+                <p class="mb-1 text-muted small">Posted this Month</p>
+                <h3 class="mb-0 text-primary">2</h3>
+              </div>
+              <div class="side-card p-3 shadow-sm text-center">
+                <h6 class="mb-2">Bounce Rate</h6>
+                <h3 class="mb-0 text-primary">20%</h3>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-4">
+          <div class="side-card p-3 shadow-sm mb-2">
+            <h5>Top 5 FAQ's</h5>
+            <ul class="list-unstyled mb-0">
+              <li>Question title 1 <span class="float-end text-success">150</span></li>
+              <li>Question title 2 <span class="float-end text-success">128</span></li>
+              <li>Question title 3 <span class="float-end text-danger">99</span></li>
+              <li>Question title 4 <span class="float-end text-danger">90</span></li>
+              <li>Question title 5 <span class="float-end text-danger">77</span></li>
+            </ul>
+          </div>
+          <!-- Academic Calendar -->
+          <div class="side-card p-3 shadow-sm">
+            <h6>Academic Calendar</h6>
+            <p>Last Updated: MM/DD/YY</p>
+            <h6>FAQ's Video</h6>
+            <p>Last Updated: MM/DD/YY</p>
+            <button class="btn btn-primary w-100">Go to Site Media</button>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- SIDEBAR SCRIPT -->
+  <script>
+  fetch('sidebar.html')
+    .then(res => res.text())
+    .then(data => {
+      document.getElementById('sidebar-container').innerHTML = data;
+
+      const currentPage = window.location.pathname.split("/").pop();
+      document.querySelectorAll(".menu li a").forEach(link => {
+        if (link.getAttribute("href") === currentPage) {
+          link.classList.add("active");
+        }
+      });
+
+      // Add event listeners after sidebar content is loaded
+      const toggleBtn = document.querySelector('.toggle-btn');
+      const sidebar = document.querySelector('.sidebar');
+      const mainContent = document.querySelector('.main-content');
+      const mainHeader = document.querySelector('.main-header');
+      if (toggleBtn && sidebar && mainContent && mainHeader) {
+        toggleBtn.addEventListener('click', () => {
+          sidebar.classList.toggle('small-sidebar');
+          // Update main content and header
+          const isSmall = sidebar.classList.contains('small-sidebar');
+          mainContent.style.marginLeft = isSmall ? '80px' : '250px';
+          mainHeader.style.width = isSmall ? 'calc(100% - 80px)' : 'calc(100% - 250px)';
+          mainHeader.style.marginLeft = isSmall ? '80px' : '250px';
+          window.dispatchEvent(new Event('resize')); 
+        });
+      }
+    })
+    .catch(error => console.error('Error loading sidebar:', error));
+
+    
+    // Line Chart
+    const ctx = document.getElementById('myChart');
+    new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: ['Jan','Mar','May','Jul','Sep','Nov','Dec'],
+        datasets: [{
+          label: 'Series 1',
+          data: [30, 32, 35, 38, 40, 42, 45],
+          borderColor: '#0055A5',
+          backgroundColor: 'rgba(0, 85, 165, 0.1)',
+          fill: true,
+          tension: 0.3
+        }]
+      },
+      options: { 
+        responsive: true, 
+        maintainAspectRatio: false
+      }
+    });
+
+    // Pie Chart
+    const devCtx = document.getElementById('deviceChart');
+    new Chart(devCtx, {
+      type: 'doughnut',
+      data: {
+        labels: ['Mobile', 'Computer'],
+        datasets: [{
+          data: [35, 65],
+          backgroundColor: ['#0055A5', '#87c3fb']
+        }]
+      },
+      options: {
+        responsive: true,
+        cutout: '70%',
+        plugins: { legend: { display: false } }
+      }
+    });
+  </script>
+
+  <!-- BOOTSTRAP JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
