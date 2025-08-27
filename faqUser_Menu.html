@@ -1,0 +1,214 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>REIGI - Faq's</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>    
+
+    <style>
+
+    .container {
+      text-align: center;
+      margin-bottom: 40px;
+      /* background-color: #FCFCFC !important ; */
+    }
+
+
+    .campus-name {
+    font-size: 12px;
+    font-style: italic;
+    color: #001926 !important;
+    pointer-events: none;
+    display: block;
+    line-height: 1.2;
+    font-weight: normal;
+    }
+
+    .container h1 {
+      /* background-color: #FCFCFC; */
+      font-size: 4rem;
+      font-weight: 600;
+      color: #0057b8;
+      margin-bottom: 20px;
+      margin-top: 150px;
+    }
+
+    .container input {
+      background-color: #FCFCFC;
+      width: 380px;
+      padding: 10px 14px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 14px;
+      margin-top: 30px;
+      margin-bottom: 30px;
+    }
+
+    /* Centered grid with max width */
+    .faq-wrapper {
+      max-width: 1250px;
+      margin: auto;
+      margin-bottom: 30px;
+      margin-top: 20px;
+    }
+
+    .faq-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 3fr);
+      gap: 50px;
+      justify-content: center;
+    }
+
+    .faq-card {
+      background-color: #fff;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      padding: 20px;
+      height: 350px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      margin-bottom: 50px;
+    }
+
+    .faq-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 6px 16px rgba(0,0,0,0.1);
+    }
+
+    .faq-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .faq-title {
+      font-size: 38px;
+      font-weight: 600;
+      color: #2C2C2C;
+      margin-top: 35px;
+      margin-left: 10px;
+    }
+
+    .phosphor-icon {
+      font-size: 50px;
+      color: #0057b8;
+      width: 80px;
+      height: 80px;   
+      padding: 10px;
+      gap: 10px;
+    }
+
+    .faq-desc {
+      font-size: 16px;
+      color: #2C2C2C;
+      margin-top: 10px;
+      margin-left: 10px;
+    }
+
+    .faq-link {
+      font-size: 18px;
+      color: #0055A5;
+      text-decoration: none;
+      font-weight: 600;
+      margin-top: 10px;
+      margin-bottom: 30px;
+      margin-left: 10px;
+    }
+
+    .faq-link:hover {
+      text-decoration: none;
+    }
+
+    /*  Responsive layout */
+    @media (max-width: 900px) {
+      .faq-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 600px) {
+      .faq-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .container input {
+        width: 100%;
+      }
+
+      .faq-title {
+        font-size: 16px;
+      }
+
+      .faq-desc,
+      .faq-link {
+        font-size: 13px;
+    }}
+    </style>
+  
+    <main>
+       <!-- Page Content -->
+    </main>
+
+  <!-- FAQ Header -->
+  <div class="container">
+    <h1>Frequently Asked <br> Questions</h1>
+    <input type="text" placeholder="Search...">
+  </div>
+     <div class="faq-wrapper">
+     <div class="faq-grid">
+       <div class="faq-card">
+         <div>
+          <!-- FAQ Card 1 -->
+           <div class="faq-header">
+             <div class="faq-title">Enrollment Process</div>
+             <i class="ph-bold ph-checks phosphor-icon"></i>
+           </div>
+           <div class="faq-desc">Everything you need before <br> diving into the semester.</div>
+         </div>
+         <a href="#" class="faq-link">Read FAQs</a>
+       </div>
+        
+        <!-- FAQ Card 2  -->
+       <div class="faq-card">
+         <div>
+           <div class="faq-header">
+             <div class="faq-title">Document Request</div>
+             <i class="ph-bold ph-files phosphor-icon"></i>
+           </div>
+           <div class="faq-desc">Everything you need before <br> diving into the semester.</div>
+       </div>
+         <a href="#" class="faq-link">Read FAQs</a>
+        </div>
+
+        <!-- FAQ Card 3  -->
+        <div class="faq-card">
+        <div>
+           <div class="faq-header">
+             <div class="faq-title">Graduation & Clearance</div>
+           <i class="ph-bold ph-list-checks phosphor-icon"></i>
+         </div>
+         <div class="faq-desc">Everything you need before <br> diving into the semester.</div>
+       </div>
+       <a href="#" class="faq-link">Read FAQs</a>
+     </div>
+
+   </div>
+  </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.min.js"></script>
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <script src="script.js"></script>
+
+</body>
+</html>
+
+
