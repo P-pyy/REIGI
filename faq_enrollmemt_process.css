@@ -1,0 +1,85 @@
+/* faq enrollment process */
+
+html, body {
+  font-family: 'Montserrat', sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+.enrollment-banner {
+  width: 100%;              
+  background-color: #FCFCFC;
+  padding: 5rem 1rem;       
+  margin-top: 1rem;         
+  box-sizing: border-box;   
+  border-radius: 0;        
+}
+
+.text-muted {
+  font-size: 20px !important;
+  font-weight: 600 !important;
+  color: #2C2C2C !important;
+}
+
+
+.enrollment-process-text {
+  font-size: 64px !important;
+  font-weight: 600;
+  color: #0055A5;
+}
+
+.admin-breadcrumb {
+  font-size: 14px;
+  color: #6c757d;
+}
+
+.search-bar .form-control:focus {
+  outline: none !important;          
+  box-shadow: none !important; 
+  border-color: #EBEFEC !important;  
+}
+
+
+.search-bar .input-group-text:focus {
+  outline: none !important;          
+  box-shadow: none !important;
+  border-color: #EBEFEC !important; 
+}
+
+.search-bar-text {
+  padding-left: 0.2rem !important;
+  padding-right: 0.2rem !important;
+}
+
+.faq-title {
+  font-size: 20px;
+  font-weight: 600 !important;
+  color: #2C2C2C !important;
+}
+
+.faq-list {
+  list-style: decimal;
+  padding-left: 1.5rem; 
+}
+
+.faq-list li {
+  margin-bottom: 0.75rem;
+  font-size: 16px;
+}
+
+.faq-list li a {
+  text-decoration: none;
+  color: #2C2C2C;        
+  font-weight: 500;
+}
+
+.faq-list li a {
+  text-decoration: underline; 
+}
+
+
+
+
+
+
+
