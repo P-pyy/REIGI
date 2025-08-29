@@ -46,6 +46,55 @@ function ensurePhosphor() {
   document.head.appendChild(style);
 })();
 
+/* ---------------- Add SPA Loading Overlay ---------------- */
+(function ensureSpaLoader(){
+  if (document.getElementById('spa-loader-style')) return;
+
+  // CSS for loader
+  const style = document.createElement('style');
+  style.id = 'spa-loader-style';
+  style.textContent = `
+    #spa-loader {
+      position: fixed;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(255,255,255,0.7);
+      z-index: 9999;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .3s ease;
+    }
+    #spa-loader.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .spa-spinner {
+      width: 40px;
+      height: 40px;
+      border: 4px solid #ddd;
+      border-top: 4px solid #333;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+    @keyframes spin { from {transform:rotate(0)} to {transform:rotate(360deg)} }
+  `;
+  document.head.appendChild(style);
+
+  // DOM element
+  const loader = document.createElement('div');
+  loader.id = 'spa-loader';
+  loader.innerHTML = `<div class="spa-spinner"></div>`;
+  document.body.appendChild(loader);
+})();
+function showLoader() {
+  document.getElementById('spa-loader')?.classList.add('active');
+}
+function hideLoader() {
+  document.getElementById('spa-loader')?.classList.remove('active');
+}
+
 /* ---------------- Load NAVBAR ---------------- */
 fetch('navbar.html')
   .then(res => res.text())
@@ -87,6 +136,7 @@ function getMainContainer() {
 /* Central SPA loader */
 function loadPage(url, { push = true } = {}) {
   const main = getMainContainer();
+  showLoader(); // ✅ show spinner
   main.classList.add('fade-out');
 
   ensurePhosphor().finally(() => {
@@ -95,48 +145,61 @@ function loadPage(url, { push = true } = {}) {
       .then(html => {
         const doc = new DOMParser().parseFromString(html, 'text/html');
         const newMain = doc.querySelector('main') || doc.body;
+        const newHead = doc.head;
 
         setTimeout(() => {
-          // ✅ Replace main content
-          main.innerHTML = newMain.innerHTML;
+          /* --- CLEAN OLD PAGE HEAD --- */
+          document.querySelectorAll('head [data-spa-page]').forEach(el => el.remove());
 
-          // ✅ Sync head (CSS, meta, etc.)
-          const newHead = doc.head;
+          /* --- ADD NEW PAGE HEAD --- */
+          let loadPromises = [];
           if (newHead) {
             Array.from(newHead.children).forEach(el => {
               const tag = el.tagName.toLowerCase();
               const href = el.getAttribute('href');
               const src = el.getAttribute('src');
 
-              // Only add if not already in current head
-              if (
-                (href && !document.head.querySelector(`${tag}[href="${href}"]`)) ||
-                (src && !document.head.querySelector(`${tag}[src="${src}"]`))
-              ) {
-                document.head.appendChild(el.cloneNode(true));
+              if (href || src) {
+                const clone = el.cloneNode(true);
+                clone.setAttribute('data-spa-page','');
+
+                if (tag === 'link' && clone.rel === 'stylesheet') {
+                  loadPromises.push(new Promise(resolve => {
+                    clone.onload = () => resolve();
+                    clone.onerror = () => resolve();
+                  }));
+                }
+                document.head.appendChild(clone);
               }
             });
           }
 
-          // Fade animations
-          main.classList.remove('fade-out');
-          main.classList.add('fade-in');
-          setTimeout(() => main.classList.remove('fade-in'), 300);
+          /* --- Wait for stylesheets before replacing --- */
+          Promise.all(loadPromises).then(() => {
+            main.innerHTML = newMain.innerHTML;
 
-          // History + title
-          if (push) window.history.pushState({}, '', url);
-          if (doc.title) document.title = doc.title;
+            main.classList.remove('fade-out');
+            main.classList.add('fade-in');
+            setTimeout(() => main.classList.remove('fade-in'), 300);
 
-          // Delegates + page init
-          attachGlobalDelegates();
-          runPageInits(url);
+            if (push) window.history.pushState({}, '', url);
+            if (doc.title) document.title = doc.title;
 
-          if (window.PhosphorIcons?.replace) {
-            try { window.PhosphorIcons.replace(); } catch (e) {}
-          }
+            attachGlobalDelegates();
+            runPageInits(url);
+
+            if (window.PhosphorIcons?.replace) {
+              try { window.PhosphorIcons.replace(); } catch (e) {}
+            }
+
+            hideLoader(); // ✅ hide spinner after complete
+          });
         }, 300);
       })
-      .catch(console.error);
+      .catch(err => {
+        console.error(err);
+        hideLoader();
+      });
   });
 }
 
