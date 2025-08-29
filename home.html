@@ -27,7 +27,7 @@
 
             <div class="faq-image-container">
                 <video id="faqVideo" class="faqVideo" autoplay muted loop playsinline aria-label="FAQ Video">
-                    <source src="/img/TF-exe.mp4" type="video/mp4"/>
+                    <source src="./img/TF-exe.mp4" type="video/mp4"/>
                     Your browser does not support the video
                 </video>
             </div>
@@ -100,14 +100,14 @@
                             <i class="ph-light ph-greater-than arrow"></i>
                             <span>Undergraduate</span>
                         </div>
-                        <img src="/img/Calendar.png" alt="Undergraduate Calendar" class="calendar-image">
+                        <img src="./img/Calendar.png" alt="Undergraduate Calendar" class="calendar-image">
                     </li>
                     <li>
                         <div class="list-item-content">
                             <i class="ph-light ph-greater-than arrow"></i>
                             <span>Graduate School</span>
                         </div>
-                        <img src="/img/Calendar.png" alt="Graduate Calendar" class="calendar-image">
+                        <img src="./img/Calendar.png" alt="Graduate Calendar" class="calendar-image">
                     </li>
                 </ul>
             </div>
@@ -120,82 +120,8 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.min.js"></script>
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
     <script src="script.js"></script>
+    <script src="home.js"></script>
 
-    <!-- Load navbar and footer -->
-    <script>
-        fetch('navbar.html')
-            .then(response => response.text())
-            .then(data => {
-                document.getElementById('navbar-placeholder').innerHTML = data;
-            });
-
-        fetch('footer.html')
-            .then(response => response.text())
-            .then(data => {
-                document.getElementById('footer-placeholder').innerHTML = data;
-            });
-    </script>
-
-     <script>
-        
-        const listItems = document.querySelectorAll('.list-item-content');
-
-        listItems.forEach(item =>{
-            item.addEventListener('click', (e) =>{
-                e.stopPropagation();
-
-                const currentLi = item.closest('li');
-                const currentImg = currentLi.querySelector('.calendar-image');
-                const arrow = currentLi.querySelector('.arrow');
-                const isVisible = window.getComputedStyle(currentImg).display === 'block';
-
-                document.querySelectorAll('.calendar-image').forEach(img => {
-                    img.style.display = 'none';
-                });
-                document.querySelectorAll('.arrow').forEach(a => a.classList.remove('open'));
-
-                if (!isVisible){
-                    currentImg.style.display = 'block';
-                    arrow.classList.add('open');
-                };
-            });
-        });
-    </script>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const video = document.getElementById('faqVideo');
-            const faqsSection = document.getElementById('faqs');
-
-            window.addEventListener('scroll', () => {
-                const faqsRect = faqsSection.getBoundingClientRect();
-                const middleY = window.innerHeight / 2;
-
-                if (faqsRect.top < middleY && faqsRect.bottom > middleY) {
-                    // Middle of screen is inside FAQ section
-                    video.classList.remove('fixed', 'hidden');
-                    video.classList.add('enlarged');
-                    video.play();
-                } else if (faqsRect.top >= middleY) {
-                    // Above FAQ
-                    video.classList.remove('enlarged', 'hidden');
-                    video.classList.add('fixed');
-                    video.pause();
-                } else {
-                    // Below FAQ (in next section)
-                    video.classList.remove('fixed', 'enlarged');
-                    video.classList.add('hidden');
-                    video.pause();
-                }
-            });
-
-            video.classList.add('fixed');
-
-            document.getElementById('faq-btn').addEventListener('click', () => {
-                faqsSection.scrollIntoView({ behavior: 'smooth' });
-            });
-        });
-    </script>
 
 
 </body>
