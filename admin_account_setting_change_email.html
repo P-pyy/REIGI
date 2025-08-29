@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Change Email Form</title>
+  <link rel="stylesheet" href="admin_account_setting.css">
+</head>
+<body class="change-email">
+  <section class="card" aria-label="Change Email section">
+    <h2>Change Email</h2>
+    <form id="changeEmailForm" novalidate>
+      <input
+        type="email"
+        id="currentEmail"
+        name="currentEmail"
+        placeholder="Current Email"
+        required
+        autocomplete="email"
+        aria-describedby="currentEmailHelp"
+      />
+      <input
+        type="email"
+        id="newEmail"
+        name="newEmail"
+        placeholder="New Email"
+        required
+        autocomplete="email"
+      />
+      <button type="submit" aria-label="Submit new email">Submit</button>
+    </form>
+  </section>
+
+  <script>
+    const form = document.getElementById('changeEmailForm');
+
+    form.addEventListener('submit', (event) => {
+      event.preventDefault();
+
+      const currentEmail = form.currentEmail.value.trim();
+      const newEmail = form.newEmail.value.trim();
+
+      const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+      if (!emailPattern.test(currentEmail)) {
+        alert('Please enter a valid current email address.');
+        form.currentEmail.focus();
+        return;
+      }
+
+      if (!emailPattern.test(newEmail)) {
+        alert('Please enter a valid new email address.');
+        form.newEmail.focus();
+        return;
+      }
+
+      if (currentEmail === newEmail) {
+        alert('The new email address must be different from the current one.');
+        form.newEmail.focus();
+        return;
+      }
+
+      alert(
+        'Email change submitted successfully.\nCurrent Email: ' + currentEmail + '\nNew Email: ' + newEmail
+      );
+      form.reset();
+    });
+  </script>
+</body>
+</html>
