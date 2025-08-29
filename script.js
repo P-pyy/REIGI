@@ -46,55 +46,6 @@ function ensurePhosphor() {
   document.head.appendChild(style);
 })();
 
-/* ---------------- Add SPA Loading Overlay ---------------- */
-(function ensureSpaLoader(){
-  if (document.getElementById('spa-loader-style')) return;
-
-  // CSS for loader
-  const style = document.createElement('style');
-  style.id = 'spa-loader-style';
-  style.textContent = `
-    #spa-loader {
-      position: fixed;
-      inset: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: rgba(255,255,255,0.7);
-      z-index: 9999;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity .3s ease;
-    }
-    #spa-loader.active {
-      opacity: 1;
-      pointer-events: auto;
-    }
-    .spa-spinner {
-      width: 40px;
-      height: 40px;
-      border: 4px solid #ddd;
-      border-top: 4px solid #333;
-      border-radius: 50%;
-      animation: spin 1s linear infinite;
-    }
-    @keyframes spin { from {transform:rotate(0)} to {transform:rotate(360deg)} }
-  `;
-  document.head.appendChild(style);
-
-  // DOM element
-  const loader = document.createElement('div');
-  loader.id = 'spa-loader';
-  loader.innerHTML = `<div class="spa-spinner"></div>`;
-  document.body.appendChild(loader);
-})();
-function showLoader() {
-  document.getElementById('spa-loader')?.classList.add('active');
-}
-function hideLoader() {
-  document.getElementById('spa-loader')?.classList.remove('active');
-}
-
 /* ---------------- Load NAVBAR ---------------- */
 fetch('navbar.html')
   .then(res => res.text())
@@ -133,10 +84,9 @@ function getMainContainer() {
   return main;
 }
 
-/* Central SPA loader */
+/* Central SPA loader (NO spinner, just fade) */
 function loadPage(url, { push = true } = {}) {
   const main = getMainContainer();
-  showLoader(); // ✅ show spinner
   main.classList.add('fade-out');
 
   ensurePhosphor().finally(() => {
@@ -191,15 +141,10 @@ function loadPage(url, { push = true } = {}) {
             if (window.PhosphorIcons?.replace) {
               try { window.PhosphorIcons.replace(); } catch (e) {}
             }
-
-            hideLoader(); // ✅ hide spinner after complete
           });
         }, 300);
       })
-      .catch(err => {
-        console.error(err);
-        hideLoader();
-      });
+      .catch(console.error);
   });
 }
 
