@@ -1,0 +1,601 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap');
+body {
+    font-family: 'Montserrat', sans-serif;
+  }
+
+
+/*  ADMIN ACCOUNT SETTINGS  */
+body.account-settings {
+    margin: 0;
+    font-family: 'Montserrat', sans-serif;
+    line-height: 1.5;
+    background-color: #f3f4f6;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1.5rem;
+  }
+  body.account-settings .container {
+    max-width: 28rem;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+  body.account-settings .card {
+    background-color: #fff;
+    border-radius: 0.5rem;
+    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1),
+                0 2px 4px -2px rgba(0,0,0,0.1);
+    padding: 1.5rem;
+  }
+  body.account-settings .card-title {
+    font-size: 1.525rem;
+    font-weight: 600;
+    color: #111827;
+    margin-bottom: 1.3rem;
+  }
+  body.account-settings .nav-links {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  body.account-settings .nav-links a {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: #374151;
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  body.account-settings .nav-links a:hover {
+    color: #1d4ed8;
+  }
+  body.account-settings .arrow-icon {
+    border: solid #2563eb;
+    border-width: 0 2px 2px 0;
+    display: inline-block;
+    padding: 5px;
+    transform: rotate(-45deg);
+  }
+  body.account-settings .nav-links a:hover .arrow-icon {
+    border-color: #1d4ed8;
+  }
+  
+  
+  /* ========== ADMIN CHANGE EMAIL ========== */
+  body.change-email {
+    margin: 0;
+    font-family: 'Montserrat', sans-serif;
+    background-color: #f5f8fa;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 1rem;
+  }
+  
+  body.change-email .card {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+    padding: 2rem 2.5rem;
+    width: 100%;
+    max-width: 360px;
+    user-select: none;
+    transition: box-shadow 0.3s;
+  }
+  
+  body.change-email .card:hover,
+  body.change-email .card:focus-within {
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+  }
+  
+  body.change-email .card h2 {
+    font-weight: 600;
+    color: #2f3a45;
+    margin-bottom: 2.5rem;
+    font-size: 1.6rem;
+  }
+  
+  body.change-email form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  body.change-email input[type="email"] {
+    padding: 0.65rem 1rem;
+    font-size: 1rem;
+    border: 1.5px solid #e1e4e8;
+    border-radius: 8px;
+    transition: border-color 0.25s, box-shadow 0.25s;
+    color: #344054;
+  }
+  
+  body.change-email input[type="email"]::placeholder {
+    color: #a1a8b3;
+  }
+  
+  body.change-email input[type="email"]:focus {
+    outline: none;
+    border-color: #66a1ff;
+    box-shadow: 0 0 8px rgba(102,161,255, 0.3);
+  }
+  
+  body.change-email button {
+    margin-top: 1rem;
+    background-color: #b6d1fe;   /* same as change-password */
+    color: #222;
+    font-weight: 500;
+    padding: 0.75rem;
+    border: none;
+    border-radius: 10px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s, box-shadow 0.3s;
+    width: 240px;  
+    align-self: center;
+  }
+  
+  body.change-email button:hover {
+    background-color: #a2c5fe;   /* hover */
+  }
+  
+  body.change-email button:active {
+    background-color: #8dbaeb;   /* pressed */
+    box-shadow: none;
+  }
+  
+  /* ========== ADMIN CHANGE PASSWORD ========== */
+  body.change-password {
+    font-family: 'Montserrat', sans-serif;
+    background-color: #f5f7fa;
+    margin: 0;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 1rem;
+  }
+  body.change-password .form-container {
+    background-color: #f9fafb;
+    padding: 2.5rem 2rem;
+    border-radius: 12px;
+    box-shadow: 0 8px 20px rgb(0 0 0 / 0.05);
+  
+    width: 120%;
+    max-width: none; /* prevents it from being capped */
+  
+    position: relative;
+    left: -25%; /* shift left by half of the extra 50% */
+  }
+  body.change-password h2 {
+    font-weight: 600;
+    color: rgb(20, 20, 22);
+    margin-bottom: 2.3rem;
+    font-size: 1.7rem;
+  }
+  body.change-password form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  body.change-password input[type="password"] {
+    padding: 0.65rem 1rem;
+    font-size: 1rem;
+    border: 1.5px solid #d9e2ec;
+    border-radius: 8px;
+    transition: border-color 0.25s, box-shadow 0.25s;
+    color: rgb(16, 16, 17);
+  }
+  body.change-password input[type="password"]:focus {
+    outline: none;
+    border-color: #6ca0f6;
+    box-shadow: 0 0 6px 1px rgba(108, 160, 246, 0.4);
+  }
+  body.change-password button {
+    margin-top: 1rem;
+    background-color: #b6d1fe;
+    color: #222;
+    font-weight: 500;
+    padding: 0.75rem;
+    border: none;
+    border-radius: 10px;
+    font-size: 1rem;
+    cursor: pointer;
+    /*box-shadow: inset 0 -3px 0 #8ba4f9;*/
+    transition: background-color 0.3s, box-shadow 0.3s;
+  }
+  body.change-password button:hover {
+    background-color: #a2c5fe;
+   /* box-shadow: inset 0 -3px 0 #7093f5; */
+  }
+  body.change-password button:active {
+    background-color: #8dbaeb;
+    box-shadow: none;
+  }
+  
+  
+  /* ========== ADMIN LOGIN ALERTS ========== */
+  body.login-alerts {
+    margin: 0;
+    font-family: 'Montserrat', sans-serif;
+    background-color: #f3f4f6;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+  }
+  body.login-alerts .card {
+    background: #fff;
+    border-radius: 1rem;
+    box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1),
+                0 8px 10px -6px rgba(0,0,0,0.1);
+    max-width: 24rem;
+    width: 100%;
+    padding: 2.5rem;
+    position: relative;
+  }
+  body.login-alerts .back-btn {
+    position: absolute;
+    top: 1.5rem;
+    left: 1rem;
+    background: none;
+    border: none;
+    color: #374151;
+    cursor: pointer;
+  }
+  body.login-alerts .back-btn:hover {
+    color: #111827;
+  }
+  body.login-alerts .icon {
+    width: 1.5rem;
+    height: 1.5rem;
+  }
+  body.login-alerts .title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+    color: #171717;
+    margin-top: 2.1rem;
+  }
+  body.login-alerts .subtitle {
+    font-size: 0.875rem;
+    color: #4b5563;
+    margin-bottom: 1.5rem;
+    margin-top: 0.2rem;
+  }
+  body.login-alerts .options {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    border: none;
+    margin: 0;
+    padding: 0;
+  }
+  body.login-alerts .option {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  body.login-alerts .label {
+    color: #1f2937;
+    font-size: 1rem;
+  }
+  body.login-alerts .subtext {
+    font-size: 0.75rem;
+    color: #6b7280;
+  }
+  /* ✅ Make checkboxes blue */
+body.login-alerts input[type="checkbox"] {
+    accent-color: #3578e5; /* Blue color */
+  }
+  body.login-alerts .option-info {
+    display: flex;
+    flex-direction: column; /* stack items vertically */
+  }
+  
+  body.login-alerts .option-info .label {
+    font-weight: 500;
+  }
+  
+  body.login-alerts .option-info .subtext {
+    font-size: 0.85rem;
+    color: #666;
+    margin-top: 2px;
+  }
+  body.login-alerts input[type="checkbox"] {
+    accent-color: #3578e5; /* Blue color */
+    width: 15px;
+    height: 15px;
+    cursor: pointer;
+  }
+
+  
+  /* ========== ADMIN LOGIN HISTORY ========== */
+ /* body.login-history {
+    background-color: #f8fafc;
+    font-family: Arial, sans-serif;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    margin: 0;
+    padding: 16px;
+  }
+  body.login-history .container {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    width: 100%;
+    max-width: 380px;
+    border: 1px solid #e2e8f0;
+  }
+  body.login-history .header {
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid #e2e8f0;
+    padding: 12px 20px;
+  }
+  body.login-history .icon-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #334155;
+  }
+  body.login-history .header-title {
+    flex-grow: 1;
+    font-size: 18px;
+    font-weight: bold;
+    color: #0f172a;
+    padding-left: 12px;
+  }
+  body.login-history .main {
+    padding: 20px;
+  }
+  body.login-history .label {
+    font-size: 14px;
+    color: #334155;
+  }
+  body.login-history .device-title {
+    font-size: 16px;
+    font-weight: bold;
+    color: #0f172a;
+    margin: 0;
+  }
+  body.login-history .device-location {
+    font-size: 14px;
+    color: #475569;
+  }
+  body.login-history .this-device {
+    font-size: 12px;
+    font-weight: bold;
+    color: #15803d;
+  }
+  body.login-history .saved-title {
+    font-size: 16px;
+    font-weight: bold;
+    color: #0f172a;
+    margin-bottom: 12px;
+  }
+  body.login-history .saved-devices-scroll {
+    max-height: 280px;
+    overflow-y: auto;
+  }
+  body.login-history .device-card {
+    width: 100%;
+    text-align: left;
+    border: none;
+    background: none;
+    padding: 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  body.login-history .device-card:hover {
+    background-color: #f1f5f9;
+  }
+  body.login-history .device-card-title {
+    font-size: 15px;
+    font-weight: bold;
+    color: #0f172a;
+  }
+  body.login-history .device-card:hover .device-card-title {
+    color: #1d4ed8;
+  }
+  body.login-history .arrow {
+    position: absolute;
+    right: 16px;
+    top: 20px;
+    color: #2563eb;
+    opacity: 0.7;
+  }
+  body.login-history .device-card:hover .arrow {
+    opacity: 1;
+  }
+  */
+
+  body.login-history {
+    background-color: #f8fafc;
+    font-family: 'Montserrat', sans-serif;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    margin: 0;
+    padding: 16px;
+  }
+  
+  body.login-history .container {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    width: 100%;
+    max-width: 380px;
+    border: 1px solid #e2e8f0;
+    
+  }
+  
+  /* Header */
+  body.login-history .header {
+    display: flex;
+    align-items: center;
+    /*border-bottom: 1px solid #e2e8f0;*/
+    padding: 12px 20px;
+  }
+  
+  body.login-history .icon-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #334155;
+    transition: color 0.2s;
+    margin-left: -8px; /* move button left */
+  }
+  
+  body.login-history .icon-btn:hover {
+    color: #1e293b;
+  }
+  
+  body.login-history .icon {
+    width: 24px;
+    height: 24px;
+  }
+  
+  body.login-history .header-title {
+    flex-grow: 1;
+    font-size: 18px;
+    font-weight: bold;
+    color: #0f172a;
+    padding-left: 12px;
+    user-select: none;
+  }
+  
+  /* Main content */
+  body.login-history .main {
+    padding: 20px;
+  }
+  
+  body.login-history .label {
+    font-size: 14px;
+    color: #334155;
+    margin-bottom: 6px;
+    user-select: none;
+  }
+  
+  body.login-history .device-title {
+    font-size: 16px;
+    font-weight: bold;
+    color: #0f172a;
+    margin: 0;
+  }
+  
+  body.login-history .device-location {
+    font-size: 14px;
+    color: #475569;
+    margin: 2px 0;
+  }
+  
+  body.login-history .this-device {
+    font-size: 12px;
+    font-weight: bold;
+    color: #15803d;
+    margin-top: 4px;
+    user-select: all;
+  }
+  
+  body.login-history .saved-title {
+    font-size: 16px;
+    font-weight: bold;
+    color: #0f172a;
+    margin-bottom: 12px;
+    user-select: none;
+  }
+  
+  /* Saved devices */
+  body.login-history .saved-devices-scroll {
+    max-height: 280px;
+    overflow-y: auto;
+  }
+  
+  body.login-history .saved-devices-scroll::-webkit-scrollbar {
+    width: 6px;
+  }
+  body.login-history .saved-devices-scroll::-webkit-scrollbar-thumb {
+    background-color: #cbd5e1;
+    border-radius: 3px;
+  }
+  body.login-history .saved-devices-scroll::-webkit-scrollbar-track {
+    background-color: #f8fafc;
+  }
+  
+  body.login-history .device-card {
+    width: 100%;
+    text-align: left;
+    border: none;
+    background: none;
+    padding: 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    position: relative;
+    transition: background 0.2s;
+  }
+  
+  body.login-history .device-card:hover {
+    background-color: #f1f5f9;
+  }
+  
+  body.login-history .device-card-title {
+    font-size: 15px;
+    font-weight: bold;
+    color: #0f172a;
+    margin: 0;
+    transition: color 0.2s;
+  }
+  
+  body.login-history .device-card:hover .device-card-title  {
+    color: #1d4ed8;
+  }
+  body.login-history .device-title:hover {
+    color: #1d4ed8;
+    cursor: pointer; /* optional: make it clickable-looking */
+  }
+  body.login-history .device-card:hover .device-title,
+body.login-history .device-card:hover .device-card-title {
+  color: #1d4ed8;
+}
+  
+  body.login-history .device-time {
+    font-size: 12px;
+    color: #94a3b8;
+    margin-top: 4px;
+  }
+  
+  body.login-history .arrow {
+    position: absolute;
+    right: 16px;
+    top: 20px;
+    color: #2563eb;
+    opacity: 0.7;
+    transition: opacity 0.2s;
+  }
+  
+  body.login-history .device-card:hover .arrow {
+    opacity: 1;
+  }
+  
+  body.login-history .arrow-icon {
+    width: 20px;
+    height: 20px;
+  }
+
+  body.login-history .top-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem; /* spacing before title */
+  }
