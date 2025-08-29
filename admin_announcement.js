@@ -1,83 +1,106 @@
+// Supabase Config
+// =======================
+import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
 
-    window.addEventListener("DOMContentLoaded", function () {
-      const tbody = document.querySelector(".announcement-table tbody");
-      const overlay = document.getElementById("loading-overlay");
+const SUPABASE_URL = "https://oeeqegpgmobbuhaadrhr.supabase.co";  
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9lZXFlZ3BnbW9iYnVoYWFkcmhyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTY0ODQwNzEsImV4cCI6MjA3MjA2MDA3MX0.M-pplPUdj21v2Fb5aLmmbE94gDGCfslksAI8fJca2cE";
+const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-      function showLoading() {
-        overlay.classList.add("show");
-      }
-      function hideLoading() {
-        overlay.classList.remove("show");
-      }
+window.addEventListener("DOMContentLoaded", async function () {
+  const tbody = document.querySelector(".announcement-table tbody");
+  const overlay = document.getElementById("loading-overlay");
 
-      function renderTable() {
-        tbody.innerHTML = "";
-        let announcements = JSON.parse(localStorage.getItem("announcements")) || [];
+  function showLoading() {
+    overlay.classList.add("show");
+  }
+  function hideLoading() {
+    overlay.classList.remove("show");
+  }
 
-        announcements.forEach((item, index) => {
-          const dateObj = new Date(item.dateTime);
-          const formattedDate = dateObj.toLocaleDateString("en-US", { year: "2-digit", month: "2-digit", day: "2-digit" });
-          const formattedTime = dateObj.toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit", hour12: true });
+  async function fetchAnnouncements() {
+    showLoading();
+    const { data, error } = await supabaseClient
+      .from("announcements")
+      .select("*")
+      .order("scheduled_datetime", { ascending: false });
 
-          const row = document.createElement("tr");
-          row.classList.add("fade-in");
-          row.innerHTML = `
-            <td>${item.title}</td>
-            <td>${item.details}</td>
-            <td><img src="${item.image}" alt="announcement image" style="width:60px; height:auto; border-radius:4px;"></td>
-            <td>${formattedDate}</td>
-            <td>${formattedTime}</td>
-            <td>
-              <a href="admin_announcement_edit.html?index=${index}" class="text-primary me-2 edit-link">Edit</a>
-              <a href="#" class="text-danger trash-icon" data-index="${index}">
-                <i class="ph ph-trash"></i>
-              </a>
-            </td>
-          `;
-          tbody.appendChild(row);
-        });
+    hideLoading();
 
-        // Attach delete event
-        document.querySelectorAll(".trash-icon").forEach(btn => {
-          btn.addEventListener("click", function (e) {
-            e.preventDefault();
-            const index = this.getAttribute("data-index");
+    if (error) {
+      console.error("Error fetching announcements:", error.message);
+      return [];
+    }
+    return data;
+  }
 
-            if (confirm("Are you sure you want to delete this announcement?")) {
-              let announcements = JSON.parse(localStorage.getItem("announcements")) || [];
-              announcements.splice(index, 1);
-              localStorage.setItem("announcements", JSON.stringify(announcements));
+  function renderTable(announcements) {
+    tbody.innerHTML = "";
 
-              // Dispatch storage event to update announcement.html in other tab
-              window.dispatchEvent(new StorageEvent("storage", { key: "announcements" }));
-
-              renderTable();
-            }
-          });
-        });
-
-        // Re-render Phosphor icons after dynamic content
-        if (window.PhosphorIcons) window.PhosphorIcons.replace();
-      }
-
-      // Show loading, simulate delay for smoother UX
-      showLoading();
-      setTimeout(() => {
-        renderTable();
-        hideLoading();
-      }, 600);
-
-      // 🔥 Auto-update other tabs (announcement.html) when this tab changes localStorage
-      window.addEventListener("storage", (e) => {
-        if (e.key === "announcements") {
-          renderTable();
-        }
+    announcements.forEach((item) => {
+      const dateObj = new Date(item.scheduled_datetime);
+      const formattedDate = dateObj.toLocaleDateString("en-US", {
+        year: "2-digit",
+        month: "2-digit",
+        day: "2-digit",
+      });
+      const formattedTime = dateObj.toLocaleTimeString("en-US", {
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: true,
       });
 
-      // 🔥 Auto-refresh when user returns to this tab
-      document.addEventListener("visibilitychange", () => {
-        if (!document.hidden) {
-          renderTable();
+      const row = document.createElement("tr");
+      row.classList.add("fade-in");
+      row.innerHTML = `
+        <td>${item.title}</td>
+        <td>${item.details}</td>
+        <td><img src="${item.image_url}" alt="announcement image" style="width:60px; height:auto; border-radius:4px;"></td>
+        <td>${formattedDate}</td>
+        <td>${formattedTime}</td>
+        <td>
+          <a href="admin_announcement_edit.html?id=${item.id}" class="text-primary me-2 edit-link">Edit</a>
+          <a href="#" class="text-danger trash-icon" data-id="${item.id}">
+            <i class="ph ph-trash"></i>
+          </a>
+        </td>
+      `;
+      tbody.appendChild(row);
+    });
+
+    // Delete event
+    document.querySelectorAll(".trash-icon").forEach((btn) => {
+      btn.addEventListener("click", async function (e) {
+        e.preventDefault();
+        const id = this.getAttribute("data-id");
+
+        if (confirm("Are you sure you want to delete this announcement?")) {
+          const { error } = await supabaseClient
+            .from("announcements")
+            .delete()
+            .eq("id", id);
+
+          if (error) {
+            console.error("Delete failed:", error.message);
+            alert("Failed to delete announcement.");
+          } else {
+            // refresh table
+            const announcements = await fetchAnnouncements();
+            renderTable(announcements);
+          }
         }
       });
     });
+
+    if (window.PhosphorIcons) window.PhosphorIcons.replace();
+  }
+
+  // Initial load
+  const announcements = await fetchAnnouncements();
+  renderTable(announcements);
+
+  // Auto-refresh every 10 seconds (optional)
+  setInterval(async () => {
+    const announcements = await fetchAnnouncements();
+    renderTable(announcements);
+  }, 10000);
+});
