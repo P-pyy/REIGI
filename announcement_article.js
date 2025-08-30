@@ -52,32 +52,90 @@ async function fetchAllAnnouncements() {
 // Render Main Article
 // =======================
 function renderArticle(announcement) {
-  const cardImg = document.querySelector(".card img");
-  const cardTitle = document.querySelector(".card-title");
-  const cardSubtitle = document.querySelector(".card-subtitle");
-  const cardText = document.querySelector(".card-text");
+  const container = document.querySelector(".article-placeholder");
+  if (!container) return;
+
+  let title, subtitle, text, img;
 
   if (!announcement) {
     // 🔹 Default fallback if no announcement found
-    cardImg.src = "img/CARD-BG.png";
-    cardTitle.textContent = "Welcome to REIGI";
-    cardSubtitle.textContent = "--/--/--";
-    cardText.textContent =
-      "Stay tuned for updates and announcements from the registrar’s office.";
-    return;
+    title = "Welcome to REIGI";
+    subtitle = "--/--/--";
+    text = "Stay tuned for updates and announcements from the registrar’s office.";
+    img = "img/CARD-BG.png";
+  } else {
+    const dateObj = new Date(announcement.scheduled_datetime);
+    const formattedDate = dateObj.toLocaleDateString("en-US", {
+      year: "2-digit",
+      month: "2-digit",
+      day: "2-digit",
+    });
+
+    title = announcement.title;
+    subtitle = formattedDate;
+    text = announcement.details || "";
+    img = announcement.image_url || "img/CARD-BG.png";
   }
 
-  const dateObj = new Date(announcement.scheduled_datetime);
-  const formattedDate = dateObj.toLocaleDateString("en-US", {
-    year: "2-digit",
-    month: "2-digit",
-    day: "2-digit",
-  });
+  // Inject card with opacity 0 for fade-in
+  container.innerHTML = `
+    <div class="card article-card" style="opacity:0; transition: opacity 0.5s ease-in-out;">
+      <img src="${img}" class="card-img-top" alt="...">
+      <div class="card-body">
+        <h5 class="card-title">${title}</h5>
+        <h6 class="card-subtitle mb-2 text-body-secondary">${subtitle}</h6>
+        <p class="card-text">${text}</p>
+      </div>
+    </div>
+  `;
 
-  cardImg.src = announcement.image_url || "img/CARD-BG.png";
-  cardTitle.textContent = announcement.title;
-  cardSubtitle.textContent = formattedDate;
-  cardText.textContent = announcement.details || "";
+  // Trigger fade-in
+  requestAnimationFrame(() => {
+    const card = container.querySelector(".article-card");
+    if (card) card.style.opacity = "1";
+  });
+}
+
+// =======================
+// Skeleton Loader for Article + Sidebar
+// =======================
+function renderSkeletons() {
+  const container = document.querySelector(".article-placeholder");
+  if (container) {
+    container.innerHTML = `
+      <div class="card skeleton">
+        <div class="skeleton-img" style="height:200px; background:#eee;"></div>
+        <div class="card-body">
+          <div class="skeleton-title" style="height:20px; width:60%; background:#eee; margin-bottom:10px;"></div>
+          <div class="skeleton-date" style="height:14px; width:30%; background:#eee; margin-bottom:10px;"></div>
+          <div class="skeleton-line" style="height:14px; width:90%; background:#eee;"></div>
+        </div>
+      </div>
+    `;
+  }
+
+  const wrapper = document.querySelector(".other-announcements-scroll");
+  if (wrapper) {
+    wrapper.innerHTML = "";
+    for (let i = 0; i < 3; i++) {
+      const skeleton = document.createElement("div");
+      skeleton.className =
+        "card mb-4 shadow-sm rounded-4 border-0 card-2 skeleton";
+      skeleton.innerHTML = `
+        <div class="row g-0">
+          <div class="col-md-5"><div class="skeleton-img"></div></div>
+          <div class="col-md-7">
+            <div class="card-body">
+              <div class="skeleton-title"></div>
+              <div class="skeleton-date"></div>
+              <div class="skeleton-line short"></div>
+            </div>
+          </div>
+        </div>
+      `;
+      wrapper.appendChild(skeleton);
+    }
+  }
 }
 
 // =======================
@@ -88,7 +146,6 @@ function renderOtherAnnouncements(all, currentId) {
   if (!wrapper) return;
 
   if (!all.length) {
-    // 🔹 Default fallback if no other announcements exist
     wrapper.innerHTML = `
       <article class="announcement-card">
         <img src="img/CARD-BG.png" alt="Default Announcement" />
@@ -103,10 +160,10 @@ function renderOtherAnnouncements(all, currentId) {
     return;
   }
 
-  wrapper.innerHTML = ""; // Clear old content
+  wrapper.innerHTML = "";
 
   all.forEach((item) => {
-    if (item.id == currentId) return; // Skip current
+    if (item.id == currentId) return;
 
     const dateObj = new Date(item.scheduled_datetime);
     const formattedDate = dateObj.toLocaleDateString("en-US", {
@@ -135,43 +192,15 @@ function renderOtherAnnouncements(all, currentId) {
       </div>
     `;
     wrapper.appendChild(card);
+
+    const img = card.querySelector("img");
+    const skeleton = card.querySelector(".skeleton-img");
+
+    img.onload = () => {
+      skeleton.style.display = "none";
+      img.classList.remove("d-none");
+    };
   });
-}
-
-// =======================
-// Skeleton Loader for Article + Sidebar
-// =======================
-function renderSkeletons() {
-  // Main Article Skeleton
-  document.querySelector(".card img").src = "img/CARD-BG.png";
-  document.querySelector(".card-title").textContent = "Loading...";
-  document.querySelector(".card-subtitle").textContent = "--/--/--";
-  document.querySelector(".card-text").textContent =
-    "Please wait while we load the announcement...";
-
-  // Other Announcements Skeleton
-  const wrapper = document.querySelector(".other-announcements-scroll");
-  if (wrapper) {
-    wrapper.innerHTML = "";
-    for (let i = 0; i < 3; i++) {
-      const skeleton = document.createElement("div");
-      skeleton.className =
-        "card mb-4 shadow-sm rounded-4 border-0 card-2 skeleton";
-      skeleton.innerHTML = `
-        <div class="row g-0">
-          <div class="col-md-5"><div class="skeleton-img"></div></div>
-          <div class="col-md-7">
-            <div class="card-body">
-              <div class="skeleton-title"></div>
-              <div class="skeleton-date"></div>
-              <div class="skeleton-line short"></div>
-            </div>
-          </div>
-        </div>
-      `;
-      wrapper.appendChild(skeleton);
-    }
-  }
 }
 
 // =======================
@@ -180,7 +209,7 @@ function renderSkeletons() {
 async function initArticlePage() {
   if (!id) return;
 
-  renderSkeletons(); // Show fake loading first
+  renderSkeletons();
 
   const announcement = await fetchAnnouncementById(id);
   renderArticle(announcement);
@@ -188,7 +217,6 @@ async function initArticlePage() {
   const allAnnouncements = await fetchAllAnnouncements();
   renderOtherAnnouncements(allAnnouncements, id);
 
-  // 🔄 Refresh every 10s
   setInterval(async () => {
     const announcement = await fetchAnnouncementById(id);
     renderArticle(announcement);
