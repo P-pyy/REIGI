@@ -58,7 +58,7 @@ function renderArticle(announcement) {
   let title, subtitle, text, img;
 
   if (!announcement) {
-    // 🔹 Default fallback if no announcement found
+    // 🔹 Default fallback
     title = "Welcome to REIGI";
     subtitle = "--/--/--";
     text = "Stay tuned for updates and announcements from the registrar’s office.";
@@ -77,7 +77,6 @@ function renderArticle(announcement) {
     img = announcement.image_url || "img/CARD-BG.png";
   }
 
-  // Inject card with opacity 0 for fade-in
   container.innerHTML = `
     <div class="card article-card" style="opacity:0; transition: opacity 0.5s ease-in-out;">
       <img src="${img}" class="card-img-top" alt="...">
@@ -89,7 +88,6 @@ function renderArticle(announcement) {
     </div>
   `;
 
-  // Trigger fade-in
   requestAnimationFrame(() => {
     const card = container.querySelector(".article-card");
     if (card) card.style.opacity = "1";
@@ -101,6 +99,8 @@ function renderArticle(announcement) {
 // =======================
 function renderSkeletons() {
   const container = document.querySelector(".article-placeholder");
+  const section = document.querySelector(".announcement-wrapper");
+
   if (container) {
     container.innerHTML = `
       <div class="card skeleton">
@@ -114,27 +114,8 @@ function renderSkeletons() {
     `;
   }
 
-  const wrapper = document.querySelector(".other-announcements-scroll");
-  if (wrapper) {
-    wrapper.innerHTML = "";
-    for (let i = 0; i < 3; i++) {
-      const skeleton = document.createElement("div");
-      skeleton.className =
-        "card mb-4 shadow-sm rounded-4 border-0 card-2 skeleton";
-      skeleton.innerHTML = `
-        <div class="row g-0">
-          <div class="col-md-5"><div class="skeleton-img"></div></div>
-          <div class="col-md-7">
-            <div class="card-body">
-              <div class="skeleton-title"></div>
-              <div class="skeleton-date"></div>
-              <div class="skeleton-line short"></div>
-            </div>
-          </div>
-        </div>
-      `;
-      wrapper.appendChild(skeleton);
-    }
+  if (section) {
+    section.style.display = "none"; // hide "Other Announcements" while loading
   }
 }
 
@@ -143,28 +124,21 @@ function renderSkeletons() {
 // =======================
 function renderOtherAnnouncements(all, currentId) {
   const wrapper = document.querySelector(".other-announcements-scroll");
-  if (!wrapper) return;
+  const section = document.querySelector(".announcement-wrapper");
+  if (!wrapper || !section) return;
 
-  if (!all.length) {
-    wrapper.innerHTML = `
-      <article class="announcement-card">
-        <img src="img/CARD-BG.png" alt="Default Announcement" />
-        <div class="announcement-text">
-          <h2>Welcome to REIGI</h2>
-          <p class="date">--/--/--</p>
-          <p class="description">Stay tuned for updates and announcements from the registrar’s office.</p>
-          <a href="#" class="read-more">read more</a>
-        </div>
-      </article>
-    `;
+  const otherAnnouncements = all.filter(item => item.id != currentId);
+
+  if (otherAnnouncements.length === 0) {
+    section.style.display = "none";
     return;
+  } else {
+    section.style.display = "block";
   }
 
   wrapper.innerHTML = "";
 
-  all.forEach((item) => {
-    if (item.id == currentId) return;
-
+  otherAnnouncements.forEach((item) => {
     const dateObj = new Date(item.scheduled_datetime);
     const formattedDate = dateObj.toLocaleDateString("en-US", {
       year: "2-digit",
@@ -209,7 +183,7 @@ function renderOtherAnnouncements(all, currentId) {
 async function initArticlePage() {
   if (!id) return;
 
-  renderSkeletons();
+  renderSkeletons(); // hide "Other Announcements" while loading
 
   const announcement = await fetchAnnouncementById(id);
   renderArticle(announcement);
@@ -228,5 +202,4 @@ async function initArticlePage() {
   window.PhosphorIcons?.replace?.();
 }
 
-// ✅ Run
 document.addEventListener("DOMContentLoaded", initArticlePage);
