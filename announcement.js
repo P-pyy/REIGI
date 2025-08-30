@@ -10,10 +10,14 @@ const SUPABASE_ANON_KEY =
 const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 // =======================
+// Global Announcement Store
+// =======================
+let allAnnouncements = [];
+
+// =======================
 // Fetch Announcements
 // =======================
 async function fetchAnnouncements() {
-  // Force fresh data (disable caching)
   const { data, error } = await supabase
     .from("announcements")
     .select("*", { head: false })
@@ -25,6 +29,7 @@ async function fetchAnnouncements() {
   }
   return data || [];
 }
+
 // =======================
 // Render Announcements
 // =======================
@@ -33,67 +38,19 @@ function renderAnnouncements(announcements) {
   if (!grid) return;
 
   if (!announcements.length) {
-    // Default fallback cards when no data in Supabase
+    // Default fallback cards
     grid.innerHTML = `
-      <article class="announcement-card">
-        <img src="img/CARD-BG.png" alt="Default Announcement" />
-        <div class="announcement-text">
-          <h2>Welcome to REIGI</h2>
-          <p class="date">--/--/--</p>
-          <p class="description">Stay tuned for updates and announcements from the registrar’s office.</p>
-          <a href="#" class="read-more">read more</a>
-        </div>
-      </article>
-
-      <article class="announcement-card">
-        <img src="img/CARD-BG.png" alt="Default Announcement" />
-        <div class="announcement-text">
-          <h2>Enrollment Information</h2>
-          <p class="date">--/--/--</p>
-          <p class="description">Important enrollment schedules and guidelines will appear here soon.</p>
-          <a href="#" class="read-more">read more</a>
-        </div>
-      </article>
-
-      <article class="announcement-card">
-        <img src="img/CARD-BG.png" alt="Default Announcement" />
-        <div class="announcement-text">
-          <h2>Registrar Updates</h2>
-          <p class="date">--/--/--</p>
-          <p class="description">Official registrar notices will be displayed in this section once available.</p>
-          <a href="#" class="read-more">read more</a>
-        </div>
-      </article>
-
-      <article class="announcement-card">
-        <img src="img/CARD-BG.png" alt="Default Announcement" />
-        <div class="announcement-text">
-          <h2>Exam Schedules</h2>
-          <p class="date">--/--/--</p>
-          <p class="description">Exam dates and related announcements will appear here soon.</p>
-          <a href="#" class="read-more">read more</a>
-        </div>
-      </article>
-
-      <article class="announcement-card">
-        <img src="img/CARD-BG.png" alt="Default Announcement" />
-        <div class="announcement-text">
-          <h2>Events</h2>
-          <p class="date">--/--/--</p>
-          <p class="description">Upcoming school events and activities will be announced in this section.</p>
-          <a href="#" class="read-more">read more</a>
-        </div>
-      </article>
-
-      <article class="announcement-card">
-        <img src="img/CARD-BG.png" alt="Default Announcement" />
-        <div class="announcement-text">
-          <h2>General Notices</h2>
-          <p class="date">--/--/--</p>
-          <p class="description">General notices and reminders for students will be posted here.</p>
-          <a href="#" class="read-more">read more</a>
-        </div>
-      </article>
+      ${[...Array(6)].map(_ => `
+        <article class="announcement-card">
+          <img src="img/CARD-BG.png" alt="Default Announcement" />
+          <div class="announcement-text">
+            <h2>ANNOUNCEMENT TITLE</h2>
+            <p class="date">--/--/--</p>
+            <p class="description">Lorem ipsum dolor sit amet, consectetur adipiscing elit...</p>
+            <a href="#" class="read-more">read more</a>
+          </div>
+        </article>
+      `).join('')}
     `;
     return;
   }
@@ -122,8 +79,48 @@ function renderAnnouncements(announcements) {
     grid.appendChild(card);
   });
 
-  // Refresh Phosphor icons if needed
   window.PhosphorIcons?.replace?.();
+}
+
+// =======================
+// Filter Announcements
+// =======================
+function filterAnnouncements() {
+  const searchInput = document.getElementById("search")?.value.toLowerCase() || "";
+  const monthSelect = document.getElementById("month")?.value.toLowerCase() || "default";
+
+  return allAnnouncements.filter(item => {
+    const title = item.title?.toLowerCase() || "";
+
+    const titleMatch = !searchInput || title.includes(searchInput);
+
+    const dateObj = new Date(item.scheduled_datetime);
+    const monthName = dateObj.toLocaleString("en-US", { month: "long" }).toLowerCase();
+    const monthMatch = monthSelect === "default" || monthName === monthSelect;
+
+    if (searchInput && monthSelect !== "default") return titleMatch && monthMatch;
+    if (searchInput) return titleMatch;
+    if (monthSelect !== "default") return monthMatch;
+    return true;
+  });
+}
+
+// =======================
+// Setup Filters
+// =======================
+function setupFilters() {
+  const searchInput = document.getElementById("search");
+  const monthSelect = document.getElementById("month");
+
+  if (!searchInput || !monthSelect) return;
+
+  const filterAndRender = () => {
+    const filtered = filterAnnouncements();
+    renderAnnouncements(filtered);
+  };
+
+  searchInput.addEventListener("input", filterAndRender);
+  monthSelect.addEventListener("change", filterAndRender);
 }
 
 // =======================
@@ -139,14 +136,19 @@ async function initAnnouncementsIndex() {
     `;
   }
 
-  // Load initial data
-  const announcements = await fetchAnnouncements();
-  renderAnnouncements(announcements);
+  // Load announcements once
+  allAnnouncements = await fetchAnnouncements();
+  renderAnnouncements(allAnnouncements);
 
-  // 🔄 Refresh every 10s
+  // Setup real-time filtering
+  setupFilters();
+
+  // Optional: Refresh in background every 10s but keep user filters intact
   setInterval(async () => {
-    const announcements = await fetchAnnouncements();
-    renderAnnouncements(announcements);
+    const updatedAnnouncements = await fetchAnnouncements();
+    allAnnouncements = updatedAnnouncements;
+    const filtered = filterAnnouncements();
+    renderAnnouncements(filtered);
   }, 10000);
 }
 
