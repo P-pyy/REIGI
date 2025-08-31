@@ -28,7 +28,62 @@
      <!-- HEADER -->
       <header class="main-header d-flex justify-content-between align-items-center">
         <h1 class="mb-0">Hello, Admin</h1>
-        <i class="ph-bell notif" style="font-weight: 600; font-size: 1.8rem; text-shadow: 0 0 1.5px black;"></i>
+        <div class="notif-container">
+          <i class="ph-bell notif" id="notifBell" style="font-weight: 600; font-size: 1.8rem; text-shadow: 0 0 1.5px black;"></i>
+          <span id="notifCountBadge" class="notif-count-badge">0</span>
+
+          <!--NOTIFICATION DROPDOWN-->
+          <div id="notifDropdown" class="notif-dropdown">
+            <div class="notif-dropdown-header">
+              <p>Notifications</p>
+            </div>
+
+            <div class="notif-filter-tabs">
+              <button id="filterAll" class="active">All</button>
+              <button id="filterUnread">Unread</button>
+            </div>
+
+            <ul id="notifList">
+              <li class="unread">
+                Student 1 commented on your post.
+                <span class="notif-actions">
+                  <i class="ph-dots-three-outline" onclick="toggleActionMenu(event)"></i>
+                  <div class="action-menu">
+                    <div onclick="markUnread(this)"><i class="ph-check"></i> Mark as unread</div>
+                    <div onclick="deleteNotification(this)"><i class="ph-x"></i> Delete this notifications</div>
+                    <div onclick="turnOff(this)"><i class="ph-bell-slash"></i>Turn off notifications</div>
+                    <div onclick="reportIssue(this)"><i class="ph-warning"></i> Report issue</div>
+                  </div>
+                </span>
+              </li>
+              <li>
+                Student 2 commented on your post.
+                <span class="notif-actions">
+                  <i class="ph-dots-three-outline" onclick="toggleActionMenu(event)"></i>
+                  <div class="action-menu">
+                    <div onclick="markUnread(this)"><i class="ph-check"></i> Mark as unread</div>
+                    <div onclick="deleteNotification(this)"><i class="ph-x"></i> Delete this notifications</div>
+                    <div onclick="turnOff(this)"><i class="ph-bell-slash"></i>Turn off notifications</div>
+                    <div onclick="reportIssue(this)"><i class="ph-warning"></i> Report issue</div>
+                  </div>
+                </span>
+              </li>
+              <li class="unread">
+                Student 3 commented on your post.
+                <span class="notif-actions">
+                  <i class="ph-dots-three-outline" onclick="toggleActionMenu(event)"></i>
+                  <div class="action-menu">
+                    <div onclick="markUnread(this)"><i class="ph-check"></i> Mark as unread</div>
+                    <div onclick="deleteNotification(this)"><i class="ph-x"></i> Delete this notifications</div>
+                    <div onclick="turnOff(this)"><i class="ph-bell-slash"></i>Turn off notifications</div>
+                    <div onclick="reportIssue(this)"><i class="ph-warning"></i> Report issue</div>
+                  </div>
+                </span>
+              </li>
+            </ul>
+          </div>
+        </div>
+
       </header>
 
     <!-- MAIN CONTENT -->
@@ -199,6 +254,128 @@
         plugins: { legend: { display: false } }
       }
     });
+  </script>
+
+  <script>
+    const bell = document.getElementById("notifBell");
+    const dropdown = document.getElementById("notifDropdown");
+    const headerDots = document.getElementById("notifHeaderDots");
+    const headerDropdown = document.getElementById("notifHeaderDropdown");
+
+    bell.addEventListener("click", function (){
+      dropdown.style.display = dropdown.style.display === "block" ? "none" : "block";
+    });
+
+    document.addEventListener("click", function (e) {
+      if (!dropdown.contains(e.target) && !bell.contains(e.target)) {
+        dropdown.style.display = "none";
+        headerDropdown.style.display = "none";
+        closeAllActionMenus();
+      }
+    });
+
+    function toggleActionMenu(event) {
+      event.stopPropagation();
+      closeAllActionMenus();
+      const menu = event.currentTarget.nextElementSibling;
+      if (menu) {
+        menu.style.display = "block";
+      }
+    }
+
+    function closeAllActionMenus () {
+      document.querySelectorAll(".action-menu").forEach(menu =>{
+        menu.style.display = "none";
+      });
+    }
+
+    function deleteNotification(elem) {
+      const notif = elem.closest("li");
+      notif.remove();
+      updateNotifCount();
+      closeAllActionMenus();
+    }
+
+    function markUnread(elem) {
+      const notif = elem.closest("li");
+      notif.classList.toggle("unread");
+
+      const label = elem;
+      if (notif.classList.contains("unread")) {
+        label.innerHTML = '<i class="ph-check"></i> Mark as read';
+      } else {
+        label.innerHTML = '<i class="ph-check"></i> Mark as unread';
+      }
+
+      updateNotifCount();
+      closeAllActionMenus();
+      setActiveFilter(currentFilter);
+    }
+
+    function turnOff(elem) {
+      alert("Turned off notifications.");
+      closeAllActionMenus();
+    }
+
+    function reportIssue(elem) {
+      alert("Issue reported.");
+      closeAllActionMenus();
+    }
+
+    function markAllAsRead() {
+      document.querySelectorAll("#notifList li").forEach(n => n.classList.remove("unread"));
+      updateNotifCount();
+      alert("All notifications marked as read.");
+      setActiveFilter(currentFilter);
+    }
+
+    function updateNotifCount() {
+      const unreadItems = document.querySelectorAll("#notifList li.unread");
+      const badge = document.getElementById("notifCountBadge");
+
+      if (unreadItems.length > 0) {
+        badge.textContent = unreadItems.length;
+        badge.style.display = "inline-block";
+      } else {
+        badge.style.display = "none";
+      }
+    }
+
+    const filterAllBtn = document.getElementById("filterAll");
+    const filterUnreadBtn = document.getElementById("filterUnread");
+    let currentFilter = "all";
+
+    filterAllBtn.addEventListener("click", () => {
+      setActiveFilter("all");
+    });
+
+    filterAllBtn.addEventListener("click", () => {
+      setActiveFilter("all");
+    });
+
+    filterUnreadBtn.addEventListener("click", () => {
+      setActiveFilter("unread");
+    });
+
+    function setActiveFilter(filter) {
+      currentFilter = filter;
+      const allNotifs = document.querySelectorAll("#notifList li");
+
+      if (filter === "all") {
+        allNotifs.forEach(n => n.style.display = "block");
+        filterAllBtn.classList.add("active");
+        filterUnreadBtn.classList.remove("active");
+      } else {
+        allNotifs.forEach(n => {
+          n.style.display = n.classList.contains("unread") ? "block" : "none";
+        });
+        filterAllBtn.classList.remove("active");
+        filterUnreadBtn.classList.add("active");
+      }
+    }
+
+    updateNotifCount();
+    setActiveFilter("all");
   </script>
 
   <!-- BOOTSTRAP JS -->

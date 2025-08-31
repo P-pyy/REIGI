@@ -55,6 +55,168 @@ body {
   font-size: 24px;
   cursor: pointer;
   color: #000;
+  position: relative;
+}
+
+/* For Notification */
+.notif-container{
+  position: relative;
+}
+
+.notif-count-badge{
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  background-color: red;
+  color: white;
+  font-size: 12px;
+  padding: 2px 6px;
+  border-radius: 50%;
+  font-weight: bold;
+  display: none;
+}
+
+.notif-dropdown{
+  display: none;
+  position: absolute;
+  right: 0;
+  top: 110%;
+  width: 450px;
+  min-height: 400px;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  border-radius: 10px;
+  z-index: 1000;
+  overflow-y: auto;
+  max-height: 500px;
+}
+
+.notif-dropdown-header{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.notif-dropdown-header p{
+  margin: 0;
+  font-weight: bold;
+  font-size: 1rem;
+  color: #0055a5;
+}
+
+.notif-dropdown ul{
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  max-height: 500px;
+  overflow: visible;
+}
+
+.notif-dropdown i:focus{
+  outline: none;
+}
+
+.notif-dropdown ul li {
+  position: relative;
+  overflow: visible;
+  padding: 10px 40px 10px 10px;
+  border-bottom: 1px solid #eee;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  color: #333;
+}
+
+.notif-dropdown ul li:hover {
+  background-color: #f0f0f0;
+}
+
+.notif-actions {
+  position: absolute;
+  display: flex;
+  top: 0;
+  right: 10px;
+  height: 100%;
+  align-items: center;
+  justify-content: flex-end;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  z-index: 1;
+  color: #666;
+}
+
+.notif-actions i {
+  vertical-align: middle;
+  display: inline-block;
+  font-size: 1rem;
+  margin-left: 10px;
+  line-height: 1;
+  position: relative;
+  top: 2px;
+  cursor: pointer;
+}
+
+.notif-dropdown ul li:hover .notif-actions {
+  opacity: 1;
+}
+
+.action-menu{
+  position: absolute;
+  right: 25px;
+  top: 100%;
+  background: #1e1e1e;
+  color: white;
+  padding: 8px 0;
+  border-radius: 5px;
+  display: none;
+  overflow-y: auto;
+  z-index: 9999;
+  font-size: 0.85rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
+}
+
+.action-menu div {
+  padding: 8px 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.action-menu div:hover{
+  background: #333;
+}
+
+.unread{
+  background-color: #e8f0fe;
+  font-weight: bold;
+}
+
+.notif-filter-tabs {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.notif-filter-tabs button {
+  padding: 6px 12px;
+  border: none;
+  border-radius: 6px;
+  background-color: #e6efff;
+  color: #0055A5;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.notif-filter-tabs button.active {
+  background-color: #c1dbf9;
+  font-weight: 600;
 }
 
 /* Card Styles */
