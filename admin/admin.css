@@ -14,18 +14,26 @@ body {
   display: flex;
   min-height: 100vh;
   width: 100%;
-  padding: 0; 
+  padding: 0;
+  position: relative; /* Ensure context for fixed elements */
 }
-
 
 .main-content {
-  margin-left: 250px;
-  width: 100%;
+  margin-left: 278px;
+  width: calc(100% - 278px);
   min-height: 100vh;
-  transition: margin-left 0.3s ease;
-  padding: 120px 20px 20px 20px; 
+  transition: margin-left 0.3s ease, width 0.3s ease;
+  padding: 160px 70px 20px;
+  box-sizing: border-box;
+  justify-content: center;
   flex-grow: 1;
 }
+
+.main-content.adjusted {
+  margin-left: 80px;
+  width: calc(100% - 80px);
+}
+
 
 /* Header */
 .main-header {
@@ -39,10 +47,17 @@ body {
   position: fixed;
   top: 0;
   z-index: 1000;
-  height: 120px;
-  width: calc(100% - 250px); 
-  margin-left: 250px; 
+  height: 122px;
+  width: calc(100% - 278px);
+  margin-left: 278px;
   transition: width 0.3s ease, margin-left 0.3s ease;
+}
+
+.main-header.adjusted {
+  width: calc(100% - 80px);
+  margin-left: 80px;
+  padding: 20px 80px;
+  height: 122px;
 }
 
 .main-header h1 {
@@ -57,29 +72,50 @@ body {
   color: #000;
 }
 
-/* Card Styles */
-.card {
-  background: #fff;
-  border-radius: 12px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-  width: 100%;
-  margin-bottom: 1rem;
+.row-sum-cards {
+  display: flex;
+  justify-content: space-between;
+  width: 95%;
+  height: 108px;
+  padding: 0;
+  margin-left: 45px;
 }
 
 .summary-card {
-  height: 120px;
+  font-family: inherit;
+  background: #fcfcfc;
+  border-radius: 12px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  height: 108px;
+  width: 95%;
+  padding: 20px;
   display: flex;
   flex-direction: row;
   align-items: center;
-  padding: 15px 20px;
-  width: 100%;
+  margin-top: -15px;
+  margin-right: 40px;
+  border: 1px solid #e5e7eb;
+}
+
+.t-website {
+  margin-left: 20px;
+}
+
+.faq-home-vid {
+  margin-left: 3px;
+}
+
+.total-faq {
+  margin-left: 1px;
 }
 
 .card-icon {
-  font-size: 24px;
-  color: #0056b3;
-  margin-right: 15px;
+  font-size: 1.7rem;
+  color: #0055A5;
+  margin-right: 10px;
   flex-shrink: 0;
+  font-weight: bolder;
+  text-shadow: 0 0 1.2px #0055A5;
 }
 
 .card-text {
@@ -88,16 +124,25 @@ body {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  height: 100%;
-  margin-right: 20px;
 }
 
 .card-title {
-  font-size: 14px;
-  color: #555;
+  font-weight: 500;
+  font-style: medium;
+  font-size: 16px;
+  color: #2C2C2C;
   margin: 0;
-  line-height: 1.2;
-  font-weight: 400;
+  line-height: 100%;
+  letter-spacing: 0%;
+  text-shadow: 0 0 0.2px #2C2C2C;
+}
+
+.subtitle {
+  font-size: 20px;
+  color: #2C2C2C;
+  line-height: 100%;
+  letter-spacing: 0%;
+  font-weight: 600;
 }
 
 .card-right {
@@ -105,20 +150,23 @@ body {
   flex-direction: column;
   align-items: flex-end;
   justify-content: center;
-  height: 100%;
 }
 
 .card-number {
   font-size: 32px;
-  font-weight: 700;
-  color: #0056b3;
+  color: #2C2C2C;
+  line-height: 100%;
+  letter-spacing: 0%;
+  font-weight: 600;
   margin: 0 0 5px 0;
 }
 
 .card-subtext {
   font-size: 12px;
-  color: #28a745;
-  margin: 0;
+  font-weight: 600;
+  color: #2CC147;
+  line-height: 100%;
+  letter-spacing: 0%;
 }
 
 .card-subtext.up {
@@ -129,52 +177,456 @@ body {
   color: #dc3545;
 }
 
+
 /* Chart Section */
 .chart-container {
   background: #fff;
-  padding: 15px;
+  margin-top: 1rem;
+  margin-left: 50px;
+  padding: 10px;
+  padding-left: 30px;
+  padding-bottom: 60px;
   border-radius: 10px;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
-  height: 350px;
-  width: 100%;
+  height: 342px;
+  width: 91%;
+  gap: 10px;
+  margin-right: 10px;
 }
 
-/* Side Card */
-.side-card {
-  background: #fff;
-  padding: 15px;
-  border-radius: 10px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
-  width: 100%;
-  margin-bottom: 1rem;
+.chart-wrapper {
+  position: relative;
+  max-width: 100%;
+  margin: 0 auto;
 }
 
-.side-card h5,
-.side-card h6 {
+.legend-container {
+  display: flex;
+  justify-content: flex-end;
+  padding-right: 10px;
+  padding-top: 10px;
+  margin-bottom: -10px;
+}
+
+.legend-item {
+  display: inline-flex;
+  align-items: center;
+  margin-right: 10px;
+}
+
+.legend-circle {
+  width: 8px;
+  height: 8px;
+  background-color: #0055A5;
+  border-radius: 50%;
+  margin-right: 4px;
+}
+
+.legend-text {
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  color: #535862;
+  font-weight: 400;
+  line-height: 1.43;
+}
+
+#myChart {
+  width: 100%;
+  height: 400px;
+}
+
+
+/* Device Type */
+.device-side-card {
+  width: 110%;
+  height: 242px;
+  border-radius: 12px;
+  background: #fcfcfc;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  margin-right: 40px;
+  margin-left: 35px;
+}
+
+.device-content {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  margin-left: 0;
+  max-width: 100%;
+}
+
+.device-header {
+  display: flex;
+  align-items: center;
+  margin-left: -5px;
+  margin-bottom: 40px;
+}
+
+.device-header i {
+  font-size: 1.8rem;
+  color: #0055A5;
+  margin-right: 8px;
+  text-shadow: 0 0 1px #0055A5;
+}
+
+.device-header span {
+  font-family: inherit;
   font-weight: 600;
-  margin-bottom: 10px;
+  font-size: 16px;
+  color: #2C2C2C;
+  line-height: 100%;
+  white-space: nowrap;
+  overflow: visible;
+  text-overflow: clip;
+}
+
+.percentage-labels {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  margin-left: -px;
+  text-shadow: 0 0 0.5px #2C2C2C;
+}
+
+.percentage-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-family: inherit;
+  font-weight: 500;
+  font-size: 16px;
+  color: #2C2C2C;
+  line-height: 180%;
+  letter-spacing: 0%;
+  margin: 2px 0;
+}
+
+.percentage-items {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-family: inherit;
+  font-weight: 500;
+  font-size: 16px;
+  color: #2C2C2C;
+  line-height: 180%;
+  letter-spacing: 0%;
+  margin: 2px 0;
+}
+
+.percentage-items span:first-child {
+  margin-right: 15px;
+}
+
+.percentage-items span:last-child {
+  font-family: inherit;
+  font-weight: 600;
+  font-size: 20px;
+  line-height: 100%;
+  letter-spacing: 0%;
+}
+
+.percentage-item span:first-child {
+  margin-right: 45px;
+}
+
+.percentage-item span:last-child {
+  font-family: inherit;
+  font-weight: 600;
+  font-size: 20px;
+  line-height: 100%;
+  letter-spacing: 0%;
+}
+
+#deviceChart {
+  height: auto;
+  width: auto;
+  display: block;
+  margin-right: 15px;
+}
+
+
+/* FAQ */
+.faq-card {
+  margin-top: 1rem;
+  width: 95%;
+  height: 342px;
+  border-radius: 12px;
+  padding: 20px;
+  background: #fcfcfc;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  margin-left: -20px;
 }
 
 .side-card ul li {
-  font-size: 14px;
-  margin-bottom: 6px;
+  font-weight: 550;
+  font-size: 16px;
+  padding: 15px;
 }
 
-.side-card button {
-  background: #87c3fb;
+.faq-icon-u {
+  padding-right: 30px;
+}
+
+.faq-icon-d {
+  padding-right: 37px;
+}
+
+.faq-qicon {
+  font-size: 30px;
+  padding-left: 10px;
+  color: #0055A5;
+}
+
+.faqhead {
+  font-size: larger;
+  font-weight: 600;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+
+/* Bottom Cards */
+.bot-cards {
+  margin-top: 25px;
+  padding-left: 0;
+}
+
+.bounce-card {
+  margin-left: 60px;
+  display: flex;
+  width: 82%;
+  height: 113px;
+  border-radius: 12px;
+  left: 343px;
+  justify-content: space-between;
+  padding: 20px 12px;
+  background-color: #fcfcfc;
+  margin-top: 15px;
+}
+
+.b-heading {
+  font-family: inherit;
+  line-height: 100%;
+  letter-spacing: 0%;
+  font-size: 16px;
+  font-weight: 500;
+  color: #2C2C2C;
+  padding-bottom: 0px;
+  text-shadow: 0 0 0.5px #2C2C2C;
+}
+
+.b-subhead {
+  font-family: inherit;
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 70%;
+  letter-spacing: 0%;
+  color: #2C2C2C;
+  text-align: left;
+}
+
+.bounce-icon {
+  flex-shrink: 0;
+  margin-left: 8px;
+  display: flex;
+  margin-right: 5px;
+  align-items: center;
+  font-size: 1.8rem;
+  color: #0055A5;
+  text-shadow: 0 0 1px #0055A5;
+}
+
+.bounce-text {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin-left: -35px;
+}
+
+.bounce-percent {
+  font-family: inherit;
+  flex-shrink: 0;
+  display: flex;
+  margin-right: 10px;
+  align-items: center;
+  line-height: 100%;
+  letter-spacing: 0%;
+  font-size: 32px;
+  font-weight: 600;
+  color: #2C2C2C;
+}
+
+/* Announcement Card */
+.ann-card {
+  margin-left: 60px;
+  display: flex;
+  width: 82%;
+  height: 113px;
+  border-radius: 12px;
+  left: 343px;
+  justify-content: space-between;
+  padding: 20px 12px;
+  background-color: #fcfcfc;
+}
+
+.ann-title {
+  font-family: inherit;
+  line-height: 70%;
+  letter-spacing: 0%;
+  font-size: 14px;
+  font-weight: 500;
+  color: #2C2C2C;
+  padding-bottom: 0px;
+  text-shadow: 0 0 0.5px #2C2C2C;
+}
+
+.ann-p {
+  font-family: inherit;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 100%;
+  letter-spacing: 0%;
+  color: #2C2C2C;
+  text-align: left;
+}
+
+.ann-num {
+  font-family: inherit;
+  flex-shrink: 0;
+  display: flex;
+  margin-right: 20px;
+  align-items: center;
+  line-height: 100%;
+  letter-spacing: 0%;
+  font-size: 40px;
+  font-weight: 600;
+  color: #2C2C2C;
+}
+
+.ann-icon {
+  flex-shrink: 0;
+  margin-left: 2px;
+  display: flex;
+  margin-right: 5px;
+  align-items: center;
+  font-size: 1.8rem;
+  color: #0055A5;
+  text-shadow: 0 0 1px #0055A5;
+}
+
+.ann-text {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin-left: -25px;
+}
+
+/* Academic Calendar */
+.acad-cal {
+  background: #fcfcfc;
+  padding: 20px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  margin-bottom: 1rem;
+  width: 95%;
+  height: 242px;
+  border-radius: 12px;
+  margin-left: -20px;
+  margin-top: 35px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  font-family: inherit;
+}
+
+.icon-side {
+  margin-right: 25px;
+}
+
+.acad-cal i {
+  font-size: 2rem;
+  color: #0055A5;
+  text-shadow: 0 0 1px #0055A5;
+  margin: 50px 0 0 15px;
+}
+
+.acad-text {
+  flex: 1;
+}
+
+.acad-cal h6 {
+  font-size: 16px;
+  font-weight: 500;
+  margin: 10px 0 5px 0;
+  color: #2C2C2C;
+  line-height: 100%;
+  letter-spacing: 0%;
+}
+
+.acad-cal .faq-header {
+  margin-top: 20px;
+}
+
+.acad-cal p {
+  font-size: 14px;
+  color: #2C2C2C;
+  margin: 0 0 0 0;
+  display: inline;
+  font-weight: 500;
+  line-height: 100%;
+  letter-spacing: 0%;
+}
+
+.acad-cal span {
+  font-size: 16px;
+  color: #2C2C2C;
+  margin: 5px 0 10px;
+  display: inline;
+  font-weight: 600;
+  line-height: 100%;
+  letter-spacing: 0%;
+}
+
+.acad-cal .acad-button {
+  margin-left: -20px;
+  margin-top: 20px;
+}
+
+.acad-cal .acad-button button {
+  font-family: inherit;
+  font-size: 16px;
+  font-style: normal;
+  line-height: 100%;
+  letter-spacing: 0%;
+  background: #CDE4FF;
   border: none;
   color: #000;
-  padding: 8px 10px;
-  border-radius: 6px;
+  padding: 8px 15px;
+  border-radius: 12px;
   cursor: pointer;
-  font-weight: 600;
-  width: 100%;
+  font-weight: 500;
+  width: 160px;
+  height: 38px;
+  white-space: nowrap;
+  transition: background 0.3s, color 0.3s;
+  text-shadow: 0 0 0.5px #2C2C2C;
 }
 
-.side-card button:hover {
+.acad-cal .acad-button button:hover {
   background: #0055A5;
-  color: white;
+  color: #fcfcfc;
 }
+
 
 /* Bootstrap Grid Adjustments */
 .row {
@@ -188,73 +640,163 @@ body {
   padding-right: 15px;
 }
 
-/* Responsive Improvements */
+
+/* Enhanced Responsive Improvements */
+@media (max-width: 1200px) {
+.main-content {
+  padding: 160px 30px 20px;
+}
+
+.row-sum-cards {
+  width: 100%;
+  margin-left: 0;
+  flex-wrap: wrap;
+}
+
+.summary-card {
+  width: 48%;
+  margin-right: 4%;
+  margin-top: 15px;
+}
+
+.summary-card:nth-child(2n) {
+  margin-right: 0;
+}
+
+.chart-container {
+  width: 100%;
+  margin-left: 0;
+  height: 300px;
+}
+
+.faq-card {
+  width: 100%;
+  margin-left: 0;
+  margin-top: 15px;
+}
+
+.device-side-card {
+  width: 100%;
+  height: auto;
+  flex-direction: column;
+  text-align: center;
+}
+
+.device-content {
+  max-width: 100%;
+  margin-left: 0;
+  margin-top: 15px;
+}
+
+#deviceChart {
+  margin: 0 auto 15px;
+}
+
+.bounce-card, .ann-card {
+  width: 100%;
+  margin-left: 0;
+  margin-top: 15px;
+}
+
+.acad-cal {
+  width: 100%;
+  margin-left: 0;
+  margin-top: 15px;
+}
+}
+
+@media (max-width: 992px) {
+.row-sum-cards {
+  flex-direction: column;
+  align-items: stretch;
+}
+
+.summary-card {
+  width: 100%;
+  margin-right: 0;
+  margin-top: 15px;
+}
+
+.chart-container, .faq-card {
+  margin-top: 15px;
+}
+
+.bot-cards {
+  flex-direction: column;
+  align-items: stretch;
+}
+
+.device-side-card, .bounce-card, .ann-card {
+  margin-top: 15px;
+}
+}
+
 @media (max-width: 768px) {
-  .sidebar {
-    width: 80px;
-  }
+.sidebar {
+  width: 80px;
+}
 
-  .main-content {
-    margin-left: 80px;
-    padding: 80px 10px 10px 10px;
-  }
+.main-content {
+  margin-left: 80px;
+  width: calc(100% - 80px);
+  padding: 80px 10px 10px;
+}
 
-  .sidebar:not(.small-sidebar) {
-    width: 250px;
-  }
+.main-header {
+  padding: 20px 15px;
+  height: 80px;
+  width: calc(100% - 80px);
+  margin-left: 80px;
+}
 
-  .sidebar:not(.small-sidebar) + .main-content {
-    margin-left: 250px;
-  }
+.row {
+  margin: 0;
+}
 
-  .main-header {
-    padding: 20px 15px;
-    height: 80px;
-    width: calc(100% - 80px);
-    margin-left: 80px;
-  }
+.col-lg-4,
+.col-lg-8,
+.col-md-6 {
+  padding-left: 8px;
+  padding-right: 8px;
+}
 
-  .sidebar.small-sidebar + .main-header {
-    width: calc(100% - 80px);
-    margin-left: 80px;
-  }
+.chart-container {
+  height: 250px;
+  width: 100%;
+}
 
-  .row {
-    margin: 0;
-  }
+.summary-card {
+  height: 160px;
+  padding: 10px 15px;
+  width: 100%;
+}
 
-  .col-lg-4,
-  .col-lg-8,
-  .col-md-6 {
-    padding-left: 8px;
-    padding-right: 8px;
-  }
+.card-icon {
+  font-size: 20px;
+  margin-right: 10px;
+}
 
-  .chart-container {
-    height: 300px;
-    width: 100%;
-  }
+.card-number {
+  font-size: 28px;
+}
 
-  .side-card {
-    width: 100%;
-  }
+.card-text {
+  margin-right: 15px;
+}
 
-  .summary-card {
-    height: 160px;
-    padding: 10px 15px;
-    width: 100%;
-  }
+.faq-card {
+  height: auto;
+}
 
-  .card-icon {
-    font-size: 20px;
-    margin-right: 10px;
-  }
+.device-side-card {
+  height: auto;
+}
 
-  .card-number {
-    font-size: 28px;
-  }
+.bounce-card, .ann-card {
+  height: auto;
+}
 
-  .card-text {
-    margin-right: 15px;
-  }
+.acad-cal {
+  height: auto;
+}
 }

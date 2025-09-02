@@ -5,16 +5,14 @@
   font-family: 'Montserrat', sans-serif;
 }
 
-
 .sidebar {
-  width: 250px;
+  width: 278px;
   background: #fff;
   height: 100vh;
   padding: 12px;
   display: flex;
   flex-direction: column;
   border-right: 1px solid #e3e3e3;
-  transition: width 0.3s ease;
   position: fixed;
   top: 0;
   left: 0;
@@ -30,21 +28,25 @@
   overflow-x: hidden; 
 }
 
+/* Ensure no animation on main-header */
+.main-header {
+  transition: none; /* Prevent animation on header */
+}
+
 /* Logo */
 .sidebar .logo {
   text-align: left;
-  margin-bottom: 60%;
+  margin-bottom: 40%;
   display: flex;
   align-items: center;
-  gap: 15px;
+  gap: 10px;
   overflow: hidden; 
 }
 
 .sidebar .logo img {
   width: 60px;
-  margin: 0;
   margin-top: 15px;
-  margin-left: 20px;
+  margin-left: 30px;
 }
 
 .logo-text {
@@ -85,17 +87,20 @@
   color: #000;
   border-radius: 8px;
   font-size: 15px;
+  font-weight: 500;
   white-space: nowrap;
   overflow: hidden; 
   text-overflow: ellipsis; 
   transition: background 0.3s ease, color 0.3s ease;
-  max-width: 100%; 
+  max-width: 100%;
 }
 
 .sidebar .menu li a i {
   margin-right: 12px;
   margin-left: 0;
-  font-size: 18px;
+  font-weight: 600;
+  font-size: 1.5rem; 
+  text-shadow: 0 0 1px black;
 }
 
 .sidebar:not(.small-sidebar) .menu li a {
@@ -121,17 +126,6 @@
   color: #fff;
 }
 
-.small-sidebar .menu li a {
-  justify-content: center;
-  margin-top: 5px;
-  margin-left: 0;
-  padding: 12px;
-}
-
-.small-sidebar .menu li a i {
-  margin: 0;
-}
-
 .bottom-controls {
   display: flex;
   align-items: center;
@@ -148,6 +142,7 @@
   cursor: pointer;
   color: #000;
   font-size: 14px;
+  font-weight: 500;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -156,11 +151,14 @@
 .bottom-controls .logout i {
   margin-right: 10px;
   font-size: 18px;
+  font-weight: 600; 
+  font-size: 1.5rem; 
+  text-shadow: 0 0 1px black;
 }
 
 .bottom-controls .divider {
-  width: 1px;
-  height: 24px;
+  width: 1.5px;
+  height: 35px;
   margin-right: 10px;
   background: #000;
 }
@@ -168,17 +166,19 @@
 .bottom-controls .toggle-btn {
   cursor: pointer;
   padding: 4px; 
-  margin-right: 13px;
+  margin-right: 25px;
   margin-top: 8px;
   border-radius: 4px;
   color: #000;
-  font-size: 18px;
+  font-weight: 600; 
+  font-size: 1.5rem; 
+  text-shadow: 0 0 1px black;
 }
 
 /* Small Sidebar (Collapsed) */
 .small-sidebar .logo {
   text-align: center;
-  margin-bottom: 100px;
+  margin-bottom: 110%;
   margin-top: 25px;
   display: block;
 }
@@ -199,20 +199,17 @@
   flex-direction: column;
   align-items: center;
   padding: 14px 10px;
-  margin-top: 20px;
+  margin-top: 10px;
   overflow: hidden;
 }
 
 .small-sidebar .menu li a {
   justify-content: center;
   margin-top: 5px;
-  display: block;
-  padding: 12px;
 }
 
 .small-sidebar .menu li a i {
   margin: 0;
-  display: block;
 }
 
 .small-sidebar .bottom-controls {
@@ -230,8 +227,8 @@
 }
 
 .small-sidebar .bottom-controls .divider {
-  width: 60%;
-  height: 0.5px;
+  width: 24px;
+  height: 2px;
 }
 
 .small-sidebar .bottom-controls .toggle-btn {
