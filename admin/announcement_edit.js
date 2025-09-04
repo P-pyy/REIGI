@@ -162,7 +162,7 @@ document.querySelector(".add-announcement-btn").addEventListener("click", async 
     alert("Announcement added!");
   }
 
-  window.location.href = "admin_announcement.html";
+  window.location.href = "announcements.html";
 });
 
 // =======================
