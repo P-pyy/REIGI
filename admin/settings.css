@@ -315,110 +315,6 @@ body.login-alerts input[type="checkbox"] {
     cursor: pointer;
   }
 
-  
-  /* ========== ADMIN LOGIN HISTORY ========== */
- /* body.login-history {
-    background-color: #f8fafc;
-    font-family: Arial, sans-serif;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    min-height: 100vh;
-    margin: 0;
-    padding: 16px;
-  }
-  body.login-history .container {
-    background: #fff;
-    border-radius: 12px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-    width: 100%;
-    max-width: 380px;
-    border: 1px solid #e2e8f0;
-  }
-  body.login-history .header {
-    display: flex;
-    align-items: center;
-    border-bottom: 1px solid #e2e8f0;
-    padding: 12px 20px;
-  }
-  body.login-history .icon-btn {
-    background: none;
-    border: none;
-    cursor: pointer;
-    color: #334155;
-  }
-  body.login-history .header-title {
-    flex-grow: 1;
-    font-size: 18px;
-    font-weight: bold;
-    color: #0f172a;
-    padding-left: 12px;
-  }
-  body.login-history .main {
-    padding: 20px;
-  }
-  body.login-history .label {
-    font-size: 14px;
-    color: #334155;
-  }
-  body.login-history .device-title {
-    font-size: 16px;
-    font-weight: bold;
-    color: #0f172a;
-    margin: 0;
-  }
-  body.login-history .device-location {
-    font-size: 14px;
-    color: #475569;
-  }
-  body.login-history .this-device {
-    font-size: 12px;
-    font-weight: bold;
-    color: #15803d;
-  }
-  body.login-history .saved-title {
-    font-size: 16px;
-    font-weight: bold;
-    color: #0f172a;
-    margin-bottom: 12px;
-  }
-  body.login-history .saved-devices-scroll {
-    max-height: 280px;
-    overflow-y: auto;
-  }
-  body.login-history .device-card {
-    width: 100%;
-    text-align: left;
-    border: none;
-    background: none;
-    padding: 12px;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: background 0.2s;
-  }
-  body.login-history .device-card:hover {
-    background-color: #f1f5f9;
-  }
-  body.login-history .device-card-title {
-    font-size: 15px;
-    font-weight: bold;
-    color: #0f172a;
-  }
-  body.login-history .device-card:hover .device-card-title {
-    color: #1d4ed8;
-  }
-  body.login-history .arrow {
-    position: absolute;
-    right: 16px;
-    top: 20px;
-    color: #2563eb;
-    opacity: 0.7;
-  }
-  body.login-history .device-card:hover .arrow {
-    opacity: 1;
-  }
-  */
-
   body.login-history {
     background-color: #f8fafc;
     font-family: 'Montserrat', sans-serif;
@@ -599,3 +495,91 @@ body.login-history .device-card:hover .device-card-title {
     align-items: center;
     margin-bottom: 1rem; /* spacing before title */
   }
+
+ .form-container input {
+        width: 100%;
+        padding: 12px;
+        margin-bottom: 12px;
+        border-radius: 6px;
+        border: 1px solid #ccc;
+        box-sizing: border-box;
+      }
+
+      .form-container button {
+        width: 100%;
+        padding: 12px;
+        border-radius: 6px;
+        background-color: #aac4ff;
+        border: none;
+        color: #000;
+        font-weight: 500;
+        cursor: pointer;
+      }
+
+      .form-container {
+        max-width: 600px;
+        margin: 20px auto;
+        padding: 20px;
+        background: #fff;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      }
+
+      .top-controls {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 15px;
+      }
+
+      .icon-btn {
+        border: none;
+        background: none;
+        font-size: 1.5rem;
+        cursor: pointer;
+      }
+
+      /* Make top controls like screenshot */
+      #login-history-form .icon-btn {
+        font-size: 1.2rem;
+      }
+
+      #login-history-form h2 {
+        font-weight: 600;
+        font-size: 1.25rem;
+      }
+
+      /* Device items */
+      .device-list,
+      .current {
+        border-radius: 8px;
+      }
+
+      .device-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 12px 0;
+        border-bottom: 1px solid #ddd;
+      }
+
+      .device-item:last-child {
+        border-bottom: none;
+      }
+
+      .device-item h6 {
+        margin: 0;
+        font-weight: 600;
+      }
+
+      .device-item i {
+        color: #007bff;
+        font-size: 1rem;
+      }
+
+      .current {
+        padding: 12px;
+        border-radius: 8px;
+        background: #fff;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+      }
