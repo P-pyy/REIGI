@@ -1,0 +1,61 @@
+body {
+      background-color: #F3F4F8;
+      font-family: 'Montserrat', sans-serif;
+    }
+
+    .content-card {
+      max-width: 800px;
+      margin: 3rem auto;
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      padding: 2rem;
+    }
+
+    .breadcrumb-custom {
+      font-size: 0.9rem;
+      color: #666;
+      margin-bottom: 1rem;
+    }
+
+    .page-title {
+      color: #0055A5;
+      font-size: 1.8rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      text-align: center;
+    }
+
+    .byline {
+      font-size: 0.9rem;
+      color: #555;
+      text-align: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .content-card p {
+      color: #444;
+      line-height: 1.6;
+      margin-bottom: 1rem;
+      text-align: justify;
+    }
+
+    .content-card img {
+      border-radius: 8px;
+      margin-top: 1rem;
+    }
+
+    .go-back-btn {
+      display: block;
+      margin: 2rem auto 0 auto;
+      background-color: #E6ECF5;
+      color: #0055A5;
+      font-weight: 600;
+      border: none;
+      border-radius: 12px;
+      padding: 0.6rem 1.5rem;
+    }
+
+    .go-back-btn:hover {
+      background-color: #d3e0f2;
+    }
