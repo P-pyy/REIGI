@@ -8,16 +8,9 @@
   <!-- Bootstrap & CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="admin.css" />
-
   <link rel="icon" type="image/png" href="img/URS LOGO.png">
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet"/>
-
-
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css" integrity="sha512-DxV+EoADOkOygM4IR9yXP8Sb2qwgidEmeqAEmDKIOfPRQZOWbXCzLC6vjbZyy0vPisbH2SyW27+ddLVCN+OMzQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-  <link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/css/phosphor.css">
   <script src="https://unpkg.com/phosphor-icons"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 
 <body class="site-media-page">
@@ -29,35 +22,34 @@
     <!-- HEADER -->
     <header class="main-header d-flex justify-content-between align-items-center">
       <h1 class="mb-0">Site Media</h1>
-     <!-- <i class="ph-bell notif" style="font-weight: 600; font-size: 1.8rem; text-shadow: 0 0 1.5px black;"></i> -->
     </header>
 
     <!-- MAIN CONTENT -->
     <main class="main-content flex-grow-1">
       <div class="container">
-
-        <div class="media-grid">
-          <!-- Card 1 -->
-          <div class="card media left-card media-card">
-            <h2>Homepage FAQ Video</h2>
-            <div class="image-box">
-              <img src="img/CARD-BG.png" alt="FAQ Video Thumbnail">
+        <div id="media-container">
+          <div class="media-grid">
+            <!-- Card 1 -->
+            <div class="card media left-card media-card">
+              <h2>Homepage FAQ Video</h2>
+              <div class="image-box">
+                <img src="img/CARD-BG.png" alt="FAQ Video Thumbnail">
+              </div>
+              <p class="file-name">VID_01234_5678abcdefgh</p>
+              <button class="btn upload-btn" data-target="site_media_video.html">+ Upload Video</button>
             </div>
-            <p class="file-name">VID_01234_5678abcdefgh</p>
-            <button class="btn">+ Upload Video</button>
-          </div>
 
-          <!-- Card 2 -->
-          <div class="card media right-card media-card">
-            <h2>Academic Calendar</h2>
-            <div class="image-box">
-              <img src="img/CARD-BG.png" alt="Academic Calendar">
+            <!-- Card 2 -->
+            <div class="card media right-card media-card">
+              <h2>Academic Calendar</h2>
+              <div class="image-box">
+                <img src="img/CARD-BG.png" alt="Academic Calendar">
+              </div>
+              <p class="file-name">CARD-BG.png</p>
+              <button class="btn upload-btn" data-target="site_media_calendar.html">+ Upload Image</button>
             </div>
-            <p class="file-name">CARD-BG.png</p>
-            <button class="btn">+ Upload Image</button>
           </div>
         </div>
-
       </div>
     </main>
   </div>
@@ -65,91 +57,6 @@
   <!-- BOOTSTRAP JS -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
   <script src="admin.js"></script>
-
- <!-- Script to load sidebar -->
- <script>
-    fetch('sidebar.html')
-      .then(res => res.text())
-      .then(data => {
-        document.getElementById('sidebar-container').innerHTML = data;
-  
-        const currentPage = window.location.pathname.split("/").pop();
-        document.querySelectorAll(".menu li a").forEach(link => {
-          if (link.getAttribute("href") === currentPage) {
-            link.classList.add("active");
-          }
-        });
-  
-        // Add event listeners after sidebar content is loaded
-        const toggleBtn = document.querySelector('.toggle-btn');
-        const sidebar = document.querySelector('.sidebar');
-        const mainContent = document.querySelector('.main-content');
-        const mainHeader = document.querySelector('.main-header');
-        if (toggleBtn && sidebar && mainContent && mainHeader) {
-          toggleBtn.addEventListener('click', () => {
-            sidebar.classList.toggle('small-sidebar');
-            // Update main content and header
-            const isSmall = sidebar.classList.contains('small-sidebar');
-            mainContent.style.marginLeft = isSmall ? '80px' : '250px';
-            mainHeader.style.width = isSmall ? 'calc(100% - 80px)' : 'calc(100% - 250px)';
-            mainHeader.style.marginLeft = isSmall ? '80px' : '250px';
-            window.dispatchEvent(new Event('resize'));
-          });
-        }
-      })
-      .catch(error => console.error('Error loading sidebar:', error));
-    </script>
-
+  <script type="module" src="sitemedia.js"></script>
 </body>
 </html>
-
-
-
-
-
-
-
-<!--  Site Media 
-
-
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Site Media</title>
-
-  
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="adminstyle.css" />
-  <link rel="icon" type="image/png" href="img/URS LOGO.png">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css" integrity="sha512-DxV+EoADOkOygM4IR9yXP8Sb2qwgidEmeqAEmDKIOfPRQZOWbXCzLC6vjbZyy0vPisbH2SyW27+ddLVCN+OMzQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet"/>
-  <script src="https://unpkg.com/phosphor-icons"></script>
-</head>
-<body>
-  <div class="container-fluid d-flex p-0 min-vh-100">
-
-    
-    <div id="sidebar-container"></div>
-
-    
-      <header class="main-header d-flex justify-content-between align-items-center">
-        <h1 class="mb-0">Site Media</h1>
-        <i class="ph-bell notif" style="font-weight: 600; font-size: 1.5rem; text-shadow: 0 0 1px black;"></i>
-      </header>
-
-    
-    <main class="main-content flex-grow-1">
-      
-
-
-  
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
-  <script src="sitemedia.js"></script>
-</body>
-
-</html>
-
--->
