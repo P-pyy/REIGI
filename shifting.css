@@ -1,0 +1,133 @@
+/* Base Layout */
+.shifting-page {
+    background-color: #f3f4f6;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    margin: 0;
+    padding: 0 20px;
+    font-family: 'Montserrat', sans-serif;
+    color: #374151;
+    text-align: center; /* 🔹 Center all text */
+  }
+  
+  /* Main container */
+  .shifting-page .content-container {
+    max-width: 900px;
+    background: #ffffff;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgb(0 0 0 / 0.1);
+    margin: 40px auto;
+  }
+  
+  /* Breadcrumb */
+  .shifting-page .breadcrumb {
+    margin-bottom: 20px;
+    font-size: 0.875rem;
+    color: #6b7280;
+    user-select: none;
+  }
+  .shifting-page .breadcrumb a {
+    color: #1c1c1c;
+    font-weight: 600;
+    text-decoration: none;
+  }
+  .shifting-page .breadcrumb a:hover {
+    text-decoration: underline;
+  }
+  .shifting-page .breadcrumb span {
+    color: #1f2937;
+    font-weight: 600;
+  }
+  
+  /* Header */
+  .shifting-page .header {
+    margin-bottom: 20px;
+  }
+  .shifting-page .header h1 {
+    font-size: 1.875rem;
+    font-weight: 800;
+    color: #1e40af;
+    margin: 0 0 30px;
+  }
+  .shifting-page .header .meta {
+    font-size: 0.875rem;
+    color: #1c1c1c;
+    font-weight: 500;
+
+    
+  display: flex;                  /* make it flex */
+  justify-content: center; /* push items apart */
+  gap: 30px;                      /* optional extra breathing space */
+  margin-bottom: 50px;
+  }
+  
+  /* Article text */
+  .shifting-page .article {
+    font-size: 1rem;
+    line-height: 1.75;
+    color: #374151;
+  
+    max-width: 700px;   /* keeps the text in a nice readable column */
+    margin: 0 auto;     /* centers the block itself */
+    text-align: left;   /* ensures text inside stays left aligned */
+  }
+  .shifting-page .article blockquote {
+    border-left: 4px solid #3b82f6;
+    padding-left: 1rem;
+    font-style: italic;
+    color: #4b5563;
+    margin: 1rem auto;
+    display: inline-block;
+    text-align: left;
+  }
+  .shifting-page .article p {
+    margin: 1rem 0;
+  }
+  .shifting-page .article figure {
+    margin-top: 2rem;
+  }
+  .shifting-page .article .article-image {
+    width: 100%;
+    border-radius: 6px;
+    box-shadow: 0 4px 6px rgb(0 0 0 / 0.1);
+  }
+  .shifting-page .article figcaption {
+    margin-top: 8px;
+    font-size: 0.875rem;
+    color: #6b7280;
+  }
+  
+  /* Go Back button */
+  .shifting-page .go-back-container {
+    margin-top: 0rem;
+  display: flex;
+  justify-content: center;
+
+  max-width: 900px; /* same as .content-container */
+  margin-left: auto;
+  margin-right: auto;
+  }
+  .shifting-page button.go-back {
+    background-color: #c7d9fc;
+    border: none;
+    padding: 10px 24px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgb(0 0 0 / 0.1);
+    font-size: 14px;
+    color: #1c1c1c;
+    cursor: pointer;
+    transition: background-color 0.3s ease, box-shadow 0.2s ease;
+    min-width: 180px;
+    user-select: none;
+  }
+  .shifting-page button.go-back:hover {
+    background-color: #a4c5fc;
+    box-shadow: 0 4px 8px rgb(0 0 0 / 0.15);
+  }
+  .shifting-page button.go-back:active {
+    background-color: #8bb8fc;
+    box-shadow: 0 1px 3px rgb(0 0 0 / 0.25);
+  }
+  
