@@ -1,3 +1,17 @@
+const SUPABASE_URL = "https://oeeqegpgmobbuhaadrhr.supabase.co";
+  const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9lZXFlZ3BnbW9iYnVoYWFkcmhyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTY0ODQwNzEsImV4cCI6MjA3MjA2MDA3MX0.M-pplPUdj21v2Fb5aLmmbE94gDGCfslksAI8fJca2cE";
+  const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+  (async () => {
+    const { data: { session } } = await supabase.auth.getSession();
+
+    if (!session) {
+      // Not logged in → redirect back to login
+      window.location.href = "login.html";
+    }
+  })();
+
+ 
  fetch('sidebar.html')
     .then(res => res.text())
     .then(data => {
