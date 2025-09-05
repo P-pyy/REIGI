@@ -47,20 +47,14 @@
     </article>
   </main>
 
-  <!-- Go Back Button Fixed at Bottom -->
-  <div class="go-back-container">
-    <button class="go-back" aria-label="Go back to previous page">Go Back</button>
-  </div>
+ <!-- Go Back Button Fixed at Bottom -->
+<div class="go-back-container">
+  <button class="go-back btn btn-secondary" aria-label="Go back to previous page"
+          onclick="window.history.back()">
+    Go Back
+  </button>
+</div>
 
-  <script>
-    const btn = document.querySelector('button.go-back');
-    btn.addEventListener('click', () => {
-      if (window.history.length > 1) {
-        window.history.back();
-      } else {
-        alert('No page to go back to.');
-      }
-    });
-  </script>
+</div>
 </body>
 </html>
