@@ -1,3 +1,53 @@
+//  <!-- Load Sidebar Script -->
+fetch('sidebar.html')
+    .then(res => res.text())
+    .then(data => {
+      document.getElementById('sidebar-container').innerHTML = data;
+
+      const currentPage = window.location.pathname.split("/").pop();
+      document.querySelectorAll(".menu li a").forEach(link => {
+        if (link.getAttribute("href") === currentPage) {
+          link.classList.add("active");
+        }
+      });
+
+      const toggleBtn = document.querySelector('.toggle-btn');
+      const sidebar = document.querySelector('.sidebar');
+      const mainContent = document.querySelector('.main-content');
+      const mainHeader = document.querySelector('.main-header');
+      if (toggleBtn && sidebar && mainContent && mainHeader) {
+        toggleBtn.addEventListener('click', () => {
+          sidebar.classList.toggle('small-sidebar');
+          const isSmall = sidebar.classList.contains('small-sidebar');
+          mainContent.style.marginLeft = isSmall ? '80px' : '250px';
+          mainHeader.style.width = isSmall ? 'calc(100% - 80px)' : 'calc(100% - 250px)';
+          mainHeader.style.marginLeft = isSmall ? '80px' : '250px';
+          window.dispatchEvent(new Event('resize')); 
+        });
+      }
+    })
+    .catch(error => console.error('Error loading sidebar:', error));
+
+// <!-- Toggle Script -->
+  const faqGrid = document.getElementById("faq-grid");
+
+  document.querySelectorAll(".card-button").forEach(button => {
+    button.addEventListener("click", () => {
+      const target = button.getAttribute("data-target");
+
+      if (target) {
+        faqGrid.classList.add("d-none");
+
+        document.querySelectorAll("#enrollment-section, #document-request-section, #graduation-clearance-section")
+          .forEach(sec => sec.classList.add("d-none"));
+
+        document.getElementById(target).classList.remove("d-none");
+      }
+    });
+  });
+
+//   Table Function
+
 
     document.addEventListener("DOMContentLoaded", function() {
       const tbody = document.querySelector(".announcement-table tbody");
