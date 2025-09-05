@@ -5,7 +5,64 @@ import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js
 
 const SUPABASE_URL = "https://oeeqegpgmobbuhaadrhr.supabase.co";
 const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9lZXFlZ3BnbW9iYnVoYWFkcmhyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTY0ODQwNzEsImV4cCI6MjA3MjA2MDA3MX0.M-pplPUdj21v2Fb5aLmmbE94gDGCfslksAI8fJca2cE";
-const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+  auth: { persistSession: true, autoRefreshToken: true }
+});
+
+// =======================
+// Check Admin Login
+// =======================
+(async () => {
+  const { data: { session } } = await supabaseClient.auth.getSession();
+  if (!session) window.location.href = "login.html";
+})();
+
+// =======================
+// Load Sidebar
+// =======================
+fetch('sidebar.html')
+  .then(res => res.text())
+  .then(data => {
+    document.getElementById('sidebar-container').innerHTML = data;
+
+    // Highlight current page
+    const currentPage = window.location.pathname.split("/").pop();
+    document.querySelectorAll(".menu li a").forEach(link => {
+      if (link.getAttribute("href") === currentPage) link.classList.add("active");
+    });
+
+    // Toggle sidebar
+    const toggleBtn = document.querySelector('.toggle-btn');
+    const sidebar = document.querySelector('.sidebar');
+    const mainContent = document.querySelector('.main-content');
+    const mainHeader = document.querySelector('.main-header');
+
+    if (toggleBtn && sidebar && mainContent && mainHeader) {
+      toggleBtn.addEventListener('click', () => {
+        sidebar.classList.toggle('small-sidebar');
+        const isSmall = sidebar.classList.contains('small-sidebar');
+        mainContent.style.marginLeft = isSmall ? '80px' : '250px';
+        mainHeader.style.width = isSmall ? 'calc(100% - 80px)' : 'calc(100% - 250px)';
+        mainHeader.style.marginLeft = isSmall ? '80px' : '250px';
+        window.dispatchEvent(new Event('resize'));
+      });
+    }
+
+    // Logout handler
+    const logoutBtn = document.querySelector(".logout");
+    if (logoutBtn) {
+      logoutBtn.addEventListener("click", async () => {
+        console.log("Logout clicked");
+        const { error } = await supabaseClient.auth.signOut(); // ✅ use correct client
+        if (error) console.error("Logout error:", error.message);
+        else window.location.href = "login.html";
+      });
+    } else {
+      console.warn("⚠️ Logout button not found in sidebar!");
+    }
+  })
+  .catch(error => console.error('Error loading sidebar:', error));
 
 // =======================
 // DOMContentLoaded
@@ -17,6 +74,7 @@ window.addEventListener("DOMContentLoaded", async function () {
   function showLoading() { overlay.classList.add("show"); }
   function hideLoading() { overlay.classList.remove("show"); }
 
+  // Fetch announcements
   async function fetchAnnouncements() {
     showLoading();
     const { data, error } = await supabaseClient
@@ -31,6 +89,7 @@ window.addEventListener("DOMContentLoaded", async function () {
     return data;
   }
 
+  // Render table
   function renderTable(announcements) {
     tbody.innerHTML = "";
 
@@ -57,14 +116,14 @@ window.addEventListener("DOMContentLoaded", async function () {
       tbody.appendChild(row);
     });
 
-    // Delete announcement
+    // Delete
     document.querySelectorAll(".trash-icon").forEach(btn => {
       btn.addEventListener("click", async function (e) {
         e.preventDefault();
-        const id = this.getAttribute("data-id");
+        const id = this.dataset.id;
         if (confirm("Are you sure you want to delete this announcement?")) {
           const { error } = await supabaseClient.from("announcements").delete().eq("id", id);
-          if (error) alert("Failed to delete announcement: " + error.message);
+          if (error) alert("Failed to delete: " + error.message);
           else {
             const announcements = await fetchAnnouncements();
             renderTable(announcements);
@@ -73,7 +132,7 @@ window.addEventListener("DOMContentLoaded", async function () {
       });
     });
 
-    // Edit announcement
+    // Edit
     document.querySelectorAll(".edit-link").forEach(link => {
       link.addEventListener("click", async e => {
         e.preventDefault();
@@ -90,7 +149,6 @@ window.addEventListener("DOMContentLoaded", async function () {
         formContainer.innerHTML = await res.text();
         formContainer.style.display = "block";
 
-        // Pass the selected id to the edit form
         setTimeout(() => {
           import("./announcement_edit.js")
             .then(module => module.initAnnouncementEdit(id))
@@ -102,9 +160,11 @@ window.addEventListener("DOMContentLoaded", async function () {
     if (window.PhosphorIcons) window.PhosphorIcons.replace();
   }
 
+  // Initial fetch & render
   const announcements = await fetchAnnouncements();
   renderTable(announcements);
 
+  // Auto refresh
   setInterval(async () => {
     const announcements = await fetchAnnouncements();
     renderTable(announcements);
@@ -128,7 +188,7 @@ document.getElementById("add-announcement-btn").addEventListener("click", async 
 
   setTimeout(() => {
     import("./announcement_edit.js")
-      .then(module => module.initAnnouncementEdit()) // no id means new announcement
-      .catch(err => console.error("Failed to load announcement_edit.js:", err));
+      .then(module => module.initAnnouncementEdit()) // new announcement
+      .catch(err => console.error(err));
   }, 50);
 });

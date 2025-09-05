@@ -1,11 +1,26 @@
+// =======================
 // Supabase Config
+// =======================
 import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
 
-const SUPABASE_URL = "https://oeeqegpgmobbuhaadrhr.supabase.co";  
+const SUPABASE_URL = "https://oeeqegpgmobbuhaadrhr.supabase.co";
 const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9lZXFlZ3BnbW9iYnVoYWFkcmhyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTY0ODQwNzEsImV4cCI6MjA3MjA2MDA3MX0.M-pplPUdj21v2Fb5aLmmbE94gDGCfslksAI8fJca2cE";
-const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
+const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+  auth: { persistSession: true, autoRefreshToken: true }
+});
+
+// =======================
+// Ensure User Logged In
+// =======================
+(async () => {
+  const { data: { session } } = await supabaseClient.auth.getSession();
+  if (!session) window.location.href = "login.html";
+})();
+
+// =======================
 // Real-time Preview
+// =======================
 function setupPreview() {
   const titleInput = document.getElementById("announcementTitle");
   const detailsInput = document.getElementById("announcementDetails");
@@ -53,8 +68,9 @@ function setupPreview() {
   }
 }
 
-
+// =======================
 // Load Announcement (Edit)
+// =======================
 async function loadAnnouncement(editId) {
   if (!editId) return;
 
@@ -69,7 +85,6 @@ async function loadAnnouncement(editId) {
     return alert("Failed to load announcement. Check console for details.");
   }
 
-  // Auto-fill all fields
   document.getElementById("announcementTitle").value = data.title || "";
   document.getElementById("announcementDetails").value = data.details || "";
   document.getElementById("previewTitle").textContent = data.title || "ANNOUNCEMENT TITLE";
@@ -87,13 +102,13 @@ async function loadAnnouncement(editId) {
   const btnText = document.querySelector(".btn2-text");
   if (btnText) btnText.textContent = "Update Announcement";
 
-  // Save the editId on the form for submit handler
   const form = document.getElementById("announcementForm");
   if (form) form.dataset.editId = editId;
 }
 
-
+// =======================
 // Submit Handler
+// =======================
 function setupSubmitHandler() {
   const form = document.getElementById("announcementForm");
   if (!form) return;
@@ -101,8 +116,7 @@ function setupSubmitHandler() {
   form.addEventListener("submit", async e => {
     e.preventDefault();
 
-    const editId = form.dataset.editId; // dynamic edit id if editing
-
+    const editId = form.dataset.editId;
     const titleInput = document.getElementById("announcementTitle");
     const detailsInput = document.getElementById("announcementDetails");
     const dateInput = document.getElementById("scheduledDateTime");
@@ -115,6 +129,7 @@ function setupSubmitHandler() {
     let imageUrl = previewImage.src;
 
     try {
+      // Upload image if new file selected
       if (imageInput.files.length > 0) {
         const file = imageInput.files[0];
         const fileName = `${Date.now()}_${file.name}`;
@@ -139,7 +154,6 @@ function setupSubmitHandler() {
         alert("Announcement added!");
       }
 
-      // Redirect back to announcements table
       window.location.href = "announcements.html";
 
     } catch (err) {
@@ -149,7 +163,9 @@ function setupSubmitHandler() {
   });
 }
 
+// =======================
 // Init Function
+// =======================
 export function initAnnouncementEdit(editId = null) {
   setupPreview();
   setupSubmitHandler();

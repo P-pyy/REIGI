@@ -26,7 +26,7 @@ loginForm.addEventListener("submit", async (e) => {
   } else {
     alert("Login successful!");
     // Redirect to dashboard page
-    window.location.href = "./admin/admin.html";
+    window.location.href = "admin.html";
   }
 });
 
