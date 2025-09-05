@@ -1,0 +1,115 @@
+body {
+  font-family: 'Montserrat', sans-serif;
+  background-color: #f5f7fa;
+  margin: 0;
+}
+
+.main-header {
+  position: fixed;
+  top: 0;
+  left: 250px;
+  right: 0;
+  height: 120px;
+  background-color: #fff;
+  border-bottom: 1px solid #ddd;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.main-header h1 {
+  font-size: 35px;
+  margin-left: 80px;
+  padding-left: 50px;
+  font-weight: 600;
+  color: #0057b8;
+  margin: 0;
+}
+
+.faq-wrapper {
+  max-width: 1200px;
+  margin: 160px auto 30px auto;
+  padding: 0 20px;
+}
+
+.faq-grid {
+  display: grid;
+  margin-left: 200px;
+  margin-top: 300px;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 20px;
+}
+
+.faq-card {
+  background-color: #fff;
+  border-radius: 12px;
+  height: 415px;
+  width: 290px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  padding: 30px 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.faq-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 16px rgba(0,0,0,0.1);
+}
+
+.faq-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.faq-title {
+  font-size: 24px;
+  margin-left: 20px;
+  margin-top: 80px;
+  font-weight: 600;
+  color: #2C2C2C;
+}
+
+.phosphor-icon {
+  font-size: 50px;
+  margin-right: 10px;
+  height: 40px;
+  width: 40px;
+  margin-top: 60px;
+  color: #0055A5;
+}
+
+.faq-desc {
+  font-size: 14px;
+  color: #2C2C2C;
+  margin-top: 10px;
+  line-height: 1.5;
+}
+
+.card-footer {
+  display: flex;
+  justify-content: center;
+  margin-top: 30px;
+}
+
+.card-button {
+  background-color: #CDE4FF;
+  border: none;
+  margin-bottom: 50px;
+  height: 45px;
+  width: 160px;
+  padding: 10px 20px;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #000;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.card-button:hover {
+  background-color: #c3daf5;
+}
