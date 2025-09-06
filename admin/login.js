@@ -47,9 +47,17 @@ if (resetForm) {
     e.preventDefault();
     const email = document.getElementById("email").value;
 
-    const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
-    redirectTo: window.location.origin + "/admin/login_reset.html",
-    });
+//     const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
+//   redirectTo: window.location.origin + "/admin/login.html",
+// });
+
+const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
+  redirectTo: window.location.origin + "/admin/login_reset",
+});
+
+
+
+
 
 
     const msg = document.getElementById("message");
