@@ -42,21 +42,28 @@ if (loginForm) {
 // FORGOT PASSWORD (EMAIL ENTRY FORM)
 // =======================
 const resetForm = document.getElementById("resetForm");
+const msg = document.getElementById("message"); // message element for feedback
+
 if (resetForm) {
   resetForm.addEventListener("submit", async (e) => {
     e.preventDefault();
-    const email = document.getElementById("email").value;
 
-const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
-  redirectTo: window.location.origin + "/admin/login_reset",
-});
+    const email = document.getElementById("email").value.trim();
+    if (!email) {
+      msg.textContent = "❌ Please enter your email";
+      msg.style.color = "red";
+      return;
+    }
+
+    const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: "https://reigi.vercel.app/admin/login_reset/index.html",
+    });
+
+    //  const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
+    //   redirectTo: "https://reigi.vercel.app/admin/login_reset/",
+    // });
 
 
-
-
-
-
-    const msg = document.getElementById("message");
     if (error) {
       msg.textContent = "❌ " + error.message;
       msg.style.color = "red";
@@ -66,6 +73,7 @@ const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
     }
   });
 }
+
 
 // =======================
 // RESET PASSWORD FORM
@@ -98,7 +106,7 @@ if (resetPasswordForm) {
       status.style.color = "green";
 
       setTimeout(() => {
-        window.location.href = "login.html";
+        window.location.assign("/admin/login.html");
       }, 2500);
     }
   });
