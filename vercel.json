@@ -1,0 +1,5 @@
+{
+  "rewrites": [
+    { "source": "/admin/login_reset", "destination": "/admin/login_reset.html" }
+  ]
+}
