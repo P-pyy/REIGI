@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>FAQ’s Editor</title>
+
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+   <link href="https://fonts.googleapis.com/css2?family=Montserrat&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+  <script src="https://unpkg.com/phosphor-icons"></script>
+  <link rel="stylesheet" href="sidebar.css" />
+  <link rel="stylesheet" href="admin_faqs_editor.css" />
+
+  </head>
+<body>
+  
+
+  <div class="container-fluid d-flex p-0 min-vh-100">
+
+  <!-- Sidebar Include -->
+  <div id="sidebar-container"></div>
+
+<!-- HEADER -->
+<header class="main-header d-flex align-items-center gap-3">
+  <button type="button" class="btn btn-link p-0 m-0" onclick="history.back()" style="text-decoration: none;">
+    <i class="fas fa-arrow-left" style="font-size: 1.5rem; color: black; padding-left: 20px; padding-right: 20px; margin-left: 40px; margin-right: 30px;"></i>
+  </button>
+  <h1 class="mb-0" style="font-weight: 600; font: semibold; font-size: 32px; color: #0055A5; margin-right: 50px; padding-left: 100px; position: fixed;">FAQ's Editor</h1>
+</header>
+
+    <main class="container-fluid my-4">
+
+<div class="container my-4">
+  <div class="row g-4">
+    
+<!-- FAQ Post Form -->
+<div class="col-md-6">
+  <div class="faq-form p-3 shadow-sm rounded bg-white h-100 font-weight-600">
+    <h5 class="mb-3">FAQ Post</h5>
+
+    <!-- Question Title -->
+    <input type="text" class="form-control mb-3" placeholder="Question Title">
+
+    <!-- FAQ Post Title -->
+    <input type="text" class="form-control mb-3" placeholder="FAQ Post Title">
+
+    <!-- Date & Time -->
+    <input type="date" class="form-control mb-3">
+
+    <!-- Details -->
+    <textarea class="form-control mb-3" rows="4" placeholder="Put the details here..."></textarea>
+
+    <!-- Image Upload -->
+    <div class="mb-4">
+      <div id="uploadArea"
+        class="image-upload-area text-center d-flex flex-column align-items-center justify-content-center"
+        onclick="document.getElementById('imageInput').click()">
+
+        <button type="button" class="btn btn-darkblue shadow-sm mb-2 d-flex align-items-center gap-2 admin-edit-btn">
+          <i class="ph-bold ph-image"></i>
+          <span class="btn1-text">Choose Image</span>
+        </button>
+
+        <p class="mb-1 drag-drop-text">Drag & Drop the image here</p>
+        <p class="text-muted small image-format">PNG / JPG / Webp</p>
+      </div>
+
+      <!-- Hidden File Input -->
+      <input type="file" id="imageInput" class="d-none" accept="image/*">
+    </div>
+
+    <!-- Submit Button -->
+    <button class="btn btn-primary w-100">Submit</button>
+  </div>
+</div>
+
+<!-- Post Preview -->
+<div class="col-md-6">
+  <!-- Title Added -->
+  <h4 class="fw-bold mb-3 text-uppercase text-primary">POST PREVIEW</h4>
+
+  <div class="faq-preview p-3 shadow-sm mb-3 rounded bg-white">
+  <strong>FREQUENTLY ASKED QUESTIONS:</strong>
+  <ol class="mt-2 mb-0">
+    <li class="faq-item">
+    1. How to get my Transcript of Records <br>(TOR)?
+      <i class="ph-bold ph-arrow-up-right faq-icon"></i>
+    </li>
+  </ol>
+</div>
+
+  <div class="faq-preview-card p-4 shadow-sm rounded bg-white">
+    <h5 class="fw-bold preview-title">Shifting / Program Transfer</h5>
+    <p class="text-center mb-1 text-muted small">Updated: MM/DD/YY</p>
+    <p class="text-center mb-3 text-muted small">By: URSAC Registrar</p>
+
+    <!-- Scrollable Paragraph -->
+    <div class="preview-text">
+      <p>
+        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
+      </p>
+      <p>
+         Section 1.10.32 of "de Finibus Bonorum et Malorum", written by Cicero in 45 BC "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur? <br>"1914 translation by H. Rackham
+      </p>
+    </div>
+  </div>
+</div>
+
+
+
+
+<!-- Load Sidebar Script -->
+<script>
+  fetch('sidebar.html')
+    .then(res => res.text())
+    .then(data => {
+      document.getElementById('sidebar-container').innerHTML = data;
+
+      const currentPage = window.location.pathname.split("/").pop();
+      document.querySelectorAll(".menu li a").forEach(link => {
+        if (link.getAttribute("href") === currentPage) {
+          link.classList.add("active");
+        }
+      });
+
+      const toggleBtn = document.querySelector('.toggle-btn');
+      const sidebar = document.querySelector('.sidebar');
+      const mainContent = document.querySelector('.main-content');
+      const mainHeader = document.querySelector('.main-header');
+      if (toggleBtn && sidebar && mainContent && mainHeader) {
+        toggleBtn.addEventListener('click', () => {
+          sidebar.classList.toggle('small-sidebar');
+          const isSmall = sidebar.classList.contains('small-sidebar');
+          mainContent.style.marginLeft = isSmall ? '80px' : '250px';
+          mainHeader.style.width = isSmall ? 'calc(100% - 80px)' : 'calc(100% - 250px)';
+          mainHeader.style.marginLeft = isSmall ? '80px' : '250px';
+          window.dispatchEvent(new Event('resize')); 
+        });
+      }
+    })
+    .catch(error => console.error('Error loading sidebar:', error));
+</script>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
+
+
+
+
+
