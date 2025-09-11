@@ -1,61 +1,78 @@
+99% of storage used … If you run out of space, you can't save to Drive or use Gmail. Get 30 GB of storage for ₱49 ₱10/month for 3 months.
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Site Media Editor</title>
+  <!-- Bootstrap & CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="admin.css">
   <link rel="stylesheet" href="sitemedia.css">
-  <link rel="stylesheet" href="dropdown.css"> <!-- dropdown styles -->
+  <link rel="stylesheet" href="dropdown.css">
+  <link rel="icon" type="image/png" href="img/URS LOGO.png">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet"/>
+  <script src="https://unpkg.com/phosphor-icons"></script>
 </head>
 <body class="site-media-undergraduate-page">
-  <!-- Navbar -->
-  <header class="navbar">
-    <div class="nav-left">
-      <a href="sitemedia.html" class="back-arrow">⭠</a>
-      <h1>Site Media Editor</h1>
-    </div>
+  <div class="container-fluid d-flex p-0 min-vh-100">
+    
+    <!-- SIDEBAR LOAD -->
+    <div id="sidebar-container"></div>
 
-    <!-- Dropdown in Navbar -->
-<div class="dropdown" id="dropdown">
-  <span id="selected"></span>
-  <div class="arrow" aria-hidden="true">
-    <span class="up"></span>
-    <span class="down"></span>
-  </div>
-  <div class="dropdown-content" id="dropdown-content" role="listbox" tabindex="-1" aria-label="Select an education level">
-    <div role="option" tabindex="0" data-value="Undergraduate">Undergraduate</div>
-    <div role="option" tabindex="0" data-value="Graduate">Graduate</div>
-  </div>
-</div>
-  </header>
-
-  <!-- Main Content -->
-  <div class="container">
-    <!-- Left Card -->
-    <div class="card left-card">
-      <h2>Academic Calendar</h2>
-      <p class="subtitle">Undergraduate</p>
-      <p class="preview-text">PREVIEW</p>
-      <div class="preview-box">
-        <img src="../img/Calendar.png" alt="Preview">
+    <!-- HEADER -->
+    <header class="main-header d-flex justify-content-between align-items-center">
+      <h1 class="mb-0">Site Media Editor</h1>
+      
+      <!-- Dropdown in Navbar -->
+      <div class="dropdown" id="dropdown">
+        <span id="selected"></span>
+        <div class="arrow" aria-hidden="true">
+          <span class="up"></span>
+          <span class="down"></span>
+        </div>
+        <div class="dropdown-content" id="dropdown-content" role="listbox" tabindex="-1" aria-label="Select an education level">
+          <div role="option" tabindex="0" data-value="Undergraduate">Undergraduate</div>
+          <div role="option" tabindex="0" data-value="Graduate">Graduate</div>
+        </div>
       </div>
-    </div>
+    </header>
 
-    <!-- Right Card -->
-    <div class="card right-card upload-card">
-      <div class="upload-box">
-        <label>
-          <div class="choose-btn">Choose Image</div>
-          <input type="file" hidden accept="image/png, image/jpeg, image/webp">
-        </label>
-        <p class="drag-text">Drag & Drop the image here</p>
-        <p class="file-types">PNG / JPG / Webp</p>
+    <!-- Main Content -->
+    <main class="main-content flex-grow-1">
+      <div class="container">
+        <div class="editor-grid">
+          <!-- Left Card -->
+          <div class="card left-card">
+            <h2>Academic Calendar</h2>
+            <p class="subtitle">Undergraduate</p>
+            <p class="preview-text">PREVIEW</p>
+            <div class="preview-box">
+              <img src="../img/Calendar.png" alt="Preview">
+            </div>
+          </div>
+
+          <!-- Right Card -->
+          <div class="card right-card upload-card">
+            <div class="upload-box">
+              <label>
+                <div class="choose-btn">Choose Image</div>
+                <input type="file" hidden accept="image/png, image/jpeg, image/webp">
+              </label>
+              <p class="drag-text">Drag & Drop the image here</p>
+              <p class="file-types">PNG / JPG / WebP</p>
+            </div>
+            <button class="submit-btn">Submit Change</button>
+          </div>
+        </div>
       </div>
-      <button class="submit-btn">Submit Change</button>
-    </div>
+    </main>
   </div>
 
-
-     <script src="site_media_calendar.js"></script>
+  <!-- BOOTSTRAP JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="admin.js"></script>
+  <script type="module" src="sitemedia.js"></script>
+  <script src="site_media_calendar.js"></script>
 </body>
 </html>

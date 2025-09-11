@@ -1,41 +1,60 @@
+99% of storage used … If you run out of space, you can't save to Drive or use Gmail. Get 30 GB of storage for ₱49 ₱10/month for 3 months.
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Site Media Editor</title>
+  <!-- Bootstrap & CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="admin.css">
   <link rel="stylesheet" href="sitemedia.css">
+  <link rel="icon" type="image/png" href="img/URS LOGO.png">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet"/>
+  <script src="https://unpkg.com/phosphor-icons"></script>
 </head>
 <body class="site-media-editor-page">
-  <!-- Navbar -->
-  <header class="navbar">
-    <div class="nav-left">
-      <a href="sitemedia.html" class="back-arrow">⭠</a>
-      <h1>Site Media Editor</h1>
-    </div>
-  </header>
+  <div class="container-fluid d-flex p-0 min-vh-100">
+    
+    <!-- SIDEBAR LOAD -->
+    <div id="sidebar-container"></div>
 
-  <!-- Main Content -->
-  <main class="content">
-    <div class="editor-grid">
-      <!-- Preview Card -->
-      <div class="card editor left-card">
-        <h2>Homepage FAQ Video</h2>
-        <p class="preview-label">PREVIEW</p>
-        <img src="img/CARD-BG.png" alt="FAQ Video">
-        <p class="file-name">VID</p>
-      </div>
+    <!-- HEADER -->
+    <header class="main-header d-flex justify-content-between align-items-center">
+      <h1 class="mb-0">Site Media Editor</h1>
+    </header>
 
-      <!-- Upload Card -->
-      <div class="card right-card upload-card">
-        <label class="upload-box">
-          <input type="file" hidden>
-          <span>Choose Video</span>
-          <p>Drag & Drop the video file here<br>Mp4 / WebMD</p>
-        </label>
-        <button class="btn submit-btn">Submit Change</button>
+    <!-- Main Content -->
+    <main class="main-content flex-grow-1">
+      <div class="container">
+        <div class="editor-grid">
+          <!-- Preview Card -->
+          <div class="card editor left-card">
+            <h2>Homepage FAQ Video</h2>
+            <p class="preview-label">PREVIEW</p>
+            <div class="image-box">
+              <img src="img/CARD-BG.png" alt="FAQ Video">
+            </div>
+            <p class="file-name">VID</p>
+          </div>
+
+          <!-- Upload Card -->
+          <div class="card right-card upload-card">
+            <label class="upload-box">
+              <input type="file" hidden accept="video/mp4,video/webm">
+              <span>Choose Video</span>
+              <p>Drag & Drop the video file here<br>MP4 / WebM</p>
+            </label>
+            <button class="btn submit-btn">Submit Change</button>
+          </div>
+        </div>
       </div>
-    </div>
-  </main>
+    </main>
+  </div>
+
+  <!-- BOOTSTRAP JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="admin.js"></script>
+  <script type="module" src="sitemedia.js"></script>
 </body>
 </html>
