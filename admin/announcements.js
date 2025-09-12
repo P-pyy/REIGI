@@ -42,9 +42,9 @@ fetch('sidebar.html')
       toggleBtn.addEventListener('click', () => {
         sidebar.classList.toggle('small-sidebar');
         const isSmall = sidebar.classList.contains('small-sidebar');
-        mainContent.style.marginLeft = isSmall ? '80px' : '250px';
-        mainHeader.style.width = isSmall ? 'calc(100% - 80px)' : 'calc(100% - 250px)';
-        mainHeader.style.marginLeft = isSmall ? '80px' : '250px';
+        mainContent.style.marginLeft = isSmall ? '80px' : '278px';
+        mainHeader.style.width = isSmall ? 'calc(100% - 80px)' : 'calc(100% - 278px)';
+        mainHeader.style.marginLeft = isSmall ? '80px' : '278px';
         window.dispatchEvent(new Event('resize'));
       });
     }
@@ -101,6 +101,7 @@ window.addEventListener("DOMContentLoaded", async function () {
       const row = document.createElement("tr");
       row.classList.add("fade-in");
       row.innerHTML = `
+        <td>${item.id}</td>
         <td>${item.title}</td>
         <td>${item.details}</td>
         <td><img src="${item.image_url}" alt="announcement image" style="width:60px; height:auto; border-radius:4px;"></td>

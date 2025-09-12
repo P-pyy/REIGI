@@ -15,6 +15,19 @@ main {
     flex: 1;
 }
 
+.announcement-box {
+  display: block;
+}
+
+.admin-announcement-main {
+  margin-left: 278px;
+  width: calc(100% - 278px);
+  min-height: 100vh;
+  transition: margin-left 0.3s ease, width 0.3s ease;
+  padding: 130px 25px 20px;
+  box-sizing: border-box;
+}
+
 .admin-announcement-navbar {
   height: 150px !important;
   background-color: #FCFCFC !important;
@@ -28,8 +41,8 @@ main {
 }
 
 .admin-announcement-card {
-  width: 95%;         
-  max-width: 1800px; 
+  width: 100%;         
+  max-width: 2000px; 
   margin: 0 auto;
 }
 
@@ -96,6 +109,7 @@ main {
     background-color: #CDE4FF; 
     border-radius: 8px;
     padding: 10px;
+    margin-top: 1rem;
 }
 
 .table-wrapper {

@@ -61,11 +61,13 @@ html, body {
     font-weight: 600;  
     color: #2C2C2C;
 }
-
+.form-section {
+  width: 470px !important;
+}
 .admin-announcement-card {
-  max-height: 600px;  
+  max-height: 620px;  
   overflow-y: auto;
-  border-radius: 12px;   
+  border-radius: 12px;
 }
 
 .preview-text{
@@ -101,6 +103,7 @@ main.container-fluid {
 }
 
 .preview-card {
+  width: 490px !important;
   border: 1px solid #ddd;
   border-radius: 12px;
   padding: 0;             
@@ -114,6 +117,7 @@ main.container-fluid {
   background: #fff;
   overflow: hidden;
   min-height: 350px;
+  max-height: 570px;
   position: relative;
 }
 

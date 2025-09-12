@@ -15,6 +15,7 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css">
 
   <!-- Custom CSS -->
+   <link rel="stylesheet" href="admin.css">
   <link href="announcements.css" rel="stylesheet">
 </head>
 
@@ -25,8 +26,13 @@
     <!-- Sidebar Include -->
     <div id="sidebar-container"></div>
 
+    <!-- HEADER -->
+    <header class="main-header d-flex justify-content-between align-items-center">
+      <h1 class="mb-0">Announcement</h1>
+    </header>
+    
     <!-- Main Content -->
-    <main class="main-content flex-grow-1">
+    <main class="main-content admin-announcement-main flex-grow-1">
 
       <!-- Navbar
       <nav class="navbar sticky-top admin-announcement-navbar">
@@ -42,7 +48,7 @@
         </div>
       </div>
 
-      <div class="container-fluid my-4">
+      <div class="announcement-box my-4">
 
         <!-- Card Section -->
         <div class="card shadow-sm admin-announcement-card fade-in">
@@ -53,6 +59,7 @@
               <table class="table table-hover align-middle announcement-table">
                 <thead class="table-title">
                   <tr>
+                    <th>ID</th>
                     <th>Announcement Title</th>
                     <th>Announcement Details</th>
                     <th>Image</th>
