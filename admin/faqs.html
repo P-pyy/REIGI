@@ -7,7 +7,7 @@
 
   <!-- Bootstrap & CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="adminstyle.css" />
+  <link rel="stylesheet" href="admin.css" />
   <link rel="icon" type="image/png" href="img/URS LOGO.png">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet"/>
@@ -27,14 +27,13 @@
   </header>
 
   <!-- Main Content -->
-  <main class="main-content flex-grow-1">
-    <div class="faq-wrapper">
-
+  <main class="main-content admin-faq flex-grow-1">
+    <div class="faq-wrapper container">
       <!-- FAQ GRID -->
       <div class="faq-grid" id="faq-grid">
 
         <!-- FAQ Card 1 -->
-        <div class="faq-card">
+        <div class="faq-cards">
           <div>
             <div class="faq-header">
               <div class="faq-title">Enrollment Process</div>
@@ -47,7 +46,7 @@
         </div>
 
         <!-- FAQ Card 2 -->
-        <div class="faq-card">
+        <div class="faq-cards">
           <div>
             <div class="faq-header">
               <div class="faq-title">Document Request</div>
@@ -60,7 +59,7 @@
         </div>
 
         <!-- FAQ Card 3 -->
-        <div class="faq-card">
+        <div class="faq-cards">
           <div>
             <div class="faq-header">
               <div class="faq-title">Graduation & Clearance</div>
@@ -76,11 +75,10 @@
 
       <!-- ✅ Enrollment Section -->
       <div id="enrollment-section" class="d-none">
-        <div class="container-fluid my-4">
-          <div class="card shadow-sm admin-announcement-card fade-in">
+          <div class="card shadow-sm admin-esfaq-card fade-in">
             <div class="card-body">
               <div class="table-wrapper">
-                <table class="table table-hover align-middle announcement-table">
+                <table class="table table-hover align-middle faq-table">
                   <thead class="table-title">
                     <tr>
                       <th>ID</th>
@@ -100,9 +98,9 @@
             </div>
           </div>
           <div class="text-center mt-3">
-            <button class="btn add-announcement-btn">
+            <button class="btn add-question-btn">
               <i class="ph-bold ph-plus"></i>
-              <span class="btn-text">Add new Question</span>
+              <span class="btn-text">Add New Question</span>
             </button>
           </div>
         </div>
@@ -110,11 +108,10 @@
 
       <!-- ✅ Document Request Section -->
       <div id="document-request-section" class="d-none">
-        <div class="container-fluid my-4">
-          <div class="card shadow-sm admin-announcement-card fade-in">
+          <div class="card shadow-sm admin-drfaq-card fade-in">
             <div class="card-body">
               <div class="table-wrapper">
-                <table class="table table-hover align-middle announcement-table">
+                <table class="table table-hover align-middle faq-table">
                   <thead class="table-title">
                     <tr>
                       <th>ID</th>
@@ -134,9 +131,9 @@
             </div>
           </div>
           <div class="text-center mt-3">
-            <button class="btn add-announcement-btn">
+            <button class="btn add-question-btn">
               <i class="ph-bold ph-plus"></i>
-              <span class="btn-text">Add new Question</span>
+              <span class="btn-text">Add New Question</span>
             </button>
           </div>
         </div>
@@ -144,11 +141,10 @@
 
       <!-- ✅ Graduation & Clearance Section -->
       <div id="graduation-clearance-section" class="d-none">
-        <div class="container-fluid my-4">
-          <div class="card shadow-sm admin-announcement-card fade-in">
+          <div class="card shadow-sm admin-gcfaq-card fade-in">
             <div class="card-body">
               <div class="table-wrapper">
-                <table class="table table-hover align-middle announcement-table">
+                <table class="table table-hover align-middle faq-table">
                   <thead class="table-title">
                     <tr>
                       <th>ID</th>
@@ -168,9 +164,9 @@
             </div>
           </div>
           <div class="text-center mt-3">
-            <button class="btn add-announcement-btn">
+            <button class="btn add-question-btn">
               <i class="ph-bold ph-plus"></i>
-              <span class="btn-text">Add new Question</span>
+              <span class="btn-text">Add New Question</span>
             </button>
           </div>
         </div>

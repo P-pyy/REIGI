@@ -66,6 +66,18 @@ body {
   color: #0055A5;
 }
 
+#page-title {
+  font-size: 35px;
+  font-weight: 600;
+  color: #0055A5;
+}
+#page-title.adjusted {
+  width: calc(100% - 80px);
+  margin-left: 80px;
+  padding: 20px 80px;
+  height: 122px;
+}
+
 .main-header .notif {
   font-size: 24px;
   cursor: pointer;
