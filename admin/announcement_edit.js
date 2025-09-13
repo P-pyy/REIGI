@@ -18,6 +18,9 @@ const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
   if (!session) window.location.href = "login.html";
 })();
 
+//HEADER JS
+document.getElementById("page-title").textContent = "Announcements Edit";
+
 // =======================
 // Real-time Preview
 // =======================

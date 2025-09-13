@@ -14,7 +14,12 @@ html, body {
 main {
     flex: 1;
 }
-
+#page-title {
+  font-size: 35px;
+  font-weight: 600;
+  color: #0055A5;
+  z-index: 1100;
+}
 .announcement-box {
   display: block;
 }

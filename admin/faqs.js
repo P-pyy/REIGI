@@ -1,32 +1,47 @@
 //  <!-- Load Sidebar Script -->
 fetch('sidebar.html')
-    .then(res => res.text())
-    .then(data => {
-      document.getElementById('sidebar-container').innerHTML = data;
+  .then(res => res.text())
+  .then(data => {
+    document.getElementById('sidebar-container').innerHTML = data;
 
-      const currentPage = window.location.pathname.split("/").pop();
-      document.querySelectorAll(".menu li a").forEach(link => {
-        if (link.getAttribute("href") === currentPage) {
-          link.classList.add("active");
-        }
+    // Highlight current page
+    const currentPage = window.location.pathname.split("/").pop();
+    document.querySelectorAll(".menu li a").forEach(link => {
+      if (link.getAttribute("href") === currentPage) link.classList.add("active");
+    });
+
+    // Toggle sidebar
+    const toggleBtn = document.querySelector('.toggle-btn');
+    const sidebar = document.querySelector('.sidebar');
+    const mainContent = document.querySelector('.main-content');
+    const mainHeader = document.querySelector('.main-header');
+
+    if (toggleBtn && sidebar && mainContent && mainHeader) {
+      toggleBtn.addEventListener('click', () => {
+        sidebar.classList.toggle('small-sidebar');
+        const isSmall = sidebar.classList.contains('small-sidebar');
+        mainContent.style.marginLeft = isSmall ? '80px' : '278px';
+        mainContent.style.width = isSmall ? 'calc(100% - 80px)' : 'calc(100% - 278px)';
+        mainHeader.style.width = isSmall ? 'calc(100% - 80px)' : 'calc(100% - 278px)';
+        mainHeader.style.marginLeft = isSmall ? '80px' : '278px';
+        window.dispatchEvent(new Event('resize'));
       });
+    }
 
-      const toggleBtn = document.querySelector('.toggle-btn');
-      const sidebar = document.querySelector('.sidebar');
-      const mainContent = document.querySelector('.main-content');
-      const mainHeader = document.querySelector('.main-header');
-      if (toggleBtn && sidebar && mainContent && mainHeader) {
-        toggleBtn.addEventListener('click', () => {
-          sidebar.classList.toggle('small-sidebar');
-          const isSmall = sidebar.classList.contains('small-sidebar');
-          mainContent.style.marginLeft = isSmall ? '80px' : '250px';
-          mainHeader.style.width = isSmall ? 'calc(100% - 80px)' : 'calc(100% - 250px)';
-          mainHeader.style.marginLeft = isSmall ? '80px' : '250px';
-          window.dispatchEvent(new Event('resize')); 
-        });
-      }
-    })
-    .catch(error => console.error('Error loading sidebar:', error));
+    // Logout handler
+    const logoutBtn = document.querySelector(".logout");
+    if (logoutBtn) {
+      logoutBtn.addEventListener("click", async () => {
+        console.log("Logout clicked");
+        const { error } = await supabaseClient.auth.signOut(); // ✅ use correct client
+        if (error) console.error("Logout error:", error.message);
+        else window.location.href = "login.html";
+      });
+    } else {
+      console.warn("⚠️ Logout button not found in sidebar!");
+    }
+  })
+  .catch(error => console.error('Error loading sidebar:', error));
 
 // <!-- Toggle Script -->
   const faqGrid = document.getElementById("faq-grid");
@@ -47,8 +62,6 @@ fetch('sidebar.html')
   });
 
 //   Table Function
-
-
     document.addEventListener("DOMContentLoaded", function() {
       const tbody = document.querySelector(".announcement-table tbody");
       const overlay = document.getElementById("loading-overlay");

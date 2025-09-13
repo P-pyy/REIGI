@@ -1,22 +1,14 @@
+/* Reset & Base  */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
 body {
   font-family: 'Montserrat', sans-serif;
   background-color: #f5f7fa;
   margin: 0;
 }
 
-.main-header {
-  position: fixed;
-  top: 0;
-  left: 250px;
-  right: 0;
-  height: 120px;
-  background-color: #fff;
-  border-bottom: 1px solid #ddd;
-  z-index: 1000;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
 
 .main-header h1 {
   font-size: 35px;
@@ -27,21 +19,34 @@ body {
   margin: 0;
 }
 
+.main-content {
+  margin-left: 278px;
+  width: calc(100% - 278px);
+  min-height: 100vh;
+  transition: margin-left 0.3s ease, width 0.3s ease;
+  padding: 250px 70px 40px;
+  box-sizing: border-box;
+  flex-grow: 1;
+}
+
+.main-content.adjusted {
+  width: calc(100% - 80px);
+}
+
 .faq-wrapper {
+  margin-left: 80px;
   max-width: 1200px;
-  margin: 160px auto 30px auto;
   padding: 0 20px;
 }
 
 .faq-grid {
   display: grid;
-  margin-left: 200px;
-  margin-top: 300px;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 20px;
+  grid-template-columns: repeat(auto-fit, minmax(50px, 1fr));
+  margin-right: 100px;
+  gap: 8px !important;
 }
 
-.faq-card {
+.faq-cards {
   background-color: #fff;
   border-radius: 12px;
   height: 415px;
@@ -50,7 +55,6 @@ body {
   padding: 30px 20px;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
@@ -116,22 +120,24 @@ body {
 
 /* Table ui styles */
 /* admin_faq_enrollment_process   */
-.admin-announcement-navbar {
-  height: 150px !important;
-  background-color: #FCFCFC !important;
-  border-bottom: 1px solid #E0E0E0;
-}
 
-.admin-announcement-text {
-  font-size: 32px;     
-  font-weight: 600;     
-  color: #0055A5;        
+#enrollment-section{
+  margin-left: -100px;
 }
-
-.admin-announcement-card {
+.admin-esfaq-card {
   width: 95%;         
   max-width: 1800px; 
-  margin: 0 auto;
+}
+.admin-drfaq-card {
+  width: 95%;         
+  max-width: 1800px; 
+}
+#graduation-clearance-section {
+  padding-top: 20px !important;
+}
+.admin-gcfaq-card {
+  width: 95%;         
+  max-width: 1800px; 
 }
 
 .table-title th {
@@ -140,24 +146,23 @@ body {
   color: #2C2C2C;        
   padding-bottom: 30px; 
 }
-
-.announcement-table td {
+.faq-table td {
   font-size: 14px;     
   font-weight: 400;      
   color: #2C2C2C;        
 }
 
-.announcement-table th,
-.announcement-table td {
+.faq-table th,
+.faq-table td {
   border: none !important;
   background-color: transparent; 
 }
 
-.announcement-table tbody tr:nth-child(odd) {
+.faq-table tbody tr:nth-child(odd) {
   background-color: inherit;
 }
 
-.announcement-table tbody tr:nth-child(even) {
+.faq-table tbody tr:nth-child(even) {
   background-color: #F2F6FC;
 }
 
@@ -193,7 +198,7 @@ body {
 }
 
 
-.add-announcement-btn{
+.add-question-btn{
     background-color: #CDE4FF; 
     border-radius: 8px;
     padding: 10px;

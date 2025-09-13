@@ -15,66 +15,57 @@
 
   </head>
 <body>
-  
+<div class="container-fluid d-flex p-0 min-vh-100">
 
-  <div class="container-fluid d-flex p-0 min-vh-100">
+<!-- Sidebar Include -->
+<div id="sidebar-container"></div>
 
-  <!-- Sidebar Include -->
-  <div id="sidebar-container"></div>
+<!-- MAIN CONTENT -->
+<main class="container-fluid my-4">
 
-<!-- HEADER -->
-<header class="main-header d-flex align-items-center gap-3">
-  <button type="button" class="btn btn-link p-0 m-0" onclick="history.back()" style="text-decoration: none;">
-    <i class="fas fa-arrow-left" style="font-size: 1.5rem; color: black; padding-left: 20px; padding-right: 20px; margin-left: 40px; margin-right: 30px;"></i>
-  </button>
-  <h1 class="mb-0" style="font-weight: 600; font: semibold; font-size: 32px; color: #0055A5; margin-right: 50px; padding-left: 100px; position: fixed;">FAQ's Editor</h1>
-</header>
-
-    <main class="container-fluid my-4">
-
-<div class="container my-4">
-  <div class="row g-4">
+  <div class="container my-4">
+    <div class="row g-4">
     
 <!-- FAQ Post Form -->
-<div class="col-md-6">
-  <div class="faq-form p-3 shadow-sm rounded bg-white h-100 font-weight-600">
-    <h5 class="mb-3">FAQ Post</h5>
-
-    <!-- Question Title -->
-    <input type="text" class="form-control mb-3" placeholder="Question Title">
-
-    <!-- FAQ Post Title -->
-    <input type="text" class="form-control mb-3" placeholder="FAQ Post Title">
-
-    <!-- Date & Time -->
-    <input type="date" class="form-control mb-3">
-
-    <!-- Details -->
-    <textarea class="form-control mb-3" rows="4" placeholder="Put the details here..."></textarea>
-
-    <!-- Image Upload -->
-    <div class="mb-4">
-      <div id="uploadArea"
-        class="image-upload-area text-center d-flex flex-column align-items-center justify-content-center"
-        onclick="document.getElementById('imageInput').click()">
-
-        <button type="button" class="btn btn-darkblue shadow-sm mb-2 d-flex align-items-center gap-2 admin-edit-btn">
-          <i class="ph-bold ph-image"></i>
-          <span class="btn1-text">Choose Image</span>
-        </button>
-
-        <p class="mb-1 drag-drop-text">Drag & Drop the image here</p>
-        <p class="text-muted small image-format">PNG / JPG / Webp</p>
+  <div class="col-md-6">
+    <div class="faq-form p-3 shadow-sm rounded bg-white h-100 font-weight-600">
+      <h5 class="mb-3">FAQ Post</h5>
+    
+      <!-- Question Title -->
+      <input type="text" class="form-control mb-3" placeholder="Question Title">
+    
+      <!-- FAQ Post Title -->
+      <input type="text" class="form-control mb-3" placeholder="FAQ Post Title">
+    
+      <!-- Date & Time -->
+      <input type="date" class="form-control mb-3">
+    
+      <!-- Details -->
+      <textarea class="form-control mb-3" rows="4" placeholder="Put the details here..."></textarea>
+    
+      <!-- Image Upload -->
+      <div class="mb-4">
+        <div id="uploadArea"
+          class="image-upload-area text-center d-flex flex-column align-items-center justify-content-center"
+          onclick="document.getElementById('imageInput').click()">
+      
+          <button type="button" class="btn btn-darkblue shadow-sm mb-2 d-flex align-items-center gap-2 admin-edit-btn">
+            <i class="ph-bold ph-image"></i>
+            <span class="btn1-text">Choose Image</span>
+          </button>
+        
+          <p class="mb-1 drag-drop-text">Drag & Drop the image here</p>
+          <p class="text-muted small image-format">PNG / JPG / Webp</p>
+        </div>
+      
+        <!-- Hidden File Input -->
+        <input type="file" id="imageInput" class="d-none" accept="image/*">
       </div>
-
-      <!-- Hidden File Input -->
-      <input type="file" id="imageInput" class="d-none" accept="image/*">
+    
+      <!-- Submit Button -->
+      <button class="btn btn-primary w-100">Submit</button>
     </div>
-
-    <!-- Submit Button -->
-    <button class="btn btn-primary w-100">Submit</button>
   </div>
-</div>
 
 <!-- Post Preview -->
 <div class="col-md-6">

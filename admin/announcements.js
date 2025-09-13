@@ -32,6 +32,9 @@ fetch('sidebar.html')
       if (link.getAttribute("href") === currentPage) link.classList.add("active");
     });
 
+    //Header JS
+    document.getElementById("page-title").textContent = "Announcements";
+    
     // Toggle sidebar
     const toggleBtn = document.querySelector('.toggle-btn');
     const sidebar = document.querySelector('.sidebar');
