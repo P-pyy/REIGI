@@ -1,4 +1,3 @@
-99% of storage used … If you run out of space, you can't save to Drive or use Gmail. Get 30 GB of storage for ₱49 ₱10/month for 3 months.
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -13,8 +12,17 @@
   <link rel="icon" type="image/png" href="img/URS LOGO.png">
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet"/>
   <script src="https://unpkg.com/phosphor-icons"></script>
+<style>
+  .calendar-section {
+  display: none;
+}
+.calendar-section.active {
+  display: block;
+}
+
+</style>
 </head>
-<body class="site-media-undergraduate-page">
+<body class="site-media-calendar-page site-media-undergraduate-page">
   <div class="container-fluid d-flex p-0 min-vh-100">
     
     <!-- SIDEBAR LOAD -->
@@ -40,39 +48,74 @@
 
     <!-- Main Content -->
     <main class="main-content flex-grow-1">
-      <div class="container">
-        <div class="editor-grid">
-          <!-- Left Card -->
-          <div class="card left-card">
-            <h2>Academic Calendar</h2>
-            <p class="subtitle">Undergraduate</p>
-            <p class="preview-text">PREVIEW</p>
-            <div class="preview-box">
-              <img src="../img/Calendar.png" alt="Preview">
-            </div>
-          </div>
-
-          <!-- Right Card -->
-          <div class="card right-card upload-card">
-            <div class="upload-box">
-              <label>
-                <div class="choose-btn">Choose Image</div>
-                <input type="file" hidden accept="image/png, image/jpeg, image/webp">
-              </label>
-              <p class="drag-text">Drag & Drop the image here</p>
-              <p class="file-types">PNG / JPG / WebP</p>
-            </div>
-            <button class="submit-btn">Submit Change</button>
+  <div class="container">
+    <!-- Undergraduate Section -->
+    <div id="undergraduate-section" class="calendar-section active">
+      <div class="editor-grid">
+        <!-- Left Card -->
+        <div class="card left-card">
+          <h2>Academic Calendar</h2>
+          <p class="subtitle">Undergraduate</p>
+          <p class="preview-text">PREVIEW</p>
+          <div class="preview-box">
+            <img src="../img/Calendar.png" alt="Preview">
           </div>
         </div>
+
+        <!-- Right Card -->
+        <div class="card right-card upload-card">
+          <div class="upload-box">
+            <label>
+              <div class="choose-btn">Choose Image</div>
+              <input type="file" hidden accept="image/png, image/jpeg, image/webp">
+            </label>
+            <p class="drag-text">Drag & Drop the image here</p>
+            <p class="file-types">PNG / JPG / WebP</p>
+          </div>
+          <button class="submit-btn">Submit Change</button>
+        </div>
       </div>
-    </main>
+    </div>
+    <!-- End Undergraduate Section -->
+
+    <!-- Graduate Section -->
+    <div id="graduate-section" class="calendar-section">
+      <div class="editor-grid">
+        <!-- Left Card -->
+        <div class="card left-card">
+          <h2>Academic Calendar</h2>
+          <p class="subtitle">Graduate School</p>
+          <p class="preview-text">PREVIEW</p>
+          <div class="preview-box">
+            <img src="../img/Calendar.png" alt="Preview">
+          </div>
+        </div>
+
+        <!-- Right Card -->
+        <div class="card right-card upload-card">
+          <div class="upload-box">
+            <label>
+              <div class="choose-btn">Choose Image</div>
+              <input type="file" hidden accept="image/png, image/jpeg, image/webp">
+            </label>
+            <p class="drag-text">Drag & Drop the image here</p>
+            <p class="file-types">PNG / JPG / WebP</p>
+          </div>
+          <button class="submit-btn">Submit Change</button>
+        </div>
+      </div>
+    </div>
+    <!-- End Graduate Section -->
+  </div>
+</main>
+
   </div>
 
   <!-- BOOTSTRAP JS -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
   <script src="admin.js"></script>
   <script type="module" src="sitemedia.js"></script>
-  <script src="site_media_calendar.js"></script>
+
 </body>
 </html>
