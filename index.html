@@ -6,29 +6,30 @@
     <link rel="stylesheet" href="index.css">
     <title>REIGI - Home</title>
 
-        <script>
-            fetch('head.html')
-                .then(res => res.text())
-                .then(html => document.head.insertAdjacentHTML('beforeend', html));
-        </script>
-
+    <script>
+        fetch('head.html')
+            .then(res => res.text())
+            .then(html => document.head.insertAdjacentHTML('beforeend', html));
+    </script>
 </head>
 
 <body>
-
-      <!-- Main content -->
+    <!-- Main content -->
     <main>
         <section id="home" class="info-hub">
             <div class="info-text">
                 <h2>REIGI : The general <br>information hub</h2>
-                <p>The University of Rizal System- Antipolo Campus <br>registrar information kiosk and website. Browse your <br>inquiries with the button below! </p>
+                <p>
+                    The University of Rizal System- Antipolo Campus <br>
+                    registrar information kiosk and website. Browse your <br>
+                    inquiries with the button below!
+                </p>
                 <button id="faq-btn">See FAQ's</button>
             </div>
 
             <div class="faq-image-container">
                 <video id="faqVideo" class="faqVideo" autoplay muted loop playsinline aria-label="FAQ Video">
-                    <source src="./img/TF-exe.mp4" type="video/mp4"/>
-                    Your browser does not support the video
+                    <!-- Supabase will insert <source> dynamically -->
                 </video>
             </div>
         </section>
@@ -50,7 +51,8 @@
                         <h3><b>ANNOUNCEMENT TITLE</b></h3>
                         <p class="date"><b>MM/DD/YY</b></p>
                         <p class="description">
-                            Lorem ipsum dolor sit amet consectetur, adipisicing elit. Corrupti iste ipsum cumque et adipisci laborum esse quo error voluptas, incidunt optio dolorem doloribus, ducimus impedit sit, libero ea dicta doloremque.
+                            Lorem ipsum dolor sit amet consectetur, adipisicing elit. 
+                            Corrupti iste ipsum cumque et adipisci laborum esse quo error voluptas.
                         </p>
                         <a href="#" class="read-more">Read more!</a>
                     </div>
@@ -63,7 +65,8 @@
                         <h3><b>ANNOUNCEMENT TITLE</b></h3>
                         <p class="date"><b>MM/DD/YY</b></p>
                         <p class="description">
-                            Lorem ipsum dolor sit amet consectetur, adipisicing elit. Corrupti iste ipsum cumque et adipisci laborum esse quo error voluptas, incidunt optio dolorem doloribus, ducimus impedit sit, libero ea dicta doloremque.
+                            Lorem ipsum dolor sit amet consectetur, adipisicing elit. 
+                            Corrupti iste ipsum cumque et adipisci laborum esse quo error voluptas.
                         </p>
                         <a href="#" class="read-more">Read more!</a>
                     </div>
@@ -76,13 +79,14 @@
                         <h3><b>ANNOUNCEMENT TITLE</b></h3>
                         <p class="date"><b>MM/DD/YY</b></p>
                         <p class="description">
-                            Lorem ipsum dolor sit amet consectetur, adipisicing elit. Corrupti iste ipsum cumque et adipisci laborum esse quo error voluptas, incidunt optio dolorem doloribus, ducimus impedit sit, libero ea dicta doloremque.
+                            Lorem ipsum dolor sit amet consectetur, adipisicing elit. 
+                            Corrupti iste ipsum cumque et adipisci laborum esse quo error voluptas.
                         </p>
                         <a href="#" class="read-more">Read more!</a>
                     </div>
                 </div>                
-
             </div>
+
             <div class="see-more">
                 <a href="#" class="see-announcement-btn">See Announcements</a>
             </div>
@@ -100,29 +104,26 @@
                             <i class="ph-light ph-greater-than arrow"></i>
                             <span>Undergraduate</span>
                         </div>
-                        <img src="./img/Calendar.png" alt="Undergraduate Calendar" class="calendar-image">
+                        <img id="undergradCalendar" src="" alt="Undergraduate Calendar" class="calendar-image">
                     </li>
                     <li>
                         <div class="list-item-content">
                             <i class="ph-light ph-greater-than arrow"></i>
                             <span>Graduate School</span>
                         </div>
-                        <img src="./img/Calendar.png" alt="Graduate Calendar" class="calendar-image">
+                        <img id="gradCalendar" src="" alt="Graduate Calendar" class="calendar-image">
                     </li>
                 </ul>
             </div>
         </section>
     </main>
 
-
     <!-- JS Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.min.js"></script>
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
     <script src="script.js"></script>
-    <script src="index.js"></script>
-
-
+    <script type="module" src="index.js"></script>
 
 </body>
 </html>
