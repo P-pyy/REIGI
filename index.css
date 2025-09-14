@@ -4,8 +4,8 @@ html, body {
     display: flex;
     flex-direction: column;
     background-color: #ffffff;
-    overflow: auto; /*added part*/
-    scrollbar-width: none;/*added part*/
+    overflow-y: scroll; !important /*added part*/
+    scrollbar-width: none; /*added part*/
     scroll-behavior: smooth; /*added part*/
 }
 /*added part*/
@@ -18,17 +18,17 @@ section{
     padding-top: 20px;
 }
 
+/* ! Hero Section */
+
 .info-hub {
-    gap: 5rem;
     align-items: center;
     justify-content: space-around;
-    padding: 1.6rem 7rem 3rem 7rem;
+    padding: 12rem 7rem;
     width: 100%;
     box-sizing: border-box;
     flex-wrap: wrap;
     display: flex;
     background-color: white;
-    margin-top: 200px;
 }
 
 .info-text {
@@ -40,15 +40,18 @@ section{
 .info-text h2 {
     color: #3066B3;
     font-weight: 700;
-    font-size: 50px;
+    font-size: 3rem;
     margin: 4 0 12px 0;
     line-height: 1.2;
 }
 
 .info-text p {
-    font-size: 18px;
+    font-size: 1rem;
     margin: 0 0 20px 0;
 }
+
+
+/* ! FAQ Video */
 
 #faq-btn {
     background: #A2CDF8;
@@ -117,27 +120,28 @@ section{
     text-align: center;
 }
 
+
+/* ! Today's updates */
+
 .updates-section {
     padding: 40px;
     text-align: center;
-    margin: 60px 0;
+    /* margin: 60px 0; */
     background-color: white;
 }
 
 .updates-section h2 {
-    font-size: 38px;
+    font-size: 2.2rem;
     color: #222;
-    margin-top: 75px;
-    margin-bottom: 5px;
+    padding: 3rem;
 
 }
 
 .card-container {
     display: flex;
     justify-content: center;
-    gap: 20px;
     flex-wrap: wrap;
-    position: relative;
+    gap: 2rem;
 }
 
 .update-card{
@@ -218,7 +222,8 @@ section{
 }
 
 .see-more {
-    margin-top: 10px;
+    /* margin-top: 10px; */
+    padding: 5rem;
 }
 
 .see-announcement-btn{
@@ -226,9 +231,9 @@ section{
     padding: 12px 40px;
     border-radius: 12px;
     text-decoration: none;
-    font-size: 18px;
+    font-size: 1rem;
     color: #2e2e2e;
-    font-weight: 500;
+    font-weight: 600;
     border: none;
     cursor: pointer;
     transition: background 0.3s ease;
@@ -242,11 +247,14 @@ section{
     margin-bottom: 10px;
 }
 
+
+/* ! Calendars */
+
 .calendar-wrapper{
     display: flex;
     text-align: center;
     width: 100%;
-    max-width: 1200px;
+    /* max-width: 1200px; */
     margin: 0 auto;
     background: #f0f2f5;
     padding: 1rem;
@@ -256,28 +264,27 @@ section{
 .calendar-card{
     background: #f9fafb;
     padding: 2rem;
-    max-width: 90vw;
-    width: 800px;
+    width: 200%;
     border-radius: 10px;
-    font-family: 'Montserrat', sans-serif;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
-    margin: 50px auto;
-    margin-bottom: 100px;
+    margin: 50px 10rem;
+    /* margin-bottom: 100px; */
     align-items: center;
     overflow: auto;
 }
 
 .calendar-card h2{
     font-weight: 700;
-    font-size: 2.8rem;
-    margin-bottom: 0.25rem;
+    font-size: 2.2rem;
+    /* margin-bottom: 0.25rem; */
+    padding: 1rem;
     color: #222;
 }
 
-
 .calendar-card h3{
     font-weight: 600;
-    font-size: 2rem;
+    /* font-size: 2rem; */
+    padding: 1rem;
     margin: 0;
     color: #444;
 }
@@ -297,15 +304,6 @@ ul{
     justify-content: center;
 }
 
-li{
-    margin-bottom: 0.75rem;
-    font-size: 1.5rem;
-    color: #333;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    cursor: pointer;
-}
 .arrow{
       color: #3b82f6;
       margin-right: 0.5rem;
@@ -324,19 +322,27 @@ li{
 }
 
 .calendar-image{
-    display: none;
-    max-width:65%;
-    margin: 0.5rem auto 2.5rem auto;
-    border-radius: 6px;
+    max-width: 100%;
+    padding: 1rem 0 1rem 0;
+    border-radius: 1rem !important;
 }
 
 .list-item-content{
     display: flex;
     align-items: center;
-    gap: 0.6rem;
-    padding-left: 5rem;
+    padding: .5rem;
     cursor: pointer;
 }
 
-/*end of added part*/
+.list-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+}
 
+.list-item-container{
+    width: 100%;
+    text-align: center;
+    max-width: 65%;
+}

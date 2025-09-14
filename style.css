@@ -25,7 +25,7 @@ main {
 }
 
 .navbar-brand {
-    font-size: 16px;
+    font-size: 1rem;
     font-weight: 700;
     color: #0055A5;
     pointer-events: none;
@@ -33,12 +33,12 @@ main {
     align-items: center;
     padding: 0.5rem 1rem;
     line-height: 1.2;
-    margin-left: 4rem;
+    margin-left: 5rem;
 }
 
-    .navbar-brand img {
-        margin-right: 10px;
-    }
+.navbar-brand img {
+    margin-right: 10px;
+}
 
 .campus-name {
     font-size: 12px;
@@ -51,9 +51,13 @@ main {
 }
 
 .nav-item .nav-link {
-    font-size: 16px;
+    font-size: 1rem;
     font-weight: 500;
     color: #2B2B2B !important;
+    margin-right: 2rem;
+}
+
+.space-right{
     margin-right: 5rem;
 }
 
@@ -71,7 +75,7 @@ footer {
 }
 
 .list-unstyled li a {
-    font-size: 16px;
+    font-size: 1rem;
 }
 
 hr {
@@ -86,7 +90,7 @@ footer p {
 }
 
 h6.fw-semibold {
-    font-size: 14px;
+    font-size: .8rem;
 }
 
 .list-unstyled li {
@@ -130,7 +134,7 @@ footer .col-md-3.d-flex.align-items-start {
 }
 
 .col-md-9 ul.list-unstyled li {
-    margin-bottom: 10px;
+    margin-bottom: 1rem;
 }
 
 .urs-logo-footer {
