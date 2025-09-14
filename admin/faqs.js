@@ -137,3 +137,95 @@ document.querySelectorAll(".add-question-btn").forEach(btn => {
   });
 });
 
+// ===== FAQ Editor Live Preview =====
+
+// Inputs
+const questionTitleInput = document.querySelector("#faq-editor-section input[placeholder='Question Title']");
+const faqPostTitleInput  = document.querySelector("#faq-editor-section input[placeholder='FAQ Post Title']");
+const dateInput          = document.querySelector("#faq-editor-section input[type='date']");
+const detailsTextarea    = document.querySelector("#faq-editor-section textarea");
+const imageInput         = document.querySelector("#faq-editor-section input[type='file']"); // <-- add image input
+
+// Preview elements
+const previewQuestionItem = document.querySelector(".faq-preview .faq-item");
+const previewTitle        = document.querySelector(".faq-preview-card .preview-title");
+const previewDate         = document.querySelector(".faq-preview-card .text-center.mb-1.text-muted.small");
+const previewText         = document.querySelector(".faq-preview-card .preview-text");
+const previewImage = document.querySelector("#faq-editor-section .preview-image");
+
+
+// 1. Question Title → Preview list
+if (questionTitleInput && previewQuestionItem) {
+  questionTitleInput.addEventListener("input", () => {
+    previewQuestionItem.innerHTML =
+      (questionTitleInput.value.trim() !== ""
+        ? `1. ${questionTitleInput.value}`
+        : "1. How to get my Transcript of Records (TOR)?") +
+      ` <i class="ph-bold ph-arrow-up-right faq-icon"></i>`;
+  });
+}
+
+// 2. FAQ Post Title → Preview title
+if (faqPostTitleInput && previewTitle) {
+  faqPostTitleInput.addEventListener("input", () => {
+    previewTitle.textContent =
+      faqPostTitleInput.value.trim() !== ""
+        ? faqPostTitleInput.value
+        : "Shifting / Program Transfer";
+  });
+}
+
+// 3. Date → Preview date
+if (dateInput && previewDate) {
+  dateInput.addEventListener("input", () => {
+    if (dateInput.value) {
+      const d = new Date(dateInput.value);
+      const formatted = d.toLocaleDateString("en-US", {
+        month: "2-digit",
+        day: "2-digit",
+        year: "2-digit"
+      });
+      previewDate.textContent = `Updated: ${formatted}`;
+    } else {
+      previewDate.textContent = "Updated: MM/DD/YY";
+    }
+  });
+}
+
+// 4. Details → Preview text (supports multiple paragraphs)
+if (detailsTextarea && previewText) {
+  detailsTextarea.addEventListener("input", () => {
+    if (detailsTextarea.value.trim() !== "") {
+      const paragraphs = detailsTextarea.value
+        .split("\n") // split by new lines
+        .filter(p => p.trim() !== "") // ignore empty lines
+        .map(p => `<p>${p}</p>`) // wrap each in <p>
+        .join(""); // join them together
+
+      previewText.innerHTML = paragraphs;
+    } else {
+      previewText.innerHTML = `
+        <p>"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua..."</p>
+        <p>Section 1.10.32 of "de Finibus Bonorum et Malorum", written by Cicero in 45 BC ...</p>
+      `;
+    }
+  });
+}
+
+// 5. Image → Preview image
+if (imageInput && previewImage) {
+  imageInput.addEventListener("change", () => {
+    const file = imageInput.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = e => {
+        previewImage.src = e.target.result;
+        previewImage.style.display = "block"; // show image
+      };
+      reader.readAsDataURL(file);
+    } else {
+      previewImage.src = "";
+      previewImage.style.display = "none"; // hide if no image
+    }
+  });
+}
