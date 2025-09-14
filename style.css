@@ -78,6 +78,10 @@ footer {
     font-size: 1rem;
 }
 
+.spacer{
+    margin-bottom: 1rem;
+}
+
 hr {
     border-color: #BFDCFE;
     opacity: 0.3;
