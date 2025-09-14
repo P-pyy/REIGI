@@ -20,6 +20,7 @@ fetch('sidebar.html')
       toggleBtn.addEventListener('click', () => {
         sidebar.classList.toggle('small-sidebar');
         const isSmall = sidebar.classList.contains('small-sidebar');
+        mainContent.classList.toggle('adjusted');
         mainContent.style.marginLeft = isSmall ? '80px' : '278px';
         mainContent.style.width = isSmall ? 'calc(100% - 80px)' : 'calc(100% - 278px)';
         mainHeader.style.width = isSmall ? 'calc(100% - 80px)' : 'calc(100% - 278px)';
