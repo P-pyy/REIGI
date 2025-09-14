@@ -122,3 +122,18 @@ fetch('sidebar.html')
       window.addEventListener("storage", e => { if(e.key === "announcements") renderTable(); });
       document.addEventListener("visibilitychange", () => { if(!document.hidden) renderTable(); });
     });
+
+   // Handle Add New Question buttons
+document.querySelectorAll(".add-question-btn").forEach(btn => {
+  btn.addEventListener("click", () => {
+    // Hide grid & all sections
+    document.getElementById("faq-grid").classList.add("d-none");
+    document.querySelectorAll("#enrollment-section, #document-request-section, #graduation-clearance-section")
+      .forEach(sec => sec.classList.add("d-none"));
+
+    // Show the embedded editor instead of fetching
+    const editorSection = document.getElementById("faq-editor-section");
+    editorSection.classList.remove("d-none");
+  });
+});
+
