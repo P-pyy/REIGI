@@ -10,35 +10,30 @@
 
 }
 
-main {
-    flex: 1;
-}
-
 /* navbar section */
 
 .navbar {
-    padding: 0.2rem;
-}
-
-.custom-navbar {
     background-color: #fcfcfc;
+    padding: .5rem 5rem .5rem 5rem;
+    box-shadow: 0px 1px 20px 7px rgba(0, 0, 0, 0.02);
 }
 
 .navbar-brand {
-    font-size: 16px;
+    display: flex;
+    align-items: center;
+    /* justify-content: space-between; */
+    font-size: 1rem;
     font-weight: 700;
     color: #0055A5;
     pointer-events: none;
-    display: flex;
-    align-items: center;
     padding: 0.5rem 1rem;
     line-height: 1.2;
-    margin-left: 4rem;
+
 }
 
-    .navbar-brand img {
-        margin-right: 10px;
-    }
+.navbar-brand img {
+    margin-right: 10px;
+}
 
 .campus-name {
     font-size: 12px;
@@ -51,10 +46,11 @@ main {
 }
 
 .nav-item .nav-link {
-    font-size: 16px;
+    font-size: 14px;
     font-weight: 500;
     color: #2B2B2B !important;
-    margin-right: 5rem;
+    margin: 0 1.5rem;
+    cursor: pointer;
 }
 
 /* footer section */
@@ -62,19 +58,73 @@ main {
 footer {
     background-color: #0055A5;
     color: #FCFCFC;
-    padding: 20px;
+    padding: 5rem;
 }
 
-.campus-name-footer {
+.navbar-brand-footer {
+    display: flex;
+    align-items: center;
+    /* justify-content: space-between; */
+    font-size: 1rem;
+    font-weight: 700;
+    color: #fcfcfc !important;
+    pointer-events: none;
+    padding: 0.5rem 1rem;
+    line-height: 1.2;
+    text-decoration: none;
+}
+
+.campus-name-footer{
+    font-size: 12px;
+    font-style: italic;
+    color: #fcfcfc;
+    pointer-events: none;
+    display: block;
+    line-height: 1.2;
+    font-weight: normal;
+}
+
+.row {
+    display: flex;
+    flex-direction: row;
+}
+
+.column{
+    display: flex;
+    flex-direction: column;
+}
+
+h6 {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+}
+
+.option {
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+    color: #FCFCFC;
+    text-decoration: none;
+}
+
+.list-unstyled {
+    list-style-type: none;
+    padding-left: 0;
+}
+
+/* .padding {
+    
+} */
+/* .campus-name-footer {
     font-size: 11px;
     font-style: italic;
 }
 
 .list-unstyled li a {
     font-size: 16px;
-}
+} */
 
-hr {
+/* hr {
     border-color: #BFDCFE;
     opacity: 0.3;
 }
@@ -83,10 +133,11 @@ footer p {
     font-size: 13px;
     color: #FFFFFF;
     font-weight: 100;
-}
+} */
 
-h6.fw-semibold {
+/* h6.fw-semibold {
     font-size: 14px;
+    margin-bottom: 1rem;
 }
 
 .list-unstyled li {
@@ -95,13 +146,13 @@ h6.fw-semibold {
 
 footer .col-md-3.d-flex.align-items-start {
     margin-bottom: 70px;
-}
+} */
 
-.footer-container {
+/* .footer-container {
     max-width: 90%; 
-}
+} */
 
-.footer-container {
+/* .footer-container {
     padding-top: 2rem;
 }
 
@@ -130,16 +181,16 @@ footer .col-md-3.d-flex.align-items-start {
 }
 
 .col-md-9 ul.list-unstyled li {
-    margin-bottom: 10px;
+    margin-bottom: 1rem;
 }
 
 .urs-logo-footer {
     width: 60px;
     margin-bottom: 1rem;
     margin-top: -5px;
-}
+} */
 
-.campus-name1-footer, .campus-name2-footer {
+/* .campus-name1-footer, .campus-name2-footer {
     margin-bottom: 26px;
     margin-left: -10px; 
 }
@@ -170,5 +221,8 @@ footer p {
     font-size: 13px;
     color: #FCFCFC;
     font-weight: 100px;
-}
+} */
 
+
+
+/* Responsive adjustments */

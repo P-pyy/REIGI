@@ -9,7 +9,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
 
     <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet"> -->
 
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
@@ -21,49 +21,66 @@
 
     <footer id="footer" class="text-white py-4">
         <div class="container footer-container">
-            <div class="row align-items-center mb-5">
-                <div class="col-md-3 d-flex align-items-start">
-                    <img src="img/URS LOGO.png" alt="University of Rizal System Logo" class="me-3 urs-logo-footer">
-                    <div>
-                        <div class="campus-name1-footer">University of <br> Rizal System</div>
-                        <span class="campus-name2-footer">Antipolo Campus</span>
-                    </div>
-                </div>
-                <div class="col-md-9">
+            <div class="container">
+                <!-- <div class="col-md-3 d-flex align-items-start">
+                     <a class="navbar-brand-footer" href="#">
+                        <img src="img/URS LOGO.png" width="55" alt="University of Rizal System Logo">
+                        <div>
+                            University of <br> Rizal System <br>
+                            <span class="campus-name-footer">Antipolo Campus</span>
+                        </div>
+                    </a>
+                </div> -->
+                <div class="">
                     <div class="row">
-                        <div class="col-md-3 mb-3 mb-md-0 text-start">
+                        <div class="column">
+                            <a class="navbar-brand-footer" href="#">
+                                <img src="img/URS LOGO.png" width="55" alt="University of Rizal System Logo">
+                                <div>
+                                    University of <br> Rizal System <br>
+                                    <span class="campus-name-footer">Antipolo Campus</span>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="column">
                             <h6 class="fw-semibold">HOME</h6>
                             <ul class="list-unstyled">
-                                <li><a href="faqs.html" class="text-white text-decoration-none">FAQ's Video</a></li>
-                                <li><a href="academic_calendar.html" class="text-white text-decoration-none">Academic Calendar</a></li>
+                                <li><a href="faqs.html" class="option">FAQ's Video</a></li>
+                                <li><a href="academic_calendar.html" class="option">Academic Calendar</a></li>
                             </ul>
                         </div>
-                        <div class="col-md-3 mb-3 mb-md-0 text-start">
+                        <div class="column">
                             <h6 class="fw-semibold">ANNOUNCEMENTS</h6>
                             <ul class="list-unstyled">
-                                <li><a href="announcement.html" class="text-white text-decoration-none">Latest Announcements</a></li>
-                                <li><a href="#" class="text-white text-decoration-none">URS Memos</a></li>
+                                <li><a href="announcement.html" class="option">Latest Announcements</a></li>
+
                             </ul>
                         </div>
-                        <div class="col-md-4 mb-3 mb-md-0 text-start">
-                            <h6 class="fw-semibold">FREQUENTLY ASKED QUESTIONS</h6>
+                        <div class="column">
+                            <h6 class="">FREQUENTLY ASKED QUESTIONS</h6>
                             <ul class="list-unstyled">
-                                <li><a href="#" class="text-white text-decoration-none">Academic requirements</a></li>
-                                <li><a href="#" class="text-white text-decoration-none">Enrollment process</a></li>
-                                <li><a href="#" class="text-white text-decoration-none">Document Request</a></li>
-                                <li><a href="#" class="text-white text-decoration-none">Clearance</a></li>
+                                <li class="padding">
+                                    <a href="#" class="option">Enrollment process</a>
+                                </li>
+                                <li class="padding">
+                                    <a href="#" class="option">Document Request</a>
+                                </li>
+                                <li class="padding">
+                                    <a href="#" class="option">Graduation & Clearance</a>
+                                </li>
                             </ul>
                         </div>
-                        <div class="col-md-2 text-start">
+                        <div class="column">
                             <h6 class="fw-semibold">LINKS</h6>
                             <ul class="list-unstyled d-flex justify-content-start gap-3">
-                                <li><a href="https://www.facebook.com/URSACAntipolo" class="text-white fs-5"><i class="fab fa-facebook"></i></a></li>
-                                <li><a href="#" class="text-white fs-5" data-bs-toggle="modal" data-bs-target="#mapModal"><i class="fas fa-map"></i></a></li>
-                                <li><a href="http://www.urs.edu.ph/" class="text-white fs-5"><i class="fas fa-globe"></i></a></li>
+                                <li><a href="https://www.facebook.com/URSACAntipolo" class="option"><i class="fab fa-facebook"></i></a></li>
+                                <li><a href="#" class="option" data-bs-toggle="modal" data-bs-target="#mapModal"><i class="fas fa-map"></i></a></li>
+                                <li><a href="http://www.urs.edu.ph/" class="option"><i class="fas fa-globe"></i></a></li>
                             </ul>
+                        </div>
 
         <!-- Bootstrap Modal for URS Map -->
-        <div class="modal fade" id="mapModal" tabindex="-1" aria-hidden="true">
+        <!-- <div class="modal fade" id="mapModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-lg modal-dialog-centered">
             <div class="modal-content">
             <div class="modal-body p-0">
@@ -76,7 +93,7 @@
             </div>
             </div>
         </div>
-        </div>
+        </div> -->
                         </div>
                     </div>
                 </div>
