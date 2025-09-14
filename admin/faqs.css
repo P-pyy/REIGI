@@ -239,6 +239,17 @@ body {
     }
     #loading-overlay.show { opacity:1; pointer-events: all; }
 
+/* edit text in table */
+
+.edit-faq {
+  text-decoration: none;  /* remove underline */
+  cursor: pointer;        /* show pointer on hover */
+}
+
+.edit-faq:hover {
+  text-decoration: underline; /* optional: underline only on hover */
+}
+
 
 
 
