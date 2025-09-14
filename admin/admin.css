@@ -38,6 +38,7 @@ body {
 /* Header */
 .main-header {
   display: flex;
+  flex-wrap: nowrap;
   justify-content: space-between;
   align-items: center;
   background: #fff;
