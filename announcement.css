@@ -2,15 +2,76 @@
 
 html, body {
     font-family: 'Montserrat', sans-serif;
-    height: 100%;
     margin: 0;
     display: flex;
     flex-direction: column;
-    background-color: #F3F4F8;
-    overflow-x: hidden;
+    background-color: #ffffff;
     scroll-behavior: smooth;
-
 }
+
+/* ! Scrollbar */
+
+/* Chrome, Edge, Safari */
+::-webkit-scrollbar {
+    width: 12px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 20px; 
+    margin: 2px;
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: #3066B3; 
+    border-radius: 20px !important;
+    border: 3px solid #f1f1f1; 
+    background-clip: padding-box;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background-color: #3378d3; 
+}
+
+/* ! Parrallax */
+
+.parallax {
+  background-image: url("/img/try.webp");
+  min-height: 100px; 
+  background-attachment: fixed;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+/* ! Announcement TITLE */
+
+.announcement-main-title {
+  display: flex;
+  justify-content: center;
+  text-align:center;
+  /* padding: 2rem 0 2rem 0; */
+  /* background-image: url('../images/bg-faq.webp'); */
+  /* height: 400px; */
+}
+
+.announcement-in-container {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  /* padding:60px 20px; */
+  width: 100%;
+  height: 300px;
+  /* gap: 2rem; */
+}
+
+.announcement-menu-title {
+  font-size: 3.5rem; 
+  font-weight:600; 
+  color:#0154A4; 
+  line-height:1.3;
+}
+
 
 main {
     flex: 1;
@@ -26,26 +87,33 @@ main {
     margin-top: 0 !important;   
 }
 
-.announcement-page {
-    margin-bottom: 8rem;
-}
 
 .announcement-page {
     display: flex;
-    margin-top: 3rem;
-    gap: 2rem;
+    justify-content: center;
+    /* margin-bottom: 8rem; */
+    /* margin-top: 3rem; */
+    gap: 2.5rem;
 }
 
 /* Sidebar */
 
+.container-sidebar {
+    display: flex;
+    flex-direction: ;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 0 20px;
+    margin-bottom: 50px;
+}
 .sidebar {
-    flex: 1 1 200px;
-    max-width: 300px;
+    /* flex: 1; */
+    /* max-width: 300px; */
     background-color: #f9f9f9;
-    padding: 1rem;
-    border-radius: 8px;
+    padding: 2rem;
+    /* border-radius: 8px; */
     box-shadow: 0 0 8px rgba(0,0,0,0.05);
-    height: fit-content;
+    height: 100vh;
     margin-left: -80px;
 }
 
@@ -72,12 +140,15 @@ main {
 
 
 .announcement-content {
-    flex: 3 1 0;
+    /* flex: 3 1 0; */
+    margin: 0;
+    width: 75%;
+    padding: 3rem 2rem;
 }
 
 .announcement-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
     gap: 2rem;
 }
 

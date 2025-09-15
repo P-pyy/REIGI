@@ -14,7 +14,9 @@ main {
     flex: 1;
 }
 
-/* navbar section */
+
+
+/* ! navbar section */
 
 .navbar {
     padding: 0.2rem;
@@ -61,7 +63,50 @@ main {
     margin-right: 5rem;
 }
 
-/* footer section */
+
+/* ! hover effects*/
+
+
+.hover-effect {
+    transform: translateY(1px);
+    transition: 0.2s ease-out;
+}
+
+.hover-effect:hover {
+    transform: translateY(0);
+}
+
+.hover-effect-f {
+    display: inline-block;
+    position: relative;
+}
+
+.hover-effect-f::after {
+  content: '';
+  position: absolute;
+  width: 100%;
+  transform: scaleX(0);
+  height: 1px;
+  bottom: 0;
+  left: 0;
+  background-color: #fcfcfc;
+  transition: transform 0.25s ease-out;
+}
+
+.hover-effect-f:hover::after {
+  transform: scaleX(1);
+}
+
+.hover-effect-f.center::after {
+  transform-origin: bottom center;
+}
+
+.hover-effect-f.center:hover::after {
+  transform-origin: bottom center;
+}
+
+
+/* ! footer section */
 
 footer {
     background-color: #0055A5;
