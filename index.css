@@ -4,14 +4,35 @@ html, body {
     display: flex;
     flex-direction: column;
     background-color: #ffffff;
-    overflow-y: scroll; !important /*added part*/
-    scrollbar-width: none; /*added part*/
-    scroll-behavior: smooth; /*added part*/
+    scroll-behavior: smooth;
 }
-/*added part*/
-body::-webkit-scrollbar{
-    display: none;
+
+/* ! Scrollbar */
+
+/* Chrome, Edge, Safari */
+::-webkit-scrollbar {
+    width: 12px;
 }
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 20px; 
+    margin: 2px;
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: #3066B3; 
+    border-radius: 20px !important;
+    border: 3px solid #f1f1f1; 
+    background-clip: padding-box;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background-color: #3378d3; 
+}
+
+
+
 
 section{
     scroll-margin-top: 80px;
@@ -253,7 +274,7 @@ section{
 .calendar-wrapper{
     display: flex;
     text-align: center;
-    width: 100%;
+    /* width: 100%; */
     /* max-width: 1200px; */
     margin: 0 auto;
     background: #f0f2f5;
@@ -262,9 +283,9 @@ section{
 }
 
 .calendar-card{
-    background: #f9fafb;
+    background: #fcfcfc;
     padding: 2rem;
-    width: 200%;
+    width: 100%;
     border-radius: 10px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
     margin: 50px 10rem;
@@ -296,6 +317,13 @@ section{
     margin-bottom: 1.5rem;
 }
 
+.dropdown-title{
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #333;
+    user-select: none;
+}
+
 
 ul{
     list-style: none;
@@ -307,13 +335,12 @@ ul{
 .arrow{
       color: #3b82f6;
       margin-right: 0.5rem;
-      font-weight: bold;
-      font-size: 1.5rem;
+      font-weight: 600;
+      font-size: 1.2rem;
       user-select: none;
       transition: transform 0.3s ease;
       cursor: pointer;
-      display: inline-flex;
-      align-items: center;
+      /* align-items: center; */
       justify-content: center;
 }
 
@@ -322,9 +349,10 @@ ul{
 }
 
 .calendar-image{
+    display: none;
     max-width: 100%;
     padding: 1rem 0 1rem 0;
-    border-radius: 1rem !important;
+    border-radius: 1rem;
 }
 
 .list-item-content{
