@@ -16,21 +16,18 @@
         Frequently Asked Questions > Enrollment Process > Question
       </div>
 
-      <!-- Title -->
-      <h2 class="page-title">Shifting / Program Transfer</h2>
-      <div class="byline">By: URSAC Registrar &nbsp;&nbsp; | &nbsp;&nbsp; Updated: MM/DD/YY</div>
+     <!-- Title -->
+    <h2 class="page-title">Loading...</h2>
+    <div class="byline">
+      By: URSAC Registrar &nbsp;&nbsp; | &nbsp;&nbsp; Updated: <span id="updated-date">Loading...</span>
+    </div>
 
-      <!-- Content -->
-      <p>
-        labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
-      </p>
-      <p>
-        Section 1.10.32 of "de Finibus Bonorum et Malorum", written by Cicero in 45 BC<br> "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?"
-1914 translation by H. Rackham
-      </p>
+    <!-- Content -->
+    <div id="faq-details">Loading details...</div>
 
-      <!-- Image -->
-      <img src="img/CARD-BG.png" alt="School Building" class="img-fluid">
+    <!-- Image -->
+    <img id="faq-image" alt="FAQ Image" class="img-fluid" style="display: none;">
+
 
       <!-- Button -->
       <button class="go-back-btn">Go Back</button>
@@ -41,6 +38,58 @@
   <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.min.js"></script>
   <script type="module" src="script.js"></script>
+
+  <script type="module">
+  import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
+
+  const SUPABASE_URL = "https://oeeqegpgmobbuhaadrhr.supabase.co";
+  const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9lZXFlZ3BnbW9iYnVoYWFkcmhyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTY0ODQwNzEsImV4cCI6MjA3MjA2MDA3MX0.M-pplPUdj21v2Fb5aLmmbE94gDGCfslksAI8fJca2cE"; 
+  const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+  // Get id from URL
+  const params = new URLSearchParams(window.location.search);
+  const faqId = params.get("id");
+
+  async function loadFaq() {
+    const { data, error } = await supabase
+      .from("faqs")
+      .select("*")
+      .eq("id", faqId)
+      .single();
+
+    if (error) {
+      console.error("Error fetching FAQ:", error);
+      return;
+    }
+
+  // Update page content
+  document.querySelector(".page-title").textContent = data.question_title;
+
+  // Update only the date span
+  document.querySelector("#updated-date").textContent = 
+    new Date(data.date_posted).toLocaleDateString();
+
+  // Replace the details section
+  document.querySelector("#faq-details").innerHTML = data.details;
+
+  // Handle image (hide if none)
+  if (data.image_url) {
+    document.querySelector("#faq-image").src = data.image_url;
+    document.querySelector("#faq-image").style.display = "block";
+  } else {
+    document.querySelector("#faq-image").style.display = "none";
+  }
+  } // <-- closes loadFaq()
+
+  // Call the function
+  loadFaq();
+
+  // Handle Go Back button
+  document.querySelector(".go-back-btn").addEventListener("click", () => {
+    window.location.href = "faq_user_menu.html";
+  });
+</script>
+
 
 </body>
 </html>
