@@ -41,20 +41,12 @@
 <div class="faq-wrapper ">
   <div class="faq-grid">
     <ol class="faq-list" style="padding-left: 1.5em;">
-      <h5 class="mb-5 faq-title text-start" style="margin-left: -1em;">FREQUENTLY ASKED QUESTIONS:</h5>
-      <li>
-        <a href="Shifting.html">What's the process of getting Shifting or Program transfer form?</a>
-        <i class="ph ph-arrow-up-right" weight="bold" style="color: #0055A5;"></i>
-      </li>
-       <li>
-        <a href="Shifting.html">How is the process of re-admission or re-enrollment?</a>
-        <i class="ph ph-arrow-up-right" weight="bold" style="color: #0055A5;"></i>
-      </li>
-      <li>
-        <a href="Shifting.html">What form is needed if I want to cross-enroll?</a>
-        <i class="ph ph-arrow-up-right" weight="bold" style="color: #0055A5;"></i>
-      </li>
-  </ol>
+    <h5 class="mb-5 faq-title text-start" style="margin-left: -1em;">
+      FREQUENTLY ASKED QUESTIONS:
+    </h5>
+  <!-- FAQs will be loaded here -->
+</ol>
+
 </div>
   
 </div>
@@ -69,5 +61,41 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.min.js"></script>
   <script src="https://unpkg.com/@phosphor-icons/web"></script>
   <script src="script.js"></script>
+
+  <script type="module">
+  import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
+
+  const SUPABASE_URL = "https://oeeqegpgmobbuhaadrhr.supabase.co";
+  const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9lZXFlZ3BnbW9iYnVoYWFkcmhyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTY0ODQwNzEsImV4cCI6MjA3MjA2MDA3MX0.M-pplPUdj21v2Fb5aLmmbE94gDGCfslksAI8fJca2cE"; 
+  const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+  async function loadFAQs() {
+    // Fetch only FAQs for Enrollment
+    const { data, error } = await supabase
+      .from("faqs")
+      .select("*")
+      .eq("category", "enrollment");
+
+    if (error) {
+      console.error("Error fetching FAQs:", error);
+      return;
+    }
+
+    const list = document.querySelector(".faq-list");
+    list.innerHTML = `<h5 class="mb-5 faq-title text-start" style="margin-left: -1em;">FREQUENTLY ASKED QUESTIONS:</h5>`;
+
+    data.forEach(faq => {
+    const li = document.createElement("li");
+    li.innerHTML = `
+      <a href="faq_card.html?id=${faq.id}">${faq.post_title}</a>
+      <i class="ph ph-arrow-up-right" style="color: #0055A5;"></i>
+    `;
+    list.appendChild(li);
+  });
+  }
+
+  loadFAQs();
+</script>
+
 </body>
 </html>
