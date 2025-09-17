@@ -11,7 +11,7 @@
 <body>
 
       <!-- Full-width Banner -->
-<div class="faq-main-title parallax">
+  <div class="faq-main-title parallax">
   <div class="faq-in-container">
       <!-- Breadcrumb -->
 
@@ -30,9 +30,13 @@
     </h1>
 
     <!-- Search bar -->
-      <div class="search-container">
-          <input class="search-bar" type="text" placeholder="Search..." >
-      </div>
+    <div class="search-container">
+      <input id="faq-search" class="search-bar" type="text" placeholder="Search...">
+    </div>
+
+    <!-- Search results -->
+    <div id="search-results" class="mt-3"></div>
+
   </div>
   
 </div>
@@ -62,8 +66,8 @@
   const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9lZXFlZ3BnbW9iYnVoYWFkcmhyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTY0ODQwNzEsImV4cCI6MjA3MjA2MDA3MX0.M-pplPUdj21v2Fb5aLmmbE94gDGCfslksAI8fJca2cE"; 
   const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
+  // Load only Graduation & Clearance FAQs by default
   async function loadFAQs() {
-    // Fetch only FAQs for Enrollment
     const { data, error } = await supabase
       .from("faqs")
       .select("*")
@@ -78,16 +82,59 @@
     list.innerHTML = `<h5 class="mb-5 faq-title text-start" style="margin-left: -1em;">FREQUENTLY ASKED QUESTIONS:</h5>`;
 
     data.forEach(faq => {
-    const li = document.createElement("li");
-    li.innerHTML = `
-      <a href="faq_card.html?id=${faq.id}">${faq.post_title}</a>
-      <i class="ph ph-arrow-up-right" style="color: #0055A5;"></i>
-    `;
-    list.appendChild(li);
-  });
+      const li = document.createElement("li");
+      li.innerHTML = `
+        <a href="faq_card.html?id=${faq.id}">${faq.post_title}</a>
+        <i class="ph ph-arrow-up-right" style="color: #0055A5;"></i>
+      `;
+      list.appendChild(li);
+    });
   }
 
-  loadFAQs();
-</script>
+  // search across all categories
+  const searchInput = document.getElementById("faq-search");
+  const resultsDiv = document.getElementById("search-results");
+
+ async function searchFAQs(query) {
+  if (!query.trim()) {
+    resultsDiv.innerHTML = "";
+    resultsDiv.style.display = "none"; // hide results when empty
+    return;
+  } else {
+    resultsDiv.style.display = "block"; // show results when typing
+  }
+
+  const { data, error } = await supabase
+    .from("faqs")
+    .select("id, post_title, category")
+    .ilike("post_title", `%${query}%`);
+
+  if (error) {
+    console.error("Error searching FAQs:", error);
+    return;
+  }
+
+  if (!data || data.length === 0) {
+    resultsDiv.innerHTML = `<p class="text-muted">No results found.</p>`;
+    return;
+  }
+
+  resultsDiv.innerHTML = data.map(faq => `
+    <div class="search-result mb-2">
+      <a href="faq_card.html?id=${faq.id}">
+        [${faq.category.replace("-", " ").toUpperCase()}] ${faq.post_title}
+      </a>
+    </div>
+  `).join("");
+  }
+  // Trigger search on typing
+  searchInput.addEventListener("input", e => {
+    searchFAQs(e.target.value);
+  });
+
+  // Load default category FAQs on page load
+  document.addEventListener("DOMContentLoaded", loadFAQs);
+  </script>
+
 </body>
 </html>
