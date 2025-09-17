@@ -97,28 +97,30 @@ window.addEventListener("DOMContentLoaded", async function () {
     tbody.innerHTML = "";
 
     announcements.forEach(item => {
-      const dateObj = new Date(item.scheduled_datetime);
-      const formattedDate = dateObj.toLocaleDateString("en-US", { year: "2-digit", month: "2-digit", day: "2-digit" });
-      const formattedTime = dateObj.toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit", hour12: true });
+  const dateObj = new Date(item.scheduled_datetime); // UTC from Supabase
 
-      const row = document.createElement("tr");
-      row.classList.add("fade-in");
-      row.innerHTML = `
-        <td>${item.id}</td>
-        <td>${item.title}</td>
-        <td>${item.details}</td>
-        <td><img src="${item.image_url}" alt="announcement image" style="width:60px; height:auto; border-radius:4px;"></td>
-        <td>${formattedDate}</td>
-        <td>${formattedTime}</td>
-        <td>
-          <a href="#" class="text-primary me-2 edit-link" data-id="${item.id}">Edit</a>
-          <a href="#" class="text-danger trash-icon" data-id="${item.id}">
-            <i class="ph ph-trash"></i>
-          </a>
-        </td>
-      `;
-      tbody.appendChild(row);
-    });
+  // Let JS convert to local PH time automatically
+  const formattedDate = dateObj.toLocaleDateString("en-PH", { year: "2-digit", month: "2-digit", day: "2-digit" });
+  const formattedTime = dateObj.toLocaleTimeString("en-PH", { hour: "2-digit", minute: "2-digit", hour12: true });
+
+  const row = document.createElement("tr");
+  row.classList.add("fade-in");
+  row.innerHTML = `
+    <td>${item.id}</td>
+    <td>${item.title}</td>
+    <td>${item.details}</td>
+    <td><img src="${item.image_url}" alt="announcement image" style="width:60px; height:auto; border-radius:4px;"></td>
+    <td>${formattedDate}</td>
+    <td>${formattedTime}</td>
+    <td>
+      <a href="#" class="text-primary me-2 edit-link" data-id="${item.id}">Edit</a>
+      <a href="#" class="text-danger trash-icon" data-id="${item.id}">
+        <i class="ph ph-trash"></i>
+      </a>
+    </td>
+  `;
+  tbody.appendChild(row);
+});
 
     // Delete
     document.querySelectorAll(".trash-icon").forEach(btn => {

@@ -148,15 +148,61 @@ async function loadGradCalendar() {
 // =======================
 // Init
 // =======================
-document.addEventListener("DOMContentLoaded", () => {
-  loadFaqVideo();
-  loadUndergradCalendar();
-  loadGradCalendar();
+document.addEventListener("DOMContentLoaded", async () => {
+  await loadFaqVideo();
+  await loadUndergradCalendar();
+  await loadGradCalendar();
+  await loadTodayAnnouncements();
 });
+
 
 document.getElementById("faq-btn").addEventListener("click", function () {
     window.location.href = "faq_user_menu.html";
   });
 
+async function loadTodayAnnouncements() {
+  const container = document.getElementById("announcements-container");
 
+  // Fetch announcements for today
+  const today = new Date().toISOString().slice(0, 10);
+  const { data, error } = await supabaseClient
+    .from("announcements")
+    .select("*")
+    .gte("scheduled_datetime", today + "T00:00:00")
+    .lte("scheduled_datetime", today + "T23:59:59")
+    .order("scheduled_datetime", { ascending: false });
 
+  container.innerHTML = ""; // clear old content
+
+  if (error) {
+    container.innerHTML = `<p>Error loading announcements.</p>`;
+    console.error(error);
+    return;
+  }
+
+  if (!data || data.length === 0) {
+    container.innerHTML = `<p>No latest Announcements</p>`;
+    return;
+  }
+
+  // Render cards
+  data.forEach(item => {
+    const dateObj = new Date(item.scheduled_datetime);
+    const formattedDate = dateObj.toLocaleDateString("en-US", { year: "2-digit", month: "2-digit", day: "2-digit" });
+    const formattedTime = dateObj.toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit", hour12: true });
+
+    const card = document.createElement("div");
+    card.className = "update-card";
+    card.innerHTML = `
+      <div class="card-bg-shape"></div>
+      <img src="${item.image_url || 'img/CARD-BG.png'}" alt="announcement image" class="card-image">
+      <div class="card-content">
+        <h3><b>${item.title}</b></h3>
+        <p class="date"><b>${formattedDate}</b></p>
+        <p class="description">${item.details}</p>
+        <a href="announcement_article.html?id=${item.id}" class="read-more">Read more!</a>
+      </div>
+    `;
+    container.appendChild(card);
+  });
+}

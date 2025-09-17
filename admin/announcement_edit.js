@@ -94,10 +94,18 @@ async function loadAnnouncement(editId) {
   document.getElementById("previewContent").textContent = data.details || "Your announcement details will appear here...";
   document.getElementById("previewImage").src = data.image_url || "img/CARD-BG.png";
 
+
   if (data.scheduled_datetime) {
-    const dt = new Date(data.scheduled_datetime);
+    const dt = new Date(data.scheduled_datetime); // automatically converts to local time
+
+    // Set input value for <input type="datetime-local">
     document.getElementById("scheduledDateTime").value = dt.toISOString().slice(0,16);
-    document.getElementById("previewDateTime").innerHTML = `<strong>${dt.toLocaleDateString()}</strong> • <span class="text-muted">${dt.toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'})}</span>`;
+
+    // Set preview
+    document.getElementById("previewDateTime").innerHTML = `
+      <strong>${dt.toLocaleDateString("en-PH")}</strong> • 
+      <span class="text-muted">${dt.toLocaleTimeString("en-PH", {hour:'2-digit',minute:'2-digit', hour12:true})}</span>
+    `;
   } else {
     document.getElementById("previewDateTime").innerHTML = `<strong>MM/DD/YY</strong> • <span class="text-muted">--:--</span>`;
   }
@@ -119,17 +127,18 @@ function setupSubmitHandler() {
   form.addEventListener("submit", async e => {
     e.preventDefault();
 
-    const editId = form.dataset.editId;
-    const titleInput = document.getElementById("announcementTitle");
-    const detailsInput = document.getElementById("announcementDetails");
-    const dateInput = document.getElementById("scheduledDateTime");
+    const editId = form.dataset.editId || "";
+    const title = document.getElementById("announcementTitle").value.trim();
+    const details = document.getElementById("announcementDetails").value.trim();
+    let dateTime = document.getElementById("scheduledDateTime").value;
+    let imageUrl = document.getElementById("previewImage").src;
     const imageInput = document.getElementById("imageInput");
-    const previewImage = document.getElementById("previewImage");
 
-    let title = titleInput.value.trim();
-    let details = detailsInput.value.trim();
-    let dateTime = dateInput.value;
-    let imageUrl = previewImage.src;
+    // Convert input local time to UTC
+    if (dateTime) {
+      const localDt = new Date(dateTime);
+      dateTime = localDt.toISOString(); // store as UTC
+    }
 
     try {
       // Upload image if new file selected
@@ -147,11 +156,13 @@ function setupSubmitHandler() {
 
       const payload = { title, details, scheduled_datetime: dateTime, image_url: imageUrl };
 
-      if (editId) {
+      if (editId !== "") {
+        // Update existing announcement
         const { error } = await supabaseClient.from("announcements").update(payload).eq("id", editId);
         if (error) throw new Error(error.message);
         alert("Announcement updated!");
       } else {
+        // Insert new announcement
         const { error } = await supabaseClient.from("announcements").insert([payload]);
         if (error) throw new Error(error.message);
         alert("Announcement added!");
@@ -178,3 +189,4 @@ export function initAnnouncementEdit(editId = null) {
     if (btnText) btnText.textContent = "Add Announcement";
   }
 }
+
