@@ -154,4 +154,9 @@ document.addEventListener("DOMContentLoaded", () => {
   loadGradCalendar();
 });
 
+document.getElementById("faq-btn").addEventListener("click", function () {
+    window.location.href = "faq_user_menu.html";
+  });
+
+
 
