@@ -59,11 +59,6 @@ if (resetForm) {
       redirectTo: "https://reigi.vercel.app/admin/login_reset/index.html",
     });
 
-    //  const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
-    //   redirectTo: "https://reigi.vercel.app/admin/login_reset/",
-    // });
-
-
     if (error) {
       msg.textContent = "❌ " + error.message;
       msg.style.color = "red";
