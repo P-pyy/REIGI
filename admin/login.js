@@ -7,6 +7,42 @@ const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
+async function getUserLocation() {
+  // Check if geolocation is available
+  if ("geolocation" in navigator) {
+    return new Promise((resolve) => {
+      navigator.geolocation.getCurrentPosition(
+        async (position) => {
+          const { latitude, longitude } = position.coords;
+
+          try {
+            // Use a reverse geocoding API to get city, country
+            const res = await fetch(
+              `https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json`
+            );
+            const data = await res.json();
+            const city = data.address.city || data.address.town || data.address.village || "Unknown City";
+            const country = data.address.country || "Unknown Country";
+            resolve(`${city}, ${country}`);
+          } catch (err) {
+            console.error("Reverse geocoding failed:", err);
+            resolve("Unknown");
+          }
+        },
+        (err) => {
+          console.warn("Geolocation permission denied or error:", err);
+          resolve("Unknown");
+        },
+        { enableHighAccuracy: true, timeout: 5000, maximumAge: 0 }
+      );
+    });
+  } else {
+    console.warn("Geolocation is not available in this browser");
+    return "Unknown";
+  }
+}
+
+
 // =======================
 // LOGIN FORM
 // =======================
@@ -26,6 +62,24 @@ if (loginForm) {
     if (error) {
       alert("❌ Login failed: " + error.message);
     } else {
+      const user = data.user; // logged-in user
+
+      if (user) {
+        const parser = new UAParser();
+        const result = parser.getResult();
+        const friendlyDevice = `${result.os.name || "Unknown OS"} ${result.os.version || ""} - ${result.browser.name || "Unknown Browser"} ${result.browser.version || ""}`;
+
+        const userLocation = await getUserLocation(); // get City, Country
+
+        await supabase.from("login_history").insert([
+          {
+            user_id: user.id,
+            device: friendlyDevice,
+            location: userLocation,
+          },
+        ]);
+      }
+
       alert("✅ Login successful!");
       window.location.href = "admin.html"; // redirect to dashboard
     }
@@ -37,6 +91,8 @@ if (loginForm) {
     passwordInput.type = this.checked ? "text" : "password";
   });
 }
+
+
 
 // =======================
 // FORGOT PASSWORD (EMAIL ENTRY FORM)
