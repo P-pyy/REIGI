@@ -134,7 +134,7 @@ new Chart(devCtx, {
   }
 });
 
-// Format percentage labels
+///Format percentage labels
 document.addEventListener("DOMContentLoaded", function() {
   const labels = document.querySelectorAll(".percentage-labels p");
   labels.forEach(p => {
@@ -174,3 +174,47 @@ window.addEventListener("DOMContentLoaded", async () => {
   annNumElem.textContent = data.length;
   annNumElem.style.visibility = "visible";
 });
+
+// Helper to format date as MM/DD/YY
+function formatDate(dateString) {
+  const d = new Date(dateString);
+  return d.toLocaleDateString("en-US", {
+    month: "2-digit",
+    day: "2-digit",
+    year: "2-digit",
+  });
+}
+
+// ==========================
+// Get latest FAQ video
+// ==========================
+const { data: videoData, error: videoError } = await supabase
+  .from("sitemedia")
+  .select("uploaded_at")
+  .eq("type", "video")
+  .order("id", { ascending: false })
+  .limit(1);
+
+if (!videoError && videoData?.length > 0) {
+  document.getElementById("video-date").textContent =
+    formatDate(videoData[0].uploaded_at);
+} else {
+  document.getElementById("video-date").textContent = "No data yet";
+}
+
+// ==========================
+// Get latest Academic Calendar
+// ==========================
+const { data: calendarData, error: calError } = await supabase
+  .from("sitemedia")
+  .select("uploaded_at")
+  .in("type", ["calendar", "calendar_grad"])
+  .order("id", { ascending: false })
+  .limit(1);
+
+if (!calError && calendarData?.length > 0) {
+  document.getElementById("calendar-date").textContent =
+    formatDate(calendarData[0].uploaded_at);
+} else {
+  document.getElementById("calendar-date").textContent = "No data yet";
+}
