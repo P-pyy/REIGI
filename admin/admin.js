@@ -134,7 +134,7 @@ new Chart(devCtx, {
   }
 });
 
-// ✅ Format percentage labels
+// Format percentage labels
 document.addEventListener("DOMContentLoaded", function() {
   const labels = document.querySelectorAll(".percentage-labels p");
   labels.forEach(p => {
