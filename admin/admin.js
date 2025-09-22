@@ -143,3 +143,34 @@ document.addEventListener("DOMContentLoaded", function() {
     p.innerHTML = `<span class="label">${label}</span><span class="percent">${percent}</span>`;
   });
 });
+
+// =======================
+// Load Announcements Count This Month
+// =======================
+window.addEventListener("DOMContentLoaded", async () => {
+  const annNumElem = document.querySelector(".ann-num");
+
+  if (!annNumElem) return;
+
+  // Get first and last day of current month
+  const now = new Date();
+  const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+  const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59);
+
+  // ✅ use supabase (not supabaseClient)
+  const { data, error } = await supabase
+    .from("announcements")
+    .select("id, scheduled_datetime")
+    .gte("scheduled_datetime", startOfMonth.toISOString())
+    .lte("scheduled_datetime", endOfMonth.toISOString());
+
+  if (error) {
+    console.error("Error fetching announcements this month:", error.message);
+    annNumElem.textContent = "0";
+    return;
+  }
+
+  // Update dashboard
+  annNumElem.textContent = data.length;
+  annNumElem.style.visibility = "visible";
+});
