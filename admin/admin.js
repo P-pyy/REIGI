@@ -114,87 +114,81 @@ legendItem.innerHTML = `
 `;
 legendContainer.appendChild(legendItem);
 
-// ✅ Pie Chart (initialize with dummy data)
+// ✅ Pie Chart (device types)
 const devCtx = document.getElementById("deviceChart");
 const deviceChart = new Chart(devCtx, {
   type: "doughnut",
   data: {
     labels: ["Mobile", "Computer"],
-    datasets: [{
-      data: [0, 0], // start with 0, will update later
-      backgroundColor: ["#CDE4FF", "#0055A5"],
-      borderWidth: 0
-    }]
+    datasets: [{ data: [0, 0], backgroundColor: ["#CDE4FF", "#0055A5"], borderWidth: 0 }]
   },
-  options: {
-    responsive: true,
-    cutout: "50%",
-    plugins: { legend: { display: false } },
-    maintainAspectRatio: false
-  }
+  options: { responsive: true, cutout: "50%", plugins: { legend: { display: false } }, maintainAspectRatio: false }
 });
 
 // =======================
-// Load Device Types Chart
+// Device Types Chart
 // =======================
 async function loadDeviceTypes() {
-  const { data, error } = await supabase
-    .from("visitors")
-    .select("device_type");
+  const { data, error } = await supabase.from("visitors").select("device_type");
+  if (error || !data) return;
 
-  if (error) {
-    console.error("Error fetching device data:", error.message);
-    return;
-  }
-
-  if (!data || data.length === 0) {
-    console.warn("No visitor data yet");
-    return;
-  }
-
-  // Count Mobile vs Computer
-  let mobileCount = 0;
-  let computerCount = 0;
-
+  let mobileCount = 0, computerCount = 0;
   data.forEach(row => {
-    if (row.device_type === "Mobile") {
-      mobileCount++;
-    } else if (row.device_type === "Computer") {
-      computerCount++;
-    }
+    if (row.device_type === "Mobile") mobileCount++;
+    else if (row.device_type === "Computer") computerCount++;
   });
 
   const total = mobileCount + computerCount;
-  const mobilePercent = total > 0 ? ((mobileCount / total) * 100).toFixed(0) : 0;
-  const computerPercent = total > 0 ? ((computerCount / total) * 100).toFixed(0) : 0;
+  const mobilePercent = total ? ((mobileCount / total) * 100).toFixed(0) : 0;
+  const computerPercent = total ? ((computerCount / total) * 100).toFixed(0) : 0;
 
-  //  Update existing pie chart
   deviceChart.data.datasets[0].data = [mobileCount, computerCount];
   deviceChart.update();
 
-  //  Update percentage labels in the DOM
   const labelsContainer = document.querySelector(".percentage-labels");
   labelsContainer.innerHTML = `
     <div class="percentage-item"><span>Mobile</span><span>${mobilePercent}%</span></div>
-    <div class="percentage-item"><span>Computer</span><span>${computerPercent}%</span></div>
-  `;
+    <div class="percentage-item"><span>Computer</span><span>${computerPercent}%</span></div>`;
 }
 
-// Call it after DOM is ready
-window.addEventListener("DOMContentLoaded", () => {
-  loadDeviceTypes();
-});
+// =======================
+// Bounce Rate (fixed)
+// =======================
+async function loadBounceRate() {
+  const { data, error } = await supabase.from("visitors").select("visited_at, exited_at");
+  if (error || !data) return;
 
+  const total = data.length;
+  if (total === 0) {
+    document.querySelector(".bounce-percent").textContent = "0%";
+    return;
+  }
 
-///Format percentage labels
-document.addEventListener("DOMContentLoaded", function() {
-  const labels = document.querySelectorAll(".percentage-labels p");
-  labels.forEach(p => {
-    const text = p.textContent.trim();
-    const [label, percent] = text.split(" ");
-    p.innerHTML = `<span class="label">${label}</span><span class="percent">${percent}</span>`;
+  let bounced = 0;
+  data.forEach(v => {
+    if (!v.exited_at) {
+      bounced++; // still active or exit not recorded
+    } else {
+      const start = new Date(v.visited_at).getTime();
+      const exit = new Date(v.exited_at).getTime();
+      const duration = (exit - start) / 1000;
+      if (duration < 30) bounced++;
+    }
   });
-});
+
+  const bounceRate = Math.round((bounced / total) * 100);
+  document.querySelector(".bounce-percent").textContent = bounceRate + "%";
+}
+
+// =======================
+// Run after DOM Ready
+// =======================
+document.addEventListener("DOMContentLoaded", () => {
+  loadDeviceTypes();
+  loadBounceRate();
+})
+
+
 
 // =======================
 // Load Announcements Count This Month
@@ -209,7 +203,6 @@ window.addEventListener("DOMContentLoaded", async () => {
   const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
   const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59);
 
-  // ✅ use supabase (not supabaseClient)
   const { data, error } = await supabase
     .from("announcements")
     .select("id, scheduled_datetime")
@@ -270,5 +263,9 @@ if (!calError && calendarData?.length > 0) {
 } else {
   document.getElementById("calendar-date").textContent = "No data yet";
 }
+
+
+
+
 
 

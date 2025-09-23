@@ -210,32 +210,57 @@ async function loadTodayAnnouncements() {
   });
 }
 
-function getDeviceType() {
-  const ua = navigator.userAgent.toLowerCase();
-  if (/mobile|android|iphone|ipad|tablet/i.test(ua)) {
-    return "Mobile";
-  }
-  return "Computer";
-}
+// =======================
+// Track Visitor on Page Load
+// =======================
+async function trackVisitor() {
+  const deviceType = /Mobi|Android/i.test(navigator.userAgent)
+    ? "Mobile"
+    : "Computer";
 
-async function logVisitorDevice() {
-  if (sessionStorage.getItem("deviceLogged")) {
-    console.log("Already logged this session");
+  const { data, error } = await supabaseClient
+    .from("visitors")
+    .insert([{ device_type: deviceType }])
+    .select("id")
+    .single();
+
+  if (error) {
+    console.error("Error inserting visitor:", error.message);
     return;
   }
 
-  const deviceType = getDeviceType();
-  const { error } = await supabaseClient
-    .from("visitors")
-    .insert([{ device_type: deviceType }]);
-
-  if (error) {
-    console.error("Error logging device:", error.message);
-  } else {
-    console.log("Device logged:", deviceType);
-    sessionStorage.setItem("deviceLogged", "true");
+  if (data) {
+    sessionStorage.setItem("visitorId", data.id);
+    console.log("Visitor tracked with ID:", data.id);
   }
 }
 
-// log once per session
-logVisitorDevice();
+document.addEventListener("DOMContentLoaded", () => {
+  trackVisitor();
+  loadFaqVideo();
+  loadUndergradCalendar();
+  loadGradCalendar();
+  loadTodayAnnouncements();
+});
+
+
+// =======================
+// Track Exit (using visibilitychange)
+// =======================
+document.addEventListener("visibilitychange", async () => {
+  if (document.visibilityState === "hidden") {
+    const visitorId = sessionStorage.getItem("visitorId");
+    if (visitorId) {
+      const { error } = await supabaseClient
+        .from("visitors")
+        .update({ exited_at: new Date().toISOString() })
+        .eq("id", visitorId);
+
+      if (error) {
+        console.error("Error updating exited_at:", error.message);
+      } else {
+        console.log("Exit time saved for visitor:", visitorId);
+      }
+    }
+  }
+});
