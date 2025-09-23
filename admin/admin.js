@@ -172,7 +172,7 @@ async function loadDeviceTypes() {
   deviceChart.data.datasets[0].data = [mobileCount, computerCount];
   deviceChart.update();
 
-  // ✅ Update percentage labels in the DOM
+  //  Update percentage labels in the DOM
   const labelsContainer = document.querySelector(".percentage-labels");
   labelsContainer.innerHTML = `
     <div class="percentage-item"><span>Mobile</span><span>${mobilePercent}%</span></div>
