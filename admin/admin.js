@@ -168,7 +168,7 @@ async function loadDeviceTypes() {
   const mobilePercent = total > 0 ? ((mobileCount / total) * 100).toFixed(0) : 0;
   const computerPercent = total > 0 ? ((computerCount / total) * 100).toFixed(0) : 0;
 
-  // ✅ Update existing pie chart
+  //  Update existing pie chart
   deviceChart.data.datasets[0].data = [mobileCount, computerCount];
   deviceChart.update();
 
