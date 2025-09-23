@@ -114,14 +114,14 @@ legendItem.innerHTML = `
 `;
 legendContainer.appendChild(legendItem);
 
-// ✅ Pie Chart
+// ✅ Pie Chart (initialize with dummy data)
 const devCtx = document.getElementById("deviceChart");
-new Chart(devCtx, {
+const deviceChart = new Chart(devCtx, {
   type: "doughnut",
   data: {
     labels: ["Mobile", "Computer"],
     datasets: [{
-      data: [35, 65],
+      data: [0, 0], // start with 0, will update later
       backgroundColor: ["#CDE4FF", "#0055A5"],
       borderWidth: 0
     }]
@@ -133,6 +133,58 @@ new Chart(devCtx, {
     maintainAspectRatio: false
   }
 });
+
+// =======================
+// Load Device Types Chart
+// =======================
+async function loadDeviceTypes() {
+  const { data, error } = await supabase
+    .from("visitors")
+    .select("device_type");
+
+  if (error) {
+    console.error("Error fetching device data:", error.message);
+    return;
+  }
+
+  if (!data || data.length === 0) {
+    console.warn("No visitor data yet");
+    return;
+  }
+
+  // Count Mobile vs Computer
+  let mobileCount = 0;
+  let computerCount = 0;
+
+  data.forEach(row => {
+    if (row.device_type === "Mobile") {
+      mobileCount++;
+    } else if (row.device_type === "Computer") {
+      computerCount++;
+    }
+  });
+
+  const total = mobileCount + computerCount;
+  const mobilePercent = total > 0 ? ((mobileCount / total) * 100).toFixed(0) : 0;
+  const computerPercent = total > 0 ? ((computerCount / total) * 100).toFixed(0) : 0;
+
+  // ✅ Update existing pie chart
+  deviceChart.data.datasets[0].data = [mobileCount, computerCount];
+  deviceChart.update();
+
+  // ✅ Update percentage labels in the DOM
+  const labelsContainer = document.querySelector(".percentage-labels");
+  labelsContainer.innerHTML = `
+    <div class="percentage-item"><span>Mobile</span><span>${mobilePercent}%</span></div>
+    <div class="percentage-item"><span>Computer</span><span>${computerPercent}%</span></div>
+  `;
+}
+
+// Call it after DOM is ready
+window.addEventListener("DOMContentLoaded", () => {
+  loadDeviceTypes();
+});
+
 
 ///Format percentage labels
 document.addEventListener("DOMContentLoaded", function() {
@@ -218,3 +270,5 @@ if (!calError && calendarData?.length > 0) {
 } else {
   document.getElementById("calendar-date").textContent = "No data yet";
 }
+
+

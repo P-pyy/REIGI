@@ -206,3 +206,33 @@ async function loadTodayAnnouncements() {
     container.appendChild(card);
   });
 }
+
+function getDeviceType() {
+  const ua = navigator.userAgent.toLowerCase();
+  if (/mobile|android|iphone|ipad|tablet/i.test(ua)) {
+    return "Mobile";
+  }
+  return "Computer";
+}
+
+async function logVisitorDevice() {
+  if (sessionStorage.getItem("deviceLogged")) {
+    console.log("Already logged this session");
+    return;
+  }
+
+  const deviceType = getDeviceType();
+  const { error } = await supabaseClient
+    .from("visitors")
+    .insert([{ device_type: deviceType }]);
+
+  if (error) {
+    console.error("Error logging device:", error.message);
+  } else {
+    console.log("Device logged:", deviceType);
+    sessionStorage.setItem("deviceLogged", "true");
+  }
+}
+
+// log once per session
+logVisitorDevice();
