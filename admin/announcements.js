@@ -57,7 +57,7 @@ fetch('sidebar.html')
     if (logoutBtn) {
       logoutBtn.addEventListener("click", async () => {
         console.log("Logout clicked");
-        const { error } = await supabaseClient.auth.signOut(); // ✅ use correct client
+        const { error } = await supabaseClient.auth.signOut(); //  use correct client
         if (error) console.error("Logout error:", error.message);
         else window.location.href = "login.html";
       });
@@ -93,34 +93,46 @@ window.addEventListener("DOMContentLoaded", async function () {
   }
 
   // Render table
-  function renderTable(announcements) {
-    tbody.innerHTML = "";
+function renderTable(announcements) {
+  tbody.innerHTML = "";
 
-    announcements.forEach(item => {
-  const dateObj = new Date(item.scheduled_datetime); // UTC from Supabase
+  announcements.forEach((item, index) => {  //  add index here
+    const dateObj = new Date(item.scheduled_datetime);
 
-  // Let JS convert to local PH time automatically
-  const formattedDate = dateObj.toLocaleDateString("en-PH", { year: "2-digit", month: "2-digit", day: "2-digit" });
-  const formattedTime = dateObj.toLocaleTimeString("en-PH", { hour: "2-digit", minute: "2-digit", hour12: true });
+    const formattedDate = dateObj.toLocaleDateString("en-PH", { 
+      year: "2-digit", 
+      month: "2-digit", 
+      day: "2-digit" 
+    });
+    const formattedTime = dateObj.toLocaleTimeString("en-PH", { 
+      hour: "2-digit", 
+      minute: "2-digit", 
+      hour12: true 
+    });
 
-  const row = document.createElement("tr");
-  row.classList.add("fade-in");
-  row.innerHTML = `
-    <td>${item.id}</td>
-    <td>${item.title}</td>
-    <td>${item.details}</td>
-    <td><img src="${item.image_url}" alt="announcement image" style="width:60px; height:auto; border-radius:4px;"></td>
-    <td>${formattedDate}</td>
-    <td>${formattedTime}</td>
-    <td>
-      <a href="#" class="text-primary me-2 edit-link" data-id="${item.id}">Edit</a>
-      <a href="#" class="text-danger trash-icon" data-id="${item.id}">
-        <i class="ph ph-trash"></i>
-      </a>
-    </td>
-  `;
-  tbody.appendChild(row);
-});
+    const row = document.createElement("tr");
+    row.classList.add("fade-in");
+    row.innerHTML = `
+      <td>${index + 1}</td>   <!--  Use index instead of DB id -->
+      <td>${item.title}</td>
+      <td>${item.details}</td>
+      <td>
+        <img src="${item.image_url}" 
+             alt="announcement image" 
+             style="width:60px; height:auto; border-radius:4px;">
+      </td>
+      <td>${formattedDate}</td>
+      <td>${formattedTime}</td>
+      <td>
+        <a href="#" class="text-primary me-2 edit-link" data-id="${item.id}">Edit</a>
+        <a href="#" class="text-danger trash-icon" data-id="${item.id}">
+          <i class="ph ph-trash"></i>
+        </a>
+      </td>
+    `;
+    tbody.appendChild(row);
+  });
+
 
     // Delete
     document.querySelectorAll(".trash-icon").forEach(btn => {

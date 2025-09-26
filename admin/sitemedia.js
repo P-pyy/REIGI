@@ -1,73 +1,60 @@
-//  Script to load sidebar 
-      document.addEventListener('DOMContentLoaded', () => {
-      fetch('sidebar.html')
-        .then(res => res.text())
-        .then(data => {
-          document.getElementById('sidebar-container').innerHTML = data;
+// ✅ Load sidebar
+fetch("sidebar.html")
+  .then(res => res.text())
+  .then(data => {
+    document.getElementById("sidebar-container").innerHTML = data;
 
-          // Highlight active page
-          const currentPage = window.location.pathname.split("/").pop();
-          document.querySelectorAll(".menu li a").forEach(link => {
-            if (link.getAttribute("href") === currentPage) {
-              link.classList.add("active");
-            }
-          });
-
-          // Set up toggle event listener
-          const toggleBtn = document.querySelector('.toggle-btn');
-          const sidebar = document.querySelector('.sidebar');
-          const mainContent = document.querySelector('.main-content');
-          const mainHeader = document.querySelector('.main-header');
-          const rowSumCards = document.querySelector('.row-sum-cards');
-          const chartContainer = document.querySelector('.chart-container');
-          const faqCard = document.querySelector('.faq-card');
-
-          if (toggleBtn && sidebar && mainContent && mainHeader) {
-            toggleBtn.addEventListener('click', () => {
-              sidebar.classList.toggle('small-sidebar');
-              mainContent.classList.toggle('adjusted');
-              mainHeader.classList.toggle('adjusted');
-              if (rowSumCards) rowSumCards.classList.toggle('adjusted');
-              if (chartContainer) chartContainer.classList.toggle('adjusted');
-              if (faqCard) faqCard.classList.toggle('adjusted');
-              window.dispatchEvent(new Event('resize'));
-            });
-          } else {
-            console.error('Required elements not found for toggle functionality');
-          }
-        })
-        .catch(error => console.error('Error loading sidebar:', error));
+    // Highlight active page
+    const currentPage = window.location.pathname.split("/").pop();
+    document.querySelectorAll(".menu li a").forEach(link => {
+      if (link.getAttribute("href") === currentPage) {
+        link.classList.add("active");
+      }
     });
 
-    //  <!-- Sidebar & Dynamic Content JS -->
-    // Load sidebar
-    fetch('sidebar.html')
-      .then(res => res.text())
-      .then(data => {
-        document.getElementById('sidebar-container').innerHTML = data;
+    // Sidebar toggle
+    const toggleBtn = document.querySelector(".toggle-btn");
+    const sidebar = document.querySelector(".sidebar");
+    const mainContent = document.querySelector(".main-content");
+    const mainHeader = document.querySelector(".main-header");
+    const rowSumCards = document.querySelector(".row-sum-cards");
+    const chartContainer = document.querySelector(".chart-container");
+    const faqCard = document.querySelector(".faq-card");
 
-        // Highlight current page
-        const currentPage = window.location.pathname.split("/").pop();
-        document.querySelectorAll(".menu li a").forEach(link => {
-          if (link.getAttribute("href") === currentPage) link.classList.add("active");
-        });
+    if (toggleBtn && sidebar && mainContent && mainHeader) {
+  toggleBtn.addEventListener("click", () => {
+    sidebar.classList.toggle("small-sidebar");
+    mainContent.classList.toggle("adjusted");
+    mainHeader.classList.toggle("adjusted");
 
-        // Sidebar toggle
-        const toggleBtn = document.querySelector('.toggle-btn');
-        const sidebar = document.querySelector('.sidebar');
-        const mainContent = document.querySelector('.main-content');
-        const mainHeader = document.querySelector('.main-header');
-        if (toggleBtn && sidebar && mainContent && mainHeader) {
-          toggleBtn.addEventListener('click', () => {
-            sidebar.classList.toggle('small-sidebar');
-            const isSmall = sidebar.classList.contains('small-sidebar');
-            mainContent.style.marginLeft = isSmall ? '80px' : '250px';
-            mainHeader.style.width = isSmall ? 'calc(100% - 80px)' : 'calc(100% - 250px)';
-            mainHeader.style.marginLeft = isSmall ? '80px' : '250px';
-          });
+    // ✅ Only toggle if elements exist
+    rowSumCards?.classList.toggle("adjusted");
+    chartContainer?.classList.toggle("adjusted");
+    faqCard?.classList.toggle("adjusted");
+
+    window.dispatchEvent(new Event("resize"));
+  });
+}
+
+
+    // ✅ Logout handler (AFTER sidebar is loaded)
+    const logoutBtn = document.querySelector(".logout");
+    if (logoutBtn) {
+      logoutBtn.addEventListener("click", async () => {
+        console.log("Logout clicked ✅");
+        const { error } = await supabaseClient.auth.signOut();
+        if (error) {
+          console.error("Logout error:", error.message);
+        } else {
+          console.log("Successfully logged out, redirecting...");
+          window.location.href = "login.html";
         }
-      })
-      .catch(console.error);
+      });
+    } else {
+      console.warn("⚠️ Logout button not found in sidebar!");
+    }
+  })
+  .catch(error => console.error("Error loading sidebar:", error));
 
     // Handle dynamic content swap
     document.addEventListener('click', async (e) => {

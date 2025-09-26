@@ -283,54 +283,6 @@ async function loadVideoReplayCount() {
   document.getElementById("video-count").textContent = totalReplays;
 }
 
-// // =======================
-// // Load Total Website Visits + Growth
-// // =======================
-// async function loadTotalWebsiteVisits() {
-//   const { data, error } = await supabase
-//     .from("visitors")
-//     .select("visitor_number, visited_at")
-//     .order("visitor_number", { ascending: false })
-//     .limit(2); // get the last 2 visits
-
-//   if (error) {
-//     console.error("Error fetching total website visits:", error.message);
-//     return;
-//   }
-
-//   let totalVisits = 0;
-//   let diff = 0;
-
-//   if (data && data.length > 0) {
-//     totalVisits = data[0].visitor_number;
-
-//     // Compare with previous visit number
-//     if (data.length > 1) {
-//       diff = totalVisits - data[1].visitor_number;
-//     }
-//   }
-
-//   // ✅ Update main number
-//   document.querySelector(".t-website .card-number").textContent = totalVisits;
-
-//   // ✅ Update growth text
-//   const growthElem = document.querySelector(".t-website .card-subtext");
-//   if (growthElem) {
-//     if (diff > 0) {
-//       growthElem.innerHTML = `<i class="ph ph-caret-double-up"></i> +${diff} visits`;
-//       growthElem.classList.add("up");
-//       growthElem.classList.remove("down");
-//     } else if (diff < 0) {
-//       growthElem.innerHTML = `<i class="ph ph-caret-double-down"></i> ${diff} visits`;
-//       growthElem.classList.add("down");
-//       growthElem.classList.remove("up");
-//     } else {
-//       growthElem.innerHTML = `No change`;
-//       growthElem.classList.remove("up", "down");
-//     }
-//   }
-// }
-// =======================
 // Load Total Website Visits + Growth (on new visit)
 // =======================
 async function loadTotalWebsiteVisits() {
