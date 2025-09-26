@@ -210,17 +210,42 @@ async function loadTodayAnnouncements() {
   });
 }
 
-// =======================
-// Track Visitor on Page Load
-// =======================
+
+// Track visitor
 async function trackVisitor() {
+  let visitorId = sessionStorage.getItem("visitorId");
+  if (visitorId) {
+    console.log("Visitor already tracked with ID:", visitorId);
+    return;
+  }
+
   const deviceType = /Mobi|Android/i.test(navigator.userAgent)
     ? "Mobile"
     : "Computer";
 
+  // Use a raw SQL query to get the next available visitor_number
+  const { data: nextNumData, error: nextNumError } = await supabaseClient.rpc(
+    "get_next_visitor_number"
+  );
+
+  if (nextNumError) {
+    console.error("Error fetching next visitor number:", nextNumError.message);
+    return;
+  }
+
+  const nextVisitorNumber = nextNumData || 1;
+
   const { data, error } = await supabaseClient
     .from("visitors")
-    .insert([{ device_type: deviceType }])
+    .insert([
+      {
+        device_type: deviceType,
+        visited_at: new Date().toISOString(),
+        exited_at: null,
+        video_replays: 0,
+        visitor_number: nextVisitorNumber,
+      },
+    ])
     .select("id")
     .single();
 
@@ -229,12 +254,15 @@ async function trackVisitor() {
     return;
   }
 
-  if (data) {
-    sessionStorage.setItem("visitorId", data.id);
-    console.log("Visitor tracked with ID:", data.id);
-  }
+  visitorId = data.id;
+  sessionStorage.setItem("visitorId", visitorId);
+  console.log(
+    `Visitor tracked with ID: ${visitorId}, Visitor #${nextVisitorNumber}`
+  );
 }
 
+
+// DOMContentLoaded
 document.addEventListener("DOMContentLoaded", () => {
   trackVisitor();
   loadFaqVideo();
@@ -243,24 +271,68 @@ document.addEventListener("DOMContentLoaded", () => {
   loadTodayAnnouncements();
 });
 
+// Track exit only on tab/window close
+window.addEventListener("beforeunload", () => {
+  const visitorId = sessionStorage.getItem("visitorId");
+  if (!visitorId) return;
 
-// =======================
-// Track Exit (using visibilitychange)
-// =======================
-document.addEventListener("visibilitychange", async () => {
-  if (document.visibilityState === "hidden") {
-    const visitorId = sessionStorage.getItem("visitorId");
-    if (visitorId) {
-      const { error } = await supabaseClient
-        .from("visitors")
-        .update({ exited_at: new Date().toISOString() })
-        .eq("id", visitorId);
+  const exitedAt = new Date().toISOString();
+  const payload = JSON.stringify({ visitorId, exitedAt });
+  const blob = new Blob([payload], { type: "application/json" });
 
-      if (error) {
-        console.error("Error updating exited_at:", error.message);
-      } else {
-        console.log("Exit time saved for visitor:", visitorId);
-      }
-    }
+  // Call your serverless endpoint
+  navigator.sendBeacon("/api/track-exit", blob);
+
+  console.log("Exit logged via sendBeacon for visitor:", visitorId);
+});
+
+
+// Track FAQ video replays
+document.addEventListener("DOMContentLoaded", () => {
+  const videoElement = document.getElementById("faqVideo");
+
+  if (videoElement) {
+    // First play
+    videoElement.addEventListener("play", async () => {
+      await logReplay();
+    }, { once: true });
+
+    // Each time the video loops
+    videoElement.addEventListener("ended", async () => {
+      await logReplay();
+      videoElement.play(); // keep looping
+    });
   }
 });
+
+async function logReplay() {
+  const visitorId = sessionStorage.getItem("visitorId");
+  if (!visitorId) {
+    console.error("No visitor session found for replay log.");
+    return;
+  }
+
+  // Fetch current replays for this visitor
+  const { data, error: fetchError } = await supabaseClient
+    .from("visitors")
+    .select("video_replays")
+    .eq("id", visitorId)
+    .single();
+
+  if (fetchError) {
+    console.error("Error fetching visitor row:", fetchError.message);
+    return;
+  }
+
+  const currentCount = data?.video_replays || 0;
+
+  // Increment replay count
+  const { error: updateError } = await supabaseClient
+    .from("visitors")
+    .update({ video_replays: currentCount + 1 })
+    .eq("id", visitorId);
+
+  if (updateError) {
+    console.error("Error updating video replay:", updateError.message);
+  }
+}

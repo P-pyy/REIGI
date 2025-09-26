@@ -186,8 +186,8 @@ async function loadBounceRate() {
 document.addEventListener("DOMContentLoaded", () => {
   loadDeviceTypes();
   loadBounceRate();
+  loadVideoReplayCount(); 
 })
-
 
 
 // =======================
@@ -263,6 +263,25 @@ if (!calError && calendarData?.length > 0) {
 } else {
   document.getElementById("calendar-date").textContent = "No data yet";
 }
+
+
+
+// Show total FAQ video replays (sum across all visitors)
+async function loadVideoReplayCount() {
+  const { data, error } = await supabase
+    .from("visitors")
+    .select("video_replays", { head: false })  // fetch rows
+    .not("video_replays", "is", null);        // ignore nulls
+
+  if (error) {
+    console.error("Error loading video replay count:", error.message);
+    return;
+  }
+
+  const totalReplays = data.reduce((sum, row) => sum + row.video_replays, 0);
+  document.getElementById("video-count").textContent = totalReplays;
+}
+
 
 
 
