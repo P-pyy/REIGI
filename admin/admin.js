@@ -187,6 +187,7 @@ document.addEventListener("DOMContentLoaded", () => {
   loadDeviceTypes();
   loadBounceRate();
   loadVideoReplayCount(); 
+  loadTotalWebsiteVisits();
 })
 
 
@@ -281,6 +282,95 @@ async function loadVideoReplayCount() {
   const totalReplays = data.reduce((sum, row) => sum + row.video_replays, 0);
   document.getElementById("video-count").textContent = totalReplays;
 }
+
+// // =======================
+// // Load Total Website Visits + Growth
+// // =======================
+// async function loadTotalWebsiteVisits() {
+//   const { data, error } = await supabase
+//     .from("visitors")
+//     .select("visitor_number, visited_at")
+//     .order("visitor_number", { ascending: false })
+//     .limit(2); // get the last 2 visits
+
+//   if (error) {
+//     console.error("Error fetching total website visits:", error.message);
+//     return;
+//   }
+
+//   let totalVisits = 0;
+//   let diff = 0;
+
+//   if (data && data.length > 0) {
+//     totalVisits = data[0].visitor_number;
+
+//     // Compare with previous visit number
+//     if (data.length > 1) {
+//       diff = totalVisits - data[1].visitor_number;
+//     }
+//   }
+
+//   // ✅ Update main number
+//   document.querySelector(".t-website .card-number").textContent = totalVisits;
+
+//   // ✅ Update growth text
+//   const growthElem = document.querySelector(".t-website .card-subtext");
+//   if (growthElem) {
+//     if (diff > 0) {
+//       growthElem.innerHTML = `<i class="ph ph-caret-double-up"></i> +${diff} visits`;
+//       growthElem.classList.add("up");
+//       growthElem.classList.remove("down");
+//     } else if (diff < 0) {
+//       growthElem.innerHTML = `<i class="ph ph-caret-double-down"></i> ${diff} visits`;
+//       growthElem.classList.add("down");
+//       growthElem.classList.remove("up");
+//     } else {
+//       growthElem.innerHTML = `No change`;
+//       growthElem.classList.remove("up", "down");
+//     }
+//   }
+// }
+// =======================
+// Load Total Website Visits + Growth (on new visit)
+// =======================
+async function loadTotalWebsiteVisits() {
+  const { data, error } = await supabase
+    .from("visitors")
+    .select("visitor_number")
+    .order("visitor_number", { ascending: false })
+    .limit(1); // only get the latest
+
+  if (error) {
+    console.error("Error fetching total website visits:", error.message);
+    return;
+  }
+
+  const totalVisits = data.length > 0 ? data[0].visitor_number : 0;
+
+  // ✅ Get last total from localStorage
+  const lastTotal = parseInt(localStorage.getItem("lastTotalVisits")) || 0;
+  const diff = totalVisits - lastTotal;
+
+  // ✅ Update main number
+  document.querySelector(".t-website .card-number").textContent = totalVisits;
+
+  // ✅ Update growth text only if there's a new visit
+  const growthElem = document.querySelector(".t-website .card-subtext");
+  if (growthElem) {
+    if (diff > 0) {
+      growthElem.innerHTML = `<i class="ph ph-caret-double-up"></i> +${diff} visits`;
+      growthElem.classList.add("up");
+      growthElem.classList.remove("down");
+    } else {
+      growthElem.innerHTML = `No new visits`;
+      growthElem.classList.remove("up", "down");
+    }
+  }
+
+  // ✅ Save current total for next check
+  localStorage.setItem("lastTotalVisits", totalVisits);
+}
+
 
 
 
