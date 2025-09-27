@@ -300,7 +300,7 @@ async function loadTotalWebsiteVisits() {
 
   const totalVisits = data.length > 0 ? data[0].visitor_number : 0;
 
-  // ✅ Get last total from localStorage
+  //  Get last total from localStorage
   const lastTotal = parseInt(localStorage.getItem("lastTotalVisits")) || 0;
   const diff = totalVisits - lastTotal;
 
