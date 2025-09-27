@@ -92,7 +92,7 @@
       data.forEach(faq => {
         const li = document.createElement("li");
         li.innerHTML = `
-          <a href="faq_card.html?id=${faq.id}">${faq.post_title}</a>
+          <a href="#" onclick="openFAQ(${faq.id})">${faq.post_title}</a>
           <i class="ph ph-arrow-up-right" style="color: #0055A5;"></i>
         `;
         list.appendChild(li);
@@ -141,6 +141,18 @@
     searchInput.addEventListener("input", e => {
       searchFAQs(e.target.value);
     });
+
+    // Open FAQ and increment view
+    window.openFAQ = async function(id) {
+      try {
+        const { error } = await supabase.rpc("increment_view", { faq_id: id });
+        if (error) console.error("Error incrementing views:", error);
+      } catch (err) {
+        console.error("Unexpected error:", err.message);
+      }
+      window.location.href = `faq_card.html?id=${id}`;
+    };
+
   </script>
 
 </body>

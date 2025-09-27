@@ -188,6 +188,7 @@ document.addEventListener("DOMContentLoaded", () => {
   loadBounceRate();
   loadVideoReplayCount(); 
   loadTotalWebsiteVisits();
+  loadTopFAQs();
 })
 
 
@@ -322,6 +323,66 @@ async function loadTotalWebsiteVisits() {
   // ✅ Save current total for next check
   localStorage.setItem("lastTotalVisits", totalVisits);
 }
+
+// Show Top 5 FAQs (with up/down trend)
+async function loadTopFAQs() {
+  const { data, error } = await supabase
+    .from("faqs")
+    .select("id, question_title, views, last_week_views")
+    .order("views", { ascending: false })
+    .limit(5);
+
+  if (error) {
+    console.error("Error loading FAQs:", error);
+    return;
+  }
+
+  const faqList = document.querySelector(".faq-card ul");
+  faqList.innerHTML = "";
+
+  data.forEach(faq => {
+    const trendUp = faq.views > faq.last_week_views;
+    const icon = trendUp
+      ? `<i class="ph ph-caret-up faq-icon-u text-success"></i>`
+      : `<i class="ph ph-caret-down faq-icon-d text-danger"></i>`;
+
+    faqList.innerHTML += `
+      <li>
+        ${faq.question_title}
+        <span class="float-end">
+          ${icon} ${faq.views}
+        </span>
+      </li>`;
+  });
+}
+
+// ✅ Fetch all FAQs with stats for admin
+async function getFaqStats() {
+  try {
+    const { data, error } = await supabase
+      .from('faqs')
+      .select('id, question, answer, views, last_week_views')
+      .order('views', { ascending: false });
+
+    if (error) throw error;
+    return data;
+  } catch (err) {
+    console.error("Error fetching FAQ stats:", err.message);
+    return [];
+  }
+}
+
+getFaqStats().then(faqs => {
+  faqs.forEach(faq => {
+    console.log(
+      `Q: ${faq.question}\nViews: ${faq.views} (Last Week: ${faq.last_week_views})`
+    );
+  });
+});
+
+
+
+
 
 
 
