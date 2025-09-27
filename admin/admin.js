@@ -189,6 +189,7 @@ document.addEventListener("DOMContentLoaded", () => {
   loadVideoReplayCount(); 
   loadTotalWebsiteVisits();
   loadTopFAQs();
+  loadTotalFAQViews();
 })
 
 
@@ -380,14 +381,46 @@ getFaqStats().then(faqs => {
   });
 });
 
+// ✅ Load Total FAQ Views
+async function loadTotalFAQViews() {
+  try {
+    const { data, error } = await supabase
+      .from("faqs")
+      .select("views, last_week_views"); // make sure to get last_week_views too
 
+    if (error) {
+      console.error("Error fetching FAQ views:", error.message);
+      return;
+    }
 
+    // Sum all views
+    const totalViews = data.reduce((sum, faq) => sum + (faq.views || 0), 0);
 
+    // Update the card number
+    const totalFAQCard = document.querySelector(".total-faq .card-number");
+    const cardSubtext = document.querySelector(".total-faq .card-subtext");
 
+    if (totalFAQCard) totalFAQCard.textContent = totalViews;
 
+    // Compare with last week for growth
+    const lastWeekTotal = data.reduce((sum, faq) => sum + (faq.last_week_views || 0), 0);
 
+    if (cardSubtext) {
+      if (totalViews > lastWeekTotal) {
+        cardSubtext.innerHTML = `<i class="ph ph-caret-double-up"></i> +${totalViews - lastWeekTotal} views`;
+        cardSubtext.classList.add("up");
+        cardSubtext.classList.remove("down");
+      } else if (totalViews < lastWeekTotal) {
+        cardSubtext.innerHTML = `<i class="ph ph-caret-double-down"></i> ${Math.abs(totalViews - lastWeekTotal)} views`;
+        cardSubtext.classList.add("down");
+        cardSubtext.classList.remove("up");
+      } else {
+        cardSubtext.textContent = "No change";
+        cardSubtext.classList.remove("up", "down");
+      }
+    }
 
-
-
-
-
+  } catch (err) {
+    console.error("Unexpected error loading total FAQ views:", err.message);
+  }
+}
