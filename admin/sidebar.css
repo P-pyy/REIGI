@@ -7,15 +7,15 @@
 
 .sidebar {
   width: 278px;
-  background: #fff;
+  background: #fcfcfc;
   height: 100vh;
   padding: 12px;
   display: flex;
   flex-direction: column;
   border-right: 1px solid #e3e3e3;
   position: fixed;
-  top: 0;
-  left: 0;
+  /* top: 0;
+  left: 0; */
   z-index: 1000;
   overflow-y: auto; 
   overflow-x: hidden; 

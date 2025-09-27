@@ -100,7 +100,7 @@ main {
 
 .container-sidebar {
     display: flex;
-    flex-direction: ;
+    flex-direction: column ;
     justify-content: center;
     align-items: flex-start;
     padding: 0 20px;

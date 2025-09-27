@@ -3,6 +3,30 @@ html, body {
     background-color: #F3F4F8;
 }
 
+/* ! Scrollbar */
+
+/* Chrome, Edge, Safari */
+::-webkit-scrollbar {
+    width: 12px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 20px; 
+    margin: 2px;
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: #3066B3; 
+    border-radius: 20px !important;
+    border: 3px solid #f1f1f1; 
+    background-clip: padding-box;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background-color: #3378d3; 
+}
+
 .admin-announcement-edit-navbar {
    height: 120px !important;
    background-color: #FCFCFC !important;
