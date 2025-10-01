@@ -1,1 +1,16 @@
-.vs/ 
+# Visual Studio Cache Files
+*.db
+# To specifically target codechunks.db if it's in the root
+codechunks.db
+
+# Visual Studio Solution User Options
+*.suo
+
+# VS 2022 generated folder for local user settings, IntelliSense cache, etc.
+.vs/
+
+# Build results
+[Dd]ebug/
+[Rr]elease/
+bin/
+obj/
