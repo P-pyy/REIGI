@@ -73,10 +73,6 @@ const SUPABASE_URL = "https://oeeqegpgmobbuhaadrhr.supabase.co";
 const SUPABASE_ANON_KEY =
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9lZXFlZ3BnbW9iYnVoYWFkcmhyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTY0ODQwNzEsImV4cCI6MjA3MjA2MDA3MX0.M-pplPUdj21v2Fb5aLmmbE94gDGCfslksAI8fJca2cE";
 
-// const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
-//   auth: { persistSession: true, autoRefreshToken: true },
-// });
-
 const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 
@@ -148,16 +144,6 @@ async function loadGradCalendar() {
   }
 }
 
-// =======================
-// Init
-// =======================
-document.addEventListener("DOMContentLoaded", async () => {
-  await loadFaqVideo();
-  await loadUndergradCalendar();
-  await loadGradCalendar();
-  await loadTodayAnnouncements();
-});
-
 
 document.getElementById("faq-btn").addEventListener("click", function () {
     window.location.href = "faq_user_menu.html";
@@ -211,77 +197,94 @@ async function loadTodayAnnouncements() {
 }
 
 
-// Track visitor
+
 async function trackVisitor() {
-  let visitorId = sessionStorage.getItem("visitorId");
-  if (visitorId) {
-    console.log("Visitor already tracked with ID:", visitorId);
+  let visitorId = sessionStorage.getItem("visitorId") || localStorage.getItem("visitorId");
+
+  // 🚫 Ignore bad values ("null" or "")
+  if (visitorId && visitorId !== "null" && visitorId !== "") {
+    console.log("✅ Returning visitor, ID:", visitorId);
+    setVisitorLogged(visitorId);
     return;
   }
 
-  const deviceType = /Mobi|Android/i.test(navigator.userAgent)
-    ? "Mobile"
-    : "Computer";
+  // Clear invalid IDs
+  localStorage.removeItem("visitorId");
+  sessionStorage.removeItem("visitorId");
 
-  // Use a raw SQL query to get the next available visitor_number
-  const { data: nextNumData, error: nextNumError } = await supabaseClient.rpc(
-    "get_next_visitor_number"
-  );
-
-  if (nextNumError) {
-    console.error("Error fetching next visitor number:", nextNumError.message);
-    return;
-  }
-
-  const nextVisitorNumber = nextNumData || 1;
+  // 🆕 New visitor → insert into Supabase
+  const deviceType = /Mobi|Android/i.test(navigator.userAgent) ? "Mobile" : "Computer";
+  console.log("🆕 First-time visitor, inserting into DB...");
 
   const { data, error } = await supabaseClient
     .from("visitors")
-    .insert([
-      {
-        device_type: deviceType,
-        visited_at: new Date().toISOString(),
-        exited_at: null,
-        video_replays: 0,
-        visitor_number: nextVisitorNumber,
-      },
-    ])
+    .insert([{
+      device_type: deviceType,
+      visited_at: new Date().toISOString(),
+      exited_at: null,
+      video_replays: 0,
+    }])
     .select("id")
     .single();
 
   if (error) {
-    console.error("Error inserting visitor:", error.message);
+    console.error("❌ Supabase insert error:", error.message);
     return;
   }
 
   visitorId = data.id;
-  sessionStorage.setItem("visitorId", visitorId);
-  console.log(
-    `Visitor tracked with ID: ${visitorId}, Visitor #${nextVisitorNumber}`
-  );
+  console.log("✅ New visitor logged with ID:", visitorId);
+  setVisitorLogged(visitorId);
 }
 
 
-// DOMContentLoaded
+// =======================
+// Visitor Tracking Helpers
+// =======================
+function hasVisitorLogged() {
+  return sessionStorage.getItem("visitorLogged") === "true";
+}
+
+function setVisitorLogged(id) {
+  sessionStorage.setItem("visitorLogged", "true");
+  sessionStorage.setItem("visitorId", id);
+  localStorage.setItem("visitorId", id);
+}
+
+
+
+
+
+// =======================
+// Init on page load
+// =======================
 document.addEventListener("DOMContentLoaded", () => {
-  trackVisitor();
+  trackVisitor(); // ✅ will run once per session only
   loadFaqVideo();
   loadUndergradCalendar();
   loadGradCalendar();
   loadTodayAnnouncements();
 });
 
-// Track exit only on tab/window close
+// 🚫 Prevent logging again when only the hash changes
+window.addEventListener("hashchange", () => {
+  console.log("Hash navigation detected — no new visitor log created.");
+});
+
+
+// =======================
+// Track exit
+// =======================
 window.addEventListener("beforeunload", () => {
-  const visitorId = sessionStorage.getItem("visitorId");
+  const visitorId = sessionStorage.getItem("visitorId") || localStorage.getItem("visitorId");
   if (!visitorId) return;
 
   const exitedAt = new Date().toISOString();
-  const payload = JSON.stringify({ visitorId, exitedAt });
-  const blob = new Blob([payload], { type: "application/json" });
 
-  // Call your serverless endpoint
-  navigator.sendBeacon("/api/track-exit", blob);
+  navigator.sendBeacon(
+    "/api/track-exit",
+    JSON.stringify({ visitorId, exitedAt })
+  );
 
   console.log("Exit logged via sendBeacon for visitor:", visitorId);
 });
@@ -306,7 +309,7 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 async function logReplay() {
-  const visitorId = sessionStorage.getItem("visitorId");
+  const visitorId = sessionStorage.getItem("visitorId") || localStorage.getItem("visitorId");
   if (!visitorId) {
     console.error("No visitor session found for replay log.");
     return;
@@ -336,3 +339,12 @@ async function logReplay() {
     console.error("Error updating video replay:", updateError.message);
   }
 }
+
+
+
+
+
+
+
+
+
