@@ -195,8 +195,6 @@ async function loadTodayAnnouncements() {
   });
 }
 
-let visitorId = null;
-let exitTimer = null;
 
 // =======================
 // Log Visit
@@ -249,8 +247,60 @@ async function logVisit() {
 
 
 // =======================
-// Visitor Exit Handling (Desktop + Mobile Safe)
+// Visitor Tracking (Desktop + Mobile Safe)
 // =======================
+
+let visitorId = null;
+const EXIT_DELAY = 3000; // 3 seconds for mobile background/visibility
+
+// -----------------------
+// Log a visit
+// -----------------------
+async function logVisit() {
+  // Try to reuse existing visitorId
+  visitorId = localStorage.getItem("visitorId") || sessionStorage.getItem("visitorId");
+
+  if (visitorId) {
+    console.log("✅ Returning visitor:", visitorId);
+
+    // Update visit timestamp, reset exit
+    await supabaseClient
+      .from("visitors")
+      .update({ visited_at: new Date().toISOString(), exited_at: null })
+      .eq("id", visitorId);
+
+    return;
+  }
+
+  // First-time visitor this session
+  const deviceType = /Mobi|Android/i.test(navigator.userAgent) ? "Mobile" : "Computer";
+
+  const { data, error } = await supabaseClient
+    .from("visitors")
+    .insert([{
+      device_type: deviceType,
+      visited_at: new Date().toISOString(),
+      exited_at: null,
+      video_replays: 0
+    }])
+    .select("id")
+    .single();
+
+  if (error) {
+    console.error("❌ Error logging new visitor:", error.message);
+    return;
+  }
+
+  visitorId = data.id;
+  localStorage.setItem("visitorId", visitorId);
+  sessionStorage.setItem("visitorId", visitorId);
+
+  console.log("✅ New visitor logged, ID:", visitorId);
+}
+
+// -----------------------
+// Log visitor exit
+// -----------------------
 function logVisitorExit() {
   if (!visitorId) return;
 
@@ -262,30 +312,36 @@ function logVisitorExit() {
     new Blob([payload], { type: "application/json" })
   );
 
-  // Cleanup visitor storage
-  localStorage.removeItem("visitorId");
-  sessionStorage.removeItem("visitorId");
-
   console.log("✅ Visitor exit logged:", visitorId);
 }
 
-// --- Desktop: tab refresh / close ---
-window.addEventListener("beforeunload", (e) => {
-  logVisitorExit();
-});
+// -----------------------
+// Handle tab close / refresh / swipe away
+// -----------------------
+window.addEventListener("beforeunload", () => logVisitorExit()); // Desktop
+window.addEventListener("pagehide", () => logVisitorExit());    // Mobile / iOS
 
-// --- Mobile / iOS: tab close / swipe away ---
-window.addEventListener("pagehide", (e) => {
-  logVisitorExit();
-});
-
-// --- Backup: tab hidden / backgrounded ---
+// -----------------------
+// Backup: hidden / backgrounded
+// -----------------------
 document.addEventListener("visibilitychange", () => {
   if (document.hidden) {
-    // Optional: delay 3s to prevent accidental fast tab switch triggers
-    setTimeout(() => logVisitorExit(), 3000);
+    setTimeout(() => logVisitorExit(), EXIT_DELAY);
   }
 });
+
+// -----------------------
+// Reset exit if user returns
+// -----------------------
+window.addEventListener("focus", async () => {
+  if (!visitorId) return;
+
+  await supabaseClient
+    .from("visitors")
+    .update({ exited_at: null })
+    .eq("id", visitorId);
+});
+
 
 
 
