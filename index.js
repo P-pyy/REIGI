@@ -303,9 +303,9 @@ function setVisitorLogged(id) {
 }
 
 
-// =======================
+// ======================
 // Init on page load
-// =======================
+// ======================
 document.addEventListener("DOMContentLoaded", () => {
   // trackVisitor(); // ✅ will run once per session only
   loadFaqVideo();
