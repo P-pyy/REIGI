@@ -197,37 +197,11 @@ async function loadTodayAnnouncements() {
 
 
 // =======================
-// Visitor Tracking (Fixed for internal navigation)
+// Visitor Tracking (Robust for internal navigation)
 // =======================
 
 let visitorId = null;
-const EXIT_DELAY = 3000; // 3 seconds
-let isInternalNavigation = false;
-
-// -----------------------
-// Track clicks on internal links
-// -----------------------
-document.addEventListener('DOMContentLoaded', () => {
-  document.querySelectorAll('a').forEach(link => {
-    link.addEventListener('click', (e) => {
-      const href = link.getAttribute('href');
-      if (!href) return;
-
-      // Ignore hash links or mailto
-      if (href.startsWith('#') || href.startsWith('mailto:')) return;
-
-      try {
-        const url = new URL(href, window.location.origin);
-        if (url.origin === window.location.origin) {
-          // Internal link clicked
-          isInternalNavigation = true;
-        }
-      } catch (err) {
-        console.error('Error parsing link href:', err);
-      }
-    });
-  });
-});
+const EXIT_DELAY = 3000;
 
 // -----------------------
 // Log a visit (create or reuse)
@@ -267,6 +241,21 @@ async function logVisit() {
 }
 
 // -----------------------
+// Check if destination is internal
+// -----------------------
+function isInternalNavigation(event) {
+  const href = (event && event.target && event.target.closest('a'))?.href;
+  if (!href) return false;
+
+  try {
+    const destUrl = new URL(href, window.location.origin);
+    return destUrl.origin === window.location.origin;
+  } catch (err) {
+    return false;
+  }
+}
+
+// -----------------------
 // Log visitor exit
 // -----------------------
 async function logVisitorExit() {
@@ -295,17 +284,19 @@ async function logVisitorExit() {
 // Event listeners
 // -----------------------
 
-// Only log exit if not internal navigation
-window.addEventListener("beforeunload", () => {
-  if (!isInternalNavigation) logVisitorExit();
+// Before unloading / navigating away
+window.addEventListener("beforeunload", (event) => {
+  const destinationIsInternal = event?.target?.activeElement && isInternalNavigation(event);
+  if (!destinationIsInternal) logVisitorExit();
 });
 
-window.addEventListener("pagehide", () => {
-  if (!isInternalNavigation) logVisitorExit();
+window.addEventListener("pagehide", (event) => {
+  const destinationIsInternal = event?.target?.activeElement && isInternalNavigation(event);
+  if (!destinationIsInternal) logVisitorExit();
 });
 
 document.addEventListener("visibilitychange", () => {
-  if (document.hidden && !isInternalNavigation) setTimeout(logVisitorExit, EXIT_DELAY);
+  if (document.hidden) setTimeout(logVisitorExit, EXIT_DELAY);
 });
 
 // Reset exit when returning to page
@@ -316,6 +307,7 @@ window.addEventListener("focus", async () => {
       .eq("id", visitorId);
   }
 });
+
 
 
 
