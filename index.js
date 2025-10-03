@@ -278,13 +278,6 @@ window.addEventListener("focus", async () => {
   await supabaseClient.from("visitors").update({ exited_at: null }).eq("id", visitorId);
 });
 
-// -----------------------
-// Initialize visitor tracking on DOM load
-// -----------------------
-document.addEventListener("DOMContentLoaded", async () => {
-  await logVisit();
-});
-
 
 
 
@@ -308,11 +301,11 @@ function setVisitorLogged(id) {
 // ======================
 document.addEventListener("DOMContentLoaded", () => {
   // trackVisitor(); // ✅ will run once per session only
+  logVisit();
   loadFaqVideo();
   loadUndergradCalendar();
   loadGradCalendar();
   loadTodayAnnouncements();
-  logVisit();
 });
 
 // 🚫 Prevent logging again when only the hash changes
