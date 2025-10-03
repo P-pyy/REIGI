@@ -1,5 +1,4 @@
-
-        const listItems = document.querySelectorAll('.list-item-content');
+       const listItems = document.querySelectorAll('.list-item-content');
 
         listItems.forEach(item =>{
             item.addEventListener('click', (e) =>{
@@ -196,25 +195,77 @@ async function loadTodayAnnouncements() {
   });
 }
 
+let visitorId = null;
+let exitTimer = null;
 
+// =======================
+// Log Visit
+// =======================
+// async function logVisit() {
+//   // Always check sessionStorage only (new session after browser close)
+//   visitorId = sessionStorage.getItem("visitorId");
 
-async function trackVisitor() {
-  let visitorId = sessionStorage.getItem("visitorId") || localStorage.getItem("visitorId");
+//   if (visitorId && visitorId !== "null" && visitorId !== "") {
+//     console.log("✅ Returning visitor in same session:", visitorId);
 
-  // 🚫 Ignore bad values ("null" or "")
-  if (visitorId && visitorId !== "null" && visitorId !== "") {
-    console.log("✅ Returning visitor, ID:", visitorId);
-    setVisitorLogged(visitorId);
+//     // Just update timestamps
+//     await supabaseClient
+//       .from("visitors")
+//       .update({
+//         visited_at: new Date().toISOString(),
+//         exited_at: null
+//       })
+//       .eq("id", visitorId);
+
+//     return;
+//   }
+
+//   // New session → insert new row
+//   const deviceType = /Mobi|Android/i.test(navigator.userAgent) ? "Mobile" : "Computer";
+
+//   const { data, error } = await supabaseClient
+//     .from("visitors")
+//     .insert([{
+//       device_type: deviceType,
+//       visited_at: new Date().toISOString(),
+//       exited_at: null,
+//       video_replays: 0,
+//     }])
+//     .select("id")
+//     .single();
+
+//   if (error) {
+//     console.error("❌ Error logging new visitor:", error.message);
+//     return;
+//   }
+
+//   visitorId = data.id;
+//   sessionStorage.setItem("visitorId", visitorId); // 🚫 removed localStorage
+
+//   console.log("✅ New visitor logged, ID:", visitorId);
+// }
+
+async function logVisit() {
+  // Reuse ID from localStorage across pages
+  visitorId = localStorage.getItem("visitorId");
+
+  if (visitorId) {
+    console.log("✅ Returning visitor:", visitorId);
+
+    // Just update timestamps (don’t insert)
+    await supabaseClient
+      .from("visitors")
+      .update({
+        visited_at: new Date().toISOString(),
+        exited_at: null
+      })
+      .eq("id", visitorId);
+
     return;
   }
 
-  // Clear invalid IDs
-  localStorage.removeItem("visitorId");
-  sessionStorage.removeItem("visitorId");
-
-  // 🆕 New visitor → insert into Supabase
+  // Otherwise → first-time visitor this session
   const deviceType = /Mobi|Android/i.test(navigator.userAgent) ? "Mobile" : "Computer";
-  console.log("🆕 First-time visitor, inserting into DB...");
 
   const { data, error } = await supabaseClient
     .from("visitors")
@@ -228,14 +279,112 @@ async function trackVisitor() {
     .single();
 
   if (error) {
-    console.error("❌ Supabase insert error:", error.message);
+    console.error("❌ Error logging new visitor:", error.message);
     return;
   }
 
   visitorId = data.id;
-  console.log("✅ New visitor logged with ID:", visitorId);
-  setVisitorLogged(visitorId);
+
+  // Persist across pages until tab closes
+  localStorage.setItem("visitorId", visitorId);
+
+  console.log("✅ New visitor logged, ID:", visitorId);
 }
+
+
+
+
+const EXIT_DELAY = 30000; // 30 seconds
+
+// =======================
+// Log Exit (normal async)
+// =======================
+async function logExit() {
+  if (!visitorId) return;
+  try {
+    const { error } = await supabaseClient
+      .from("visitors")
+      .update({ exited_at: new Date().toISOString() })
+      .eq("id", visitorId);
+
+    if (error) console.error("❌ Error logging exit:", error.message);
+    else console.log("✅ Exit logged after inactivity:", visitorId);
+  } catch (e) {
+    console.error("❌ Exit log failed:", e);
+  }
+}
+
+// =======================
+// Handle Tab Visibility
+// =======================
+document.addEventListener("visibilitychange", () => {
+  if (document.hidden) {
+    // If tab hidden → start 30s timer
+    exitTimer = setTimeout(() => {
+      logExit();
+    }, EXIT_DELAY);
+  } else {
+    // If user comes back before 30s → cancel exit + keep active
+    clearTimeout(exitTimer);
+    if (visitorId) {
+      supabaseClient.from("visitors")
+        .update({ exited_at: null })
+        .eq("id", visitorId);
+    }
+  }
+});
+
+
+// =======================
+// Exit on tab close / external nav
+// =======================
+window.addEventListener("beforeunload", (e) => {
+  if (!visitorId) return;
+
+  const activeEl = document.activeElement;
+  const isInternalNav =
+    activeEl?.tagName === "A" &&
+    activeEl.href &&
+    activeEl.href.startsWith(window.location.origin);
+
+  // Skip if just navigating within same site (like faq_user_menu.html or #hash links)
+  if (isInternalNav) {
+    console.log("⏩ Skipping exit log (internal navigation to:", activeEl.href, ")");
+    return;
+  }
+
+  // Otherwise → tab close, refresh, or external site → log exit
+  const payload = JSON.stringify({ exited_at: new Date().toISOString() });
+
+  navigator.sendBeacon(
+    `${SUPABASE_URL}/rest/v1/visitors?id=eq.${visitorId}`,
+    new Blob([payload], { type: "application/json" })
+  );
+
+  fetch(`${SUPABASE_URL}/rest/v1/visitors?id=eq.${visitorId}`, {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+      "apikey": SUPABASE_ANON_KEY,
+      "Authorization": `Bearer ${SUPABASE_ANON_KEY}`,
+      "Prefer": "return=minimal"
+    },
+    body: payload,
+    keepalive: true
+  }).catch(err => console.error("Exit log failed:", err));
+
+  // ✅ Cleanup visitorId only after logging
+  localStorage.removeItem("visitorId");
+  sessionStorage.removeItem("visitorId");
+});
+
+
+
+
+
+
+
+
 
 
 // =======================
@@ -252,18 +401,16 @@ function setVisitorLogged(id) {
 }
 
 
-
-
-
 // =======================
 // Init on page load
 // =======================
 document.addEventListener("DOMContentLoaded", () => {
-  trackVisitor(); // ✅ will run once per session only
+  // trackVisitor(); // ✅ will run once per session only
   loadFaqVideo();
   loadUndergradCalendar();
   loadGradCalendar();
   loadTodayAnnouncements();
+  logVisit();
 });
 
 // 🚫 Prevent logging again when only the hash changes
@@ -272,22 +419,12 @@ window.addEventListener("hashchange", () => {
 });
 
 
-// =======================
-// Track exit
-// =======================
-window.addEventListener("beforeunload", () => {
-  const visitorId = sessionStorage.getItem("visitorId") || localStorage.getItem("visitorId");
-  if (!visitorId) return;
-
-  const exitedAt = new Date().toISOString();
-
-  navigator.sendBeacon(
-    "/api/track-exit",
-    JSON.stringify({ visitorId, exitedAt })
-  );
-
-  console.log("Exit logged via sendBeacon for visitor:", visitorId);
-});
+// // =======================
+// // Track exit 
+// // =======================
+// window.addEventListener("beforeunload", () => {
+//   logExit();
+// });
 
 
 // Track FAQ video replays
@@ -339,6 +476,15 @@ async function logReplay() {
     console.error("Error updating video replay:", updateError.message);
   }
 }
+
+window.addEventListener("focus", async () => {
+  if (visitorId) {
+    await supabaseClient.from("visitors")
+      .update({ exited_at: null })
+      .eq("id", visitorId);
+  }
+});
+
 
 
 
