@@ -195,72 +195,48 @@ async function loadTodayAnnouncements() {
   });
 }
 
-
 // =======================
-// Visitor Tracking (Robust for internal navigation)
+// Visitor Tracking (Persistent per session)
 // =======================
 
-let visitorId = null;
-const EXIT_DELAY = 3000;
+let visitorId = sessionStorage.getItem("visitorId") || null;
+const EXIT_DELAY = 3000; 
+let navigatingInternally = false; 
 
-// -----------------------
-// Log a visit (create or reuse)
-// -----------------------
+// Log a new visit only if no visitorId exists
 async function logVisit() {
-  visitorId = localStorage.getItem("visitorId") || sessionStorage.getItem("visitorId");
-
   if (visitorId) {
-    console.log("✅ Returning visitor:", visitorId);
-
-    await supabaseClient
-      .from("visitors")
-      .update({ visited_at: new Date().toISOString(), exited_at: null })
-      .eq("id", visitorId);
-
+    console.log("✅ Visitor already logged, ID:", visitorId);
     return;
   }
 
   const deviceType = /Mobi|Android/i.test(navigator.userAgent) ? "Mobile" : "Computer";
 
-  const { data, error } = await supabaseClient
-    .from("visitors")
-    .insert([{ device_type: deviceType, visited_at: new Date().toISOString(), exited_at: null, video_replays: 0 }])
-    .select("id")
-    .single();
-
-  if (error) {
-    console.error("❌ Error logging new visitor:", error.message);
-    return;
-  }
-
-  visitorId = data.id;
-  localStorage.setItem("visitorId", visitorId);
-  sessionStorage.setItem("visitorId", visitorId);
-
-  console.log("✅ New visitor logged, ID:", visitorId);
-}
-
-// -----------------------
-// Check if destination is internal
-// -----------------------
-function isInternalNavigation(event) {
-  const href = (event && event.target && event.target.closest('a'))?.href;
-  if (!href) return false;
-
   try {
-    const destUrl = new URL(href, window.location.origin);
-    return destUrl.origin === window.location.origin;
+    const { data, error } = await supabaseClient
+      .from("visitors")
+      .insert([{ 
+        device_type: deviceType, 
+        visited_at: new Date().toISOString(), 
+        exited_at: null, 
+        video_replays: 0 
+      }])
+      .select("id")
+      .single();
+
+    if (error) throw error;
+
+    visitorId = data.id;
+    sessionStorage.setItem("visitorId", visitorId); // save for this session
+    console.log("✅ New visitor logged, ID:", visitorId);
   } catch (err) {
-    return false;
+    console.error("❌ Error logging visitor:", err.message);
   }
 }
 
-// -----------------------
-// Log visitor exit
-// -----------------------
+// Log visitor exit, same as before
 async function logVisitorExit() {
   if (!visitorId) return;
-
   try {
     await fetch(`${SUPABASE_URL}/rest/v1/visitors?id=eq.${visitorId}`, {
       method: "PATCH",
@@ -273,7 +249,6 @@ async function logVisitorExit() {
       body: JSON.stringify({ exited_at: new Date().toISOString() }),
       keepalive: true
     });
-
     console.log("✅ Visitor exit logged:", visitorId);
   } catch (err) {
     console.error("❌ Failed to log exit:", err);
@@ -281,52 +256,118 @@ async function logVisitorExit() {
 }
 
 // -----------------------
-// Event listeners
+// Reset exit timestamp when returning to page
 // -----------------------
-
-// Before unloading / navigating away
-window.addEventListener("beforeunload", (event) => {
-  const destinationIsInternal = event?.target?.activeElement && isInternalNavigation(event);
-  if (!destinationIsInternal) logVisitorExit();
-});
-
-window.addEventListener("pagehide", (event) => {
-  const destinationIsInternal = event?.target?.activeElement && isInternalNavigation(event);
-  if (!destinationIsInternal) logVisitorExit();
-});
-
-document.addEventListener("visibilitychange", () => {
-  if (document.hidden) setTimeout(logVisitorExit, EXIT_DELAY);
-});
-
-// Reset exit when returning to page
 window.addEventListener("focus", async () => {
-  if (visitorId) {
+  navigatingInternally = false; // reset flag
+  if (!visitorId) return;
+  try {
     await supabaseClient.from("visitors")
       .update({ exited_at: null })
       .eq("id", visitorId);
+  } catch (err) {
+    console.error("❌ Failed to reset exited_at:", err.message);
   }
 });
 
 
+// -----------------------
+// Check if an <a> click is internal
+// -----------------------
+function isInternalLink(event) {
+  const anchor = event.target.closest('a');
+  if (!anchor || !anchor.href) return false;
 
-
-
-
-
-// =======================
-// Visitor Tracking Helpers
-// =======================
-function hasVisitorLogged() {
-  return sessionStorage.getItem("visitorLogged") === "true";
+  try {
+    const destUrl = new URL(anchor.href, window.location.origin);
+    return destUrl.origin === window.location.origin;
+  } catch {
+    return false;
+  }
 }
 
-function setVisitorLogged(id) {
-  sessionStorage.setItem("visitorLogged", "true");
-  sessionStorage.setItem("visitorId", id);
-  localStorage.setItem("visitorId", id);
+// -----------------------
+// Event listeners
+// -----------------------
+
+// Handle internal link clicks
+document.addEventListener("click", (event) => {
+  if (isInternalLink(event)) {
+    navigatingInternally = true; // prevent exit logging
+    event.preventDefault();
+    const href = event.target.closest('a').href;
+    window.location.href = href; // navigate manually
+  }
+});
+
+// Only log exit if NOT navigating internally
+window.addEventListener("beforeunload", () => {
+  if (!navigatingInternally) logVisitorExit();
+});
+
+window.addEventListener("pagehide", () => {
+  if (!navigatingInternally) logVisitorExit();
+});
+
+// Visibility change (tab switch)
+document.addEventListener("visibilitychange", () => {
+  if (document.hidden) setTimeout(() => {
+    if (!navigatingInternally) logVisitorExit();
+  }, EXIT_DELAY);
+});
+
+// Reset exit timestamp when returning to page
+window.addEventListener("focus", async () => {
+  navigatingInternally = false; // reset internal navigation flag
+  if (!visitorId) return;
+  try {
+    await supabaseClient.from("visitors")
+      .update({ exited_at: null })
+      .eq("id", visitorId);
+  } catch (err) {
+    console.error("❌ Failed to reset exited_at:", err.message);
+  }
+});
+
+// -----------------------
+// FAQ Video replay logging
+// -----------------------
+async function logReplay() {
+  if (!visitorId) return;
+
+  try {
+    const { data, error } = await supabaseClient
+      .from("visitors")
+      .select("video_replays")
+      .eq("id", visitorId)
+      .single();
+
+    if (error) throw error;
+
+    const currentCount = data?.video_replays || 0;
+
+    await supabaseClient
+      .from("visitors")
+      .update({ video_replays: currentCount + 1 })
+      .eq("id", visitorId);
+
+    console.log("🎬 Video replay logged for visitor:", visitorId);
+  } catch (err) {
+    console.error("❌ Failed to log video replay:", err.message);
+  }
 }
 
+// Attach replay events
+document.addEventListener("DOMContentLoaded", () => {
+  const videoElement = document.getElementById("faqVideo");
+  if (!videoElement) return;
+
+  videoElement.addEventListener("play", async () => { await logReplay(); }, { once: true });
+  videoElement.addEventListener("ended", async () => {
+    await logReplay();
+    videoElement.play(); // loop
+  });
+});
 
 // ======================
 // Init on page load
@@ -346,63 +387,6 @@ window.addEventListener("hashchange", () => {
 });
 
 
-// Track FAQ video replays
-document.addEventListener("DOMContentLoaded", () => {
-  const videoElement = document.getElementById("faqVideo");
-
-  if (videoElement) {
-    // First play
-    videoElement.addEventListener("play", async () => {
-      await logReplay();
-    }, { once: true });
-
-    // Each time the video loops
-    videoElement.addEventListener("ended", async () => {
-      await logReplay();
-      videoElement.play(); // keep looping
-    });
-  }
-});
-
-async function logReplay() {
-  const visitorId = sessionStorage.getItem("visitorId") || localStorage.getItem("visitorId");
-  if (!visitorId) {
-    console.error("No visitor session found for replay log.");
-    return;
-  }
-
-  // Fetch current replays for this visitor
-  const { data, error: fetchError } = await supabaseClient
-    .from("visitors")
-    .select("video_replays")
-    .eq("id", visitorId)
-    .single();
-
-  if (fetchError) {
-    console.error("Error fetching visitor row:", fetchError.message);
-    return;
-  }
-
-  const currentCount = data?.video_replays || 0;
-
-  // Increment replay count
-  const { error: updateError } = await supabaseClient
-    .from("visitors")
-    .update({ video_replays: currentCount + 1 })
-    .eq("id", visitorId);
-
-  if (updateError) {
-    console.error("Error updating video replay:", updateError.message);
-  }
-}
-
-window.addEventListener("focus", async () => {
-  if (visitorId) {
-    await supabaseClient.from("visitors")
-      .update({ exited_at: null })
-      .eq("id", visitorId);
-  }
-});
 
 
 
