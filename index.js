@@ -197,73 +197,21 @@ async function loadTodayAnnouncements() {
 
 
 // =======================
-// Log Visit
-// =======================
-async function logVisit() {
-  // Reuse ID from localStorage across pages
-  visitorId = localStorage.getItem("visitorId");
-
-  if (visitorId) {
-    console.log("✅ Returning visitor:", visitorId);
-
-    // Just update timestamps (don’t insert)
-    await supabaseClient
-      .from("visitors")
-      .update({
-        visited_at: new Date().toISOString(),
-        exited_at: null
-      })
-      .eq("id", visitorId);
-
-    return;
-  }
-
-  // Otherwise → first-time visitor this session
-  const deviceType = /Mobi|Android/i.test(navigator.userAgent) ? "Mobile" : "Computer";
-
-  const { data, error } = await supabaseClient
-    .from("visitors")
-    .insert([{
-      device_type: deviceType,
-      visited_at: new Date().toISOString(),
-      exited_at: null,
-      video_replays: 0,
-    }])
-    .select("id")
-    .single();
-
-  if (error) {
-    console.error("❌ Error logging new visitor:", error.message);
-    return;
-  }
-
-  visitorId = data.id;
-
-  // Persist across pages until tab closes
-  localStorage.setItem("visitorId", visitorId);
-
-  console.log("✅ New visitor logged, ID:", visitorId);
-}
-
-
-// =======================
-// Visitor Tracking (Desktop + Mobile Safe)
+// Visitor Tracking (Mobile + Desktop Safe)
 // =======================
 
 let visitorId = null;
-const EXIT_DELAY = 3000; // 3 seconds for mobile background/visibility
+const EXIT_DELAY = 3000; // 3 seconds for visibility changes
 
 // -----------------------
-// Log a visit
+// Log a visit (create or reuse)
 // -----------------------
 async function logVisit() {
-  // Try to reuse existing visitorId
   visitorId = localStorage.getItem("visitorId") || sessionStorage.getItem("visitorId");
 
   if (visitorId) {
     console.log("✅ Returning visitor:", visitorId);
 
-    // Update visit timestamp, reset exit
     await supabaseClient
       .from("visitors")
       .update({ visited_at: new Date().toISOString(), exited_at: null })
@@ -272,17 +220,11 @@ async function logVisit() {
     return;
   }
 
-  // First-time visitor this session
   const deviceType = /Mobi|Android/i.test(navigator.userAgent) ? "Mobile" : "Computer";
 
   const { data, error } = await supabaseClient
     .from("visitors")
-    .insert([{
-      device_type: deviceType,
-      visited_at: new Date().toISOString(),
-      exited_at: null,
-      video_replays: 0
-    }])
+    .insert([{ device_type: deviceType, visited_at: new Date().toISOString(), exited_at: null, video_replays: 0 }])
     .select("id")
     .single();
 
@@ -301,46 +243,48 @@ async function logVisit() {
 // -----------------------
 // Log visitor exit
 // -----------------------
-function logVisitorExit() {
+async function logVisitorExit() {
   if (!visitorId) return;
 
-  const payload = JSON.stringify({ exited_at: new Date().toISOString() });
+  try {
+    await fetch(`${SUPABASE_URL}/rest/v1/visitors?id=eq.${visitorId}`, {
+      method: "PATCH",
+      headers: {
+        "apikey": SUPABASE_ANON_KEY,
+        "Authorization": `Bearer ${SUPABASE_ANON_KEY}`,
+        "Content-Type": "application/json",
+        "Prefer": "return=minimal"
+      },
+      body: JSON.stringify({ exited_at: new Date().toISOString() }),
+      keepalive: true // crucial for mobile tab close/swipe
+    });
 
-  // Use sendBeacon for async-safe logging
-  navigator.sendBeacon(
-    `${SUPABASE_URL}/rest/v1/visitors?id=eq.${visitorId}`,
-    new Blob([payload], { type: "application/json" })
-  );
-
-  console.log("✅ Visitor exit logged:", visitorId);
+    console.log("✅ Visitor exit logged:", visitorId);
+  } catch (err) {
+    console.error("❌ Failed to log exit:", err);
+  }
 }
 
 // -----------------------
-// Handle tab close / refresh / swipe away
+// Event listeners
 // -----------------------
-window.addEventListener("beforeunload", () => logVisitorExit()); // Desktop
-window.addEventListener("pagehide", () => logVisitorExit());    // Mobile / iOS
-
-// -----------------------
-// Backup: hidden / backgrounded
-// -----------------------
+window.addEventListener("beforeunload", logVisitorExit); // Desktop
+window.addEventListener("pagehide", logVisitorExit);    // Mobile / iOS
 document.addEventListener("visibilitychange", () => {
-  if (document.hidden) {
-    setTimeout(() => logVisitorExit(), EXIT_DELAY);
-  }
+  if (document.hidden) setTimeout(logVisitorExit, EXIT_DELAY);
 });
-
-// -----------------------
-// Reset exit if user returns
-// -----------------------
 window.addEventListener("focus", async () => {
   if (!visitorId) return;
-
-  await supabaseClient
-    .from("visitors")
-    .update({ exited_at: null })
-    .eq("id", visitorId);
+  await supabaseClient.from("visitors").update({ exited_at: null }).eq("id", visitorId);
 });
+
+// -----------------------
+// Initialize visitor tracking on DOM load
+// -----------------------
+document.addEventListener("DOMContentLoaded", async () => {
+  await logVisit();
+});
+
 
 
 
