@@ -201,50 +201,6 @@ let exitTimer = null;
 // =======================
 // Log Visit
 // =======================
-// async function logVisit() {
-//   // Always check sessionStorage only (new session after browser close)
-//   visitorId = sessionStorage.getItem("visitorId");
-
-//   if (visitorId && visitorId !== "null" && visitorId !== "") {
-//     console.log("✅ Returning visitor in same session:", visitorId);
-
-//     // Just update timestamps
-//     await supabaseClient
-//       .from("visitors")
-//       .update({
-//         visited_at: new Date().toISOString(),
-//         exited_at: null
-//       })
-//       .eq("id", visitorId);
-
-//     return;
-//   }
-
-//   // New session → insert new row
-//   const deviceType = /Mobi|Android/i.test(navigator.userAgent) ? "Mobile" : "Computer";
-
-//   const { data, error } = await supabaseClient
-//     .from("visitors")
-//     .insert([{
-//       device_type: deviceType,
-//       visited_at: new Date().toISOString(),
-//       exited_at: null,
-//       video_replays: 0,
-//     }])
-//     .select("id")
-//     .single();
-
-//   if (error) {
-//     console.error("❌ Error logging new visitor:", error.message);
-//     return;
-//   }
-
-//   visitorId = data.id;
-//   sessionStorage.setItem("visitorId", visitorId); // 🚫 removed localStorage
-
-//   console.log("✅ New visitor logged, ID:", visitorId);
-// }
-
 async function logVisit() {
   // Reuse ID from localStorage across pages
   visitorId = localStorage.getItem("visitorId");
@@ -292,98 +248,44 @@ async function logVisit() {
 }
 
 
-
-
-const EXIT_DELAY = 30000; // 30 seconds
-
 // =======================
-// Log Exit (normal async)
+// Visitor Exit Handling (Desktop + Mobile Safe)
 // =======================
-async function logExit() {
-  if (!visitorId) return;
-  try {
-    const { error } = await supabaseClient
-      .from("visitors")
-      .update({ exited_at: new Date().toISOString() })
-      .eq("id", visitorId);
-
-    if (error) console.error("❌ Error logging exit:", error.message);
-    else console.log("✅ Exit logged after inactivity:", visitorId);
-  } catch (e) {
-    console.error("❌ Exit log failed:", e);
-  }
-}
-
-// =======================
-// Handle Tab Visibility
-// =======================
-document.addEventListener("visibilitychange", () => {
-  if (document.hidden) {
-    // If tab hidden → start 30s timer
-    exitTimer = setTimeout(() => {
-      logExit();
-    }, EXIT_DELAY);
-  } else {
-    // If user comes back before 30s → cancel exit + keep active
-    clearTimeout(exitTimer);
-    if (visitorId) {
-      supabaseClient.from("visitors")
-        .update({ exited_at: null })
-        .eq("id", visitorId);
-    }
-  }
-});
-
-
-// =======================
-// Exit on tab close / external nav
-// =======================
-window.addEventListener("beforeunload", (e) => {
+function logVisitorExit() {
   if (!visitorId) return;
 
-  const activeEl = document.activeElement;
-  const isInternalNav =
-    activeEl?.tagName === "A" &&
-    activeEl.href &&
-    activeEl.href.startsWith(window.location.origin);
-
-  // Skip if just navigating within same site (like faq_user_menu.html or #hash links)
-  if (isInternalNav) {
-    console.log("⏩ Skipping exit log (internal navigation to:", activeEl.href, ")");
-    return;
-  }
-
-  // Otherwise → tab close, refresh, or external site → log exit
   const payload = JSON.stringify({ exited_at: new Date().toISOString() });
 
+  // Use sendBeacon for async-safe logging
   navigator.sendBeacon(
     `${SUPABASE_URL}/rest/v1/visitors?id=eq.${visitorId}`,
     new Blob([payload], { type: "application/json" })
   );
 
-  fetch(`${SUPABASE_URL}/rest/v1/visitors?id=eq.${visitorId}`, {
-    method: "PATCH",
-    headers: {
-      "Content-Type": "application/json",
-      "apikey": SUPABASE_ANON_KEY,
-      "Authorization": `Bearer ${SUPABASE_ANON_KEY}`,
-      "Prefer": "return=minimal"
-    },
-    body: payload,
-    keepalive: true
-  }).catch(err => console.error("Exit log failed:", err));
-
-  // ✅ Cleanup visitorId only after logging
+  // Cleanup visitor storage
   localStorage.removeItem("visitorId");
   sessionStorage.removeItem("visitorId");
+
+  console.log("✅ Visitor exit logged:", visitorId);
+}
+
+// --- Desktop: tab refresh / close ---
+window.addEventListener("beforeunload", (e) => {
+  logVisitorExit();
 });
 
+// --- Mobile / iOS: tab close / swipe away ---
+window.addEventListener("pagehide", (e) => {
+  logVisitorExit();
+});
 
-
-
-
-
-
+// --- Backup: tab hidden / backgrounded ---
+document.addEventListener("visibilitychange", () => {
+  if (document.hidden) {
+    // Optional: delay 3s to prevent accidental fast tab switch triggers
+    setTimeout(() => logVisitorExit(), 3000);
+  }
+});
 
 
 
@@ -417,14 +319,6 @@ document.addEventListener("DOMContentLoaded", () => {
 window.addEventListener("hashchange", () => {
   console.log("Hash navigation detected — no new visitor log created.");
 });
-
-
-// // =======================
-// // Track exit 
-// // =======================
-// window.addEventListener("beforeunload", () => {
-//   logExit();
-// });
 
 
 // Track FAQ video replays
