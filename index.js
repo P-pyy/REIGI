@@ -197,11 +197,37 @@ async function loadTodayAnnouncements() {
 
 
 // =======================
-// Visitor Tracking (Mobile + Desktop Safe)
+// Visitor Tracking (Fixed for internal navigation)
 // =======================
 
 let visitorId = null;
-const EXIT_DELAY = 3000; // 3 seconds for visibility changes
+const EXIT_DELAY = 3000; // 3 seconds
+let isInternalNavigation = false;
+
+// -----------------------
+// Track clicks on internal links
+// -----------------------
+document.addEventListener('DOMContentLoaded', () => {
+  document.querySelectorAll('a').forEach(link => {
+    link.addEventListener('click', (e) => {
+      const href = link.getAttribute('href');
+      if (!href) return;
+
+      // Ignore hash links or mailto
+      if (href.startsWith('#') || href.startsWith('mailto:')) return;
+
+      try {
+        const url = new URL(href, window.location.origin);
+        if (url.origin === window.location.origin) {
+          // Internal link clicked
+          isInternalNavigation = true;
+        }
+      } catch (err) {
+        console.error('Error parsing link href:', err);
+      }
+    });
+  });
+});
 
 // -----------------------
 // Log a visit (create or reuse)
@@ -256,7 +282,7 @@ async function logVisitorExit() {
         "Prefer": "return=minimal"
       },
       body: JSON.stringify({ exited_at: new Date().toISOString() }),
-      keepalive: true // crucial for mobile tab close/swipe
+      keepalive: true
     });
 
     console.log("✅ Visitor exit logged:", visitorId);
@@ -268,15 +294,29 @@ async function logVisitorExit() {
 // -----------------------
 // Event listeners
 // -----------------------
-window.addEventListener("beforeunload", logVisitorExit); // Desktop
-window.addEventListener("pagehide", logVisitorExit);    // Mobile / iOS
+
+// Only log exit if not internal navigation
+window.addEventListener("beforeunload", () => {
+  if (!isInternalNavigation) logVisitorExit();
+});
+
+window.addEventListener("pagehide", () => {
+  if (!isInternalNavigation) logVisitorExit();
+});
+
 document.addEventListener("visibilitychange", () => {
-  if (document.hidden) setTimeout(logVisitorExit, EXIT_DELAY);
+  if (document.hidden && !isInternalNavigation) setTimeout(logVisitorExit, EXIT_DELAY);
 });
+
+// Reset exit when returning to page
 window.addEventListener("focus", async () => {
-  if (!visitorId) return;
-  await supabaseClient.from("visitors").update({ exited_at: null }).eq("id", visitorId);
+  if (visitorId) {
+    await supabaseClient.from("visitors")
+      .update({ exited_at: null })
+      .eq("id", visitorId);
+  }
 });
+
 
 
 
