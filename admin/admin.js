@@ -67,15 +67,51 @@ fetch("sidebar.html")
   })
   .catch(error => console.error("Error loading sidebar:", error));
 
-// ✅ Line Chart
+// // ✅ Line Chart
+// const ctx = document.getElementById("myChart").getContext("2d");
+// const chart = new Chart(ctx, {
+//   type: "line",
+//   data: {
+//     labels: ["Jan", "Mar", "May", "Jul", "Sep", "Nov", "Dec"],
+//     datasets: [{
+//       label: "Series 1",
+//       data: [0, 10, 20, 30, 40, 50, 50],
+//       borderColor: "#0055A5",
+//       backgroundColor: "rgba(0, 85, 165, 0.1)",
+//       fill: true,
+//       tension: 0.4,
+//       pointRadius: 0
+//     }]
+//   },
+//   options: {
+//     responsive: true,
+//     maintainAspectRatio: false,
+//     layout: {
+//       padding: { left: 0, right: 30, top: 30, bottom: 0 }
+//     },
+//     scales: {
+//       x: {
+//         title: { display: true, text: "Month" },
+//         ticks: { align: "start" }
+//       },
+//       y: {
+//         title: { display: true, text: "Active users" },
+//         ticks: { stepSize: 10, min: 0, max: 50 }
+//       }
+//     },
+//     plugins: { legend: { display: false } }
+//   }
+// });
+
+// ✅ Line Chart Setup
 const ctx = document.getElementById("myChart").getContext("2d");
 const chart = new Chart(ctx, {
   type: "line",
   data: {
-    labels: ["Jan", "Mar", "May", "Jul", "Sep", "Nov", "Dec"],
+    labels: [], // will be filled dynamically
     datasets: [{
-      label: "Series 1",
-      data: [0, 10, 20, 30, 40, 50, 50],
+      label: "Active Users",
+      data: [], // will be filled dynamically
       borderColor: "#0055A5",
       backgroundColor: "rgba(0, 85, 165, 0.1)",
       fill: true,
@@ -86,22 +122,53 @@ const chart = new Chart(ctx, {
   options: {
     responsive: true,
     maintainAspectRatio: false,
-    layout: {
-      padding: { left: 0, right: 30, top: 30, bottom: 0 }
-    },
+    layout: { padding: { left: 0, right: 30, top: 30, bottom: 0 } },
     scales: {
-      x: {
-        title: { display: true, text: "Month" },
-        ticks: { align: "start" }
-      },
-      y: {
-        title: { display: true, text: "Active users" },
-        ticks: { stepSize: 10, min: 0, max: 50 }
-      }
+      x: { title: { display: true, text: "Month" }, ticks: { align: "start" } },
+      y: { title: { display: true, text: "Active users" }, ticks: { stepSize: 10, min: 0, max: 50 } }
     },
     plugins: { legend: { display: false } }
   }
 });
+
+// ✅ Load data from Supabase and update chart
+async function loadActiveUsersChart() {
+  const { data, error } = await supabase
+    .from("visitors")
+    .select("visited_at, exited_at");
+
+  if (error) {
+    console.error("Error fetching visitors:", error.message);
+    return;
+  }
+
+  const monthLabels = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", 
+                       "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+  const monthlyActiveUsers = Array(12).fill(0);
+  const now = new Date();
+
+  data.forEach(v => {
+    const visited = new Date(v.visited_at);
+    const exited = v.exited_at ? new Date(v.exited_at) : now;
+
+    const startMonth = visited.getMonth();
+    const endMonth = exited.getMonth();
+
+    for (let m = startMonth; m <= endMonth; m++) {
+      monthlyActiveUsers[m]++;
+    }
+  });
+
+  // Update chart dynamically
+  chart.data.labels = monthLabels;
+  chart.data.datasets[0].data = monthlyActiveUsers;
+  chart.update();
+}
+
+
+// ✅ Refresh every 30 seconds
+setInterval(loadActiveUsersChart, 30000);
+
 
 // ✅ Custom Legend
 const legendContainer = document.getElementById("customLegend");
@@ -190,6 +257,7 @@ document.addEventListener("DOMContentLoaded", () => {
   loadTotalWebsiteVisits();
   loadTopFAQs();
   loadTotalFAQViews();
+  loadActiveUsersChart();
 })
 
 
@@ -424,3 +492,48 @@ async function loadTotalFAQViews() {
     console.error("Unexpected error loading total FAQ views:", err.message);
   }
 }
+
+
+// // Active users chart functions
+// async function loadActiveUsersChart() {
+//   const { data, error } = await supabase
+//     .from("visitors")
+//     .select("visited_at, exited_at");
+
+//   if (error) {
+//     console.error("Error fetching visitors:", error.message);
+//     return;
+//   }
+
+//   // Prepare months labels
+//   const monthLabels = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", 
+//                        "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+  
+//   // Initialize counts for each month
+//   const monthlyActiveUsers = Array(12).fill(0);
+
+//   const now = new Date();
+
+//   data.forEach(v => {
+//     const visited = new Date(v.visited_at);
+//     const exited = v.exited_at ? new Date(v.exited_at) : now;
+
+//     const startMonth = visited.getMonth();
+//     const endMonth = exited.getMonth();
+
+//     // Count the user for each month they were active
+//     for (let m = startMonth; m <= endMonth; m++) {
+//       monthlyActiveUsers[m]++;
+//     }
+//   });
+
+//   // Update chart
+//   chart.data.labels = monthLabels;
+//   chart.data.datasets[0].data = monthlyActiveUsers;
+//   chart.update();
+
+//   setInterval(() => {
+//   loadActiveUsersChart();
+// }, 30000);
+// }
+
