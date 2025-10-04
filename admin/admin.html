@@ -19,7 +19,7 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 
-<body>
+<body class="preload">
   <div class="container-fluid d-flex p-0 min-vh-100">
     
     <!-- SIDEBAR LOAD -->
@@ -36,7 +36,7 @@
       <div class="dashboard-content">
         <!-- SUMMARY CARDS -->
         <div class="row-sum-cards">
-          <div class="summary-card t-website shadow-sm">
+          <div class="summary-card t-website">
             <i class="ph ph-chart-line card-icon"></i>
             <div class="card-text">
               <h3 class="card-title">Total Website</h3><span class="subtitle">Visits</span>
@@ -46,7 +46,7 @@
               <span class="card-subtext up"><i class="ph ph-caret-double-up"></i> +0 visits</span>
             </div>
           </div>
-          <div class="summary-card faq-home-vid shadow-sm">
+          <div class="summary-card faq-home-vid">
             <i class="ph ph-play card-icon"></i>
             <div class="card-text">
               <h3 class="card-title">Homepage<br>FAQ's Video</h3>
@@ -57,7 +57,7 @@
               <span class="card-subtext"></span>
             </div>
           </div>
-          <div class="summary-card total-faq shadow-sm">
+          <div class="summary-card total-faq">
             <i class="ph ph-eye card-icon"></i>
             <div class="card-text">
               <h3 class="card-title">Total FAQ</h3><span class="subtitle">Views</span>
@@ -79,10 +79,10 @@
             </div>
             <!-- Device Types, Announcements, Bounce Rate -->
             <div class="row bot-cards g-2">
-              <div class="col-md-6">
-                <div class="device-side-card text-center p-3 shadow-sm">
+              <div class="col-md-7">
+                <div class="device-side-card text-center p-3">
                   <div class="row g-0 align-items-center flex-grow-1">
-                    <div class="col-6">
+                    <div class="col-5">
                       <canvas id="deviceChart"></canvas>
                     </div>
                     <div class="col-6">
@@ -98,8 +98,8 @@
                   </div>
                 </div>
               </div>
-              <div class="col-md-6">
-                <div class="side-card ann-card shadow-sm text-center mb-2">
+              <div class="col-md-5">
+                <div class="side-card ann-card text-center">
                   <div class="ann-icon">
                     <i class="ph ph-megaphone-simple ann-icon"></i>
                   </div>
@@ -109,7 +109,7 @@
                   </div>
                   <h3 class="mb-0 ann-num" style="visibility:hidden">0</h3>
                 </div>
-                <div class="side-card bounce-card shadow-sm text-center">
+                <div class="side-card bounce-card text-center">
                   <div class="bounce-icon">
                     <i class="ph ph-sign-out"></i>
                   </div>
@@ -123,7 +123,7 @@
             </div>
           </div>
           <div class="col-lg-4">
-            <div class="side-card faq-card p-3 shadow-sm mb-2">
+            <div class="side-card faq-card p-3 mb-2">
               <h5 class="faqhead"><i class="bi bi-patch-question faq-qicon"></i>Top 5 FAQ's</h5>
               <ul class="list-unstyled mb-0">
                 <li><span class="float-end text-success"><i class="ph ph-caret-up faq-icon-u"></i>0</span></li>
@@ -134,7 +134,7 @@
               </ul>
             </div>
             <!-- Academic Calendar -->
-            <div class="side-card acad-cal p-3 shadow-sm">
+            <div class="side-card acad-cal p-3">
               <div class="icon-side">
                 <i class="fas fa-clock-rotate-left"></i>
               </div>

@@ -5,9 +5,10 @@
   font-family: 'Montserrat', sans-serif;
 }
 
+
 .sidebar {
   width: 278px;
-  background: #fff;
+  background: #fcfcfc;
   height: 100vh;
   padding: 12px;
   display: flex;
@@ -74,8 +75,11 @@
 /* Menu */
 .sidebar .menu {
   list-style: none;
+  display: flex;
+  flex-direction: column;
   flex: 1;
-  overflow-x: hidden; 
+  overflow-x: hidden;
+  gap: .5rem;
 }
 
 .sidebar .menu li a {
