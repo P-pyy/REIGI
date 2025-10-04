@@ -10,6 +10,10 @@ body {
   overflow-x: hidden;
 }
 
+.preload * {
+  transition: none !important;
+}
+
 /* ! Scrollbar */
 
 /* Chrome, Edge, Safari */
@@ -39,7 +43,7 @@ body {
   min-height: 100vh;
   width: 100%;
   padding: 0;
-  position: relative; /* Ensure context for fixed elements */
+  position: relative;
 }
 
 .main-content {
@@ -47,10 +51,9 @@ body {
   width: calc(100% - 278px);
   min-height: 100vh;
   transition: margin-left 0.3s ease, width 0.3s ease;
-  padding: 160px 70px 20px;
+  padding: 10rem 7rem 20px;
   box-sizing: border-box;
   justify-content: center;
-  flex-grow: 1;
 }
 
 .main-content.adjusted {
@@ -65,7 +68,7 @@ body {
   flex-wrap: nowrap;
   justify-content: space-between;
   align-items: center;
-  background: #fff;
+  background: #fcfcfc;
   padding: 40px 80px;
   border-bottom: 1px solid #e3e3e3;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
@@ -112,31 +115,27 @@ body {
 .row-sum-cards {
   display: flex;
   justify-content: space-between;
-  width: 95%;
+  gap: 1.2rem;
   height: 108px;
   padding: 0;
-  margin-left: 45px;
+  margin: 0 0 1.5rem 0;
 }
 
 .summary-card {
   font-family: inherit;
   background: #fcfcfc;
   border-radius: 12px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.25);
   height: 108px;
   width: 95%;
   padding: 20px;
   display: flex;
   flex-direction: row;
   align-items: center;
-  margin-top: -15px;
-  margin-right: 40px;
-  border: 1px solid #e5e7eb;
+
 }
 
-.t-website {
-  margin-left: 20px;
-}
+
 
 .faq-home-vid {
   margin-left: 3px;
@@ -218,18 +217,14 @@ body {
 
 /* Chart Section */
 .chart-container {
-  background: #fff;
-  margin-top: 1rem;
-  margin-left: 50px;
+  background: #fcfcfc;
   padding: 10px;
   padding-left: 30px;
   padding-bottom: 60px;
   border-radius: 10px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.25);
   height: 342px;
-  width: 91%;
-  gap: 10px;
-  margin-right: 10px;
+  margin: 0 .4rem 0 0;
 }
 
 .chart-wrapper {
@@ -276,18 +271,16 @@ body {
 
 /* Device Type */
 .device-side-card {
-  width: 110%;
   height: 242px;
   border-radius: 12px;
   background: #fcfcfc;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-  padding: 20px;
+  box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.25);
   display: flex;
   flex-direction: row;
   align-items: center;
   justify-content: flex-start;
-  margin-right: 40px;
-  margin-left: 35px;
+  gap: 1rem;
+  margin: 0 1rem 0 0;
 }
 
 .device-content {
@@ -301,7 +294,6 @@ body {
 .device-header {
   display: flex;
   align-items: center;
-  margin-left: -5px;
   margin-bottom: 40px;
 }
 
@@ -353,7 +345,6 @@ body {
   font-size: 16px;
   color: #2C2C2C;
   line-height: 180%;
-  letter-spacing: 0%;
   margin: 2px 0;
 }
 
@@ -391,17 +382,13 @@ body {
 
 /* FAQ */
 .faq-card {
-  margin-top: 1rem;
-  width: 95%;
   height: 342px;
   border-radius: 12px;
-  /* padding: 20px; */
   background: #fcfcfc;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.25);
   display: flex;
   flex-direction: column;
-  /* justify-content: space-between; */
-  margin-left: -20px;
+  margin: 0 0 0 .4rem;
 }
 
 .side-card ul li {
@@ -434,23 +421,22 @@ body {
 }
 
 
+
 /* Bottom Cards */
+
 .bot-cards {
-  margin-top: 25px;
-  padding-left: 0;
+  margin-top: 1rem;
 }
 
 .bounce-card {
-  margin-left: 60px;
   display: flex;
-  width: 82%;
   height: 113px;
   border-radius: 12px;
-  left: 343px;
+  margin: 1rem .5rem 0 0;
   justify-content: space-between;
   padding: 20px 12px;
   background-color: #fcfcfc;
-  margin-top: 15px;
+  box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.25);
 }
 
 .b-heading {
@@ -507,15 +493,14 @@ body {
 
 /* Announcement Card */
 .ann-card {
-  margin-left: 60px;
   display: flex;
-  width: 82%;
   height: 113px;
   border-radius: 12px;
-  left: 343px;
+  margin: 0 .5rem 1rem 0;
   justify-content: space-between;
   padding: 20px 12px;
   background-color: #fcfcfc;
+  box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.25);
 }
 
 .ann-title {
@@ -573,18 +558,14 @@ body {
 /* Academic Calendar */
 .acad-cal {
   background: #fcfcfc;
-  padding: 20px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-  margin-bottom: 1rem;
-  width: 95%;
+  margin: 1.5rem 0 0 .4rem;
   height: 242px;
   border-radius: 12px;
-  margin-left: -20px;
-  margin-top: 35px;
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
   font-family: inherit;
+  box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.25);
 }
 
 .icon-side {
@@ -636,7 +617,6 @@ body {
 }
 
 .acad-cal .acad-button {
-  margin-left: -20px;
   margin-top: 20px;
 }
 
@@ -664,20 +644,6 @@ body {
   background: #0055A5;
   color: #fcfcfc;
 }
-
-
-/* Bootstrap Grid Adjustments */
-.row {
-  margin-left: 0;
-  margin-right: 0;
-  width: 100%;
-}
-
-.row > [class*="col-"] {
-  padding-left: 15px;
-  padding-right: 15px;
-}
-
 
 /* Enhanced Responsive Improvements */
 @media (max-width: 1200px) {
@@ -848,11 +814,6 @@ body.account-settings {
   line-height: 1.5;
   background-color: #f3f4f6;
   min-height: 100vh;
-  /*display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 1.5rem;*/
-  /* remove flex centering so it aligns with sidebar */
   display: block; 
   padding: 0;
 }
