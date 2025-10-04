@@ -126,11 +126,6 @@ html, body {
   border-color: #EBEFEC !important; 
 }
 
-.search-bar-text {
-  padding-left: 0.2rem !important;
-  padding-right: 0.2rem !important;
-} */
-
 .spacing {
   gap: 2rem; /* Adjust the gap value as needed */
 }
