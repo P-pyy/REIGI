@@ -114,12 +114,6 @@ html, body {
   text-decoration: none;
 }
 
-/* .search-bar .form-control:focus {
-  outline: none !important;          
-  box-shadow: none !important; 
-  border-color: #EBEFEC !important;  
-}
-
 
 .search-bar .input-group-text:focus {
   outline: none !important;          
