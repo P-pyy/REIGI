@@ -1,0 +1,226 @@
+html, body {
+    font-family: 'Montserrat', sans-serif;
+    height: 100%;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    background-color: #F3F4F8;
+    overflow-x: hidden;
+    scroll-behavior: smooth;
+
+}
+
+main {
+    flex: 1;
+}
+
+
+/* ! navbar section */
+
+.navbar {
+    padding: 0.2rem;
+}
+
+.custom-navbar {
+    background-color: #fcfcfc;
+}
+
+.navbar-brand {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #0055A5;
+    pointer-events: none;
+    display: flex;
+    align-items: center;
+    padding: 0.5rem 1rem;
+    line-height: 1.2;
+    margin-left: 5rem;
+}
+
+.navbar-brand img {
+    margin-right: 10px;
+}
+
+.campus-name {
+    font-size: 12px;
+    font-style: italic;
+    color: #0154A4;
+    pointer-events: none;
+    display: block;
+    line-height: 1.2;
+    font-weight: normal;
+}
+
+.nav-item .nav-link {
+    font-size: 1rem;
+    font-weight: 500;
+    color: #2B2B2B !important;
+    margin-right: 2rem;
+}
+
+.space-right{
+    margin-right: 5rem;
+}
+
+
+/* ! hover effects*/
+
+
+.hover-effect {
+    transform: translateY(1px);
+    transition: 0.2s ease-out;
+}
+
+.hover-effect:hover {
+    transform: translateY(0);
+}
+
+.hover-effect-f {
+    display: inline-block;
+    position: relative;
+}
+
+.hover-effect-f::after {
+  content: '';
+  position: absolute;
+  width: 100%;
+  transform: scaleX(0);
+  height: 1px;
+  bottom: 0;
+  left: 0;
+  background-color: #fcfcfc;
+  transition: transform 0.25s ease-out;
+}
+
+.hover-effect-f:hover::after {
+  transform: scaleX(1);
+}
+
+.hover-effect-f.center::after {
+  transform-origin: bottom center;
+}
+
+.hover-effect-f.center:hover::after {
+  transform-origin: bottom center;
+}
+
+
+/* ! footer section */
+
+footer {
+    background-color: #0055A5;
+    color: #FCFCFC;
+    padding: 20px;
+}
+
+.campus-name-footer {
+    font-size: 11px;
+    font-style: italic;
+}
+
+.list-unstyled li a {
+    font-size: 1rem;
+}
+
+.spacer{
+    margin-bottom: 1rem;
+}
+
+hr {
+    border-color: #BFDCFE;
+    opacity: 0.3;
+}
+
+footer p {
+    font-size: 13px;
+    color: #FFFFFF;
+    font-weight: 100;
+}
+
+h6.fw-semibold {
+    font-size: .8rem;
+}
+
+.list-unstyled li {
+    font-size: 16px;
+}
+
+footer .col-md-3.d-flex.align-items-start {
+    margin-bottom: 70px;
+}
+
+.footer-container {
+    max-width: 90%; 
+}
+
+.footer-container {
+    padding-top: 2rem;
+}
+
+.footer-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2rem;
+}
+
+.footer-col {
+    flex: 1 1 150px;
+}
+
+.footer-col ul {
+    padding-left: 0;
+    list-style: none;
+}
+
+.footer-col ul li {
+    margin-bottom: 0.5rem;
+}
+
+.footer-col ul li a {
+    color: #FCFCFC;
+    text-decoration: none;
+}
+
+.col-md-9 ul.list-unstyled li {
+    margin-bottom: 1rem;
+}
+
+.urs-logo-footer {
+    width: 60px;
+    margin-bottom: 1rem;
+    margin-top: -5px;
+}
+
+.campus-name1-footer, .campus-name2-footer {
+    margin-bottom: 26px;
+    margin-left: -10px; 
+}
+
+.campus-name1-footer{
+    line-height: 1.2;
+    font-weight: 600;
+}
+
+.campus-name2-footer{
+    font-weight: 300;
+    font-size: 11px;
+    font-style: italic;
+    display: block;    
+    top: -20px;
+    line-height: 1; 
+    position: relative;
+}
+
+.custom-line {            
+  border-top: 2px solid #BFDCFE; 
+  opacity: 0.5;
+}
+
+footer p {
+    text-align: start;
+    margin-top: 1rem;
+    font-size: 13px;
+    color: #FCFCFC;
+    font-weight: 100px;
+}
+
