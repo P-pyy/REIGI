@@ -358,24 +358,46 @@ async function logReplay() {
 }
 
 // Attach replay events
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
+  // 1️⃣ Log visitor
+  await logVisit();
+
+  // 2️⃣ Load video first
+  await loadFaqVideo();
+
   const videoElement = document.getElementById("faqVideo");
   if (!videoElement) return;
 
-  videoElement.addEventListener("play", async () => { await logReplay(); }, { once: true });
-  videoElement.addEventListener("ended", async () => {
-    await logReplay();
-    videoElement.play(); // loop
-  });
-});
+  // Make video muted to avoid autoplay block
+  videoElement.muted = true;
 
-// ======================
-// Init on page load
-// ======================
-document.addEventListener("DOMContentLoaded", () => {
-  // trackVisitor(); // ✅ will run once per session only
-  logVisit();
-  loadFaqVideo();
+  let isLogging = false;
+
+  // Log each play (optional: remove if you only want to log replays)
+  videoElement.addEventListener("play", async () => {
+    if (!isLogging) {
+      isLogging = true;
+      await logReplay();
+      isLogging = false;
+    }
+  });
+
+  // Log each ended loop
+  videoElement.addEventListener("ended", async () => {
+    if (isLogging) return;
+    isLogging = true;
+    try {
+      await logReplay();
+    } finally {
+      isLogging = false;
+      setTimeout(() => videoElement.play(), 200); // loop video
+    }
+  });
+
+  // Optionally, start video automatically if muted
+  videoElement.play();
+
+  // Load other data
   loadUndergradCalendar();
   loadGradCalendar();
   loadTodayAnnouncements();
