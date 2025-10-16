@@ -82,5 +82,5 @@
       } catch (err) {
         console.error("Unexpected error:", err.message);
       }
-      window.location.href = `faq-article?id=${id}`;
+      window.location.href = `/faq-article?id=${id}`;
     };

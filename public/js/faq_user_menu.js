@@ -1,8 +1,7 @@
 import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
 
   const SUPABASE_URL = "https://oeeqegpgmobbuhaadrhr.supabase.co";
-  const SUPABASE_ANON_KEY =
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9lZXFlZ3BnbW9iYnVoYWFkcmhyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTY0ODQwNzEsImV4cCI6MjA3MjA2MDA3MX0.M-pplPUdj21v2Fb5aLmmbE94gDGCfslksAI8fJca2cE";
+  const SUPABASE_ANON_KEY ="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9lZXFlZ3BnbW9iYnVoYWFkcmhyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTY0ODQwNzEsImV4cCI6MjA3MjA2MDA3MX0.M-pplPUdj21v2Fb5aLmmbE94gDGCfslksAI8fJca2cE";
   const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
   const searchInput = document.getElementById("faq-search");
@@ -11,7 +10,7 @@ import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js
   // Map categories to readable text
   function formatCategory(cat) {
     const map = {
-      "enrollment-process": "Enrollment Process",
+      "enrollment": "Enrollment",
       "document-request": "Document Request",
       "graduation-clearance": "Graduation & Clearance",
     };
@@ -43,16 +42,17 @@ import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js
       return;
     }
 
-    resultsDiv.innerHTML = data.map(faq => `
+   resultsDiv.innerHTML = data.map(faq => `
       <div class="search-result mb-2">
-        <a href="faq_card.html?id=${faq.id}" data-faq-id="${faq.id}">
+        <a href="/faq-article?id=${faq.id}" data-faq-id="${faq.id}">
           Frequently Asked Questions > ${formatCategory(faq.category)} > ${faq.post_title}
         </a>
       </div>
     `).join("");
   }
+  
 
-  // ✅ Attach click handler (delegated so it works with dynamic results)
+  // Attach click handler (delegated so it works with dynamic results)
   resultsDiv.addEventListener("click", async e => {
     const link = e.target.closest("a[data-faq-id]");
     if (!link) return;
@@ -65,7 +65,7 @@ import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js
       const { error: updateError } = await supabase.rpc("increment_faq_views", { faq_id: faqId });
       if (updateError) throw updateError;
 
-      // ✅ Redirect only after update succeeds
+      // Redirect only after update succeeds
       window.location.href = link.href;
     } catch (err) {
       console.error("Error incrementing FAQ views:", err.message);

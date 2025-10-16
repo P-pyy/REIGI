@@ -51,7 +51,8 @@
               "RelativeToolTip": "public\\css\\faq_graduation_clearance.css",
               "ViewState": "AgIAAGYAAAAAAAAAAAAAAHMAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
-              "WhenOpened": "2025-10-04T21:02:01.708Z"
+              "WhenOpened": "2025-10-04T21:02:01.708Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
@@ -63,7 +64,8 @@
               "RelativeToolTip": "public\\css\\faq_enrollment_process.css",
               "ViewState": "AgIAAHUAAAAAAAAAAAAAAH4AAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
-              "WhenOpened": "2025-10-04T21:00:25.326Z"
+              "WhenOpened": "2025-10-04T21:00:25.326Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Bookmark",

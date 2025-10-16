@@ -1,0 +1,259 @@
+html, body {
+    font-family: 'Montserrat', sans-serif;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    background-color: #ffffff;
+    scroll-behavior: smooth;
+}
+
+/* ! Scrollbar */
+
+/* Chrome, Edge, Safari */
+::-webkit-scrollbar {
+    width: 12px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 20px; 
+    margin: 2px;
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: #3066B3; 
+    border-radius: 20px !important;
+    border: 3px solid #f1f1f1; 
+    background-clip: padding-box;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background-color: #3378d3; 
+}
+
+/* ! Parrallax */
+
+.parallax {
+  background-image: url("/img/try.webp");
+  min-height: 100px; 
+  background-attachment: fixed;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+/* ! Announcement TITLE */
+
+.announcement-main-title {
+  display: flex;
+  justify-content: center;
+  text-align:center;
+  /* padding: 2rem 0 2rem 0; */
+  /* background-image: url('../images/bg-faq.webp'); */
+  /* height: 400px; */
+}
+
+.announcement-in-container {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  /* padding:60px 20px; */
+  width: 100%;
+  height: 300px;
+  /* gap: 2rem; */
+}
+
+.announcement-menu-title {
+  font-size: 3.5rem; 
+  font-weight:600; 
+  color:#0154A4; 
+  line-height:1.3;
+}
+
+
+main {
+    flex: 1;
+}
+
+.announcement-header {
+    background-color: #FCFCFC;
+    color: #0055A5;
+    padding: 6rem 0 4rem 0;
+    text-align: center;
+    font-weight: 600;
+    font-size: 2rem;
+    margin-top: 0 !important;   
+}
+
+
+.announcement-page {
+    display: flex;
+    justify-content: center;
+    /* margin-bottom: 8rem; */
+    /* margin-top: 3rem; */
+    gap: 2.5rem;
+}
+
+/* Sidebar */
+
+.container-sidebar {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 0 20px;
+    margin-bottom: 50px;
+}
+.sidebar {
+    /* flex: 1; */
+    /* max-width: 300px; */
+    background-color: #f9f9f9;
+    padding: 2rem;
+    /* border-radius: 8px; */
+    box-shadow: 0 0 8px rgba(0,0,0,0.05);
+    height: 100vh;
+    margin-left: -80px;
+}
+
+.filter-search label,
+.filter-month label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: #333;
+}
+
+.filter-month {
+    margin-top: 1rem;
+}
+
+.filter-search input[type="text"],
+.filter-month select {
+    width: 100%;
+    padding: 0.5rem;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 1rem;
+}
+
+
+.announcement-content {
+    /* flex: 3 1 0; */
+    margin: 0;
+    width: 75%;
+    padding: 3rem 2rem;
+}
+
+.announcement-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 2rem;
+}
+
+.announcement-card {
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.announcement-card img {
+    width: 100%;
+    height: 140px;
+    object-fit: cover;
+}
+
+.announcement-text {
+    padding: 1rem;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.announcement-text h2 {
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin: 0 0 0.3rem 0;
+    text-transform: uppercase;
+}
+
+.announcement-text .date {
+    font-size: 0.85rem;
+    color: #666;
+    margin-bottom: 0.8rem;
+}
+
+.announcement-text .description {
+    flex-grow: 1;
+    font-size: 0.9rem;
+    color: #444;
+    margin-bottom: 1rem;
+}
+
+.read-more {
+    font-weight: 600;
+    color: #0055A5;
+    text-decoration: none;
+    font-size: 0.9rem;
+}
+
+.read-more:hover {
+    text-decoration: underline;
+}
+
+.announcement-wrapper {
+  background-color: #FCFCFC;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  margin-top: -110px;
+  margin-bottom: 0px;
+  overflow-y: auto;
+  width: 100%;
+  height: 450px;
+}
+
+body, .container-fluid {
+  padding-left: 0;
+  padding-right: 0;
+  margin: 0;
+}
+
+
+.other-announcement-title {
+  font-size: 32px;
+  color: #0055A5;
+  font-weight: 600;
+}
+
+.announcement-title {
+  font-size: 24px !important;
+  white-space: nowrap;
+  margin-left: -65px;
+
+}
+
+.announcement-date {
+  font-size: 16px !important;
+  margin-left: -65px;
+ }
+
+ .read-more-2 {
+  font-size: 18px;
+  color: #0055A5;
+ }
+
+/* Loading Spinner */
+.spinner {
+  width: 50px;
+  height: 50px;
+  border: 5px solid #ddd;
+  border-top: 5px solid #007bff; /* Change color if you want */
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  100% {
+    transform: rotate(360deg);
+  }
+}

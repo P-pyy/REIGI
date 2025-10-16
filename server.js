@@ -126,7 +126,7 @@ app.get('/faq_graduation_clearance', (req, res, next) => {
 });
 
 // --- Announcements Route ---
-app.get('/announcements', (req, res, next) => {
+app.get('/announcement', (req, res, next) => {
     res.render('announcement', {}, (err, htmlContent) => {
         if (err) return next(err); 
         res.render('layout', { 
@@ -135,6 +135,18 @@ app.get('/announcements', (req, res, next) => {
         });
     });
 });
+
+// --- Announcement Article Route ---
+app.get('/announcement-article', (req, res, next) => {
+    res.render('announcement_article', {}, (err, htmlContent) => {
+        if (err) return next(err); 
+        res.render('layout', { 
+            pageTitle: 'Announcement Article', 
+            content: htmlContent 
+        });
+    });
+});
+       
 
 // 6. Server Start
 app.listen(PORT, () => {
