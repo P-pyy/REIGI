@@ -103,7 +103,7 @@ app.get('/admin/site_media', (req, res, next) => {
     });
 });
 
-// --- ADMIN Site Media Video Route ---
+// --- ADMIN Site Media Calendar Route ---
 app.get('/admin/site_media_video', (req, res, next) => {
     res.render('admin/site_media_video', {}, (err, htmlContent) => {
         if (err) {
@@ -116,6 +116,7 @@ app.get('/admin/site_media_video', (req, res, next) => {
         });
     });
 });
+
 
 // --- ADMIN Site Media Calendar Route ---
 app.get('/admin/site_media_calendar', (req, res, next) => {
@@ -131,51 +132,19 @@ app.get('/admin/site_media_calendar', (req, res, next) => {
     });
 });
 
-// // --- ADMIN Site Media Video Route ---
-// app.get('/admin/site_media_video', (req, res, next) => {
-//   const isAjax = req.xhr || req.headers.accept?.includes('json');
-
-//   if (isAjax) {
-//     // 👉 For fetch() or AJAX requests — return only the partial
-//     res.render('admin/site_media_video', { layout: false });
-//   } else {
-//     // 👉 For full browser navigation — render with layout_admin
-//     res.render('admin/site_media_video', {}, (err, htmlContent) => {
-//       if (err) {
-//         console.error("EJS Rendering Error for /admin/site_media_video:", err.message);
-//         return next(err);
-//       }
-//       res.render('layout_admin', {
-//         pageTitle: 'Admin Site Media (Video)',
-//         content: htmlContent
-//       });
-//     });
-//   }
-// });
-
-
-// // --- ADMIN Site Media Calendar Route ---
-// app.get('/admin/site_media_calendar', (req, res, next) => {
-//   const isAjax = req.xhr || req.headers.accept?.includes('json');
-
-//   if (isAjax) {
-//     // 👉 For fetch() or AJAX requests — return only the partial
-//     res.render('admin/site_media_calendar', { layout: false });
-//   } else {
-//     // 👉 For full browser navigation — render with layout_admin
-//     res.render('admin/site_media_calendar', {}, (err, htmlContent) => {
-//       if (err) {
-//         console.error("EJS Rendering Error for /admin/site_media_calendar:", err.message);
-//         return next(err);
-//       }
-//       res.render('layout_admin', {
-//         pageTitle: 'Admin Site Media (Calendar)',
-//         content: htmlContent
-//       });
-//     });
-//   }
-// });
-
+// --- ADMIN Site Media Calendar Route ---
+app.get('/admin/settings', (req, res, next) => {
+    res.render('admin/settings', {}, (err, htmlContent) => {
+        if (err) {
+            console.error("EJS Rendering Error for /admin/settings:", err.message);
+            return next(err);
+        }
+        res.render('layout_admin', {
+        pageTitle: 'Admin Settings',
+        content: htmlContent
+        });
+    });
+});
 
 
 // --- FAQ Route ---

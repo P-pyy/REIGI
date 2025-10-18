@@ -1,44 +1,43 @@
-<body class="site-media-editor-page">
-  <div class="container-fluid d-flex p-0 min-vh-100">
-    
-    <!-- SIDEBAR LOAD -->
-    <%- include('../partials/admin/sidebar') %>
+<!-- Include Sidebar -->
+<%- include('../partials/admin/sidebar') %>
 
-    <link rel="stylesheet" href="/css/site_media.css">
+<!-- Custom Page CSS -->
+<link rel="stylesheet" href="/css/site_media.css">
 
-    <!-- HEADER -->
-    <header class="main-header d-flex justify-content-between align-items-center">
-      <h1 class="mb-0">Site Media Editor</h1>
-    </header>
+<!-- Main Content -->
+<div class="container-fluid d-flex p-0 min-vh-100 site-media-editor-page">
+  <!-- HEADER -->
+  <header class="main-header d-flex justify-content-between align-items-center">
+    <h1 class="mb-0">Site Media Editor</h1>
+  </header>
 
-    <!-- Main Content -->
-    <main class="main-content flex-grow-1">
-      <div class="container">
-        <div class="editor-grid">
-          <!-- Preview Card -->
-          <div class="card editor left-card">
-            <h2>Homepage FAQ Video</h2>
-            <p class="preview-label">PREVIEW</p>
-            <div class="image-box">
-              <img src="img/CARD-BG.png" alt="FAQ Video">
-            </div>
-            <p class="file-name">VID</p>
+  <!-- Main Content -->
+  <main class="main-content flex-grow-1">
+    <div class="container">
+      <div class="editor-grid">
+        <!-- Preview Card -->
+        <div class="card editor left-card">
+          <h2>Homepage FAQ Video</h2>
+          <p class="preview-label">PREVIEW</p>
+          <div class="image-box">
+            <img src="/img/CARD-BG.png" alt="FAQ Video">
           </div>
+          <p class="file-name">VID</p>
+        </div>
 
-          <!-- Upload Card -->
-          <div class="card right-card upload-card">
-            <label class="upload-box">
-              <input type="file" hidden accept="video/mp4,video/webm">
-              <span>Choose Video</span>
-              <p>Drag & Drop the video file here<br>MP4 / WebM</p>
-            </label>
-            <button class="btn submit-btn">Submit Change</button>
-          </div>
+        <!-- Upload Card -->
+        <div class="card right-card upload-card">
+          <label class="upload-box">
+            <input type="file" hidden accept="video/mp4,video/webm">
+            <span>Choose Video</span>
+            <p>Drag & Drop the video file here<br>MP4 / WebM</p>
+          </label>
+          <button class="btn submit-btn">Submit Change</button>
         </div>
       </div>
-    </main>
-  </div>
+    </div>
+  </main>
+</div>
 
-
-  <script type="module" src="/js/site_media.js"></script>
-</body>
+<!-- JS -->
+<script type="module" src="/js/site_media.js"></script>
