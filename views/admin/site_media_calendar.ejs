@@ -1,1 +1,92 @@
-<!--  -->
+<!-- Include Sidebar -->
+<%- include('../partials/admin/sidebar') %>
+
+<!-- Custom Page CSS -->
+<link rel="stylesheet" href="/css/site_media.css">
+
+  <div class="container-fluid d-flex p-0 min-vh-100 site-media-calendar-page site-media-undergraduate-page">
+
+    <!-- HEADER -->
+    <header class="main-header d-flex justify-content-between align-items-center">
+      <h1 class="mb-0">Site Media Editor</h1>
+      
+      <!-- Dropdown in Navbar -->
+      <div class="dropdown" id="dropdown">
+        <span id="selected"></span>
+        <div class="arrow" aria-hidden="true">
+          <span class="up"></span>
+          <span class="down"></span>
+        </div>
+        <div class="dropdown-content" id="dropdown-content" role="listbox" tabindex="-1" aria-label="Select an education level">
+          <div role="option" tabindex="0" data-value="Undergraduate">Undergraduate</div>
+          <div role="option" tabindex="0" data-value="Graduate">Graduate</div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content flex-grow-1">
+  <div class="container">
+    <!-- Undergraduate Section -->
+    <div id="undergraduate-section" class="calendar-section active">
+      <div class="editor-grid">
+        <!-- Left Card -->
+        <div class="card left-card">
+          <h2>Academic Calendar</h2>
+          <p class="subtitle">Undergraduate</p>
+          <p class="preview-text">PREVIEW</p>
+          <div class="preview-box">
+            <img src="../img/Calendar.png" alt="Preview">
+          </div>
+        </div>
+
+        <!-- Right Card -->
+        <div class="card right-card upload-card">
+          <div class="upload-box">
+            <label>
+              <div class="choose-btn">Choose Image</div>
+              <input type="file" hidden accept="image/png, image/jpeg, image/webp">
+            </label>
+            <p class="drag-text">Drag & Drop the image here</p>
+            <p class="file-types">PNG / JPG / WebP</p>
+          </div>
+          <button class="submit-btn">Submit Change</button>
+        </div>
+      </div>
+    </div>
+    <!-- End Undergraduate Section -->
+
+    <!-- Graduate Section -->
+    <div id="graduate-section" class="calendar-section">
+      <div class="editor-grid">
+        <!-- Left Card -->
+        <div class="card left-card">
+          <h2>Academic Calendar</h2>
+          <p class="subtitle">Graduate School</p>
+          <p class="preview-text">PREVIEW</p>
+          <div class="preview-box">
+            <img src="../img/Calendar.png" alt="Preview">
+          </div>
+        </div>
+
+        <!-- Right Card -->
+        <div class="card right-card upload-card">
+          <div class="upload-box">
+            <label>
+              <div class="choose-btn">Choose Image</div>
+              <input type="file" hidden accept="image/png, image/jpeg, image/webp">
+            </label>
+            <p class="drag-text">Drag & Drop the image here</p>
+            <p class="file-types">PNG / JPG / WebP</p>
+          </div>
+          <button class="submit-btn">Submit Change</button>
+        </div>
+      </div>
+    </div>
+    <!-- End Graduate Section -->
+  </div>
+</main>
+</div>
+
+<!-- JS -->
+<script type="module" src="/js/site_media.js"></script>

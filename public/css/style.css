@@ -41,10 +41,10 @@ main {
     margin-right: 10px;
 }
 
-.campus-name {
+.campus-names {
     font-size: 12px;
     font-style: italic;
-    color: #0154A4;
+    color: #0154A4 !important;
     pointer-events: none;
     display: block;
     line-height: 1.2;
@@ -223,4 +223,9 @@ footer p {
     color: #FCFCFC;
     font-weight: 100px;
 }
+
+.campus-name {
+    color: #0154A4 !important;
+}
+
 

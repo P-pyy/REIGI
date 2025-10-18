@@ -1,0 +1,604 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap');
+body {
+    font-family: 'Montserrat', sans-serif;
+  }
+
+
+/*  ADMIN ACCOUNT SETTINGS  */
+.account-settings {
+  margin: 0;
+  font-family: 'Montserrat', sans-serif;
+  line-height: 1.5;
+  background-color: #f3f4f6;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.account-settings .container {
+  max-width: 28rem;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  justify-content: center;
+  align-items: center;
+  padding: 3rem 0 0 0 !important;
+}
+.account-settings .card {
+  border-radius: 12px;
+  box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.25);
+  padding: 1.5rem;
+  gap: 1rem;
+  width: 670px;
+  border: none;
+}
+.account-settings .card-title {
+  font-size: 1.525rem;
+  font-weight: 600;
+  color: #111827;
+  margin-bottom: 1.5rem;
+  text-align: left;
+}
+.account-settings .nav-links {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+.account-settings .nav-links a {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: #374151;
+  text-decoration: none;
+  transition: color 0.2s;
+  font-weight: 500;
+  padding: .5rem;
+  height: 3rem;
+}
+.account-settings .nav-links a:hover {
+  background-color: #f5f5f5;
+  border-radius: 8px;
+  color: #000 !important;
+}
+.account-settings .arrow-icon {
+  border: solid #2563eb;
+  border-width: 0 2px 2px 0;
+  display: inline-block;
+  padding: 5px;
+  transform: rotate(-45deg);
+}
+/* body.account-settings .nav-links a:hover .arrow-icon {
+  border-color: #1d4ed8;
+} */
+.setting-option:hover{
+  background-color: #f5f5f5;
+  border-radius: 8px;
+}
+
+
+/* ========== ADMIN CHANGE EMAIL ========== */
+.change-email {
+  margin: 0;
+  font-family: 'Montserrat', sans-serif;
+  background-color: #f5f8fa;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  padding: 1rem;
+}
+
+.change-email .card {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+  padding: 2rem 2.5rem;
+  width: 100%;
+  max-width: 360px;
+  user-select: none;
+  transition: box-shadow 0.3s;
+}
+
+.change-email .card:hover,
+.change-email .card:focus-within {
+  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+}
+
+.change-email .card h2 {
+  font-weight: 600;
+  color: #2f3a45;
+  margin-bottom: 2.5rem;
+  font-size: 1.6rem;
+}
+
+.change-email form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.change-email input[type="email"] {
+  padding: 0.65rem 1rem;
+  font-size: 1rem;
+  border: 1.5px solid #e1e4e8;
+  border-radius: 8px;
+  transition: border-color 0.25s, box-shadow 0.25s;
+  color: #344054;
+}
+
+.change-email input[type="email"]::placeholder {
+  color: #a1a8b3;
+}
+
+.change-email input[type="email"]:focus {
+  outline: none;
+  border-color: #66a1ff;
+  box-shadow: 0 0 8px rgba(102,161,255, 0.3);
+}
+
+.change-email button {
+  margin-top: 1rem;
+  background-color: #b6d1fe;   /* same as change-password */
+  color: #222;
+  font-weight: 500;
+  padding: 0.75rem;
+  border: none;
+  border-radius: 10px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s, box-shadow 0.3s;
+  width: 240px;  
+  align-self: center;
+}
+
+.change-email button:hover {
+  background-color: #a2c5fe;   /* hover */
+}
+
+.change-email button:active {
+  background-color: #8dbaeb;   /* pressed */
+  box-shadow: none;
+}
+
+/* ========== ADMIN CHANGE PASSWORD ========== */
+.change-password {
+  font-family: 'Montserrat', sans-serif;
+  background-color: #f5f7fa;
+  margin: 0;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 1rem;
+}
+.change-password .form-container {
+  background-color: #f9fafb;
+  padding: 2.5rem 2rem;
+  border-radius: 12px;
+  box-shadow: 0 8px 20px rgb(0 0 0 / 0.05);
+
+  width: 120%;
+  max-width: none; /* prevents it from being capped */
+
+  position: relative;
+  left: -25%; /* shift left by half of the extra 50% */
+}
+.change-password h2 {
+  font-weight: 600;
+  color: rgb(20, 20, 22);
+  margin-bottom: 2.3rem;
+  font-size: 1.7rem;
+}
+.change-password form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+.change-password input[type="password"] {
+  padding: 0.65rem 1rem;
+  font-size: 1rem;
+  border: 1.5px solid #d9e2ec;
+  border-radius: 8px;
+  transition: border-color 0.25s, box-shadow 0.25s;
+  color: rgb(16, 16, 17);
+}
+.change-password input[type="password"]:focus {
+  outline: none;
+  border-color: #6ca0f6;
+  box-shadow: 0 0 6px 1px rgba(108, 160, 246, 0.4);
+}
+.change-password button {
+  margin-top: 1rem;
+  background-color: #b6d1fe;
+  color: #222;
+  font-weight: 500;
+  padding: 0.75rem;
+  border: none;
+  border-radius: 10px;
+  font-size: 1rem;
+  cursor: pointer;
+  /*box-shadow: inset 0 -3px 0 #8ba4f9;*/
+  transition: background-color 0.3s, box-shadow 0.3s;
+}
+.change-password button:hover {
+  background-color: #a2c5fe;
+ /* box-shadow: inset 0 -3px 0 #7093f5; */
+}
+.change-password button:active {
+  background-color: #8dbaeb;
+  box-shadow: none;
+}
+
+
+/* ========== ADMIN LOGIN ALERTS ========== */
+.login-alerts {
+  margin: 0;
+  font-family: 'Montserrat', sans-serif;
+  background-color: #f3f4f6;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+.login-alerts .card {
+  background: #fff;
+  border-radius: 1rem;
+  box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1),
+              0 8px 10px -6px rgba(0,0,0,0.1);
+  max-width: 24rem;
+  width: 100%;
+  padding: 2.5rem;
+  position: relative;
+}
+.login-alerts .back-btn {
+  position: absolute;
+  top: 1.5rem;
+  left: 1rem;
+  background: none;
+  border: none;
+  color: #374151;
+  cursor: pointer;
+}
+.login-alerts .back-btn:hover {
+  color: #111827;
+}
+.login-alerts .icon {
+  width: 1.5rem;
+  height: 1.5rem;
+}
+.login-alerts .title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+  color: #171717;
+  margin-top: 2.1rem;
+}
+.login-alerts .subtitle {
+  font-size: 0.875rem;
+  color: #4b5563;
+  margin-bottom: 1.5rem;
+  margin-top: 0.2rem;
+}
+.login-alerts .options {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  border: none;
+  margin: 0;
+  padding: 0;
+}
+.login-alerts .option {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.login-alerts .label {
+  color: #1f2937;
+  font-size: 1rem;
+}
+.login-alerts .subtext {
+  font-size: 0.75rem;
+  color: #6b7280;
+}
+/* ✅ Make checkboxes blue */
+.login-alerts input[type="checkbox"] {
+  accent-color: #3578e5; /* Blue color */
+}
+.login-alerts .option-info {
+  display: flex;
+  flex-direction: column; /* stack items vertically */
+}
+
+.login-alerts .option-info .label {
+  font-weight: 500;
+}
+
+.login-alerts .option-info .subtext {
+  font-size: 0.85rem;
+  color: #666;
+  margin-top: 2px;
+}
+.login-alerts input[type="checkbox"] {
+  accent-color: #3578e5; /* Blue color */
+  width: 15px;
+  height: 15px;
+  cursor: pointer;
+}
+.login-history {
+  background-color: #f8fafc;
+  font-family: 'Montserrat', sans-serif;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  margin: 0;
+  padding: 16px;
+}
+
+.login-history .container {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  width: 100%;
+  max-width: 380px;
+  border: 1px solid #e2e8f0;
+  
+}
+
+/* Header */
+.login-history .header {
+  display: flex;
+  align-items: center;
+  /*border-bottom: 1px solid #e2e8f0;*/
+  padding: 12px 20px;
+}
+
+.login-history .icon-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #334155;
+  transition: color 0.2s;
+  margin-left: -8px; /* move button left */
+}
+
+.login-history .icon-btn:hover {
+  color: #1e293b;
+}
+
+.login-history .icon {
+  width: 24px;
+  height: 24px;
+}
+
+.login-history .header-title {
+  flex-grow: 1;
+  font-size: 18px;
+  font-weight: bold;
+  color: #0f172a;
+  padding-left: 12px;
+  user-select: none;
+}
+
+/* Main content */
+.login-history .main {
+  padding: 20px;
+}
+
+.login-history .label {
+  font-size: 14px;
+  color: #334155;
+  margin-bottom: 6px;
+  user-select: none;
+}
+
+.login-history .device-title {
+  font-size: 16px;
+  font-weight: bold;
+  color: #0f172a;
+  margin: 0;
+}
+
+.login-history .device-location {
+  font-size: 14px;
+  color: #475569;
+  margin: 2px 0;
+}
+
+.login-history .this-device {
+  font-size: 12px;
+  font-weight: bold;
+  color: #15803d;
+  margin-top: 4px;
+  user-select: all;
+}
+
+.login-history .saved-title {
+  font-size: 16px;
+  font-weight: bold;
+  color: #0f172a;
+  margin-bottom: 12px;
+  user-select: none;
+}
+
+/* Saved devices */
+.saved-devices-scroll {
+  max-height: 280px;
+  overflow-y: auto;
+}
+
+.login-history .saved-devices-scroll::-webkit-scrollbar {
+  width: 6px;
+}
+.login-history .saved-devices-scroll::-webkit-scrollbar-thumb {
+  background-color: #cbd5e1;
+  border-radius: 3px;
+}
+.login-history .saved-devices-scroll::-webkit-scrollbar-track {
+  background-color: #f8fafc;
+}
+
+.login-history .device-card {
+  width: 100%;
+  text-align: left;
+  border: none;
+  background: none;
+  padding: 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  position: relative;
+  transition: background 0.2s;
+}
+
+.login-history .device-card:hover {
+  background-color: #f1f5f9;
+}
+
+.login-history .device-card-title {
+  font-size: 15px;
+  font-weight: bold;
+  color: #0f172a;
+  margin: 0;
+  transition: color 0.2s;
+}
+
+.login-history .device-card:hover .device-card-title  {
+  color: #1d4ed8;
+}
+.login-history .device-title:hover {
+  color: #1d4ed8;
+  cursor: pointer; /* optional: make it clickable-looking */
+}
+.login-history .device-card:hover .device-title,
+.login-history .device-card:hover .device-card-title {
+  color: #1d4ed8;
+}
+  
+  .login-history .device-time {
+    font-size: 12px;
+    color: #94a3b8;
+    margin-top: 4px;
+  }
+  
+  .login-history .arrow {
+    position: absolute;
+    right: 16px;
+    top: 20px;
+    color: #2563eb;
+    opacity: 0.7;
+    transition: opacity 0.2s;
+  }
+
+  .login-history .device-card:hover .arrow {
+    opacity: 1;
+  }
+  
+  .login-history .arrow-icon {
+    width: 20px;
+    height: 20px;
+  }
+
+  .login-history .top-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem; /* spacing before title */
+  }
+
+  .change-pass-title{
+    font-size: 1.525rem;
+    font-weight: 600;
+    color: #111827;
+    padding: 0 0 1.5rem 0;
+    text-align: left;
+  }
+
+
+  .change-password-form{
+    display: flex;
+    flex-direction: column;
+    width: 450px;
+    gap: 1rem;
+  }
+
+ .form-container input {
+    padding: 0.75rem 1rem;
+    font-size: 1rem;
+    font-weight: 400;
+    color: #111;
+    background-color: #f9fafb;
+    border: 1.8px solid #e5e7eb;
+    border-radius: 0.5rem;
+    transition: border-color 0.25s ease;
+    }
+    .form-container button {
+      width: 100%;
+      padding: 12px;
+      border-radius: 6px;
+      background-color: #aac4ff;
+      border: none;
+      color: #000;
+      font-weight: 500;
+      cursor: pointer;
+    }
+    .form-container {
+      max-width: 600px;
+      /* margin: 20px auto; */
+      flex-direction: column;
+      padding: 20px;
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+    .top-controls {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+    }
+    .icon-btn {
+      border: none;
+      background: none;
+      font-size: 1.5rem;
+      cursor: pointer;
+    }
+    /* Make top controls like screenshot */
+    #login-history-form .icon-btn {
+      font-size: 1.2rem;
+    }
+    #login-history-form h2 {
+      font-weight: 600;
+      font-size: 1.25rem;
+    }
+    /* Device items */
+    .device-list,
+    .current {
+      border-radius: 8px;
+    }
+    .device-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 0;
+      border-bottom: 1px solid #ddd;
+    }
+    .device-item:last-child {
+      border-bottom: none;
+    }
+    .device-item h6 {
+      margin: 0;
+      font-weight: 600;
+    }
+    .device-item i {
+      color: #007bff;
+      font-size: 1rem;
+    }
+    .current {
+      padding: 12px;
+      border-radius: 8px;
+      background: #fff;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    }
