@@ -1,0 +1,46 @@
+<div class="container-fluid d-flex p-0 min-vh-100">
+    
+     <!-- Sidebar Include -->
+    <%- include('../partials/admin/sidebar') %>
+
+    <!-- css link -->
+    <link rel="stylesheet" href="/css/site_media.css">
+    
+
+    <!-- HEADER -->
+    <header class="main-header d-flex justify-content-between align-items-center">
+      <h1 class="mb-0">Site Media</h1>
+    </header>
+
+    <!-- MAIN CONTENT -->
+    <main class="main-content flex-grow-1">
+      <div class="container">
+        <div id="media-container">
+          <div class="media-grid">
+            <!-- Card 1 -->
+            <div class="card media left-card media-card">
+              <h2>Homepage FAQ Video</h2>
+              <div class="image-box">
+                <img src="/img/CARD-BG.png" alt="FAQ Video Thumbnail">
+              </div>
+              <p class="file-name">VID_01234_5678abcdefgh</p>
+              <button class="btn upload-btn" data-target="/admin/site_media_video">+ Upload Video</button>
+            </div>
+
+            <!-- Card 2 -->
+            <div class="card media right-card media-card">
+              <h2>Academic Calendar</h2>
+              <div class="image-box">
+                <img src="/img/CARD-BG.png" alt="Academic Calendar">
+              </div>
+              <p class="file-name">CARD-BG.png</p>
+              <button class="btn upload-btn" data-target="/admin/site_media_calendar">+ Upload Image</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+  
+
+  <script type="module" src="/js/site_media.js"></script>

@@ -74,6 +74,9 @@
       searchFAQs(e.target.value);
     });
 
+    // Load default category FAQs on page load
+   document.addEventListener("DOMContentLoaded", loadFAQs);
+
     // Open FAQ and increment view
     window.openFAQ = async function(id) {
       try {

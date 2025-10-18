@@ -1,0 +1,249 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Montserrat', sans-serif;
+}
+
+
+.sidebar {
+  width: 278px;
+  background: #fcfcfc;
+  height: 100vh;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid #e3e3e3;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+  overflow-y: auto; 
+  overflow-x: hidden; 
+}
+
+/* Collapsed Sidebar */
+.sidebar.small-sidebar {
+  width: 80px;
+  padding: 0;
+  overflow-x: hidden; 
+}
+
+/* Ensure no animation on main-header */
+.main-header {
+  transition: none; /* Prevent animation on header */
+}
+
+/* Logo */
+.sidebar .logo {
+  text-align: left;
+  margin-bottom: 40%;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  overflow: hidden; 
+}
+
+.sidebar .logo img {
+  width: 60px;
+  margin-top: 15px;
+  margin-left: 30px;
+}
+
+.logo-text {
+  font-size: 14px;
+  margin-top: 25px;
+  margin-left: -8px;
+  color: #0055A5;
+  line-height: 1.3;
+  font-weight: 600;
+  white-space: nowrap; 
+  overflow: hidden; 
+  text-overflow: ellipsis; 
+}
+
+.logo-text .campus {
+  font-size: 11px;
+  font-style: italic;
+  color: #0055A5;
+  font-weight: lighter;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Menu */
+.sidebar .menu {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  overflow-x: hidden;
+  gap: .5rem;
+}
+
+.sidebar .menu li a {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 12px;
+  text-decoration: none;
+  color: #000;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden; 
+  text-overflow: ellipsis; 
+  transition: background 0.3s ease, color 0.3s ease;
+  max-width: 100%;
+}
+
+.sidebar .menu li a i {
+  margin-right: 12px;
+  margin-left: 0;
+  font-weight: 600;
+  font-size: 1.5rem; 
+  text-shadow: 0 0 1px black;
+}
+
+.sidebar:not(.small-sidebar) .menu li a {
+  margin-left: -15px;
+  padding-left: 15px;
+}
+
+.sidebar .menu li a.active,
+.sidebar .menu li a:hover {
+  background: #0055A5;
+  color: #fff;
+  padding: 12px;
+}
+
+.sidebar:not(.small-sidebar) .menu li a.active,
+.sidebar:not(.small-sidebar) .menu li a:hover {
+  margin-left: -15px;
+  padding-left: 15px;
+}
+
+.sidebar .menu li a.active i,
+.sidebar .menu li a:hover i {
+  color: #fff;
+}
+
+.bottom-controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 10px;
+  margin-top: auto;
+  overflow: hidden; 
+}
+
+.bottom-controls .logout {
+  display: flex;
+  align-items: center;
+  padding: 20px;
+  cursor: pointer;
+  color: #000;
+  font-size: 14px;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.bottom-controls .logout i {
+  margin-right: 10px;
+  font-size: 18px;
+  font-weight: 600; 
+  font-size: 1.5rem; 
+  text-shadow: 0 0 1px black;
+}
+
+.bottom-controls .divider {
+  width: 1.5px;
+  height: 35px;
+  margin-right: 10px;
+  background: #000;
+}
+
+.bottom-controls .toggle-btn {
+  cursor: pointer;
+  padding: 4px; 
+  margin-right: 25px;
+  margin-top: 8px;
+  border-radius: 4px;
+  color: #000;
+  font-weight: 600; 
+  font-size: 1.5rem; 
+  text-shadow: 0 0 1px black;
+}
+
+/* Small Sidebar (Collapsed) */
+.small-sidebar .logo {
+  text-align: center;
+  margin-bottom: 110%;
+  margin-top: 25px;
+  display: block;
+}
+
+.small-sidebar .logo img {
+  margin: 0 auto;
+  display: block;
+}
+
+.small-sidebar .logo-text,
+.small-sidebar .menu li span,
+.small-sidebar .logout span {
+  display: none;
+}
+
+.small-sidebar .menu {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 14px 10px;
+  margin-top: 10px;
+  overflow: hidden;
+}
+
+.small-sidebar .menu li a {
+  justify-content: center;
+  margin-top: 5px;
+}
+
+.small-sidebar .menu li a i {
+  margin: 0;
+}
+
+.small-sidebar .bottom-controls {
+  flex-direction: column;
+  align-items: center; 
+  gap: 10px; 
+  padding: 10px 0;
+  overflow: hidden;
+}
+
+.small-sidebar .bottom-controls .logout {
+  justify-content: center; 
+  padding: 5px; 
+  width: 60px; 
+}
+
+.small-sidebar .bottom-controls .divider {
+  width: 24px;
+  height: 2px;
+}
+
+.small-sidebar .bottom-controls .toggle-btn {
+  margin: 0; 
+  padding: 4px;
+  margin-right: 10px;
+  text-align: center; 
+  width: 60px; 
+}
+
+.sidebar.small-sidebar + .main-header {
+  width: calc(100% - 80px);
+  margin-left: 80px;
+}

@@ -1,0 +1,144 @@
+<div class="container-fluid d-flex p-0 min-vh-100">
+
+<!-- SIDEBAR LOAD -->
+<%- include('../partials/admin/sidebar') %>
+
+<link rel="stylesheet" href="/css/dashboard.css" />
+
+<!-- HEADER -->
+  <header class="main-header d-flex justify-content-between align-items-center">
+    <h1 class="mb-0">Hello, Admin</h1>
+    <i class="ph-bell notif" style="font-weight: 600; font-size: 1.8rem; text-shadow: 0 0 1.5px black;"></i>
+  </header>
+
+  <!-- MAIN CONTENT -->
+  <main class="main-content flex-grow-1">
+    <div class="dashboard-content">
+        <!-- SUMMARY CARDS -->
+        <div class="row-sum-cards">
+          <div class="summary-card t-website">
+            <i class="ph ph-chart-line card-icon"></i>
+            <div class="card-text">
+              <h3 class="card-title">Total Website</h3><span class="subtitle">Visits</span>
+            </div>
+            <div class="card-right">
+              <div class="card-number">0</div>
+              <span class="card-subtext up"><i class="ph ph-caret-double-up"></i> +0 visits</span>
+            </div>
+          </div>
+          <div class="summary-card faq-home-vid">
+            <i class="ph ph-play card-icon"></i>
+            <div class="card-text">
+              <h3 class="card-title">Homepage<br>FAQ's Video</h3>
+              <span class="subtitle">Replays</span>
+            </div>
+            <div class="card-right">
+              <div id="video-count" class="card-number">0</div>
+              <span class="card-subtext"></span>
+            </div>
+          </div>
+          <div class="summary-card total-faq">
+            <i class="ph ph-eye card-icon"></i>
+            <div class="card-text">
+              <h3 class="card-title">Total FAQ</h3><span class="subtitle">Views</span>
+            </div>
+            <div class="card-right">
+              <div class="card-number">100</div>
+              <span class="card-subtext up"><i class="ph ph-caret-double-up"></i> +10 visits</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- CHART & TOP 5 FAQs -->
+        <div class="row g-2">
+          <div class="col-lg-8">
+            <!-- Line Chart -->
+            <div class="chart-container">
+              <div id="customLegend" class="legend-container"></div>
+              <canvas id="myChart"></canvas>
+            </div>
+            <!-- Device Types, Announcements, Bounce Rate -->
+            <div class="row bot-cards g-2">
+              <div class="col-md-7">
+                <div class="device-side-card text-center p-3">
+                  <div class="row g-0 align-items-center flex-grow-1">
+                    <div class="col-5">
+                      <canvas id="deviceChart"></canvas>
+                    </div>
+                    <div class="col-6">
+                      <div class="text-start device-header">
+                        <i class="ph ph-desktop-tower"></i>
+                        <span>Device Types</span>
+                      </div>
+                      <div class="text-start percentage-labels">
+                        <div class="percentage-item"><span>Mobile</span><span id="mobile-percent">0%</span></div>
+                        <div class="percentage-item"><span>Computer</span><span id="computer-percent">0%</span></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-5">
+                <div class="side-card ann-card text-center">
+                  <div class="ann-icon">
+                    <i class="ph ph-megaphone-simple ann-icon"></i>
+                  </div>
+                  <div class="ann-text">
+                    <h6 class="mb-2 text-muted ann-title">Announcements</h6>
+                    <p class="mb-1 small ann-p">Posted this<br>Month</p>
+                  </div>
+                  <h3 class="mb-0 ann-num" style="visibility:hidden">0</h3>
+                </div>
+                <div class="side-card bounce-card text-center">
+                  <div class="bounce-icon">
+                    <i class="ph ph-sign-out"></i>
+                  </div>
+                  <div class="bounce-text">
+                    <h6 class="mb-2 b-heading">Bounce</h6>
+                    <h6 class="mb-2 b-subhead">Rate</h6>                  
+                  </div>
+                  <h3 class="mb-0 bounce-percent">0%</h3>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-4">
+            <div class="side-card faq-card p-3 mb-2">
+              <h5 class="faqhead"><i class="bi bi-patch-question faq-qicon"></i>Top 5 FAQ's</h5>
+              <ul class="list-unstyled mb-0">
+                <li><span class="float-end text-success"><i class="ph ph-caret-up faq-icon-u"></i>0</span></li>
+                <li><span class="float-end text-danger"><i class="ph ph-caret-down faq-icon-d"></i>0</span></li>
+                <li><span class="float-end text-success"><i class="ph ph-caret-up faq-icon-u"></i>0</span></li>
+                <li><span class="float-end text-danger"><i class="ph ph-caret-down faq-icon-d"></i>0</span></li>
+                <li><span class="float-end text-danger"><i class="ph ph-caret-down faq-icon-d"></i>0</span></li>
+              </ul>
+            </div>
+            <!-- Academic Calendar -->
+            <div class="side-card acad-cal p-3">
+              <div class="icon-side">
+                <i class="fas fa-clock-rotate-left"></i>
+              </div>
+                <div class="acad-text">
+                <h6>Academic Calendar</h6>
+                <p>Last Updated: </p><span id="calendar-date">MM/DD/YY</span>
+                <h6 class="faq-header">FAQ's Video</h6>
+                <p>Last Updated: </p><span id="video-date">MM/DD/YY</span>
+                <div class="acad-button">
+                  <button class="btn btn-primary" onclick="window.location.href='sitemedia.html'">
+                    Go to Site Media
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+  </main>
+</div>
+
+
+
+
+
+
+  

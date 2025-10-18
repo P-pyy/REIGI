@@ -1,0 +1,161 @@
+html, body {
+    font-family: 'Montserrat', sans-serif;
+    background-color: #F3F4F8;
+}
+
+.admin-announcement-edit-navbar {
+   height: 120px !important;
+   background-color: #FCFCFC !important;
+   border-bottom: 1px solid #E0E0E0;
+}
+
+.admin-announcement-edit-text {
+  font-size: 32px;     
+  font-weight: 600;     
+  color: #0055A5 !important;        
+}
+
+#page-title {
+  font-size: 35px;
+  font-weight: 600;
+  color: #0055A5;
+}
+
+.edit-row {
+margin-left: 20px
+}
+
+.admin-edit-btn{
+     background-color: #CDE4FF; 
+     border-radius: 8px;
+}
+
+.btn-text {
+  font-size: 20px;    
+  font-weight: 500;  
+  color: #2C2C2C;    
+}
+
+.btn1-text{
+    font-size: 12px;    
+    font-weight: 500;  
+    color: #2C2C2C;    
+}
+
+.add-announcement-btn{
+    background-color: #0055A5; 
+    border-radius: 8px;
+    padding: 5px 45px;
+}
+
+.btn2-text{
+    font-size: 14px;    
+    font-weight: 500;  
+    color: #FFFFFF;    
+}
+
+.ph-image {
+  vertical-align: middle;  
+  margin-right: 8px;
+  font-size: 20px;    
+}
+
+.drag-drop-text{
+    font-size: 11px;    
+    font-weight: 500;  
+    color: #2C2C2C;
+}
+
+.announcement-post-text{
+    font-size: 24px;    
+    font-weight: 600;  
+    color: #2C2C2C;
+}
+.form-section {
+  width: 470px !important;
+}
+.admin-announcement-card {
+  max-height: 620px;  
+  overflow-y: auto;
+  border-radius: 12px;
+}
+
+.preview-text{
+    font-size: 14px;    
+    font-weight: 600;  
+    color: #2C2C2C;
+    margin-top: 1rem; 
+}
+
+.preview-title {
+  font-size: 20px;      
+  font-weight: 700;       
+  color: #2C2C2C;          
+  
+}
+
+#previewDate strong {
+  font-size: 16px;     
+  color: #2C2C2C;        
+  font-weight: 500; 
+}
+
+main.container-fluid {
+    padding-bottom: 4rem;
+}
+
+.image-upload-area {
+   border: 2px dashed #0d6efd;
+   border-radius: 8px;
+   padding: 2rem;
+   text-align: center;
+   cursor: pointer;
+}
+
+.preview-card {
+  width: 490px !important;
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  padding: 0;             
+  background: #fff;
+  overflow: hidden;  
+}
+
+.preview-card {
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  background: #fff;
+  overflow: hidden;
+  min-height: 350px;
+  max-height: 570px;
+  position: relative;
+}
+
+.default-preview {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  height: 100%;
+  color: #888;
+}
+
+.default-preview img {
+  width: 120px;
+  opacity: 0.6;
+  margin-bottom: 10px;
+}
+
+.preview-card img {
+  width: 100%;
+  height: 250px;    
+  border-radius: 0;    
+  display: block;
+}
+
+.preview-content {
+  padding: 1.5rem;  
+}
+
+

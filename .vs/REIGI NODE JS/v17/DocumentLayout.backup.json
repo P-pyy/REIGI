@@ -3,6 +3,10 @@
   "WorkspaceRootPath": "C:\\REIGI NODE JS\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\REIGI NODE JS\\views\\partials\\head.ejs||{FA3CD31E-987B-443A-9B81-186104E8DAC1}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:views\\partials\\head.ejs||{FA3CD31E-987B-443A-9B81-186104E8DAC1}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\REIGI NODE JS\\public\\css\\faq_user_menu.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}",
       "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:public\\css\\faq_user_menu.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}"
     },
@@ -31,6 +35,19 @@
             {
               "$type": "Document",
               "DocumentIndex": 0,
+              "Title": "head.ejs",
+              "DocumentMoniker": "C:\\REIGI NODE JS\\views\\partials\\head.ejs",
+              "RelativeDocumentMoniker": "views\\partials\\head.ejs",
+              "ToolTip": "C:\\REIGI NODE JS\\views\\partials\\head.ejs",
+              "RelativeToolTip": "views\\partials\\head.ejs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001001|",
+              "WhenOpened": "2025-10-16T18:56:02.035Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
               "Title": "faq_user_menu.css",
               "DocumentMoniker": "C:\\REIGI NODE JS\\public\\css\\faq_user_menu.css",
               "RelativeDocumentMoniker": "public\\css\\faq_user_menu.css",
@@ -43,7 +60,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 2,
               "Title": "faq_graduation_clearance.css",
               "DocumentMoniker": "C:\\REIGI NODE JS\\public\\css\\faq_graduation_clearance.css",
               "RelativeDocumentMoniker": "public\\css\\faq_graduation_clearance.css",
@@ -51,12 +68,11 @@
               "RelativeToolTip": "public\\css\\faq_graduation_clearance.css",
               "ViewState": "AgIAAGYAAAAAAAAAAAAAAHMAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
-              "WhenOpened": "2025-10-04T21:02:01.708Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-10-04T21:02:01.708Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 3,
               "Title": "faq_enrollment_process.css",
               "DocumentMoniker": "C:\\REIGI NODE JS\\public\\css\\faq_enrollment_process.css",
               "RelativeDocumentMoniker": "public\\css\\faq_enrollment_process.css",
@@ -64,8 +80,7 @@
               "RelativeToolTip": "public\\css\\faq_enrollment_process.css",
               "ViewState": "AgIAAHUAAAAAAAAAAAAAAH4AAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
-              "WhenOpened": "2025-10-04T21:00:25.326Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-10-04T21:00:25.326Z"
             },
             {
               "$type": "Bookmark",

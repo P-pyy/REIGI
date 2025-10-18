@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>University of Rizal System - Admin Login</title>
+  <link rel="stylesheet" href="login.css" />
+</head>
+<body>
+  <main class="login-container" role="main" aria-label="Admin Login">
+    <div class="logo-container">
+      <img src="/img/URS LOGO.png" alt="URS logo" onerror="this.style.display='none'" />
+      <div class="logo-text">
+        <span>University of</span>
+        <span><strong>Rizal System</strong></span>
+        <span class="campus">Antipolo campus</span>
+      </div>
+    </div>
+    <h1 class="welcome-h1">Welcome Back!</h1>
+    <form id="loginForm" action="#" method="POST">
+      <input id="email" name="email" type="email" placeholder="Email" required />
+      <input id="password" name="password" type="password" placeholder="Password" required />
+
+      <div class="extras">
+        <label><input type="checkbox" id="showPassword" /> Show Password</label>
+        <a href="login_enter_email.html" class="forgot-password" role="link">Forgot Password?</a>
+      </div>
+
+      <button type="submit">Sign In</button>
+    </form>
+  </main>
+
+  <!-- scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdn.jsdelivr.net/npm/ua-parser-js@1.0.35/src/ua-parser.min.js"></script>
+  <script type="module" src="login.js"></script>
+</body>
+</html>
+
+

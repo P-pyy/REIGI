@@ -1,0 +1,300 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap');
+
+
+/* Reset & base */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: 'Montserrat', sans-serif;
+  /* background-color: #f9fafb; */
+  background-image: url("/img/admin-bg.webp");
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  padding: 1rem;
+}
+
+/* ! Scrollbar */
+
+/* Chrome, Edge, Safari */
+::-webkit-scrollbar {
+    width: 12px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 20px; 
+    margin: 2px;
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: #3066B3; 
+    border-radius: 20px !important;
+    border: 3px solid #f1f1f1; 
+    background-clip: padding-box;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background-color: #3378d3; 
+}
+
+/* Main container */
+.login-container {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+  padding: 2.5rem 2rem;
+  width: 100%;
+  max-width: 430px;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Logo section */
+.logo-container {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  /* margin-bottom: 1.5rem; */
+  user-select: none;
+  justify-content: center;
+}
+
+.logo-container img {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  object-fit: contain;
+  
+}
+
+.logo-text {
+  display: flex;
+  flex-direction: column;
+  font-weight: 600;
+  color: #111;
+  line-height: 1.2;
+}
+
+.logo-text .campus {
+  font-weight: 400;
+  font-style: montserrat;
+  font-size: 0.75rem;
+  color: #6b7280;
+  margin-top: 2px;
+}
+
+/* Headings */
+/* h1, h2 {
+  text-align: center;
+  color: #111;
+  font-weight: 700;
+  font-size: 1.75rem;
+  margin-bottom: 1.5rem;
+} */
+
+.welcome-h1 {
+  margin: 1.5rem;
+  text-align: center;
+  color: #111;
+  font-weight: 700;
+}
+
+/* Form layout */
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+/* Inputs */
+input[type="text"],
+input[type="email"],
+input[type="password"] {
+  padding: 0.75rem 1rem;
+  font-size: 1rem;
+  font-weight: 400;
+  color: #111;
+  background-color: #f9fafb;
+  border: 1.8px solid #e5e7eb;
+  border-radius: 0.5rem;
+  transition: border-color 0.25s ease;
+}
+
+input:focus {
+  border-color: #2563eb;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.3);
+}
+
+input::placeholder {
+  color: #9ca3af;
+}
+
+/* Buttons */
+button {
+  padding: 0.85rem 1rem;
+  font-size: 1.1rem;
+  font-weight: 500;
+  background-color: #2563eb;
+  color: white;
+  border: none;
+  border-radius: 0.75rem;
+  cursor: pointer;
+  transition: background-color 0.25s ease;
+}
+
+button:hover {
+  background-color: #1d4ed8;
+}
+
+button:focus-visible {
+  outline: 3px solid #93c5fd;
+  outline-offset: 2px;
+}
+
+/* Labels and extras */
+label {
+  font-size: 0.95rem;
+  color: #374151;
+}
+
+.extras {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.9rem;
+}
+
+.forgot-password {
+  color: #111;
+  font-weight: 600;
+  cursor: pointer;
+  user-select: none;
+}
+
+.forgot-password:hover {
+  text-decoration: underline;
+  color: #2563eb;
+}
+
+/* Error messages */
+.error-message {
+  color: #dc2626;
+  font-size: 0.875rem;
+}
+
+#resendBtn {
+    font-size: 0.875rem; /* text-sm */
+    color: #374151;       /* text-gray-700 */
+    background: none;
+    border: none;
+    padding: 0;
+    align-self: flex-start;
+    cursor: pointer;
+    border-radius: 0.375rem;
+  }
+  
+  #resendBtn:hover {
+    color: #1d4ed8;       /* hover:text-blue-700 */
+  }
+  
+  #resendBtn:focus {
+    outline: 2px solid #2563eb; /* focus:ring-2 focus:ring-blue-600 */
+    outline-offset: 2px;
+  }
+  
+/* Make all page titles the same size */
+h1, h2 {
+  font-size: 1.75rem !important;
+  margin-bottom: 1.5rem !important;
+}
+
+/* Keep all login boxes the same height */
+.login-container {
+  min-height: 520px; 
+  justify-content: flex-start;
+}
+
+/* Ensure forms align even if fewer fields */
+form {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+/* Move only the Enter Code textbox  (Forgot Password page) */
+main[aria-label="Forgot Password Form"] #code {
+  margin-top: -55px; 
+}
+
+/* Move only the Resend Code button  (Forgot Password page) */
+main[aria-label="Forgot Password Form"] #resendBtn {
+  margin-top: 5px; 
+}
+
+/* Move the Submit button (Forgot Password page) */
+main[aria-label="Forgot Password Form"] form button[type="submit"] {
+  margin-top: 9.5px; 
+}
+
+/*Enter your Email */
+
+/* Back link */
+.back-link {
+  font-size: 0.9rem;
+  color: #374151; /* gray-700 */
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  text-decoration: none;
+  transition: color 0.2s ease;
+  user-select: none;
+  margin-top: -10px;
+}
+
+.back-link svg {
+  width: 16px;
+  height: 16px;
+  stroke-width: 2.3;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  fill: none;
+}
+
+.back-link:hover {
+  color: #2563eb;
+  text-decoration: underline;
+}
+
+/* Ensure button spacing matches layout */
+main[aria-label="University of Rizal System Email Verification Form"] form button.submit-btn {
+  margin-top: 5px;
+}
+
+/* Only for Enter Email page (margin between h1 and textbox)*/
+main[aria-label="University of Rizal System Email Verification Form"] h1 {
+  margin-bottom: -2.9rem !important;
+}
+
+/* success/error messages */
+#message {
+  margin-top: 15px;
+  font-weight: 600;
+  text-align: center;
+}
+
+#message.success {
+  color: #2e7d32; /* green */
+}
+
+#message.error {
+  color: #c62828; /* red */
+}
