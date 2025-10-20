@@ -1,10 +1,7 @@
-// ✅ Supabase config
-const SUPABASE_URL = "https://oeeqegpgmobbuhaadrhr.supabase.co";
-const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9lZXFlZ3BnbW9iYnVoYWFkcmhyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTY0ODQwNzEsImV4cCI6MjA3MjA2MDA3MX0.M-pplPUdj21v2Fb5aLmmbE94gDGCfslksAI8fJca2cE";
+// Supabase
+import { supabase } from "./supabaseClient.js";
 
-const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
-// ✅ Redirect to login if not logged in
+//Redirect to login if not logged in
 (async () => {
   const { data: { session } } = await supabase.auth.getSession();
 
@@ -42,7 +39,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
 
-  // ✅ Logout handler
+  // Logout handler
   const logoutBtn = document.querySelector(".logout");
   if (logoutBtn) {
     logoutBtn.addEventListener("click", async () => {
@@ -55,7 +52,7 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 
-// ✅ Line Chart Setup
+// Line Chart Setup
 const ctx = document.getElementById("myChart").getContext("2d");
 const chart = new Chart(ctx, {
   type: "line",
@@ -83,7 +80,7 @@ const chart = new Chart(ctx, {
   }
 });
 
-// ✅ Load data from Supabase and update chart
+// Load data from Supabase and update chart
 async function loadActiveUsersChart() {
   const { data, error } = await supabase
     .from("visitors")
@@ -118,11 +115,11 @@ async function loadActiveUsersChart() {
 }
 
 
-// ✅ Refresh every 30 seconds
+// Refresh every 30 seconds
 setInterval(loadActiveUsersChart, 30000);
 
 
-// ✅ Custom Legend
+// Custom Legend
 const legendContainer = document.getElementById("customLegend");
 const dataset = chart.data.datasets[0];
 const legendItem = document.createElement("div");
@@ -133,7 +130,7 @@ legendItem.innerHTML = `
 `;
 legendContainer.appendChild(legendItem);
 
-// ✅ Pie Chart (device types)
+// Pie Chart (device types)
 const devCtx = document.getElementById("deviceChart");
 const deviceChart = new Chart(devCtx, {
   type: "doughnut",
@@ -144,9 +141,7 @@ const deviceChart = new Chart(devCtx, {
   options: { responsive: true, cutout: "50%", plugins: { legend: { display: false } }, maintainAspectRatio: false }
 });
 
-// =======================
 // Device Types Chart
-// =======================
 async function loadDeviceTypes() {
   const { data, error } = await supabase.from("visitors").select("device_type");
   if (error || !data) return;
@@ -170,9 +165,7 @@ async function loadDeviceTypes() {
     <div class="percentage-item"><span>Computer</span><span>${computerPercent}%</span></div>`;
 }
 
-// =======================
 // Bounce Rate (fixed)
-// =======================
 async function loadBounceRate() {
   const { data, error } = await supabase.from("visitors").select("visited_at, exited_at");
   if (error || !data) return;
@@ -199,9 +192,7 @@ async function loadBounceRate() {
   document.querySelector(".bounce-percent").textContent = bounceRate + "%";
 }
 
-// =======================
 // Run after DOM Ready
-// =======================
 document.addEventListener("DOMContentLoaded", () => {
   loadDeviceTypes();
   loadBounceRate();
@@ -212,10 +203,7 @@ document.addEventListener("DOMContentLoaded", () => {
   loadActiveUsersChart();
 })
 
-
-// =======================
 // Load Announcements Count This Month
-// =======================
 window.addEventListener("DOMContentLoaded", async () => {
   const annNumElem = document.querySelector(".ann-num");
 
@@ -253,9 +241,7 @@ function formatDate(dateString) {
   });
 }
 
-// ==========================
 // Get latest FAQ video
-// ==========================
 const { data: videoData, error: videoError } = await supabase
   .from("sitemedia")
   .select("uploaded_at")
@@ -270,9 +256,7 @@ if (!videoError && videoData?.length > 0) {
   document.getElementById("video-date").textContent = "No data yet";
 }
 
-// ==========================
 // Get latest Academic Calendar
-// ==========================
 const { data: calendarData, error: calError } = await supabase
   .from("sitemedia")
   .select("uploaded_at")
@@ -306,7 +290,6 @@ async function loadVideoReplayCount() {
 }
 
 // Load Total Website Visits + Growth (on new visit)
-// =======================
 async function loadTotalWebsiteVisits() {
   const { data, error } = await supabase
     .from("visitors")
@@ -325,10 +308,10 @@ async function loadTotalWebsiteVisits() {
   const lastTotal = parseInt(localStorage.getItem("lastTotalVisits")) || 0;
   const diff = totalVisits - lastTotal;
 
-  // ✅ Update main number
+  //  Update main number
   document.querySelector(".t-website .card-number").textContent = totalVisits;
 
-  // ✅ Update growth text only if there's a new visit
+  // Update growth text only if there's a new visit
   const growthElem = document.querySelector(".t-website .card-subtext");
   if (growthElem) {
     if (diff > 0) {
@@ -341,7 +324,7 @@ async function loadTotalWebsiteVisits() {
     }
   }
 
-  // ✅ Save current total for next check
+  // Save current total for next check
   localStorage.setItem("lastTotalVisits", totalVisits);
 }
 
@@ -377,7 +360,7 @@ async function loadTopFAQs() {
   });
 }
 
-// ✅ Fetch all FAQs with stats for admin
+// Fetch all FAQs with stats for admin
 async function getFaqStats() {
   try {
     const { data, error } = await supabase
@@ -401,7 +384,7 @@ getFaqStats().then(faqs => {
   });
 });
 
-// ✅ Load Total FAQ Views
+// Load Total FAQ Views
 async function loadTotalFAQViews() {
   try {
     const { data, error } = await supabase

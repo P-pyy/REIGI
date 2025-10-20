@@ -30,24 +30,15 @@
       });
     });
 
-// =======================
-// Supabase Config
-// =======================
-import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
 
-const SUPABASE_URL = "https://oeeqegpgmobbuhaadrhr.supabase.co";
-const SUPABASE_ANON_KEY ="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9lZXFlZ3BnbW9iYnVoYWFkcmhyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTY0ODQwNzEsImV4cCI6MjA3MjA2MDA3MX0.M-pplPUdj21v2Fb5aLmmbE94gDGCfslksAI8fJca2cE";
+// Supabase
+import { supabase } from "./supabaseClient.js";
 
-const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
-  auth: { persistSession: true, autoRefreshToken: true },
-});
 
-// =======================
 // Auth Check
-// =======================
 let currentUser = null;
 (async () => {
-  const { data: { session }, error } = await supabaseClient.auth.getSession();
+  const { data: { session }, error } = await supabase.auth.getSession();
 
   if (error) {
     console.error("Auth error:", error.message);
@@ -61,9 +52,8 @@ let currentUser = null;
   currentUser = session.user;
 })();
 
-// =======================
+
 // Upload Logic (Video + Calendar)
-// =======================
 let selectedFile = null;
 
 // Calendar Sections (Undergraduate & Graduate)
@@ -144,14 +134,12 @@ if (document.body.classList.contains("site-media-editor-page")) {
   });
 }
 
-// =======================
 // Upload Helper
-// =======================
 async function uploadToSupabase(file, folder, type, title) {
   const filePath = `${folder}/${Date.now()}_${file.name}`;
 
   // Upload to storage
-  const { error: uploadError } = await supabaseClient.storage
+  const { error: uploadError } = await supabase.storage
     .from("sitemedia")
     .upload(filePath, file, { upsert: true });
 
@@ -161,11 +149,11 @@ async function uploadToSupabase(file, folder, type, title) {
   }
 
   // Get public URL
-  const { data: urlData } = supabaseClient.storage.from("sitemedia").getPublicUrl(filePath);
+  const { data: urlData } = supabase.storage.from("sitemedia").getPublicUrl(filePath);
   const fileUrl = urlData.publicUrl;
 
   // Insert record into DB
-  const { error: dbError } = await supabaseClient.from("sitemedia").insert([{
+  const { error: dbError } = await supabase.from("sitemedia").insert([{
     title,
     filename: file.name,
     file_url: fileUrl,
@@ -184,14 +172,11 @@ async function uploadToSupabase(file, folder, type, title) {
 window.location.href = "site_media.html";
 }
 
-// =======================
 // Load Latest Media
-// =======================
 window.addEventListener("DOMContentLoaded", async () => {
-  // =======================
+
   // Load FAQ Video
-  // =======================
-  const { data: videoData, error: videoError } = await supabaseClient
+  const { data: videoData, error: videoError } = await supabase
     .from("sitemedia")
     .select("*")
     .eq("type", "video")
@@ -212,10 +197,8 @@ window.addEventListener("DOMContentLoaded", async () => {
     if (fileNameEl) fileNameEl.textContent = videoData[0].filename;
   }
 
-// =======================
 // Load Latest Calendars (Undergrad + Grad)
-// =======================
-const { data: calendars, error: calError } = await supabaseClient
+const { data: calendars, error: calError } = await supabase
   .from("sitemedia")
   .select("*")
   .in("type", ["calendar", "calendar_grad"])
@@ -266,10 +249,7 @@ if (!calError && calendars?.length > 0) {
 }
 });
 
-// // =======================
-// // Dropdown Menu Logic
-// // =======================
-
+// Dropdown Menu Logic
 (function () {
   const dropdown = document.getElementById("dropdown");
   const dropdownContent = document.getElementById("dropdown-content");

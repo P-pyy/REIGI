@@ -1,23 +1,11 @@
-// =======================
-// Supabase Config
-// =======================
-import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
+// Supabase
+import { supabase } from "./supabaseClient.js";
 
-const SUPABASE_URL = "https://oeeqegpgmobbuhaadrhr.supabase.co";  
-const SUPABASE_ANON_KEY =
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9lZXFlZ3BnbW9iYnVoYWFkcmhyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTY0ODQwNzEsImV4cCI6MjA3MjA2MDA3MX0.M-pplPUdj21v2Fb5aLmmbE94gDGCfslksAI8fJca2cE";
-
-const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
-// =======================
 // Get ID from URL
-// =======================
 const params = new URLSearchParams(window.location.search);
 const id = params.get("id");
 
-// =======================
 // Fetch Single Announcement
-// =======================
 async function fetchAnnouncementById(id) {
   const { data, error } = await supabase
     .from("announcements")
@@ -31,10 +19,7 @@ async function fetchAnnouncementById(id) {
   }
   return data;
 }
-
-// =======================
 // Fetch All Announcements
-// =======================
 async function fetchAllAnnouncements() {
   const { data, error } = await supabase
     .from("announcements")
@@ -48,9 +33,7 @@ async function fetchAllAnnouncements() {
   return data || [];
 }
 
-// =======================
 // Render Main Article
-// =======================
 function renderArticle(announcement) {
   const container = document.querySelector(".article-placeholder");
   if (!container) return;
@@ -58,7 +41,7 @@ function renderArticle(announcement) {
   let title, subtitle, text, img;
 
   if (!announcement) {
-    // 🔹 Default fallback
+    //  Default fallback
     title = "Welcome to REIGI";
     subtitle = "--/--/--";
     text = "Stay tuned for updates and announcements from the registrar’s office.";
@@ -94,9 +77,7 @@ function renderArticle(announcement) {
   });
 }
 
-// =======================
 // Skeleton Loader for Article + Sidebar
-// =======================
 function renderSkeletons() {
   const container = document.querySelector(".article-placeholder");
   const section = document.querySelector(".announcement-wrapper");
@@ -119,9 +100,7 @@ function renderSkeletons() {
   }
 }
 
-// =======================
 // Render "Other Announcements"
-// =======================
 function renderOtherAnnouncements(all, currentId) {
   const wrapper = document.querySelector(".other-announcements-scroll");
   const section = document.querySelector(".announcement-wrapper");
@@ -177,9 +156,7 @@ function renderOtherAnnouncements(all, currentId) {
   });
 }
 
-// =======================
 // Init
-// =======================
 async function initArticlePage() {
   if (!id) return;
 

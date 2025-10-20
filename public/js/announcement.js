@@ -1,22 +1,10 @@
-// =======================
-// Supabase Config
-// =======================
-import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
+// Supabase
+import { supabase } from "./supabaseClient.js";
 
-const SUPABASE_URL = "https://oeeqegpgmobbuhaadrhr.supabase.co";  
-const SUPABASE_ANON_KEY =
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9lZXFlZ3BnbW9iYnVoYWFkcmhyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTY0ODQwNzEsImV4cCI6MjA3MjA2MDA3MX0.M-pplPUdj21v2Fb5aLmmbE94gDGCfslksAI8fJca2cE";
-
-const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
-// =======================
 // Global Announcement Store
-// =======================
 let allAnnouncements = [];
 
-// =======================
 // Fetch Announcements
-// =======================
 async function fetchAnnouncements() {
   const { data, error } = await supabase
     .from("announcements")
@@ -72,10 +60,7 @@ function renderAnnouncements(announcements) {
   window.PhosphorIcons?.replace?.();
 }
 
-
-// =======================
 // Filter Announcements
-// =======================
 function filterAnnouncements() {
   const searchInput = document.getElementById("search")?.value.toLowerCase() || "";
   const monthSelect = document.getElementById("month")?.value.toLowerCase() || "default";
@@ -96,9 +81,7 @@ function filterAnnouncements() {
   });
 }
 
-// =======================
 // Setup Filters
-// =======================
 function setupFilters() {
   const searchInput = document.getElementById("search");
   const monthSelect = document.getElementById("month");
@@ -114,9 +97,7 @@ function setupFilters() {
   monthSelect.addEventListener("change", filterAndRender);
 }
 
-// =======================
 // Init
-// =======================
 async function initAnnouncementsIndex() {
   const grid = document.querySelector(".announcement-grid");
   if (grid) {
@@ -143,5 +124,5 @@ async function initAnnouncementsIndex() {
   }, 10000);
 }
 
-// ✅ Run when DOM is ready
+// Run when DOM is ready
 document.addEventListener("DOMContentLoaded", initAnnouncementsIndex);

@@ -1,26 +1,14 @@
-// =======================
-// Supabase Config
-// =======================
-import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
+// Supabase
+import { supabase } from "./supabaseClient.js";
 
-const SUPABASE_URL = "https://oeeqegpgmobbuhaadrhr.supabase.co";
-const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9lZXFlZ3BnbW9iYnVoYWFkcmhyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTY0ODQwNzEsImV4cCI6MjA3MjA2MDA3MX0.M-pplPUdj21v2Fb5aLmmbE94gDGCfslksAI8fJca2cE";
-
-const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
-  auth: { persistSession: true, autoRefreshToken: true }
-});
-
-// =======================
 // Check Admin Login
-// =======================
 (async () => {
   const { data: { session } } = await supabaseClient.auth.getSession();
   if (!session) window.location.href = "login.html";
 })();
 
-// =======================
+
 // DOMContentLoaded
-// =======================
 window.addEventListener("DOMContentLoaded", async function () {
   const tbody = document.querySelector(".announcement-table tbody");
   const overlay = document.getElementById("loading-overlay");
@@ -101,33 +89,6 @@ function renderTable(announcements) {
       });
     });
 
-  //   // Edit
-  //   document.querySelectorAll(".edit-link").forEach(link => {
-  //     link.addEventListener("click", async e => {
-  //       e.preventDefault();
-  //       const id = link.dataset.id;
-
-  //       const tableCard = document.querySelector(".admin-announcement-card");
-  //       const addBtn = document.getElementById("add-announcement-btn");
-  //       const formContainer = document.getElementById("edit-form-container");
-
-  //       tableCard.style.display = "none";
-  //       addBtn.style.display = "none";
-
-  //       const res = await fetch("/admin/announcement_edit");
-  //       formContainer.innerHTML = await res.text();
-  //       formContainer.style.display = "block";
-
-  //       setTimeout(() => {
-  //         import("/js/announcement_edit.js")
-  //           .then(module => module.initAnnouncementEdit(id))
-  //           .catch(err => console.error("Failed to load announcement_edit.js:", err));
-  //       }, 50);
-  //     });
-  //   });
-
-  //   if (window.PhosphorIcons) window.PhosphorIcons.replace();
-  // }
 
   // Edit
 document.querySelectorAll(".edit-link").forEach(link => {
@@ -142,12 +103,12 @@ document.querySelectorAll(".edit-link").forEach(link => {
     tableCard.style.display = "none";
     addBtn.style.display = "none";
 
-    // ✅ Fetch the EJS-rendered route instead of static file
+    //  Fetch the EJS-rendered route instead of static file
     const res = await fetch("/admin/announcement_edit");
     formContainer.innerHTML = await res.text();
     formContainer.style.display = "block";
 
-    // ✅ Import JS from public folder (served statically)
+    // Import JS from public folder (served statically)
     setTimeout(() => {
       import("/js/announcement_edit.js")
         .then(module => module.initAnnouncementEdit(id))
@@ -171,9 +132,8 @@ if (window.PhosphorIcons) window.PhosphorIcons.replace();
   }, 10000);
 });
 
-// =======================
+
 // Add New Announcement
-// =======================
 document.getElementById("add-announcement-btn").addEventListener("click", async () => {
   const tableCard = document.querySelector(".admin-announcement-card");
   const addBtn = document.getElementById("add-announcement-btn");
@@ -188,7 +148,7 @@ document.getElementById("add-announcement-btn").addEventListener("click", async 
 
   setTimeout(() => {
      import("/js/announcement_edit.js")
-      .then(module => module.initAnnouncementEdit()) // new announcement
+      .then(module => module.initAnnouncementEdit())
       .catch(err => console.error(err));
   }, 50);
 });

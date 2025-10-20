@@ -1,29 +1,16 @@
-// =======================
-// Supabase Config
-// =======================
-import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
+// Supabase
+import { supabase } from "./supabaseClient.js";
 
-const SUPABASE_URL = "https://oeeqegpgmobbuhaadrhr.supabase.co";
-const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9lZXFlZ3BnbW9iYnVoYWFkcmhyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTY0ODQwNzEsImV4cCI6MjA3MjA2MDA3MX0.M-pplPUdj21v2Fb5aLmmbE94gDGCfslksAI8fJca2cE";
-
-const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
-  auth: { persistSession: true, autoRefreshToken: true }
-});
-
-// =======================
 // Ensure User Logged In
-// =======================
 (async () => {
-  const { data: { session } } = await supabaseClient.auth.getSession();
+  const { data: { session } } = await supabase.auth.getSession();
   if (!session) window.location.href = "login.html";
 })();
 
 //HEADER JS
 document.getElementById("page-title").textContent = "Announcements Edit";
 
-// =======================
 // Real-time Preview
-// =======================
 function setupPreview() {
   const titleInput = document.getElementById("announcementTitle");
   const detailsInput = document.getElementById("announcementDetails");
@@ -71,13 +58,11 @@ function setupPreview() {
   }
 }
 
-// =======================
 // Load Announcement (Edit)
-// =======================
 async function loadAnnouncement(editId) {
   if (!editId) return;
 
-  const { data, error } = await supabaseClient
+  const { data, error } = await supabase
     .from("announcements")
     .select("*")
     .eq("id", editId)
@@ -117,9 +102,7 @@ async function loadAnnouncement(editId) {
   if (form) form.dataset.editId = editId;
 }
 
-// =======================
 // Submit Handler
-// =======================
 function setupSubmitHandler() {
   const form = document.getElementById("announcementForm");
   if (!form) return;
@@ -139,16 +122,16 @@ function setupSubmitHandler() {
       const localDt = new Date(dateTime);
       dateTime = localDt.toISOString(); // store as UTC
     }
-
+    
     try {
       // Upload image if new file selected
       if (imageInput.files.length > 0) {
         const file = imageInput.files[0];
         const fileName = `${Date.now()}_${file.name}`;
-        const { error: uploadError } = await supabaseClient.storage.from("announcements").upload(fileName, file, { upsert: true });
+        const { error: uploadError } = await supabase.storage.from("announcements").upload(fileName, file, { upsert: true });
         if (uploadError) throw new Error(uploadError.message);
 
-        const { data: publicUrlData, error: urlError } = supabaseClient.storage.from("announcements").getPublicUrl(fileName);
+        const { data: publicUrlData, error: urlError } = supabase.storage.from("announcements").getPublicUrl(fileName);
         if (urlError) throw new Error(urlError.message);
 
         imageUrl = publicUrlData.publicUrl;
@@ -158,12 +141,12 @@ function setupSubmitHandler() {
 
       if (editId !== "") {
         // Update existing announcement
-        const { error } = await supabaseClient.from("announcements").update(payload).eq("id", editId);
+        const { error } = await supabase.from("announcements").update(payload).eq("id", editId);
         if (error) throw new Error(error.message);
         alert("Announcement updated!");
       } else {
         // Insert new announcement
-        const { error } = await supabaseClient.from("announcements").insert([payload]);
+        const { error } = await supabase.from("announcements").insert([payload]);
         if (error) throw new Error(error.message);
         alert("Announcement added!");
       }
@@ -177,9 +160,7 @@ function setupSubmitHandler() {
   });
 }
 
-// =======================
 // Init Function
-// =======================
 export function initAnnouncementEdit(editId = null) {
   setupPreview();
   setupSubmitHandler();

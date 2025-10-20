@@ -1,11 +1,5 @@
-// login.js
-import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
-
-// 🔹 Replace with your Supabase project details
-const SUPABASE_URL = "https://oeeqegpgmobbuhaadrhr.supabase.co";
-const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9lZXFlZ3BnbW9iYnVoYWFkcmhyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTY0ODQwNzEsImV4cCI6MjA3MjA2MDA3MX0.M-pplPUdj21v2Fb5aLmmbE94gDGCfslksAI8fJca2cE";
-
-const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+// Supabase
+import { supabase } from "./supabaseClient.js";
 
 async function getUserLocation() {
   // Check if geolocation is available
@@ -16,7 +10,7 @@ async function getUserLocation() {
           const { latitude, longitude } = position.coords;
 
           try {
-            // Use a reverse geocoding API to get city, country
+            // reverse geocoding API to get city, country
             const res = await fetch(
               `https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json`
             );
@@ -42,10 +36,7 @@ async function getUserLocation() {
   }
 }
 
-
-// =======================
 // LOGIN FORM
-// =======================
 const loginForm = document.getElementById("loginForm");
 if (loginForm) {
   loginForm.addEventListener("submit", async (e) => {
@@ -92,11 +83,7 @@ if (loginForm) {
   });
 }
 
-
-
-// =======================
 // FORGOT PASSWORD (EMAIL ENTRY FORM)
-// =======================
 const resetForm = document.getElementById("resetForm");
 const msg = document.getElementById("message"); // message element for feedback
 
@@ -125,10 +112,7 @@ if (resetForm) {
   });
 }
 
-
-// =======================
 // RESET PASSWORD FORM
-// =======================
 const resetPasswordForm = document.getElementById("resetPasswordForm");
 if (resetPasswordForm) {
   resetPasswordForm.addEventListener("submit", async (e) => {

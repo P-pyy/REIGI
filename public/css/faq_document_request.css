@@ -45,12 +45,12 @@ html, body {
 }
 
 .enrollment-banner {
-  width: 100%;              /* full width */
+  width: 100%;             
   background-color: #FCFCFC;
-  padding: 5rem 1rem;       /* tall spacing */
-  margin-top: 1rem;         /* spacing from top */
-  box-sizing: border-box;   /* include padding in width */
-  border-radius: 0;         /* no rounded corners */
+  padding: 5rem 1rem;       
+  margin-top: 1rem;         
+  box-sizing: border-box;  
+  border-radius: 0;        
 }
 
 .text-muted {
@@ -71,18 +71,16 @@ html, body {
   color: #6c757d;
 }
 
-/* Remove focus outline & glow for input */
 .search-bar .form-control:focus {
-  outline: none !important;          /* remove default outline */
-  box-shadow: none !important; /* remove Bootstrap blue glow */
-  border-color: #EBEFEC !important;  /* keep your border color */
+  outline: none !important;          
+  box-shadow: none !important; 
+  border-color: #EBEFEC !important;  
 }
 
-/* Remove focus outline & glow for the icon wrapper */
 .search-bar .input-group-text:focus {
-  outline: none !important;          /* remove default outline */
+  outline: none !important;          
   box-shadow: none !important;
-  border-color: #EBEFEC !important;  /* same as input */
+  border-color: #EBEFEC !important; 
 }
 
 .search-bar-text {
@@ -98,7 +96,7 @@ html, body {
 
 .faq-list {
   list-style: decimal;
-  padding-left: 1.5rem; /* indentation */
+  padding-left: 1.5rem; 
 }
 
 .faq-list li {
@@ -108,7 +106,7 @@ html, body {
 
 .faq-list li a {
   text-decoration: none;
-  color: #2C2C2C;        /* link color same as your theme */
+  color: #2C2C2C;        
   font-weight: 500;
 }
 

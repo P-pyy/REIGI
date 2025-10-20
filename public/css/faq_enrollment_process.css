@@ -43,22 +43,11 @@ html, body {
   background-size: cover;
 }
 
-/* .enrollment-banner {
-  width: 100%;              
-  background-color: #FCFCFC;
-  padding: 5rem 1rem;       
-  margin-top: 1rem;         
-  box-sizing: border-box;   
-  border-radius: 0;        
-} */
-
 .faq-main-title {
   display: flex;
   justify-content: center;
   text-align:center;
   padding: 5rem 0 4rem 0;
-  /* background-image: url('../images/bg-faq.webp'); */
-  /* height: 400px; */
 }
 
 .faq-in-container {
@@ -100,34 +89,10 @@ html, body {
   color: #2C2C2C !important;
 }
 
-
-/* .enrollment-process-text {
-  font-size: 64px !important;
-  font-weight: 600;
-  color: #0055A5;
-} */
-
 .admin-breadcrumb {
   font-size: 14px;
   color: #6c757d;
   text-decoration: none;
-}
-
-/* .search-bar .form-control:focus {
-  outline: none !important;          
-  box-shadow: none !important; 
-  border-color: #EBEFEC !important;  
-}
-
-
-.search-bar .input-group-text:focus {
-  outline: none !important;          
-  box-shadow: none !important;
-  border-color: #EBEFEC !important; 
-}
-
-.spacing {
-  gap: 2rem; /* Adjust the gap value as needed */
 }
 
 .faq-wrapper {
@@ -152,7 +117,6 @@ html, body {
 
 .faq-list {
   list-style: decimal;
-  /* padding-left: 1.5rem;  */
 }
 
 .faq-list li {

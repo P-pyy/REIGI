@@ -1,18 +1,7 @@
-// =======================
-// Supabase Config
-// =======================
-import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
+// Supabase
+import { supabase } from "./supabaseClient.js";
 
-const SUPABASE_URL = "https://oeeqegpgmobbuhaadrhr.supabase.co";
-const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9lZXFlZ3BnbW9iYnVoYWFkcmhyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTY0ODQwNzEsImV4cCI6MjA3MjA2MDA3MX0.M-pplPUdj21v2Fb5aLmmbE94gDGCfslksAI8fJca2cE"; // replace with your actual anon key
-
-const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
-  auth: { persistSession: true, autoRefreshToken: true },
-});
-
-// =======================
 // Section Toggle
-// =======================
 const faqGrid = document.getElementById("faq-grid");
 
 document.querySelectorAll(".card-button").forEach((button) => {
@@ -34,9 +23,7 @@ document.querySelectorAll(".card-button").forEach((button) => {
   });
 });
 
-// =======================
 // Add Question Button
-// =======================
 document.querySelectorAll(".add-question-btn").forEach((btn) => {
   btn.addEventListener("click", () => {
     const parentSection = btn.closest("div[id$='section']");
@@ -59,23 +46,23 @@ document.querySelectorAll(".add-question-btn").forEach((btn) => {
 });
 
 
-// ===== FAQ Editor Live Preview =====
+// FAQ Editor Live Preview 
 
 // Inputs
 const questionTitleInput = document.querySelector("#faq-editor-section input[placeholder='Question Title']");
 const faqPostTitleInput  = document.querySelector("#faq-editor-section input[placeholder='FAQ Post Title']");
 const dateInput          = document.querySelector("#faq-editor-section input[type='date']");
 const detailsTextarea    = document.querySelector("#faq-editor-section textarea");
-const imageInput         = document.querySelector("#faq-editor-section input[type='file']"); // <-- add image input
+const imageInput         = document.querySelector("#faq-editor-section input[type='file']"); 
 
 // Preview elements
 const previewQuestionItem = document.querySelector(".faq-preview .faq-item");
 const previewTitle        = document.querySelector(".faq-preview-card .preview-title");
 const previewDate         = document.querySelector(".faq-preview-card .text-center.mb-1.text-muted.small");
 const previewText         = document.querySelector(".faq-preview-card .preview-text");
-const previewImage        = document.querySelector(".faq-preview-card .preview-image"); // <-- add preview image element
+const previewImage        = document.querySelector(".faq-preview-card .preview-image"); 
 
-// 1. Question Title → Preview list
+// Question Title → Preview list
 if (questionTitleInput && previewQuestionItem) {
   questionTitleInput.addEventListener("input", () => {
     previewQuestionItem.innerHTML =
@@ -86,7 +73,7 @@ if (questionTitleInput && previewQuestionItem) {
   });
 }
 
-// 2. FAQ Post Title → Preview title
+//FAQ Post Title → Preview title
 if (faqPostTitleInput && previewTitle) {
   faqPostTitleInput.addEventListener("input", () => {
     previewTitle.textContent =
@@ -96,7 +83,7 @@ if (faqPostTitleInput && previewTitle) {
   });
 }
 
-// 3. Date → Preview date
+// Date → Preview date
 if (dateInput && previewDate) {
   dateInput.addEventListener("input", () => {
     if (dateInput.value) {
@@ -113,15 +100,15 @@ if (dateInput && previewDate) {
   });
 }
 
-// 4. Details → Preview text (supports multiple paragraphs)
+// Details → Preview text (supports multiple paragraphs)
 if (detailsTextarea && previewText) {
   detailsTextarea.addEventListener("input", () => {
     if (detailsTextarea.value.trim() !== "") {
       const paragraphs = detailsTextarea.value
-        .split("\n") // split by new lines
-        .filter(p => p.trim() !== "") // ignore empty lines
-        .map(p => `<p>${p}</p>`) // wrap each in <p>
-        .join(""); // join them together
+        .split("\n")
+        .filter(p => p.trim() !== "") 
+        .map(p => `<p>${p}</p>`) 
+        .join(""); 
 
       previewText.innerHTML = paragraphs;
     } else {
@@ -141,28 +128,25 @@ if (imageInput && previewImage) {
       const reader = new FileReader();
       reader.onload = e => {
         previewImage.src = e.target.result;
-        previewImage.style.display = "block"; // show image
+        previewImage.style.display = "block"; 
       };
       reader.readAsDataURL(file);
     } else {
       previewImage.src = "";
-      previewImage.style.display = "none"; // hide if no image
+      previewImage.style.display = "none";
     }
   });
 }
 
-// =======================
-// Globals
-// =======================
-let currentCategory = null;
-let editingId = null; // track edit vs add
 
-// =======================
+// Globals
+let currentCategory = null;
+let editingId = null;
+
 // Load FAQs with category-based ID
-// =======================
 async function loadFaqsForCategory(category) {
-   currentCategory = category; // ✅ always remember which section is active
-  const { data, error } = await supabaseClient
+   currentCategory = category;
+  const { data, error } = await supabase
     .from("faqs")
     .select("*")
     .eq("category", category)
@@ -199,12 +183,10 @@ async function loadFaqsForCategory(category) {
     tableBody.appendChild(row);
   });
 
-  attachEditDeleteHandlers(); // ✅ re-attach handlers
+  attachEditDeleteHandlers(); 
 }
 
-// =======================
 // Edit + Delete Handlers
-// =======================
 function attachEditDeleteHandlers() {
   // Edit
   document.querySelectorAll(".edit-faq").forEach(link => {
@@ -212,7 +194,7 @@ function attachEditDeleteHandlers() {
       e.preventDefault();
       const id = link.dataset.id;
 
-      const { data, error } = await supabaseClient
+      const { data, error } = await supabase
         .from("faqs")
         .select("*")
         .eq("id", id)
@@ -223,7 +205,7 @@ function attachEditDeleteHandlers() {
         return;
       }
 
-      currentCategory = data.category; // ✅ remember category
+      currentCategory = data.category;
       editingId = id;
 
       // Hide all sections
@@ -240,7 +222,7 @@ function attachEditDeleteHandlers() {
       document.querySelector("#faq-editor-section input[type='date']").value = data.date_posted || "";
       document.querySelector("#faq-editor-section textarea").value = data.details || "";
 
-      // ✅ Update preview immediately
+      // Update preview immediately
       previewQuestionItem.innerHTML =
         (data.question_title
           ? `1. ${data.question_title}`
@@ -290,7 +272,7 @@ function attachEditDeleteHandlers() {
       const id = btn.dataset.id;
 
       if (confirm("Are you sure you want to delete this FAQ?")) {
-        const { error } = await supabaseClient.from("faqs").delete().eq("id", id);
+        const { error } = await supabase.from("faqs").delete().eq("id", id);
         if (error) {
           alert("Error deleting FAQ!");
           console.error(error);
@@ -303,9 +285,7 @@ function attachEditDeleteHandlers() {
   });
 }
 
-// =======================
 // Submit Handler
-// =======================
 const faqSubmitBtn = document.querySelector("#faq-editor-section button.btn-primary");
 faqSubmitBtn.addEventListener("click", async e => {
   e.preventDefault();
@@ -325,7 +305,7 @@ faqSubmitBtn.addEventListener("click", async e => {
 
   // Upload image if any
   if (file) {
-    const { data, error } = await supabaseClient.storage
+    const { data, error } = await supabase.storage
       .from("faqs")
       .upload(`faq-images/${Date.now()}-${file.name}`, file, { upsert: true });
 
@@ -334,13 +314,13 @@ faqSubmitBtn.addEventListener("click", async e => {
       return;
     }
 
-    const { data: publicData } = supabaseClient.storage.from("faqs").getPublicUrl(data.path);
+    const { data: publicData } = supabase.storage.from("faqs").getPublicUrl(data.path);
     imageUrl = publicData.publicUrl;
   }
 
   if (editingId) {
     // Update
-    const { error } = await supabaseClient
+    const { error } = await supabase
       .from("faqs")
       .update({
         question_title: questionTitleInput.value.trim(),
@@ -356,14 +336,14 @@ faqSubmitBtn.addEventListener("click", async e => {
       alert("Error updating FAQ: " + error.message);
     } else {
       alert("FAQ updated successfully ✅");
-      resetFaqForm(); // ✅ reset form + preview after update
+      resetFaqForm();
     }
 
     editingId = null;
     faqSubmitBtn.textContent = "Add FAQ";
   } else {
     // Insert
-    const { error } = await supabaseClient.from("faqs").insert({
+    const { error } = await supabase.from("faqs").insert({
       category: currentCategory,
       question_title: questionTitleInput.value.trim(),
       post_title: postTitleInput.value.trim(),
@@ -376,11 +356,11 @@ faqSubmitBtn.addEventListener("click", async e => {
       alert("Error adding FAQ: " + error.message);
     } else {
       alert("FAQ added successfully ✅");
-      resetFaqForm(); // ✅ reset form + preview after add
+      resetFaqForm(); 
     }
   }
 
-  // ✅ Reset form inputs after submit
+  // Reset form inputs after submit
   questionTitleInput.value = "";
   postTitleInput.value = "";
   detailsTextarea.value = "";
@@ -393,7 +373,7 @@ faqSubmitBtn.addEventListener("click", async e => {
   document.getElementById(`${currentCategory}-section`).classList.remove("d-none");
   loadFaqsForCategory(currentCategory);
 
-   // ✅ Reload table
+   // Reload table
   loadFaqsForCategory(currentCategory);
 });
 

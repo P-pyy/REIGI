@@ -69,16 +69,14 @@ body {
   padding: 5px;
   transform: rotate(-45deg);
 }
-/* body.account-settings .nav-links a:hover .arrow-icon {
-  border-color: #1d4ed8;
-} */
+
 .setting-option:hover{
   background-color: #f5f5f5;
   border-radius: 8px;
 }
 
 
-/* ========== ADMIN CHANGE EMAIL ========== */
+/* admin change email */
 .change-email {
   margin: 0;
   font-family: 'Montserrat', sans-serif;
@@ -140,7 +138,7 @@ body {
 
 .change-email button {
   margin-top: 1rem;
-  background-color: #b6d1fe;   /* same as change-password */
+  background-color: #b6d1fe;   
   color: #222;
   font-weight: 500;
   padding: 0.75rem;
@@ -154,15 +152,15 @@ body {
 }
 
 .change-email button:hover {
-  background-color: #a2c5fe;   /* hover */
+  background-color: #a2c5fe;   
 }
 
 .change-email button:active {
-  background-color: #8dbaeb;   /* pressed */
+  background-color: #8dbaeb;  
   box-shadow: none;
 }
 
-/* ========== ADMIN CHANGE PASSWORD ========== */
+/* ADMIN CHANGE PASSWORD  */
 .change-password {
   font-family: 'Montserrat', sans-serif;
   background-color: #f5f7fa;
@@ -180,10 +178,10 @@ body {
   box-shadow: 0 8px 20px rgb(0 0 0 / 0.05);
 
   width: 120%;
-  max-width: none; /* prevents it from being capped */
+  max-width: none; 
 
   position: relative;
-  left: -25%; /* shift left by half of the extra 50% */
+  left: -25%; 
 }
 .change-password h2 {
   font-weight: 600;
@@ -219,12 +217,10 @@ body {
   border-radius: 10px;
   font-size: 1rem;
   cursor: pointer;
-  /*box-shadow: inset 0 -3px 0 #8ba4f9;*/
   transition: background-color 0.3s, box-shadow 0.3s;
 }
 .change-password button:hover {
   background-color: #a2c5fe;
- /* box-shadow: inset 0 -3px 0 #7093f5; */
 }
 .change-password button:active {
   background-color: #8dbaeb;
@@ -232,7 +228,7 @@ body {
 }
 
 
-/* ========== ADMIN LOGIN ALERTS ========== */
+/*ADMIN LOGIN ALERTS */
 .login-alerts {
   margin: 0;
   font-family: 'Montserrat', sans-serif;
@@ -303,13 +299,13 @@ body {
   font-size: 0.75rem;
   color: #6b7280;
 }
-/* ✅ Make checkboxes blue */
+/* Make checkboxes blue */
 .login-alerts input[type="checkbox"] {
-  accent-color: #3578e5; /* Blue color */
+  accent-color: #3578e5; 
 }
 .login-alerts .option-info {
   display: flex;
-  flex-direction: column; /* stack items vertically */
+  flex-direction: column; 
 }
 
 .login-alerts .option-info .label {
@@ -322,7 +318,7 @@ body {
   margin-top: 2px;
 }
 .login-alerts input[type="checkbox"] {
-  accent-color: #3578e5; /* Blue color */
+  accent-color: #3578e5; 
   width: 15px;
   height: 15px;
   cursor: pointer;
@@ -352,7 +348,6 @@ body {
 .login-history .header {
   display: flex;
   align-items: center;
-  /*border-bottom: 1px solid #e2e8f0;*/
   padding: 12px 20px;
 }
 
@@ -362,7 +357,7 @@ body {
   cursor: pointer;
   color: #334155;
   transition: color 0.2s;
-  margin-left: -8px; /* move button left */
+  margin-left: -8px; 
 }
 
 .login-history .icon-btn:hover {
@@ -470,7 +465,7 @@ body {
 }
 .login-history .device-title:hover {
   color: #1d4ed8;
-  cursor: pointer; /* optional: make it clickable-looking */
+  cursor: pointer; 
 }
 .login-history .device-card:hover .device-title,
 .login-history .device-card:hover .device-card-title {
@@ -505,7 +500,7 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 1rem; /* spacing before title */
+    margin-bottom: 1rem; 
   }
 
   .change-pass-title{
@@ -546,7 +541,6 @@ body {
     }
     .form-container {
       max-width: 600px;
-      /* margin: 20px auto; */
       flex-direction: column;
       padding: 20px;
       background: #fff;
@@ -565,7 +559,7 @@ body {
       font-size: 1.5rem;
       cursor: pointer;
     }
-    /* Make top controls like screenshot */
+
     #login-history-form .icon-btn {
       font-size: 1.2rem;
     }
@@ -573,7 +567,7 @@ body {
       font-weight: 600;
       font-size: 1.25rem;
     }
-    /* Device items */
+
     .device-list,
     .current {
       border-radius: 8px;

@@ -274,8 +274,6 @@ section{
 .calendar-wrapper{
     display: flex;
     text-align: center;
-    /* width: 100%; */
-    /* max-width: 1200px; */
     margin: 0 auto;
     background: #f0f2f5;
     padding: 1rem;
@@ -289,7 +287,6 @@ section{
     border-radius: 10px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
     margin: 50px 10rem;
-    /* margin-bottom: 100px; */
     align-items: center;
     overflow: auto;
 }
@@ -297,14 +294,12 @@ section{
 .calendar-card h2{
     font-weight: 700;
     font-size: 2.2rem;
-    /* margin-bottom: 0.25rem; */
     padding: 1rem;
     color: #222;
 }
 
 .calendar-card h3{
     font-weight: 600;
-    /* font-size: 2rem; */
     padding: 1rem;
     margin: 0;
     color: #444;
@@ -340,7 +335,6 @@ ul{
       user-select: none;
       transition: transform 0.3s ease;
       cursor: pointer;
-      /* align-items: center; */
       justify-content: center;
 }
 
@@ -375,4 +369,3 @@ ul{
     max-width: 65%;
 }
 
-/* try commit */

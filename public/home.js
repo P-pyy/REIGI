@@ -53,31 +53,19 @@
 
         });
 
-    /* --- home.html initializer --- */
+    //  home.html initializer
 function initHome() {
   console.log("Home page initialized");
-  // put your home-specific JS here later
 }
 
 
-// =======================
-// Supabase Config
-// =======================
-import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
-
-const SUPABASE_URL = "https://oeeqegpgmobbuhaadrhr.supabase.co";
-const SUPABASE_ANON_KEY =
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9lZXFlZ3BnbW9iYnVoYWFkcmhyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTY0ODQwNzEsImV4cCI6MjA3MjA2MDA3MX0.M-pplPUdj21v2Fb5aLmmbE94gDGCfslksAI8fJca2cE";
-
-const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+// Supabase
+import { supabase } from "./supabaseClient.js";
 
 
-
-// =======================
 // Load FAQ Video
-// =======================
 async function loadFaqVideo() {
-  const { data, error } = await supabaseClient
+  const { data, error } = await supabase
     .from("sitemedia")
     .select("*")
     .eq("type", "video")
@@ -96,11 +84,10 @@ async function loadFaqVideo() {
   }
 }
 
-// =======================
+
 // Load Undergraduate Calendar
-// =======================
 async function loadUndergradCalendar() {
-  const { data, error } = await supabaseClient
+  const { data, error } = await supabase
     .from("sitemedia")
     .select("*")
     .eq("type", "calendar")
@@ -118,11 +105,9 @@ async function loadUndergradCalendar() {
   }
 }
 
-// =======================
 // Load Graduate Calendar
-// =======================
 async function loadGradCalendar() {
-  const { data, error } = await supabaseClient
+  const { data, error } = await supabase
     .from("sitemedia")
     .select("*")
     .eq("type", "calendar_grad")
@@ -151,7 +136,7 @@ async function loadTodayAnnouncements() {
 
   // Fetch announcements for today
   const today = new Date().toISOString().slice(0, 10);
-  const { data, error } = await supabaseClient
+  const { data, error } = await supabase
     .from("announcements")
     .select("*")
     .gte("scheduled_datetime", today + "T00:00:00")
@@ -193,10 +178,7 @@ async function loadTodayAnnouncements() {
   });
 }
 
-// =======================
 // Visitor Tracking (Persistent per session)
-// =======================
-
 let visitorId = sessionStorage.getItem("visitorId") || null;
 const EXIT_DELAY = 3000; 
 let navigatingInternally = false; 
@@ -211,7 +193,7 @@ async function logVisit() {
   const deviceType = /Mobi|Android/i.test(navigator.userAgent) ? "Mobile" : "Computer";
 
   try {
-    const { data, error } = await supabaseClient
+    const { data, error } = await supabase
       .from("visitors")
       .insert([{ 
         device_type: deviceType, 
@@ -253,14 +235,12 @@ async function logVisitorExit() {
   }
 }
 
-// -----------------------
 // Reset exit timestamp when returning to page
-// -----------------------
 window.addEventListener("focus", async () => {
   navigatingInternally = false; // reset flag
   if (!visitorId) return;
   try {
-    await supabaseClient.from("visitors")
+    await supabase.from("visitors")
       .update({ exited_at: null })
       .eq("id", visitorId);
   } catch (err) {
@@ -269,9 +249,7 @@ window.addEventListener("focus", async () => {
 });
 
 
-// -----------------------
 // Check if an <a> click is internal
-// -----------------------
 function isInternalLink(event) {
   const anchor = event.target.closest('a');
   if (!anchor || !anchor.href) return false;
@@ -284,9 +262,7 @@ function isInternalLink(event) {
   }
 }
 
-// -----------------------
 // Event listeners
-// -----------------------
 
 // Handle internal link clicks
 document.addEventListener("click", (event) => {
@@ -319,7 +295,7 @@ window.addEventListener("focus", async () => {
   navigatingInternally = false; // reset internal navigation flag
   if (!visitorId) return;
   try {
-    await supabaseClient.from("visitors")
+    await supabase.from("visitors")
       .update({ exited_at: null })
       .eq("id", visitorId);
   } catch (err) {
@@ -327,14 +303,12 @@ window.addEventListener("focus", async () => {
   }
 });
 
-// -----------------------
 // FAQ Video replay logging
-// -----------------------
 async function logReplay() {
   if (!visitorId) return;
 
   try {
-    const { data, error } = await supabaseClient
+    const { data, error } = await supabase
       .from("visitors")
       .select("video_replays")
       .eq("id", visitorId)
@@ -344,7 +318,7 @@ async function logReplay() {
 
     const currentCount = data?.video_replays || 0;
 
-    await supabaseClient
+    await supabase
       .from("visitors")
       .update({ video_replays: currentCount + 1 })
       .eq("id", visitorId);
@@ -357,10 +331,10 @@ async function logReplay() {
 
 // Attach replay events
 document.addEventListener("DOMContentLoaded", async () => {
-  // 1️⃣ Log visitor
+  //  Log visitor
   await logVisit();
 
-  // 2️⃣ Load video first
+  //  Load video first
   await loadFaqVideo();
 
   const videoElement = document.getElementById("faqVideo");
@@ -371,7 +345,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   let isLogging = false;
 
-  // Log each play (optional: remove if you only want to log replays)
+  // Log each play (optional
   videoElement.addEventListener("play", async () => {
     if (!isLogging) {
       isLogging = true;
@@ -401,7 +375,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   loadTodayAnnouncements();
 });
 
-// 🚫 Prevent logging again when only the hash changes
+// Prevent logging again when only the hash changes
 window.addEventListener("hashchange", () => {
   console.log("Hash navigation detected — no new visitor log created.");
 });

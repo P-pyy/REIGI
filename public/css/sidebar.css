@@ -31,7 +31,7 @@
 
 /* Ensure no animation on main-header */
 .main-header {
-  transition: none; /* Prevent animation on header */
+  transition: none; 
 }
 
 /* Logo */

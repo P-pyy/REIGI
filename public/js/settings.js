@@ -42,14 +42,10 @@ closeBtns.forEach((btn) => {
 
 
 
-// =======================
 // Supabase Config
-// =======================
 import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
-
 const SUPABASE_URL = "https://oeeqegpgmobbuhaadrhr.supabase.co";
 const SUPABASE_ANON_KEY ="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9lZXFlZ3BnbW9iYnVoYWFkcmhyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTY0ODQwNzEsImV4cCI6MjA3MjA2MDA3MX0.M-pplPUdj21v2Fb5aLmmbE94gDGCfslksAI8fJca2cE";
-
 const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 async function getUserLocation() {
@@ -100,9 +96,7 @@ function showMessage(form, message, type = "danger") {
   msgDiv.innerHTML = `<div class="alert alert-${type}" role="alert">${message}</div>`;
 }
 
-// =======================
 // CHANGE PASSWORD FORM
-// =======================
 const changePasswordForm = document.getElementById("changePasswordForm");
 
 if (changePasswordForm) {
@@ -164,9 +158,7 @@ if (changePasswordForm) {
   });
 }
 
-// =======================
 // CHANGE EMAIL FORM
-// =======================
 const changeEmailForm = document.getElementById("changeEmailForm");
 
 if (changeEmailForm) {
@@ -200,7 +192,7 @@ if (changeEmailForm) {
       return;
     }
 
-    // ✅ Update email with redirectTo (important for confirmation links)
+    //  Update email with redirectTo (important for confirmation links)
     const { data: updatedUser, error: updateError } =
       await supabase.auth.updateUser(
         { email: newEmail },
@@ -242,10 +234,8 @@ if (changeEmailForm) {
   });
 }
 
-// ======================= 
-// LOGIN ALERTS + HISTORY
-// =======================
 
+// LOGIN ALERTS + HISTORY
 const alertEmail = document.getElementById("alertEmail");
 const currentDevice = document.getElementById("currentDevice");
 const loginHistoryList = document.getElementById("loginHistoryList");
