@@ -43,22 +43,16 @@ const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
 });
 
 // =======================
-// Auth Check
+// Check Admin Login
 // =======================
-let currentUser = null;
 (async () => {
-  const { data: { session }, error } = await supabaseClient.auth.getSession();
-
-  if (error) {
-    console.error("Auth error:", error.message);
-    return alert("Error fetching session.");
-  }
+  const { data: { session } } = await supabaseClient.auth.getSession();
   if (!session) {
-    alert("You must be logged in to upload media.");
-    window.location.href = "login.html";
-    return;
+    window.location.href = "login.html";  // Redirect if not logged in
+  } else {
+    // Set the authenticated session to use admin access rights
+    supabaseClient.auth.setSession(session.access_token);
   }
-  currentUser = session.user;
 })();
 
 // =======================
@@ -181,7 +175,7 @@ async function uploadToSupabase(file, folder, type, title) {
   alert(`${title} uploaded successfully!`);
 
   // Redirect to sitemedia.html after upload
-window.location.href = "site_media.html";
+window.location.href = "/admin/site_media";
 }
 
 // =======================

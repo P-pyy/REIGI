@@ -11,6 +11,19 @@ const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
 });
 
 // =======================
+// Check Admin Login
+// =======================
+(async () => {
+  const { data: { session } } = await supabaseClient.auth.getSession();
+  if (!session) {
+    window.location.href = "login.html";  // Redirect if not logged in
+  } else {
+    // Set the authenticated session to use admin access rights
+    supabaseClient.auth.setSession(session.access_token);
+  }
+})();
+
+// =======================
 // Section Toggle
 // =======================
 const faqGrid = document.getElementById("faq-grid");

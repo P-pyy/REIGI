@@ -4,12 +4,16 @@ const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
 
 const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-// ✅ Redirect to login if not logged in
+// =======================
+// Check Admin Login
+// =======================
 (async () => {
-  const { data: { session } } = await supabase.auth.getSession();
-
+  const { data: { session } } = await supabaseClient.auth.getSession();
   if (!session) {
-    window.location.href = "login.html";
+    window.location.href = "login.html";  // Redirect if not logged in
+  } else {
+    // Set the authenticated session to use admin access rights
+    supabaseClient.auth.setSession(session.access_token);
   }
 })();
 
