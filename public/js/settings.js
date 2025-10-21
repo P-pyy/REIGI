@@ -52,6 +52,19 @@ const SUPABASE_ANON_KEY ="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhY
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
+// =======================
+// Check Admin Login
+// =======================
+(async () => {
+  const { data: { session } } = await supabaseClient.auth.getSession();
+  if (!session) {
+    window.location.href = "login.html";  // Redirect if not logged in
+  } else {
+    // Set the authenticated session to use admin access rights
+    supabaseClient.auth.setSession(session.access_token);
+  }
+})();
+
 async function getUserLocation() {
   // Check if geolocation is available
   if ("geolocation" in navigator) {
