@@ -1,11 +1,5 @@
 // login.js
-import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
-
-// 🔹 Replace with your Supabase project details
-const SUPABASE_URL = "https://oeeqegpgmobbuhaadrhr.supabase.co";
-const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9lZXFlZ3BnbW9iYnVoYWFkcmhyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTY0ODQwNzEsImV4cCI6MjA3MjA2MDA3MX0.M-pplPUdj21v2Fb5aLmmbE94gDGCfslksAI8fJca2cE";
-
-const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+import { supabaseClient } from '/js/supabase-client.js';
 
 async function getUserLocation() {
   // Check if geolocation is available
@@ -54,7 +48,7 @@ if (loginForm) {
     const email = document.getElementById("email").value;
     const password = document.getElementById("password").value;
 
-    const { data, error } = await supabase.auth.signInWithPassword({
+    const { data, error } = await supabaseClient.auth.signInWithPassword({
       email,
       password,
     });
@@ -71,7 +65,7 @@ if (loginForm) {
 
         const userLocation = await getUserLocation(); // get City, Country
 
-        await supabase.from("login_history").insert([
+        await supabaseClient.from("login_history").insert([
           {
             user_id: user.id,
             device: friendlyDevice,
@@ -111,7 +105,7 @@ if (resetForm) {
       return;
     }
 
-    const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
+    const { data, error } = await supabaseClient.auth.resetPasswordForEmail(email, {
       redirectTo: "https://reigi.vercel.app/admin/login_reset/index.html",
     });
 
@@ -144,7 +138,7 @@ if (resetPasswordForm) {
       document.getElementById("reenter-password-error").hidden = true;
     }
 
-    const { data, error } = await supabase.auth.updateUser({
+    const { data, error } = await supabaseClient.auth.updateUser({
       password: newPassword,
     });
 

@@ -1,12 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>University of Rizal System - Admin Login</title>
-  <link rel="stylesheet" href="login.css" />
-</head>
-<body>
+<link rel="stylesheet" href="/css/login.css" />
   <main class="login-container" role="main" aria-label="Admin Login">
     <div class="logo-container">
       <img src="/img/URS LOGO.png" alt="URS logo" onerror="this.style.display='none'" />
@@ -17,7 +9,7 @@
       </div>
     </div>
     <h1 class="welcome-h1">Welcome Back!</h1>
-    <form id="loginForm" action="#" method="POST">
+    <form id="loginForm">
       <input id="email" name="email" type="email" placeholder="Email" required />
       <input id="password" name="password" type="password" placeholder="Password" required />
 
@@ -31,10 +23,7 @@
   </main>
 
   <!-- scripts -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="https://cdn.jsdelivr.net/npm/ua-parser-js@1.0.35/src/ua-parser.min.js"></script>
-  <script type="module" src="login.js"></script>
-</body>
-</html>
+  <script type="module" src="/js/login.js"></script>
 
 

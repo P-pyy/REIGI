@@ -1,4 +1,6 @@
-       const listItems = document.querySelectorAll('.list-item-content');
+import { supabaseClient } from '/js/supabase-client.js';
+
+const listItems = document.querySelectorAll('.list-item-content');
 
         listItems.forEach(item =>{
             item.addEventListener('click', (e) =>{
@@ -58,19 +60,6 @@ function initHome() {
   console.log("Home page initialized");
   // put your home-specific JS here later
 }
-
-
-// =======================
-// Supabase Config
-// =======================
-import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
-
-const SUPABASE_URL = "https://oeeqegpgmobbuhaadrhr.supabase.co";
-const SUPABASE_ANON_KEY =
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9lZXFlZ3BnbW9iYnVoYWFkcmhyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTY0ODQwNzEsImV4cCI6MjA3MjA2MDA3MX0.M-pplPUdj21v2Fb5aLmmbE94gDGCfslksAI8fJca2cE";
-
-const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
 
 
 // =======================

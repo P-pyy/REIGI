@@ -1,16 +1,11 @@
-  import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
-
-    const SUPABASE_URL = "https://oeeqegpgmobbuhaadrhr.supabase.co";
-    const SUPABASE_ANON_KEY =
-      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9lZXFlZ3BnbW9iYnVoYWFkcmhyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTY0ODQwNzEsImV4cCI6MjA3MjA2MDA3MX0.M-pplPUdj21v2Fb5aLmmbE94gDGCfslksAI8fJca2cE";
-    const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+import { supabaseClient } from '/js/supabase-client.js';
 
     // Get id from URL
     const params = new URLSearchParams(window.location.search);
     const faqId = params.get("id");
 
     async function loadFaq() {
-      const { data, error } = await supabase
+      const { data, error } = await supabaseClient
         .from("faqs")
         .select("*")
         .eq("id", faqId)

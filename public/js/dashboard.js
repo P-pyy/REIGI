@@ -1,15 +1,11 @@
-// ✅ Supabase config
-const SUPABASE_URL = "https://oeeqegpgmobbuhaadrhr.supabase.co";
-const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9lZXFlZ3BnbW9iYnVoYWFkcmhyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTY0ODQwNzEsImV4cCI6MjA3MjA2MDA3MX0.M-pplPUdj21v2Fb5aLmmbE94gDGCfslksAI8fJca2cE";
-
-const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+import { supabaseClient } from '/js/supabase-client.js';
 
 // ✅ Redirect to login if not logged in
 (async () => {
-  const { data: { session } } = await supabase.auth.getSession();
+  const { data: { session } } = await supabaseClient.auth.getSession();
 
   if (!session) {
-    window.location.href = "login.html";
+    window.location.href = "/admin/login";
   }
 })();
 
@@ -47,9 +43,9 @@ document.addEventListener("DOMContentLoaded", () => {
   if (logoutBtn) {
     logoutBtn.addEventListener("click", async () => {
       console.log("Logout clicked ✅");
-      const { error } = await supabase.auth.signOut();
+      const { error } = await supabaseClient.auth.signOut();
       if (error) console.error("Logout error:", error.message);
-      else window.location.href = "/admin/login.html"; // redirect properly
+      else window.location.href = "/admin/login";
     });
   }
 });
@@ -85,7 +81,7 @@ const chart = new Chart(ctx, {
 
 // ✅ Load data from Supabase and update chart
 async function loadActiveUsersChart() {
-  const { data, error } = await supabase
+  const { data, error } = await supabaseClient
     .from("visitors")
     .select("visited_at, exited_at");
 
@@ -148,7 +144,7 @@ const deviceChart = new Chart(devCtx, {
 // Device Types Chart
 // =======================
 async function loadDeviceTypes() {
-  const { data, error } = await supabase.from("visitors").select("device_type");
+  const { data, error } = await supabaseClient.from("visitors").select("device_type");
   if (error || !data) return;
 
   let mobileCount = 0, computerCount = 0;
@@ -174,7 +170,7 @@ async function loadDeviceTypes() {
 // Bounce Rate (fixed)
 // =======================
 async function loadBounceRate() {
-  const { data, error } = await supabase.from("visitors").select("visited_at, exited_at");
+  const { data, error } = await supabaseClient.from("visitors").select("visited_at, exited_at");
   if (error || !data) return;
 
   const total = data.length;
@@ -226,7 +222,7 @@ window.addEventListener("DOMContentLoaded", async () => {
   const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
   const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59);
 
-  const { data, error } = await supabase
+  const { data, error } = await supabaseClient
     .from("announcements")
     .select("id, scheduled_datetime")
     .gte("scheduled_datetime", startOfMonth.toISOString())
@@ -256,7 +252,7 @@ function formatDate(dateString) {
 // ==========================
 // Get latest FAQ video
 // ==========================
-const { data: videoData, error: videoError } = await supabase
+const { data: videoData, error: videoError } = await supabaseClient
   .from("sitemedia")
   .select("uploaded_at")
   .eq("type", "video")
@@ -273,7 +269,7 @@ if (!videoError && videoData?.length > 0) {
 // ==========================
 // Get latest Academic Calendar
 // ==========================
-const { data: calendarData, error: calError } = await supabase
+const { data: calendarData, error: calError } = await supabaseClient
   .from("sitemedia")
   .select("uploaded_at")
   .in("type", ["calendar", "calendar_grad"])
@@ -291,10 +287,9 @@ if (!calError && calendarData?.length > 0) {
 
 // Show total FAQ video replays (sum across all visitors)
 async function loadVideoReplayCount() {
-  const { data, error } = await supabase
+  const { data, error } = await supabaseClient
     .from("visitors")
-    .select("video_replays", { head: false })  // fetch rows
-    .not("video_replays", "is", null);        // ignore nulls
+    .select("video_replays");
 
   if (error) {
     console.error("Error loading video replay count:", error.message);
@@ -308,7 +303,7 @@ async function loadVideoReplayCount() {
 // Load Total Website Visits + Growth (on new visit)
 // =======================
 async function loadTotalWebsiteVisits() {
-  const { data, error } = await supabase
+  const { data, error } = await supabaseClient
     .from("visitors")
     .select("visitor_number")
     .order("visitor_number", { ascending: false })
@@ -347,7 +342,7 @@ async function loadTotalWebsiteVisits() {
 
 // Show Top 5 FAQs (with up/down trend)
 async function loadTopFAQs() {
-  const { data, error } = await supabase
+  const { data, error } = await supabaseClient
     .from("faqs")
     .select("id, question_title, views, last_week_views")
     .order("views", { ascending: false })
@@ -380,10 +375,11 @@ async function loadTopFAQs() {
 // ✅ Fetch all FAQs with stats for admin
 async function getFaqStats() {
   try {
-    const { data, error } = await supabase
-      .from('faqs')
-      .select('id, question, answer, views, last_week_views')
-      .order('views', { ascending: false });
+    const { data, error } = await supabaseClient
+    .from('faqs')
+    .select('id, question_title, details, views, last_week_views')
+    .order('views', { ascending: false });
+
 
     if (error) throw error;
     return data;
@@ -396,7 +392,7 @@ async function getFaqStats() {
 getFaqStats().then(faqs => {
   faqs.forEach(faq => {
     console.log(
-      `Q: ${faq.question}\nViews: ${faq.views} (Last Week: ${faq.last_week_views})`
+      `Q: ${faq.question_title}\nViews: ${faq.views} (Last Week: ${faq.last_week_views})`
     );
   });
 });
@@ -404,7 +400,7 @@ getFaqStats().then(faqs => {
 // ✅ Load Total FAQ Views
 async function loadTotalFAQViews() {
   try {
-    const { data, error } = await supabase
+    const { data, error } = await supabaseClient
       .from("faqs")
       .select("views, last_week_views"); // make sure to get last_week_views too
 
@@ -444,5 +440,12 @@ async function loadTotalFAQViews() {
     console.error("Unexpected error loading total FAQ views:", err.message);
   }
 }
+
+
+(async () => {
+  const { data, error } = await supabaseClient.from("visitors").select("*").limit(1);
+  console.log("Visitors test:", data, error);
+})();
+
 
 

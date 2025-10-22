@@ -1,4 +1,3 @@
-
 // <!-- Swap Forms JS -->
 const swapLinks = document.querySelectorAll(".swap-link");
 const forms = document.querySelectorAll(".form-section");
@@ -42,15 +41,9 @@ closeBtns.forEach((btn) => {
 
 
 
-// =======================
-// Supabase Config
-// =======================
-import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
+import { supabaseClient } from '/js/supabase-client.js';
 
-const SUPABASE_URL = "https://oeeqegpgmobbuhaadrhr.supabase.co";
-const SUPABASE_ANON_KEY ="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9lZXFlZ3BnbW9iYnVoYWFkcmhyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTY0ODQwNzEsImV4cCI6MjA3MjA2MDA3MX0.M-pplPUdj21v2Fb5aLmmbE94gDGCfslksAI8fJca2cE";
 
-const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 async function getUserLocation() {
   // Check if geolocation is available
@@ -122,7 +115,7 @@ if (changePasswordForm) {
 
     // Re-authenticate user
     const { data: sessionData, error: sessionError } =
-      await supabase.auth.getSession();
+      await supabaseClient.auth.getSession();
 
     if (sessionError || !sessionData.session) {
       showMessage(
@@ -136,7 +129,7 @@ if (changePasswordForm) {
     const userEmail = sessionData.session.user.email;
 
     // Check current password
-    const { error: signInError } = await supabase.auth.signInWithPassword({
+    const { error: signInError } = await supabaseClient.auth.signInWithPassword({
       email: userEmail,
       password: currentPassword,
     });
@@ -147,7 +140,7 @@ if (changePasswordForm) {
     }
 
     // Update password
-    const { error: updateError } = await supabase.auth.updateUser({
+    const { error: updateError } = await supabaseClient.auth.updateUser({
       password: newPassword,
     });
 
@@ -178,7 +171,7 @@ if (changeEmailForm) {
 
     // Get current session
     const { data: sessionData, error: sessionError } =
-      await supabase.auth.getSession();
+      await supabaseClient.auth.getSession();
 
     if (sessionError || !sessionData.session) {
       showMessage(
@@ -202,7 +195,7 @@ if (changeEmailForm) {
 
     // ✅ Update email with redirectTo (important for confirmation links)
     const { data: updatedUser, error: updateError } =
-      await supabase.auth.updateUser(
+      await supabaseClient.auth.updateUser(
         { email: newEmail },
         {
           emailRedirectTo: "https://reigi.vercel.app/admin/login.html"
@@ -216,7 +209,7 @@ if (changeEmailForm) {
     } else {
       // 🔄 Refresh user to check status
       const { data: refreshedUser, error: refreshError } =
-        await supabase.auth.getUser();
+        await supabaseClient.auth.getUser();
 
       console.log("Refreshed user after update:", refreshedUser, refreshError);
 
@@ -235,7 +228,7 @@ if (changeEmailForm) {
 
       // Logout and redirect after a short delay
       setTimeout(async () => {
-        await supabase.auth.signOut();
+        await supabaseClient.auth.signOut();
         window.location.href = "login.html";
       }, 3000);
     }
@@ -251,7 +244,7 @@ const currentDevice = document.getElementById("currentDevice");
 const loginHistoryList = document.getElementById("loginHistoryList");
 
 async function loadUserAlertsAndHistory() {
-  const { data: sessionData, error: sessionError } = await supabase.auth.getSession();
+  const { data: sessionData, error: sessionError } = await supabaseClient.auth.getSession();
   if (sessionError || !sessionData.session) {
     console.error("No active session:", sessionError);
     return;
@@ -274,7 +267,7 @@ async function loadUserAlertsAndHistory() {
   }
 
   // Fetch login history
-  const { data: history, error } = await supabase
+  const { data: history, error } = await supabaseClient
     .from("login_history")
     .select("*")
     .order("login_time", { ascending: false });

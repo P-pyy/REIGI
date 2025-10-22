@@ -1,13 +1,4 @@
-// =======================
-// Supabase Config
-// =======================
-import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
-
-const SUPABASE_URL = "https://oeeqegpgmobbuhaadrhr.supabase.co";  
-const SUPABASE_ANON_KEY =
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9lZXFlZ3BnbW9iYnVoYWFkcmhyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTY0ODQwNzEsImV4cCI6MjA3MjA2MDA3MX0.M-pplPUdj21v2Fb5aLmmbE94gDGCfslksAI8fJca2cE";
-
-const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+import { supabaseClient } from '/js/supabase-client.js';
 
 // =======================
 // Global Announcement Store
@@ -18,7 +9,7 @@ let allAnnouncements = [];
 // Fetch Announcements
 // =======================
 async function fetchAnnouncements() {
-  const { data, error } = await supabase
+  const { data, error } = await supabaseClient
     .from("announcements")
     .select("*", { head: false })
     .order("scheduled_datetime", { ascending: false });
@@ -134,13 +125,13 @@ async function initAnnouncementsIndex() {
   // Setup real-time filtering
   setupFilters();
 
-  // Optional: Refresh in background every 10s but keep user filters intact
-  setInterval(async () => {
-    const updatedAnnouncements = await fetchAnnouncements();
-    allAnnouncements = updatedAnnouncements;
-    const filtered = filterAnnouncements();
-    renderAnnouncements(filtered);
-  }, 10000);
+  // // Optional: Refresh in background every 10s but keep user filters intact
+  // setInterval(async () => {
+  //   const updatedAnnouncements = await fetchAnnouncements();
+  //   allAnnouncements = updatedAnnouncements;
+  //   const filtered = filterAnnouncements();
+  //   renderAnnouncements(filtered);
+  // }, 10000);
 }
 
 // ✅ Run when DOM is ready
