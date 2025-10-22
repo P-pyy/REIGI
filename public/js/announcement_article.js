@@ -1,13 +1,4 @@
-// =======================
-// Supabase Config
-// =======================
-import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
-
-const SUPABASE_URL = "https://oeeqegpgmobbuhaadrhr.supabase.co";  
-const SUPABASE_ANON_KEY =
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9lZXFlZ3BnbW9iYnVoYWFkcmhyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTY0ODQwNzEsImV4cCI6MjA3MjA2MDA3MX0.M-pplPUdj21v2Fb5aLmmbE94gDGCfslksAI8fJca2cE";
-
-const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+import { supabaseClient } from '/js/supabase-client.js';
 
 // =======================
 // Get ID from URL
@@ -19,7 +10,7 @@ const id = params.get("id");
 // Fetch Single Announcement
 // =======================
 async function fetchAnnouncementById(id) {
-  const { data, error } = await supabase
+  const { data, error } = await supabaseClient
     .from("announcements")
     .select("*", { head: false })
     .eq("id", id)
@@ -36,7 +27,7 @@ async function fetchAnnouncementById(id) {
 // Fetch All Announcements
 // =======================
 async function fetchAllAnnouncements() {
-  const { data, error } = await supabase
+  const { data, error } = await supabaseClient
     .from("announcements")
     .select("*", { head: false })
     .order("scheduled_datetime", { ascending: false });

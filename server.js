@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const path = require('path');
 
@@ -11,6 +12,27 @@ app.set('views', path.join(__dirname, 'views'));
 // Static Files Middleware
 app.use(express.static(path.join(__dirname, 'public')));
 
+// Add after your middleware setup
+app.use((req, res, next) => {
+  res.locals.env = {
+    SUPABASE_URL: process.env.SUPABASE_URL,
+    SUPABASE_ANON_KEY: process.env.SUPABASE_ANON_KEY
+  };
+  next();
+});
+
+
+// // ✅ Inject environment variables for frontend
+// app.get("/env.js", (req, res) => {
+//   res.set("Content-Type", "application/javascript");
+//   res.send(`
+//     window.__ENV__ = {
+//       SUPABASE_URL: "${process.env.SUPABASE_URL}",
+//       SUPABASE_ANON_KEY: "${process.env.SUPABASE_ANON_KEY}"
+//     };
+//   `);
+// });
+
 // --- Root Route  ---
 app.get('/', (req, res, next) => {
   res.render('client/home', {}, (err, htmlContent) => {
@@ -23,6 +45,21 @@ app.get('/', (req, res, next) => {
   });
 });
 
+// --- ADMIN Login Route  ---
+app.get('/admin/login', (req, res, next) => {
+  res.render('admin/login', {}, (err, htmlContent) => {
+    if (err) {
+      console.error("EJS Rendering Error for /admin/login:", err.message);
+      return next(err);
+    }
+
+    // 👇 Use layout_admin so it includes the ENV script automatically
+    res.render('layout_admin', {
+      pageTitle: 'Admin Login',
+      content: htmlContent
+    });
+  });
+});
 
 // --- ADMIN Route  ---
 app.get('/admin/dashboard', (req, res, next) => {
