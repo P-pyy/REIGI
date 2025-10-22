@@ -37,22 +37,15 @@ import { supabaseClient } from '/js/supabase-client.js';
 
 
 // =======================
-// Auth Check
+// Check Admin Login
 // =======================
-let currentUser = null;
 (async () => {
-  const { data: { session }, error } = await supabaseClient.auth.getSession();
-
-  if (error) {
-    console.error("Auth error:", error.message);
-    return alert("Error fetching session.");
-  }
+  const { data: { session } } = await supabaseClient.auth.getSession();
   if (!session) {
     alert("You must be logged in to upload media.");
     window.location.href = "/admin/login";
     return;
   }
-  currentUser = session.user;
 })();
 
 // =======================
@@ -175,7 +168,7 @@ async function uploadToSupabase(file, folder, type, title) {
   alert(`${title} uploaded successfully!`);
 
   // Redirect to sitemedia.html after upload
-window.location.href = "site_media.html";
+window.location.href = "/admin/site_media";
 }
 
 // =======================

@@ -45,6 +45,19 @@ import { supabaseClient } from '/js/supabase-client.js';
 
 
 
+// =======================
+// Check Admin Login
+// =======================
+(async () => {
+  const { data: { session } } = await supabaseClient.auth.getSession();
+  if (!session) {
+    window.location.href = "login.html";  // Redirect if not logged in
+  } else {
+    // Set the authenticated session to use admin access rights
+    supabaseClient.auth.setSession(session.access_token);
+  }
+})();
+
 async function getUserLocation() {
   // Check if geolocation is available
   if ("geolocation" in navigator) {

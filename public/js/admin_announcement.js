@@ -5,7 +5,12 @@ import { supabaseClient } from '/js/supabase-client.js';
 // =======================
 (async () => {
   const { data: { session } } = await supabaseClient.auth.getSession();
-  if (!session) window.location.href = "login.html";
+  if (!session) {
+    window.location.href = "login.html";  // Redirect if not logged in
+  } else {
+    // Set the authenticated session to use admin access rights
+    supabaseClient.auth.setSession(session.access_token);
+  }
 })();
 
 // =======================

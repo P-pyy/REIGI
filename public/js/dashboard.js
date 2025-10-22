@@ -1,6 +1,8 @@
 import { supabaseClient } from '/js/supabase-client.js';
 
-// ✅ Redirect to login if not logged in
+// =======================
+// Check Admin Login
+// =======================
 (async () => {
   const { data: { session } } = await supabaseClient.auth.getSession();
 
