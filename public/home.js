@@ -182,82 +182,6 @@ async function loadTodayAnnouncements() {
   });
 }
 
-// =======================
-// Visitor Tracking (Persistent per session)
-// =======================
-
-let visitorId = sessionStorage.getItem("visitorId") || null;
-const EXIT_DELAY = 3000; 
-let navigatingInternally = false; 
-
-// Log a new visit only if no visitorId exists
-async function logVisit() {
-  if (visitorId) {
-    console.log("✅ Visitor already logged, ID:", visitorId);
-    return;
-  }
-
-  const deviceType = /Mobi|Android/i.test(navigator.userAgent) ? "Mobile" : "Computer";
-
-  try {
-    const { data, error } = await supabaseClient
-      .from("visitors")
-      .insert([{ 
-        device_type: deviceType, 
-        visited_at: new Date().toISOString(), 
-        exited_at: null, 
-        video_replays: 0 
-      }])
-      .select("id")
-      .single();
-
-    if (error) throw error;
-
-    visitorId = data.id;
-    sessionStorage.setItem("visitorId", visitorId); // save for this session
-    console.log("✅ New visitor logged, ID:", visitorId);
-  } catch (err) {
-    console.error("❌ Error logging visitor:", err.message);
-  }
-}
-
-// Log visitor exit, same as before
-async function logVisitorExit() {
-  if (!visitorId) return;
-  try {
-    await fetch(`${SUPABASE_URL}/rest/v1/visitors?id=eq.${visitorId}`, {
-      method: "PATCH",
-      headers: {
-        "apikey": SUPABASE_ANON_KEY,
-        "Authorization": `Bearer ${SUPABASE_ANON_KEY}`,
-        "Content-Type": "application/json",
-        "Prefer": "return=minimal"
-      },
-      body: JSON.stringify({ exited_at: new Date().toISOString() }),
-      keepalive: true
-    });
-    console.log("✅ Visitor exit logged:", visitorId);
-  } catch (err) {
-    console.error("❌ Failed to log exit:", err);
-  }
-}
-
-// -----------------------
-// Reset exit timestamp when returning to page
-// -----------------------
-window.addEventListener("focus", async () => {
-  navigatingInternally = false; // reset flag
-  if (!visitorId) return;
-  try {
-    await supabaseClient.from("visitors")
-      .update({ exited_at: null })
-      .eq("id", visitorId);
-  } catch (err) {
-    console.error("❌ Failed to reset exited_at:", err.message);
-  }
-});
-
-
 // -----------------------
 // Check if an <a> click is internal
 // -----------------------
@@ -279,110 +203,6 @@ function isInternalLink(event) {
 
 // Handle internal link clicks
 document.addEventListener("click", (event) => {
-  if (isInternalLink(event)) {
-    navigatingInternally = true; // prevent exit logging
-    event.preventDefault();
-    const href = event.target.closest('a').href;
-    window.location.href = href; // navigate manually
-  }
-});
-
-// Only log exit if NOT navigating internally
-window.addEventListener("beforeunload", () => {
-  if (!navigatingInternally) logVisitorExit();
-});
-
-window.addEventListener("pagehide", () => {
-  if (!navigatingInternally) logVisitorExit();
-});
-
-// Visibility change (tab switch)
-document.addEventListener("visibilitychange", () => {
-  if (document.hidden) setTimeout(() => {
-    if (!navigatingInternally) logVisitorExit();
-  }, EXIT_DELAY);
-});
-
-// Reset exit timestamp when returning to page
-window.addEventListener("focus", async () => {
-  navigatingInternally = false; // reset internal navigation flag
-  if (!visitorId) return;
-  try {
-    await supabaseClient.from("visitors")
-      .update({ exited_at: null })
-      .eq("id", visitorId);
-  } catch (err) {
-    console.error("❌ Failed to reset exited_at:", err.message);
-  }
-});
-
-// -----------------------
-// FAQ Video replay logging
-// -----------------------
-async function logReplay() {
-  if (!visitorId) return;
-
-  try {
-    const { data, error } = await supabaseClient
-      .from("visitors")
-      .select("video_replays")
-      .eq("id", visitorId)
-      .single();
-
-    if (error) throw error;
-
-    const currentCount = data?.video_replays || 0;
-
-    await supabaseClient
-      .from("visitors")
-      .update({ video_replays: currentCount + 1 })
-      .eq("id", visitorId);
-
-    console.log("🎬 Video replay logged for visitor:", visitorId);
-  } catch (err) {
-    console.error("❌ Failed to log video replay:", err.message);
-  }
-}
-
-// Attach replay events
-document.addEventListener("DOMContentLoaded", async () => {
-  // 1️⃣ Log visitor
-  await logVisit();
-
-  // 2️⃣ Load video first
-  await loadFaqVideo();
-
-  const videoElement = document.getElementById("faqVideo");
-  if (!videoElement) return;
-
-  // Make video muted to avoid autoplay block
-  videoElement.muted = true;
-
-  let isLogging = false;
-
-  // Log each play (optional: remove if you only want to log replays)
-  videoElement.addEventListener("play", async () => {
-    if (!isLogging) {
-      isLogging = true;
-      await logReplay();
-      isLogging = false;
-    }
-  });
-
-  // Log each ended loop
-  videoElement.addEventListener("ended", async () => {
-    if (isLogging) return;
-    isLogging = true;
-    try {
-      await logReplay();
-    } finally {
-      isLogging = false;
-      setTimeout(() => videoElement.play(), 200); // loop video
-    }
-  });
-
-  // Optionally, start video automatically if muted
-  videoElement.play();
 
   // Load other data
   loadUndergradCalendar();
@@ -390,10 +210,70 @@ document.addEventListener("DOMContentLoaded", async () => {
   loadTodayAnnouncements();
 });
 
-// 🚫 Prevent logging again when only the hash changes
-window.addEventListener("hashchange", () => {
-  console.log("Hash navigation detected — no new visitor log created.");
+
+
+// home.js 
+
+function getCookie(name) {
+  const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
+  return match ? match[2] : null;
+}
+
+function setCookie(name, value, minutes) {
+  const d = new Date();
+  d.setTime(d.getTime() + minutes * 60 * 1000);
+  document.cookie = `${name}=${value};expires=${d.toUTCString()};path=/;SameSite=Lax`;
+}
+
+async function logVisitor() {
+  const cookieName = "visitor_session_id";
+  let visitorId = getCookie(cookieName);
+
+  if (!visitorId) {
+    visitorId = crypto.randomUUID();
+    setCookie(cookieName, visitorId, 30);
+    console.log("New visitor session created:", visitorId);
+  } else {
+    console.log("Existing session:", visitorId);
+  }
+
+  const deviceType = getDeviceType();
+
+  // ✅ Always call backend to handle exited_at reset
+  try {
+    await fetch("/api/log-visitor", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ visitor_id: visitorId, device_type: deviceType }),
+    });
+  } catch (err) {
+    console.error("Error logging visitor:", err);
+  }
+}
+
+// Run on page load
+logVisitor();
+
+window.addEventListener("beforeunload", async () => {
+  const visitorSessionId = getCookie("visitor_session_id");
+  if (!visitorSessionId) return;
+
+  // Send the exit time to Supabase
+  navigator.sendBeacon(
+    "/api/visitor-exit",
+    JSON.stringify({ visitor_session_id: visitorSessionId, exited_at: new Date().toISOString() })
+  );
 });
+
+function getDeviceType() {
+  const ua = navigator.userAgent;
+  if (/mobile/i.test(ua)) return "Mobile";
+  if (/windows|macintosh|linux/i.test(ua)) return "Computer";
+  return "Others";
+}
+
+
+
 
 
 

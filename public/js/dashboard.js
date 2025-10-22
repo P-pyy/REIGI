@@ -147,26 +147,32 @@ const deviceChart = new Chart(devCtx, {
 // =======================
 async function loadDeviceTypes() {
   const { data, error } = await supabaseClient.from("visitors").select("device_type");
-  if (error || !data) return;
+  if (error || !data) {
+    console.error("Error loading device types:", error);
+    return;
+  }
 
-  let mobileCount = 0, computerCount = 0;
+  let mobile = 0, computer = 0;
   data.forEach(row => {
-    if (row.device_type === "Mobile") mobileCount++;
-    else if (row.device_type === "Computer") computerCount++;
+    if (row.device_type === "Mobile") mobile++;
+    else if (row.device_type === "Computer") computer++;
   });
 
-  const total = mobileCount + computerCount;
-  const mobilePercent = total ? ((mobileCount / total) * 100).toFixed(0) : 0;
-  const computerPercent = total ? ((computerCount / total) * 100).toFixed(0) : 0;
+  const total = mobile + computer;
+  const mPercent = total ? ((mobile / total) * 100).toFixed(0) : 0;
+  const cPercent = total ? ((computer / total) * 100).toFixed(0) : 0;
 
-  deviceChart.data.datasets[0].data = [mobileCount, computerCount];
+  deviceChart.data.labels = ["Mobile", "Computer"];
+  deviceChart.data.datasets[0].data = [mobile, computer];
   deviceChart.update();
 
   const labelsContainer = document.querySelector(".percentage-labels");
   labelsContainer.innerHTML = `
-    <div class="percentage-item"><span>Mobile</span><span>${mobilePercent}%</span></div>
-    <div class="percentage-item"><span>Computer</span><span>${computerPercent}%</span></div>`;
+    <div class="percentage-item"><span>Mobile</span><span>${mPercent}%</span></div>
+    <div class="percentage-item"><span>Computer</span><span>${cPercent}%</span></div>`;
 }
+
+
 
 // =======================
 // Bounce Rate (fixed)
@@ -302,45 +308,40 @@ async function loadVideoReplayCount() {
   document.getElementById("video-count").textContent = totalReplays;
 }
 
-// Load Total Website Visits + Growth (on new visit)
-// =======================
 async function loadTotalWebsiteVisits() {
-  const { data, error } = await supabaseClient
+  const { count, error } = await supabaseClient
     .from("visitors")
-    .select("visitor_number")
-    .order("visitor_number", { ascending: false })
-    .limit(1); // only get the latest
+    .select("*", { count: "exact", head: true });
 
   if (error) {
-    console.error("Error fetching total website visits:", error.message);
+    console.error("Error fetching total visits:", error.message);
     return;
   }
 
-  const totalVisits = data.length > 0 ? data[0].visitor_number : 0;
+  const totalVisits = count || 0;
+  const totalElem = document.querySelector(".t-website .card-number");
+  const growthElem = document.querySelector(".t-website .card-subtext");
 
-  //  Get last total from localStorage
+  // Compare with localStorage
   const lastTotal = parseInt(localStorage.getItem("lastTotalVisits")) || 0;
   const diff = totalVisits - lastTotal;
 
-  // ✅ Update main number
-  document.querySelector(".t-website .card-number").textContent = totalVisits;
+  totalElem.textContent = totalVisits;
 
-  // ✅ Update growth text only if there's a new visit
-  const growthElem = document.querySelector(".t-website .card-subtext");
   if (growthElem) {
     if (diff > 0) {
       growthElem.innerHTML = `<i class="ph ph-caret-double-up"></i> +${diff} visits`;
       growthElem.classList.add("up");
       growthElem.classList.remove("down");
     } else {
-      growthElem.innerHTML = `No new visits`;
+      growthElem.textContent = "No new visits";
       growthElem.classList.remove("up", "down");
     }
   }
 
-  // ✅ Save current total for next check
   localStorage.setItem("lastTotalVisits", totalVisits);
 }
+
 
 // Show Top 5 FAQs (with up/down trend)
 async function loadTopFAQs() {

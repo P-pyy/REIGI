@@ -5,6 +5,8 @@ const path = require('path');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+app.use(express.json());
+
 // View Engine Setup
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
@@ -20,18 +22,6 @@ app.use((req, res, next) => {
   };
   next();
 });
-
-
-// // ✅ Inject environment variables for frontend
-// app.get("/env.js", (req, res) => {
-//   res.set("Content-Type", "application/javascript");
-//   res.send(`
-//     window.__ENV__ = {
-//       SUPABASE_URL: "${process.env.SUPABASE_URL}",
-//       SUPABASE_ANON_KEY: "${process.env.SUPABASE_ANON_KEY}"
-//     };
-//   `);
-// });
 
 // --- Root Route  ---
 app.get('/', (req, res, next) => {
@@ -283,7 +273,93 @@ app.get('/announcement-article', (req, res, next) => {
         });
     });
 });
-       
+
+// --- Log Visitor API --- //
+const { createClient } = require("@supabase/supabase-js");
+
+const supabase = createClient(
+  process.env.SUPABASE_URL,
+  process.env.SUPABASE_ANON_KEY
+);
+
+
+app.post('/api/log-visitor', async (req, res) => {
+  try {
+    const { visitor_id, device_type } = req.body; // ✅ include device_type
+    if (!visitor_id) return res.status(400).json({ error: 'visitor_id is required' });
+
+    const now = new Date();
+    const THIRTY_MINUTES = 30 * 60 * 1000;
+
+    // Check last visit
+    const { data: lastVisit } = await supabase
+      .from("visitors")
+      .select("*")
+      .eq("visitor_id", visitor_id)
+      .order("visited_at", { ascending: false })
+      .limit(1)
+      .single();
+
+    if (lastVisit && lastVisit.exited_at && (now - new Date(lastVisit.exited_at)) <= THIRTY_MINUTES) {
+      // Within 30 mins → clear exited_at
+      await supabase
+        .from("visitors")
+        .update({ exited_at: null })
+        .eq("visitor_id", visitor_id);
+    } else {
+      // Insert new visit (✅ include device_type)
+      const { error } = await supabase
+        .from("visitors")
+        .insert([{ visitor_id, device_type }]);
+
+      if (error) throw error;
+    }
+
+    res.status(200).json({ success: true });
+  } catch (err) {
+    console.error('Error logging visitor:', err.message);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+
+
+app.post("/api/visitor-exit", express.text(), async (req, res) => {
+  try {
+    const body = JSON.parse(req.body || "{}");
+    const { visitor_session_id, exited_at } = body;
+
+    console.log(`[Visitor] Exit event received`);
+    console.log(`Visitor Session ID: ${visitor_session_id}`);
+    console.log(`Exit Time: ${exited_at}`);
+
+    if (!visitor_session_id) {
+      return res.status(400).send("Missing visitor ID");
+    }
+
+    const { error } = await supabase
+      .from("visitors")
+      .update({ exited_at })
+      .eq("visitor_id", visitor_session_id);
+
+    if (error) {
+      console.error("Error updating exit time:", error);
+      return res.status(500).send("Error updating exit time");
+    }
+
+    // ✅ Respond quickly (important for navigator.sendBeacon)
+    res.status(200).send("Exit logged successfully");
+  } catch (err) {
+    console.error("Invalid exit payload:", err.message);
+    res.status(400).send("Invalid data");
+  }
+});
+
+
+
+
+
+
 
 // 6. Server Start
 app.listen(PORT, () => {
