@@ -39,14 +39,20 @@ import { supabaseClient } from '/js/supabase-client.js';
 // =======================
 // Check Admin Login
 // =======================
+let currentUser = null; // ✅ define this globally
+
 (async () => {
   const { data: { session } } = await supabaseClient.auth.getSession();
+
   if (!session) {
     alert("You must be logged in to upload media.");
     window.location.href = "/admin/login";
     return;
   }
+
+  currentUser = session.user; // ✅ assign the logged-in user here
 })();
+
 
 // =======================
 // Upload Logic (Video + Calendar)
@@ -97,10 +103,45 @@ document.querySelectorAll(".calendar-section").forEach(section => {
 });
 
 // Video Section (site_media_video.html)
-if (document.body.classList.contains("site-media-editor-page")) {
-  const fileInput = document.querySelector("input[type=file]");
-  const previewBox = document.querySelector(".image-box");
-  const submitBtn = document.querySelector(".submit-btn");
+// if (document.body.classList.contains("site-media-editor-page")) {
+//   const fileInput = document.querySelector("input[type=file]");
+//   const previewBox = document.querySelector(".image-box");
+//   const submitBtn = document.querySelector(".submit-btn");
+
+//   fileInput?.addEventListener("change", (e) => {
+//     const file = e.target.files[0];
+//     if (!file) return;
+
+//     selectedFile = file;
+
+//     if (file.type.startsWith("video")) {
+//       const video = document.createElement("video");
+//       video.controls = true;
+//       video.src = URL.createObjectURL(file);
+//       video.style.maxWidth = "100%";
+//       video.style.borderRadius = "12px";
+//       previewBox.innerHTML = "";
+//       previewBox.appendChild(video);
+//     }
+//   });
+
+//   submitBtn?.addEventListener("click", async () => {
+//     if (!selectedFile) return alert("Please choose a file first!");
+//     if (!currentUser) return alert("User not logged in.");
+
+//     const type = "video";
+//     const folder = "videos";
+//     const title = "Homepage FAQ Video";
+
+//     await uploadToSupabase(selectedFile, folder, type, title);
+//   });
+// }
+const editorPage = document.querySelector('.site-media-editor-page');
+
+if (editorPage) {
+  const fileInput = editorPage.querySelector("input[type=file]");
+  const previewBox = editorPage.querySelector(".image-box");
+  const submitBtn = editorPage.querySelector(".submit-btn");
 
   fileInput?.addEventListener("change", (e) => {
     const file = e.target.files[0];
@@ -130,6 +171,7 @@ if (document.body.classList.contains("site-media-editor-page")) {
     await uploadToSupabase(selectedFile, folder, type, title);
   });
 }
+
 
 // =======================
 // Upload Helper
@@ -253,12 +295,13 @@ if (!calError && calendars?.length > 0) {
 }
 });
 
-// // =======================
-// // Dropdown Menu Logic
-// // =======================
-
+// =======================
+// Dropdown Menu Logic
+// =======================
 (function () {
   const dropdown = document.getElementById("dropdown");
+  if (!dropdown) return; // <-- prevent error if not on this page
+
   const dropdownContent = document.getElementById("dropdown-content");
   const selected = document.getElementById("selected");
   const options = dropdownContent.querySelectorAll('div[role="option"]');
@@ -287,4 +330,5 @@ if (!calError && calendars?.length > 0) {
     if (!dropdown.contains(event.target)) dropdown.classList.remove("open");
   });
 })();
+
 

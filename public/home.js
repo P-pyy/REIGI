@@ -76,14 +76,21 @@ async function loadFaqVideo() {
   if (!error && data.length > 0) {
     const faqVideo = document.getElementById("faqVideo");
     if (faqVideo) {
-      faqVideo.innerHTML = `
-        <source src="${data[0].file_url}" type="video/mp4"/>
-        Your browser does not support the video
-      `;
-      faqVideo.load(); // reload new video
+      faqVideo.src = data[0].file_url; // directly set src on video element
+      faqVideo.load(); // reload video
+      faqVideo.play().catch(() => {
+        // autoplay might be blocked by browser
+        console.log("Autoplay blocked, user interaction required.");
+      });
     }
   }
 }
+
+document.addEventListener("DOMContentLoaded", () => {
+  loadFaqVideo(); // load the video when page loads
+});
+
+
 
 // =======================
 // Load Undergraduate Calendar
