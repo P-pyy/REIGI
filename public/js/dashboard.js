@@ -3,12 +3,18 @@ import { supabaseClient } from '/js/supabase-client.js';
 // =======================
 // Check Admin Login
 // =======================
+let currentUser = null; // ✅ define this globally
+
 (async () => {
   const { data: { session } } = await supabaseClient.auth.getSession();
 
   if (!session) {
+    alert("You must be logged in to upload media.");
     window.location.href = "/admin/login";
+    return;
   }
+
+  currentUser = session.user; // ✅ assign the logged-in user here
 })();
 
 document.addEventListener("DOMContentLoaded", () => {
