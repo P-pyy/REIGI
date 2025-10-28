@@ -1,5 +1,10 @@
 import { supabaseClient } from '/js/supabase-client.js';
 
+supabaseClient.auth.getSession().then(({ data }) => {
+  console.log("🧭 Current Supabase session:", data.session ? "Authenticated" : "Anon");
+});
+
+
 const listItems = document.querySelectorAll('.list-item-content');
 
         listItems.forEach(item =>{
@@ -25,35 +30,36 @@ const listItems = document.querySelectorAll('.list-item-content');
 
 
 
-        document.addEventListener('DOMContentLoaded', () => {
-            const video = document.getElementById('faqVideo');
-            const faqsSection = document.getElementById('faqs');
+document.addEventListener('DOMContentLoaded', () => {
+  const video = document.getElementById('faqVideo');
+  const faqsSection = document.getElementById('faqs');
 
-            window.addEventListener('scroll', () => {
-                const faqsRect = faqsSection.getBoundingClientRect();
-                const middleY = window.innerHeight / 2;
+  if (!video || !faqsSection) {
+    return;
+  }
 
-                if (faqsRect.top < middleY && faqsRect.bottom > middleY) {
-                    // Middle of screen is inside FAQ section
-                    video.classList.remove('fixed', 'hidden');
-                    video.classList.add('enlarged');
-                    video.play();
-                } else if (faqsRect.top >= middleY) {
-                    // Above FAQ
-                    video.classList.remove('enlarged', 'hidden');
-                    video.classList.add('fixed');
-                    video.pause();
-                } else {
-                    // Below FAQ (in next section)
-                    video.classList.remove('fixed', 'enlarged');
-                    video.classList.add('hidden');
-                    video.pause();
-                }
-            });
+  window.addEventListener('scroll', () => {
+    const faqsRect = faqsSection.getBoundingClientRect();
+    const middleY = window.innerHeight / 2;
 
-            video.classList.add('fixed');
+    if (faqsRect.top < middleY && faqsRect.bottom > middleY) {
+      video.classList.remove('fixed', 'hidden');
+      video.classList.add('enlarged');
+      video.play();
+    } else if (faqsRect.top >= middleY) {
+      video.classList.remove('enlarged', 'hidden');
+      video.classList.add('fixed');
+      video.pause();
+    } else {
+      video.classList.remove('fixed', 'enlarged');
+      video.classList.add('hidden');
+      video.pause();
+    }
+  });
 
-        });
+  video.classList.add('fixed');
+});
+
 
     /* --- home.html initializer --- */
 function initHome() {
@@ -89,6 +95,43 @@ async function loadFaqVideo() {
 document.addEventListener("DOMContentLoaded", () => {
   loadFaqVideo(); // load the video when page loads
 });
+
+
+// Handle visibility change (tab switching)
+document.addEventListener("visibilitychange", () => {
+  if (!faqVideo) return;
+
+  if (document.hidden) {
+    // 🔇 Pause when tab is hidden
+    faqVideo.pause();
+    console.log("⏸️ Tab hidden — video paused");
+  } else {
+    // ▶️ Try to resume when tab is visible
+    const faqsSection = document.getElementById("faqs");
+    if (faqsSection) {
+      const faqsRect = faqsSection.getBoundingClientRect();
+      const middleY = window.innerHeight / 2;
+
+      if (faqsRect.top < middleY && faqsRect.bottom > middleY) {
+        faqVideo
+          .play()
+          .then(() => console.log("▶️ Video resumed automatically"))
+          .catch(() => {
+            console.log("⚠️ Autoplay blocked — waiting for user interaction...");
+            // Resume once the user interacts
+            const resumeHandler = () => {
+              faqVideo.play();
+              console.log("✅ Video resumed after user interaction");
+              document.removeEventListener("click", resumeHandler);
+            };
+            document.addEventListener("click", resumeHandler);
+          });
+      }
+    }
+  }
+});
+
+
 
 
 
@@ -137,13 +180,20 @@ async function loadGradCalendar() {
 }
 
 
-document.getElementById("faq-btn").addEventListener("click", function () {
-    // Correctly navigate to the Express route defined in server.js
-    window.location.href = "/faq"; 
+document.addEventListener("DOMContentLoaded", () => {
+  const faqBtn = document.getElementById("faq-btn");
+  if (faqBtn) {
+    faqBtn.addEventListener("click", function () {
+      window.location.href = "/faq"; 
+    });
+  }
 });
+
 
 async function loadTodayAnnouncements() {
   const container = document.getElementById("announcements-container");
+  if (!container) return; // ✅ stop safely if not found
+
 
   // Fetch announcements for today
   const today = new Date().toISOString().slice(0, 10);
@@ -279,17 +329,68 @@ function getDeviceType() {
   return "Others";
 }
 
+// VIDEO REPLAY TRACKING
+const faqVideo = document.getElementById("faqVideo");
 
+if (faqVideo) {
+  console.log("🎥 Replay tracking active for visitor.");
 
+  // Track how many times the video loops
+  faqVideo.addEventListener("timeupdate", () => {
+    // When the video reaches the end (within 0.3 seconds), count a replay
+    if (faqVideo.currentTime >= faqVideo.duration - 0.3) {
+      if (!faqVideo.hasCountedReplay) {
+        faqVideo.hasCountedReplay = true; // prevent multiple triggers
+        console.log("🔁 User replayed the FAQ video!");
 
+        // Example of Supabase update
+        updateReplayCount();
 
+        // Reset flag after short delay (for next loop)
+        setTimeout(() => faqVideo.hasCountedReplay = false, 1000);
+      }
+    }
+  });
+}
 
+async function updateReplayCount() {
+  const visitorId = getCookie("visitor_session_id");
+  if (!visitorId) {
+    console.warn("⚠️ No visitor session ID found, skipping replay update.");
+    return;
+  }
 
+  try {
+    // Fetch the visitor record safely
+    const { data, error: fetchError } = await supabaseClient
+      .from("visitors")
+      .select("video_replays")
+      .eq("visitor_id", visitorId)
+      .maybeSingle(); // 👈 prevents hard error if no row exists
 
+    if (fetchError) {
+      console.error("❌ Error fetching visitor replay count:", fetchError);
+      return;
+    }
 
+    const currentCount = data?.video_replays || 0;
+    const newCount = currentCount + 1;
 
+    // ✅ Upsert instead of update (ensures record always exists)
+    const { error: updateError } = await supabaseClient
+      .from("visitors")
+      .upsert(
+        { visitor_id: visitorId, video_replays: newCount },
+        { onConflict: "visitor_id" }
+      );
 
-
-
-
-
+    if (updateError) {
+      console.error("❌ Error updating replay count:", updateError);
+    } else {
+      console.log("✅ Replay count updated successfully!");
+      console.log("🎯 Updated replay count:", newCount);
+    }
+  } catch (err) {
+    console.error("⚠️ Unexpected error updating replay count:", err);
+  }
+}

@@ -2,7 +2,7 @@ import { supabaseClient } from '/js/supabase-client.js';
 
     // Load only ENROLLMENT by default
     async function loadFAQs() {
-      const { data, error } = await supabase
+      const { data, error } = await supabaseClient
         .from("faqs")
         .select("*")
         .eq("category", "enrollment");
@@ -39,7 +39,7 @@ import { supabaseClient } from '/js/supabase-client.js';
     resultsDiv.style.display = "block"; // show results when typing
   }
 
-  const { data, error } = await supabase
+  const { data, error } = await supabaseClient
     .from("faqs")
     .select("id, post_title, category")
     .ilike("post_title", `%${query}%`);
@@ -74,7 +74,7 @@ import { supabaseClient } from '/js/supabase-client.js';
     // Open FAQ and increment view
     window.openFAQ = async function(id) {
       try {
-        const { error } = await supabase.rpc("increment_view", { faq_id: id });
+        const { error } = await supabaseClient.rpc("increment_view", { faq_id: id });
         if (error) console.error("Error incrementing views:", error);
       } catch (err) {
         console.error("Unexpected error:", err.message);
