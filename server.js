@@ -283,44 +283,118 @@ const supabase = createClient(
 );
 
 
+// app.post('/api/log-visitor', async (req, res) => {
+//   try {
+//     const { visitor_id, device_type } = req.body; // ✅ include device_type
+//     if (!visitor_id) return res.status(400).json({ error: 'visitor_id is required' });
+
+//     const now = new Date();
+//     const THIRTY_MINUTES = 30 * 60 * 1000;
+
+//     // Check last visit
+//     const { data: lastVisit } = await supabase
+//       .from("visitors")
+//       .select("*")
+//       .eq("visitor_id", visitor_id)
+//       .order("visited_at", { ascending: false })
+//       .limit(1)
+//       .single();
+
+//       // Always upsert visitor (insert if new, update if exists)
+//     const { error } = await supabase
+//       .from("visitors")
+//       .upsert(
+//         {
+//           visitor_id,
+//           device_type,
+//           visited_at: new Date().toISOString(),
+//           exited_at: null
+//         },
+//         { onConflict: "visitor_id" } // 👈 ensures only one row per visitor_id
+//       );
+
+//     if (error) throw error;
+
+
+//     // if (lastVisit && lastVisit.exited_at && (now - new Date(lastVisit.exited_at)) <= THIRTY_MINUTES) {
+//     //   // Within 30 mins → clear exited_at
+//     //   await supabase
+//     //     .from("visitors")
+//     //     .update({ exited_at: null })
+//     //     .eq("visitor_id", visitor_id);
+//     // } else {
+//     //   // Insert new visit (✅ include device_type)
+//     //   const { error } = await supabase
+//     //     .from("visitors")
+//     //     .insert([{ visitor_id, device_type }]);
+
+//     //   if (error) throw error;
+//     // }
+
+//     res.status(200).json({ success: true });
+//   } catch (err) {
+//     console.error('Error logging visitor:', err.message);
+//     res.status(500).json({ error: err.message });
+//   }
+// });
+
 app.post('/api/log-visitor', async (req, res) => {
   try {
-    const { visitor_id, device_type } = req.body; // ✅ include device_type
+    const { visitor_id, device_type } = req.body;
     if (!visitor_id) return res.status(400).json({ error: 'visitor_id is required' });
 
     const now = new Date();
     const THIRTY_MINUTES = 30 * 60 * 1000;
 
-    // Check last visit
-    const { data: lastVisit } = await supabase
+    // 🔹 Fetch the latest visit for this visitor_id
+    const { data: lastVisit, error: fetchError } = await supabase
       .from("visitors")
       .select("*")
       .eq("visitor_id", visitor_id)
       .order("visited_at", { ascending: false })
       .limit(1)
-      .single();
+      .maybeSingle();
 
-    if (lastVisit && lastVisit.exited_at && (now - new Date(lastVisit.exited_at)) <= THIRTY_MINUTES) {
-      // Within 30 mins → clear exited_at
-      await supabase
+    if (fetchError) throw fetchError;
+
+    // 🔹 CASE 1: If no visit yet OR expired for more than 30 minutes → upsert new
+    if (
+      !lastVisit ||
+      (lastVisit.exited_at && now - new Date(lastVisit.exited_at) > THIRTY_MINUTES)
+    ) {
+      const { error } = await supabase
+        .from("visitors")
+        .upsert(
+          {
+            visitor_id,
+            device_type,
+            visited_at: now.toISOString(),
+            exited_at: null
+          },
+          { onConflict: "visitor_id" }
+        );
+
+      if (error) throw error;
+      console.log("🆕 New or refreshed visitor session:", visitor_id);
+    }
+    // 🔹 CASE 2: Still within 30 mins → update exited_at to null (keep same session)
+    else {
+      const { error } = await supabase
         .from("visitors")
         .update({ exited_at: null })
         .eq("visitor_id", visitor_id);
-    } else {
-      // Insert new visit (✅ include device_type)
-      const { error } = await supabase
-        .from("visitors")
-        .insert([{ visitor_id, device_type }]);
 
       if (error) throw error;
+      console.log("🔁 Existing active session kept alive:", visitor_id);
     }
 
     res.status(200).json({ success: true });
   } catch (err) {
-    console.error('Error logging visitor:', err.message);
+    console.error("Error logging visitor:", err.message);
     res.status(500).json({ error: err.message });
   }
 });
+
 
 
 
