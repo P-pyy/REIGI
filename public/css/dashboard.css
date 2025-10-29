@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap');
+
 * {
   margin: 0;
   padding: 0;
@@ -865,8 +867,6 @@ body.account-settings .nav-links a:hover .arrow-icon {
 }
 
 /*  ADMIN SITE MEDIA  */
-
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap');
 
 /* Reset & Base  */
 *, *::before, *::after {

@@ -28,16 +28,19 @@ const listItems = document.querySelectorAll('.list-item-content');
             });
         });
 
-
-
 document.addEventListener('DOMContentLoaded', () => {
   const video = document.getElementById('faqVideo');
   const faqsSection = document.getElementById('faqs');
 
-  if (!video || !faqsSection) {
-    return;
+  
+  if (video) {
+    video.classList.add('fixed');
   }
 
+  
+  if (!video || !faqsSection) return;
+
+  
   window.addEventListener('scroll', () => {
     const faqsRect = faqsSection.getBoundingClientRect();
     const middleY = window.innerHeight / 2;
@@ -56,9 +59,8 @@ document.addEventListener('DOMContentLoaded', () => {
       video.pause();
     }
   });
-
-  video.classList.add('fixed');
 });
+
 
 
     /* --- home.html initializer --- */
@@ -258,14 +260,21 @@ function isInternalLink(event) {
 // Event listeners
 // -----------------------
 
-// Handle internal link clicks
-document.addEventListener("click", (event) => {
+// // Handle internal link clicks
+// document.addEventListener("click", (event) => {
 
-  // Load other data
+//   // Load other data
+//   loadUndergradCalendar();
+//   loadGradCalendar();
+//   loadTodayAnnouncements();
+// });
+
+document.addEventListener("DOMContentLoaded", () => {
   loadUndergradCalendar();
   loadGradCalendar();
   loadTodayAnnouncements();
 });
+
 
 
 
