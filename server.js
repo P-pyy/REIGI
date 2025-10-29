@@ -51,6 +51,23 @@ app.get('/admin/login', (req, res, next) => {
   });
 });
 
+// --- ADMIN Login Enter Email Route  ---
+app.get('/admin/login_enter_email', (req, res, next) => {
+  res.render('admin/login_enter_email', {}, (err, htmlContent) => {
+    if (err) {
+      console.error("EJS Rendering Error for /admin/login_enter_email:", err.message);
+      return next(err);
+    }
+
+    // 👇 Use layout_admin so it includes the ENV script automatically
+    res.render('layout_admin', {
+      pageTitle: 'Admin Login Enter Email',
+      content: htmlContent
+    });
+  });
+});
+
+
 // --- ADMIN Route  ---
 app.get('/admin/dashboard', (req, res, next) => {
     res.render('admin/dashboard', {}, (err, htmlContent) => {
@@ -281,62 +298,6 @@ const supabase = createClient(
   process.env.SUPABASE_URL,
   process.env.SUPABASE_ANON_KEY
 );
-
-
-// app.post('/api/log-visitor', async (req, res) => {
-//   try {
-//     const { visitor_id, device_type } = req.body; // ✅ include device_type
-//     if (!visitor_id) return res.status(400).json({ error: 'visitor_id is required' });
-
-//     const now = new Date();
-//     const THIRTY_MINUTES = 30 * 60 * 1000;
-
-//     // Check last visit
-//     const { data: lastVisit } = await supabase
-//       .from("visitors")
-//       .select("*")
-//       .eq("visitor_id", visitor_id)
-//       .order("visited_at", { ascending: false })
-//       .limit(1)
-//       .single();
-
-//       // Always upsert visitor (insert if new, update if exists)
-//     const { error } = await supabase
-//       .from("visitors")
-//       .upsert(
-//         {
-//           visitor_id,
-//           device_type,
-//           visited_at: new Date().toISOString(),
-//           exited_at: null
-//         },
-//         { onConflict: "visitor_id" } // 👈 ensures only one row per visitor_id
-//       );
-
-//     if (error) throw error;
-
-
-//     // if (lastVisit && lastVisit.exited_at && (now - new Date(lastVisit.exited_at)) <= THIRTY_MINUTES) {
-//     //   // Within 30 mins → clear exited_at
-//     //   await supabase
-//     //     .from("visitors")
-//     //     .update({ exited_at: null })
-//     //     .eq("visitor_id", visitor_id);
-//     // } else {
-//     //   // Insert new visit (✅ include device_type)
-//     //   const { error } = await supabase
-//     //     .from("visitors")
-//     //     .insert([{ visitor_id, device_type }]);
-
-//     //   if (error) throw error;
-//     // }
-
-//     res.status(200).json({ success: true });
-//   } catch (err) {
-//     console.error('Error logging visitor:', err.message);
-//     res.status(500).json({ error: err.message });
-//   }
-// });
 
 app.post('/api/log-visitor', async (req, res) => {
   try {

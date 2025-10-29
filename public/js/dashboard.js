@@ -1,5 +1,7 @@
 import { supabaseClient } from '/js/supabase-client.js';
 
+
+
 // =======================
 // Check Admin Login
 // =======================
@@ -60,35 +62,113 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 // ✅ Line Chart Setup
-const ctx = document.getElementById("myChart").getContext("2d");
-const chart = new Chart(ctx, {
-  type: "line",
-  data: {
-    labels: [], // will be filled dynamically
-    datasets: [{
-      label: "Active Users",
-      data: [], // will be filled dynamically
-      borderColor: "#0055A5",
-      backgroundColor: "rgba(0, 85, 165, 0.1)",
-      fill: true,
-      tension: 0.4,
-      pointRadius: 0
-    }]
-  },
-  options: {
-    responsive: true,
-    maintainAspectRatio: false,
-    layout: { padding: { left: 0, right: 30, top: 30, bottom: 0 } },
-    scales: {
-      x: { title: { display: true, text: "Month" }, ticks: { align: "start" } },
-      y: { title: { display: true, text: "Active users" }, ticks: { stepSize: 10, min: 0, max: 50 } }
+// const ctx = document.getElementById("myChart").getContext("2d");
+// const chart = new Chart(ctx, {
+//   type: "line",
+//   data: {
+//     labels: [], // will be filled dynamically
+//     datasets: [{
+//       label: "Active Users",
+//       data: [], // will be filled dynamically
+//       borderColor: "#0055A5",
+//       backgroundColor: "rgba(0, 85, 165, 0.1)",
+//       fill: true,
+//       tension: 0.4,
+//       pointRadius: 0
+//     }]
+//   },
+//   options: {
+//     responsive: true,
+//     maintainAspectRatio: false,
+//     layout: { padding: { left: 0, right: 30, top: 30, bottom: 0 } },
+//     scales: {
+//       x: { title: { display: true, text: "Month" }, ticks: { align: "start" } },
+//       y: { title: { display: true, text: "Active users" }, ticks: { stepSize: 10, min: 0, max: 50 } }
+//     },
+//     plugins: { legend: { display: false } }
+//   }
+// });
+
+let chart = null; // global
+
+document.addEventListener("DOMContentLoaded", () => {
+  const canvas = document.getElementById("myChart");
+  if (!canvas) return;
+
+  const ctx = canvas.getContext("2d");
+  chart = new Chart(ctx, {
+    type: "line",
+    data: {
+      labels: [],
+      datasets: [{
+        label: "Active Users",
+        data: [],
+        borderColor: "#0055A5",
+        backgroundColor: "rgba(0, 85, 165, 0.1)",
+        fill: true,
+        tension: 0.4,
+        pointRadius: 0
+      }]
     },
-    plugins: { legend: { display: false } }
-  }
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      layout: { padding: { left: 0, right: 30, top: 30, bottom: 0 } },
+      scales: {
+        x: { title: { display: true, text: "Month" }, ticks: { align: "start" } },
+        y: { title: { display: true, text: "Active users" }, ticks: { stepSize: 10, min: 0, max: 50 } }
+      },
+      plugins: { legend: { display: false } }
+    }
+  });
+
+  // ✅ Once chart is ready, now load data
+  loadActiveUsersChart();
 });
 
+
+
+
+
+
+
 // ✅ Load data from Supabase and update chart
+// async function loadActiveUsersChart() {
+//   const { data, error } = await supabaseClient
+//     .from("visitors")
+//     .select("visited_at, exited_at");
+
+//   if (error) {
+//     console.error("Error fetching visitors:", error.message);
+//     return;
+//   }
+
+//   const monthLabels = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", 
+//                        "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+//   const monthlyActiveUsers = Array(12).fill(0);
+//   const now = new Date();
+
+//   data.forEach(v => {
+//     const visited = new Date(v.visited_at);
+//     const exited = v.exited_at ? new Date(v.exited_at) : now;
+
+//     const startMonth = visited.getMonth();
+//     const endMonth = exited.getMonth();
+
+//     for (let m = startMonth; m <= endMonth; m++) {
+//       monthlyActiveUsers[m]++;
+//     }
+//   });
+
+//   // Update chart dynamically
+//   chart.data.labels = monthLabels;
+//   chart.data.datasets[0].data = monthlyActiveUsers;
+//   chart.update();
+// }
+
 async function loadActiveUsersChart() {
+  if (!chart) return; // prevent accessing null chart
+
   const { data, error } = await supabaseClient
     .from("visitors")
     .select("visited_at, exited_at");
@@ -106,20 +186,19 @@ async function loadActiveUsersChart() {
   data.forEach(v => {
     const visited = new Date(v.visited_at);
     const exited = v.exited_at ? new Date(v.exited_at) : now;
-
     const startMonth = visited.getMonth();
     const endMonth = exited.getMonth();
-
     for (let m = startMonth; m <= endMonth; m++) {
       monthlyActiveUsers[m]++;
     }
   });
 
-  // Update chart dynamically
+  // ✅ Safely update chart
   chart.data.labels = monthLabels;
   chart.data.datasets[0].data = monthlyActiveUsers;
   chart.update();
 }
+
 
 
 // ✅ Refresh every 30 seconds
@@ -127,15 +206,36 @@ setInterval(loadActiveUsersChart, 30000);
 
 
 // ✅ Custom Legend
-const legendContainer = document.getElementById("customLegend");
-const dataset = chart.data.datasets[0];
-const legendItem = document.createElement("div");
-legendItem.className = "legend-item";
-legendItem.innerHTML = `
-  <span class="legend-circle"></span>
-  <span class="legend-text">${dataset.label}</span>
-`;
-legendContainer.appendChild(legendItem);
+// const legendContainer = document.getElementById("customLegend");
+// const dataset = chart.data.datasets[0];
+// const legendItem = document.createElement("div");
+// legendItem.className = "legend-item";
+// legendItem.innerHTML = `
+//   <span class="legend-circle"></span>
+//   <span class="legend-text">${dataset.label}</span>
+// `;
+// legendContainer.appendChild(legendItem);
+
+document.addEventListener("DOMContentLoaded", () => {
+  if (!chart) return; // chart not yet initialized
+
+  const legendContainer = document.getElementById("customLegend");
+  if (!legendContainer) return;
+
+  const dataset = chart.data.datasets[0];
+  if (!dataset) return;
+
+  const legendItem = document.createElement("div");
+  legendItem.className = "legend-item";
+  legendItem.innerHTML = `
+    <span class="legend-circle"></span>
+    <span class="legend-text">${dataset.label}</span>
+  `;
+  legendContainer.appendChild(legendItem);
+});
+
+
+
 
 // ✅ Pie Chart (device types)
 const devCtx = document.getElementById("deviceChart");
