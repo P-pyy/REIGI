@@ -182,13 +182,26 @@ async function initArticlePage() {
   const allAnnouncements = await fetchAllAnnouncements();
   renderOtherAnnouncements(allAnnouncements, id);
 
-  setInterval(async () => {
-    const announcement = await fetchAnnouncementById(id);
-    renderArticle(announcement);
+  // ✅ Enable Supabase Realtime
+  supabaseClient
+    .channel('realtime:announcements')
+    .on(
+      'postgres_changes',
+      { event: '*', schema: 'public', table: 'announcements' },
+      async (payload) => {
+        console.log("📡 Realtime update:", payload.eventType);
 
-    const allAnnouncements = await fetchAllAnnouncements();
-    renderOtherAnnouncements(allAnnouncements, id);
-  }, 10000);
+        // Refresh both main article and list
+        const updated = await fetchAnnouncementById(id);
+        renderArticle(updated);
+
+        const all = await fetchAllAnnouncements();
+        renderOtherAnnouncements(all, id);
+      }
+    )
+    .subscribe();
+
+
 
   window.PhosphorIcons?.replace?.();
 }

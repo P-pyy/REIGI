@@ -122,16 +122,30 @@ async function initAnnouncementsIndex() {
   allAnnouncements = await fetchAnnouncements();
   renderAnnouncements(allAnnouncements);
 
+    // =======================
+  // Enable Realtime Updates
+  // =======================
+  supabaseClient
+    .channel('realtime:announcements')
+    .on(
+      'postgres_changes',
+      { event: '*', schema: 'public', table: 'announcements' },
+      async (payload) => {
+        console.log('🔄 Realtime change detected:', payload);
+
+        // Re-fetch announcements when something changes
+        allAnnouncements = await fetchAnnouncements();
+        const filtered = filterAnnouncements();
+        renderAnnouncements(filtered);
+      }
+    )
+    .subscribe();
+
+
   // Setup real-time filtering
   setupFilters();
 
-  // // Optional: Refresh in background every 10s but keep user filters intact
-  // setInterval(async () => {
-  //   const updatedAnnouncements = await fetchAnnouncements();
-  //   allAnnouncements = updatedAnnouncements;
-  //   const filtered = filterAnnouncements();
-  //   renderAnnouncements(filtered);
-  // }, 10000);
+
 }
 
 // ✅ Run when DOM is ready

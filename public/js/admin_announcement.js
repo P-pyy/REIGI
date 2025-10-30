@@ -96,33 +96,6 @@ function renderTable(announcements) {
       });
     });
 
-  //   // Edit
-  //   document.querySelectorAll(".edit-link").forEach(link => {
-  //     link.addEventListener("click", async e => {
-  //       e.preventDefault();
-  //       const id = link.dataset.id;
-
-  //       const tableCard = document.querySelector(".admin-announcement-card");
-  //       const addBtn = document.getElementById("add-announcement-btn");
-  //       const formContainer = document.getElementById("edit-form-container");
-
-  //       tableCard.style.display = "none";
-  //       addBtn.style.display = "none";
-
-  //       const res = await fetch("/admin/announcement_edit");
-  //       formContainer.innerHTML = await res.text();
-  //       formContainer.style.display = "block";
-
-  //       setTimeout(() => {
-  //         import("/js/announcement_edit.js")
-  //           .then(module => module.initAnnouncementEdit(id))
-  //           .catch(err => console.error("Failed to load announcement_edit.js:", err));
-  //       }, 50);
-  //     });
-  //   });
-
-  //   if (window.PhosphorIcons) window.PhosphorIcons.replace();
-  // }
 
   // Edit
 document.querySelectorAll(".edit-link").forEach(link => {
@@ -156,14 +129,27 @@ if (window.PhosphorIcons) window.PhosphorIcons.replace();
 
 
   // Initial fetch & render
-  const announcements = await fetchAnnouncements();
-  renderTable(announcements);
+const announcements = await fetchAnnouncements();
+renderTable(announcements);
 
-  // Auto refresh
-  setInterval(async () => {
-    const announcements = await fetchAnnouncements();
-    renderTable(announcements);
-  }, 10000);
+// =======================
+// Enable Supabase Realtime Updates
+// =======================
+supabaseClient
+  .channel('realtime:announcements')
+  .on(
+    'postgres_changes',
+    { event: '*', schema: 'public', table: 'announcements' },
+    async (payload) => {
+      console.log("📡 Realtime update received:", payload.eventType);
+
+      const announcements = await fetchAnnouncements();
+      renderTable(announcements);
+    }
+  )
+  .subscribe();
+
+
 });
 
 // =======================
