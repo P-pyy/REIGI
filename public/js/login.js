@@ -106,7 +106,7 @@ if (resetForm) {
     }
 
     const { data, error } = await supabaseClient.auth.resetPasswordForEmail(email, {
-      redirectTo: "https://reigi.vercel.app/admin/login_reset/index.html",
+      redirectTo: "https://reigi.vercel.app/admin/login_reset_password",
     });
 
     if (error) {
@@ -151,7 +151,7 @@ if (resetPasswordForm) {
       status.style.color = "green";
 
       setTimeout(() => {
-        window.location.assign("/admin/login.html");
+        window.location.assign("/admin/login");
       }, 2500);
     }
   });

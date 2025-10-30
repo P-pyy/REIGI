@@ -67,6 +67,22 @@ app.get('/admin/login_enter_email', (req, res, next) => {
   });
 });
 
+// --- ADMIN Login Reset Route  ---
+app.get('/admin/login_reset_password', (req, res, next) => {
+  res.render('admin/login_reset_password', {}, (err, htmlContent) => {
+    if (err) {
+      console.error("EJS Rendering Error for /admin/login_reset_password:", err.message);
+      return next(err);
+    }
+
+    // 👇 Use layout_admin so it includes the ENV script automatically
+    res.render('layout_admin', {
+      pageTitle: 'Admin Login Reset Password',
+      content: htmlContent
+    });
+  });
+});
+
 
 // --- ADMIN Route  ---
 app.get('/admin/dashboard', (req, res, next) => {
