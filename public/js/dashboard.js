@@ -1,4 +1,6 @@
 import { supabaseClient } from '/js/supabase-client.js';
+window.supabaseClient = supabaseClient;
+
 
 
 
@@ -17,7 +19,131 @@ let currentUser = null; // ✅ define this globally
   }
 
   currentUser = session.user; // ✅ assign the logged-in user here
+
+  // Only after supabaseClient is initialized and user session is valid
+const announcementsChannel = supabaseClient
+  .channel('realtime-announcements-dashboard') // unique channel name
+  .on(
+    'postgres_changes',
+    { event: '*', schema: 'public', table: 'announcements' },
+    async (payload) => {
+      console.log('🔄 Announcements table changed:', payload);
+
+      // Recalculate the number of announcements this month
+      const annNumElem = document.querySelector(".ann-num");
+      if (!annNumElem) return;
+
+      const now = new Date();
+      const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+      const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59);
+
+      const { data, error } = await supabaseClient
+        .from("announcements")
+        .select("id, scheduled_datetime")
+        .gte("scheduled_datetime", startOfMonth.toISOString())
+        .lte("scheduled_datetime", endOfMonth.toISOString());
+
+      if (error) {
+        console.error("Error fetching announcements this month:", error.message);
+        annNumElem.textContent = "0";
+        return;
+      }
+
+      annNumElem.textContent = data.length;
+      annNumElem.style.visibility = "visible";
+    }
+  )
+  .subscribe();
+
+  // =======================
+// Realtime: Visitors Table
+// =======================
+const visitorsChannel = supabaseClient
+  .channel('realtime-visitors-dashboard') // unique channel name
+  .on(
+    'postgres_changes',
+    { event: '*', schema: 'public', table: 'visitors' },
+    async (payload) => {
+      console.log('🔄 Visitors table changed:', payload);
+
+      // Update all dashboard metrics dependent on visitors table
+      await loadActiveUsersChart();
+      await loadDeviceTypes();
+      await loadBounceRate();
+      await loadTotalWebsiteVisits();
+      await loadVideoReplayCount();
+    }
+  )
+  .subscribe();
+
+  // =======================
+// Realtime: FAQs Table
+// =======================
+const faqsChannel = supabaseClient
+  .channel('realtime-faqs-dashboard') // unique channel name
+  .on(
+    'postgres_changes',
+    { event: '*', schema: 'public', table: 'faqs' },
+    async (payload) => {
+      console.log('🔄 FAQs table changed:', payload);
+
+      // Refresh top FAQs and total views
+      await loadTopFAQs();
+      await loadTotalFAQViews();
+    }
+  )
+  .subscribe();
+
+  // =======================
+// Realtime: Site Media Table
+// =======================
+const sitemediaChannel = supabaseClient
+  .channel('realtime-sitemedia-dashboard') // unique channel name
+  .on(
+    'postgres_changes',
+    { event: '*', schema: 'public', table: 'sitemedia' },
+    async (payload) => {
+      console.log('🔄 SiteMedia table changed:', payload);
+
+      // Update latest video date
+      const { data: videoData, error: videoError } = await supabaseClient
+        .from("sitemedia")
+        .select("uploaded_at")
+        .eq("type", "video")
+        .order("id", { ascending: false })
+        .limit(1);
+
+      if (!videoError && videoData?.length > 0) {
+        document.getElementById("video-date").textContent =
+          formatDate(videoData[0].uploaded_at);
+      } else {
+        document.getElementById("video-date").textContent = "No data yet";
+      }
+
+      // Update latest calendar date
+      const { data: calendarData, error: calError } = await supabaseClient
+        .from("sitemedia")
+        .select("uploaded_at")
+        .in("type", ["calendar", "calendar_grad"])
+        .order("id", { ascending: false })
+        .limit(1);
+
+      if (!calError && calendarData?.length > 0) {
+        document.getElementById("calendar-date").textContent =
+          formatDate(calendarData[0].uploaded_at);
+      } else {
+        document.getElementById("calendar-date").textContent = "No data yet";
+      }
+    }
+  )
+  .subscribe();
+
+
+
+
+
 })();
+
 
 document.addEventListener("DOMContentLoaded", () => {
   const toggleBtn = document.querySelector(".toggle-btn");
@@ -198,11 +324,6 @@ async function loadActiveUsersChart() {
   chart.data.datasets[0].data = monthlyActiveUsers;
   chart.update();
 }
-
-
-
-// ✅ Refresh every 30 seconds
-setInterval(loadActiveUsersChart, 30000);
 
 
 // ✅ Custom Legend
@@ -555,6 +676,4 @@ async function loadTotalFAQViews() {
   const { data, error } = await supabaseClient.from("visitors").select("*").limit(1);
   console.log("Visitors test:", data, error);
 })();
-
-
 

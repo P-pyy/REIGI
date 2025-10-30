@@ -35,6 +35,23 @@
 // =======================
 import { supabaseClient } from '/js/supabase-client.js';
 
+// =======================
+// Helper: Format date to Philippine Time
+// =======================
+function formatPHDate(utcDateString) {
+  const dateObj = new Date(utcDateString);
+  return dateObj.toLocaleString("en-PH", {
+    timeZone: "Asia/Manila",
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: true
+  });
+}
+
+
 
 // =======================
 // Check Admin Login
@@ -143,6 +160,10 @@ if (editorPage) {
 // =======================
 // Upload Helper
 // =======================
+
+// =======================
+// Upload Helper with PH time
+// =======================
 async function uploadToSupabase(file, folder, type, title) {
   const filePath = `${folder}/${Date.now()}_${file.name}`;
 
@@ -160,13 +181,20 @@ async function uploadToSupabase(file, folder, type, title) {
   const { data: urlData } = supabaseClient.storage.from("sitemedia").getPublicUrl(filePath);
   const fileUrl = urlData.publicUrl;
 
-  // Insert record into DB
+  // =======================
+  // Get current PH time correctly
+  // =======================
+  const now = new Date();
+  const phTime = new Date(now.getTime() + (8 * 60 * 60 * 1000)).toISOString();
+
+  // Insert record into DB with uploaded_at in PH time
   const { error: dbError } = await supabaseClient.from("sitemedia").insert([{
     title,
     filename: file.name,
     file_url: fileUrl,
     type,
     user_id: currentUser.id,
+    uploaded_at: phTime
   }]);
 
   if (dbError) {
@@ -177,8 +205,45 @@ async function uploadToSupabase(file, folder, type, title) {
   alert(`${title} uploaded successfully!`);
 
   // Redirect to sitemedia.html after upload
-window.location.href = "/admin/site_media";
+  window.location.href = "/admin/site_media";
 }
+
+// async function uploadToSupabase(file, folder, type, title) {
+//   const filePath = `${folder}/${Date.now()}_${file.name}`;
+
+//   // Upload to storage
+//   const { error: uploadError } = await supabaseClient.storage
+//     .from("sitemedia")
+//     .upload(filePath, file, { upsert: true });
+
+//   if (uploadError) {
+//     console.error("Storage upload error:", uploadError.message);
+//     return alert("Upload failed: " + uploadError.message);
+//   }
+
+//   // Get public URL
+//   const { data: urlData } = supabaseClient.storage.from("sitemedia").getPublicUrl(filePath);
+//   const fileUrl = urlData.publicUrl;
+
+//   // Insert record into DB
+//   const { error: dbError } = await supabaseClient.from("sitemedia").insert([{
+//     title,
+//     filename: file.name,
+//     file_url: fileUrl,
+//     type,
+//     user_id: currentUser.id,
+//   }]);
+
+//   if (dbError) {
+//     console.error("Database insert error:", dbError.message);
+//     return alert("Database save failed: " + dbError.message);
+//   }
+
+//   alert(`${title} uploaded successfully!`);
+
+//   // Redirect to sitemedia.html after upload
+// window.location.href = "/admin/site_media";
+// }
 
 // =======================
 // Load Latest Media
@@ -245,7 +310,7 @@ if (!calError && calendars?.length > 0) {
     card.innerHTML = `<img src="${latest.file_url}" alt="Academic Calendar" style="max-width:100%; border-radius:12px;" />`;
     if (fileNameEl) fileNameEl.textContent = latest.filename;
   }
-
+  
   // Auto-show the latest one in dropdown
   const selected = document.getElementById("selected");
   if (selected) {

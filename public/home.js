@@ -260,19 +260,75 @@ function isInternalLink(event) {
 // Event listeners
 // -----------------------
 
-// // Handle internal link clicks
-// document.addEventListener("click", (event) => {
-
-//   // Load other data
-//   loadUndergradCalendar();
-//   loadGradCalendar();
-//   loadTodayAnnouncements();
-// });
-
 document.addEventListener("DOMContentLoaded", () => {
   loadUndergradCalendar();
   loadGradCalendar();
   loadTodayAnnouncements();
+});
+
+
+
+// =======================
+// Realtime Subscriptions
+// =======================
+document.addEventListener("DOMContentLoaded", () => {
+  // 📢 Listen for ANNOUNCEMENTS changes (today’s updates)
+  supabaseClient
+    .channel("realtime:announcements")
+    .on(
+      "postgres_changes",
+      { event: "*", schema: "public", table: "announcements" },
+      async (payload) => {
+        console.log("📢 Realtime announcement change detected:", payload);
+        await loadTodayAnnouncements(); // Refresh announcements dynamically
+      }
+    )
+    .subscribe();
+
+  // 🎥 Listen for FAQ video changes
+  supabaseClient
+    .channel("realtime:sitemedia_video")
+    .on(
+      "postgres_changes",
+      { event: "*", schema: "public", table: "sitemedia" },
+      async (payload) => {
+        if (payload.new?.type === "video" || payload.old?.type === "video") {
+          console.log("🎥 FAQ video updated — reloading...");
+          await loadFaqVideo();
+        }
+      }
+    )
+    .subscribe();
+
+  // 📅 Listen for UNDERGRAD calendar changes
+  supabaseClient
+    .channel("realtime:sitemedia_calendar")
+    .on(
+      "postgres_changes",
+      { event: "*", schema: "public", table: "sitemedia" },
+      async (payload) => {
+        if (payload.new?.type === "calendar" || payload.old?.type === "calendar") {
+          console.log("📅 Undergraduate calendar updated — reloading...");
+          await loadUndergradCalendar();
+        }
+      }
+    )
+    .subscribe();
+
+  // 🎓 Listen for GRAD calendar changes
+  supabaseClient
+    .channel("realtime:sitemedia_calendar_grad")
+    .on(
+      "postgres_changes",
+      { event: "*", schema: "public", table: "sitemedia" },
+      async (payload) => {
+        if (payload.new?.type === "calendar_grad" || payload.old?.type === "calendar_grad") {
+          console.log("🎓 Graduate calendar updated — reloading...");
+          await loadGradCalendar();
+        }
+      }
+    )
+    .subscribe();
 });
 
 
