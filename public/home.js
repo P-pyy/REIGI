@@ -234,7 +234,7 @@ async function loadTodayAnnouncements() {
         <h3><b>${item.title}</b></h3>
         <p class="date"><b>${formattedDate}</b></p>
         <p class="description">${item.details}</p>
-        <a href="announcement_article.html?id=${item.id}" class="read-more">Read more!</a>
+        <a href="/announcement-article?id=${item.id}" class="read-more">Read more!</a>
       </div>
     `;
     container.appendChild(card);
