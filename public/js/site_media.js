@@ -70,6 +70,30 @@ let currentUser = null; // ✅ define this globally
   currentUser = session.user; // ✅ assign the logged-in user here
 })();
 
+// Toggle
+document.addEventListener("DOMContentLoaded", () => {
+  const toggleBtn = document.querySelector(".toggle-btn");
+  const sidebar = document.querySelector(".sidebar");
+  const mainContent = document.querySelector(".main-content");
+  const mainHeader = document.querySelector(".main-header");
+  const rowSumCards = document.querySelector(".row-sum-cards");
+  const chartContainer = document.querySelector(".chart-container");
+  const faqCard = document.querySelector(".faq-card");
+
+  if (toggleBtn && sidebar) {
+    toggleBtn.addEventListener("click", () => {
+      sidebar.classList.toggle("small-sidebar");
+      mainContent?.classList.toggle("adjusted");
+      mainHeader?.classList.toggle("adjusted");
+      rowSumCards?.classList.toggle("adjusted");
+      chartContainer?.classList.toggle("adjusted");
+      faqCard?.classList.toggle("adjusted");
+      window.dispatchEvent(new Event("resize"));
+    });
+  }
+
+});
+
 
 // =======================
 // Upload Logic (Video + Calendar)
@@ -156,11 +180,6 @@ if (editorPage) {
   });
 }
 
-
-// =======================
-// Upload Helper
-// =======================
-
 // =======================
 // Upload Helper with PH time
 // =======================
@@ -184,8 +203,9 @@ async function uploadToSupabase(file, folder, type, title) {
   // =======================
   // Get current PH time correctly
   // =======================
-  const now = new Date();
-  const phTime = new Date(now.getTime() + (8 * 60 * 60 * 1000)).toISOString();
+  const phTime = new Date().toLocaleString("en-US", { timeZone: "Asia/Manila" });
+  const uploadedAt = new Date(phTime).toISOString(); // ISO string for Supabase
+
 
   // Insert record into DB with uploaded_at in PH time
   const { error: dbError } = await supabaseClient.from("sitemedia").insert([{

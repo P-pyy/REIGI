@@ -16,6 +16,28 @@ import { supabaseClient } from '/js/supabase-client.js';
 // =======================
 // Section Toggle
 // =======================
+
+document.addEventListener("DOMContentLoaded", () => {
+  const toggleBtn = document.querySelector(".toggle-btn");
+  const sidebar = document.querySelector(".sidebar");
+  const mainContent = document.querySelector(".main-content");
+  const mainHeader = document.querySelector(".main-header");
+  const rowSumCards = document.querySelector(".row-sum-cards");
+  const chartContainer = document.querySelector(".chart-container");
+  const faqCard = document.querySelector(".faq-card");
+
+  if (toggleBtn && sidebar) {
+    toggleBtn.addEventListener("click", () => {
+      sidebar.classList.toggle("small-sidebar");
+      mainContent?.classList.toggle("adjusted");
+      mainHeader?.classList.toggle("adjusted");
+      rowSumCards?.classList.toggle("adjusted");
+      chartContainer?.classList.toggle("adjusted");
+      faqCard?.classList.toggle("adjusted");
+      window.dispatchEvent(new Event("resize"));
+    });
+  }
+});
 const faqGrid = document.getElementById("faq-grid");
 
 document.querySelectorAll(".card-button").forEach((button) => {

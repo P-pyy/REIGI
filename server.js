@@ -1,11 +1,16 @@
 require('dotenv').config();
 const express = require('express');
+const { requireAdminLogin } = require('./middleware/auth');
 const path = require('path');
+const cookieParser = require('cookie-parser'); // ✅ required for reading Supabase cookie tokens
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+
+
 app.use(express.json());
+app.use(cookieParser()); // ✅ must come before middleware that uses cookies
 
 // View Engine Setup
 app.set('view engine', 'ejs');
@@ -83,128 +88,201 @@ app.get('/admin/login_reset_password', (req, res, next) => {
   });
 });
 
+// ✅ PROTECT ALL ADMIN ROUTES BELOW THIS LINE
+// This middleware will apply to *every route* starting with /admin
+app.use('/admin', requireAdminLogin);
 
-// --- ADMIN Route  ---
+// app.use('/admin', (req, res, next) => {
+//   console.log(`👮 Protecting route: ${req.originalUrl}`);
+//   next();
+// }, requireAdminLogin);
+
+
+// --- ADMIN Protected Routes ---
 app.get('/admin/dashboard', (req, res, next) => {
-    res.render('admin/dashboard', {}, (err, htmlContent) => {
-        if (err) {
-            console.error("EJS Rendering Error for /admin/dashboard:", err.message);
-            return next(err);
-        }
-        res.render('layout_admin', {
-        pageTitle: 'Admin Dashboard',
-        content: htmlContent
-        });
-    });
+  res.render('admin/dashboard', {}, (err, htmlContent) => {
+    if (err) return next(err);
+    res.render('layout_admin', { pageTitle: 'Admin Dashboard', content: htmlContent });
+  });
 });
 
-// --- ADMIN FAQ Route  ---
 app.get('/admin/faqs', (req, res, next) => {
-    res.render('admin/faqs', {}, (err, htmlContent) => {
-        if (err) {
-            console.error("EJS Rendering Error for /admin/faqs:", err.message);
-            return next(err);
-        }
-        res.render('layout_admin', {
-        pageTitle: 'Admin FAQs',
-        content: htmlContent
-        });
-    });
+  res.render('admin/faqs', {}, (err, htmlContent) => {
+    if (err) return next(err);
+    res.render('layout_admin', { pageTitle: 'Admin FAQs', content: htmlContent });
+  });
 });
 
-// --- ADMIN Announcement Route  ---
 app.get('/admin/announcement', (req, res, next) => {
-    res.render('admin/announcement', {}, (err, htmlContent) => {
-        if (err) {
-            console.error("EJS Rendering Error for /admin/announcement:", err.message);
-            return next(err);
-        }
-        res.render('layout_admin', {
-        pageTitle: 'Admin Announcement',
-        content: htmlContent
-        });
-    });
+  res.render('admin/announcement', {}, (err, htmlContent) => {
+    if (err) return next(err);
+    res.render('layout_admin', { pageTitle: 'Admin Announcement', content: htmlContent });
+  });
 });
 
-// --- ADMIN Announcement Edit Route  ---
 app.get('/admin/announcement_edit', (req, res, next) => {
-  // Check if the request came from fetch() or an AJAX call
   const isAjax = req.xhr || req.headers.accept.indexOf('json') > -1;
-
   if (isAjax) {
-    // 👉 For JS fetch requests — return only the partial
     res.render('admin/announcement_edit', { layout: false });
   } else {
-    // 👉 For normal browser navigation — render with full layout
     res.render('admin/announcement_edit', {}, (err, htmlContent) => {
-      if (err) {
-        console.error("EJS Rendering Error for /admin/announcement_edit:", err.message);
-        return next(err);
-      }
-      res.render('layout_admin', {
-        pageTitle: 'Admin Announcement Edit',
-        content: htmlContent
-      });
+      if (err) return next(err);
+      res.render('layout_admin', { pageTitle: 'Admin Announcement Edit', content: htmlContent });
     });
   }
 });
 
-// --- ADMIN Site Media Route  ---
 app.get('/admin/site_media', (req, res, next) => {
-    res.render('admin/site_media', {}, (err, htmlContent) => {
-        if (err) {
-            console.error("EJS Rendering Error for /admin/site_media:", err.message);
-            return next(err);
-        }
-        res.render('layout_admin', {
-        pageTitle: 'Admin Site Media',
-        content: htmlContent
-        });
-    });
+  res.render('admin/site_media', {}, (err, htmlContent) => {
+    if (err) return next(err);
+    res.render('layout_admin', { pageTitle: 'Admin Site Media', content: htmlContent });
+  });
 });
 
-// --- ADMIN Site Media Calendar Route ---
 app.get('/admin/site_media_video', (req, res, next) => {
-    res.render('admin/site_media_video', {}, (err, htmlContent) => {
-        if (err) {
-            console.error("EJS Rendering Error for /admin/site_media_video:", err.message);
-            return next(err);
-        }
-        res.render('layout_admin', {
-        pageTitle: 'Admin Site Media (Video)',
-        content: htmlContent
-        });
-    });
+  res.render('admin/site_media_video', {}, (err, htmlContent) => {
+    if (err) return next(err);
+    res.render('layout_admin', { pageTitle: 'Admin Site Media (Video)', content: htmlContent });
+  });
 });
 
-
-// --- ADMIN Site Media Calendar Route ---
 app.get('/admin/site_media_calendar', (req, res, next) => {
-    res.render('admin/site_media_calendar', {}, (err, htmlContent) => {
-        if (err) {
-            console.error("EJS Rendering Error for /admin/site_media_calendar:", err.message);
-            return next(err);
-        }
-        res.render('layout_admin', {
-        pageTitle: 'Admin Site Media (Calendar)',
-        content: htmlContent
-        });
-    });
+  res.render('admin/site_media_calendar', {}, (err, htmlContent) => {
+    if (err) return next(err);
+    res.render('layout_admin', { pageTitle: 'Admin Site Media (Calendar)', content: htmlContent });
+  });
 });
 
-// --- ADMIN Site Media Calendar Route ---
 app.get('/admin/settings', (req, res, next) => {
-    res.render('admin/settings', {}, (err, htmlContent) => {
-        if (err) {
-            console.error("EJS Rendering Error for /admin/settings:", err.message);
-            return next(err);
-        }
-        res.render('layout_admin', {
-        pageTitle: 'Admin Settings',
-        content: htmlContent
-        });
-    });
+  res.render('admin/settings', {}, (err, htmlContent) => {
+    if (err) return next(err);
+    res.render('layout_admin', { pageTitle: 'Admin Settings', content: htmlContent });
+  });
 });
+
+
+
+// // --- ADMIN Route  ---
+// app.get('/admin/dashboard', (req, res, next) => {
+//     res.render('admin/dashboard', {}, (err, htmlContent) => {
+//         if (err) {
+//             console.error("EJS Rendering Error for /admin/dashboard:", err.message);
+//             return next(err);
+//         }
+//         res.render('layout_admin', {
+//         pageTitle: 'Admin Dashboard',
+//         content: htmlContent
+//         });
+//     });
+// });
+
+// // --- ADMIN FAQ Route  ---
+// app.get('/admin/faqs', (req, res, next) => {
+//     res.render('admin/faqs', {}, (err, htmlContent) => {
+//         if (err) {
+//             console.error("EJS Rendering Error for /admin/faqs:", err.message);
+//             return next(err);
+//         }
+//         res.render('layout_admin', {
+//         pageTitle: 'Admin FAQs',
+//         content: htmlContent
+//         });
+//     });
+// });
+
+// // --- ADMIN Announcement Route  ---
+// app.get('/admin/announcement', (req, res, next) => {
+//     res.render('admin/announcement', {}, (err, htmlContent) => {
+//         if (err) {
+//             console.error("EJS Rendering Error for /admin/announcement:", err.message);
+//             return next(err);
+//         }
+//         res.render('layout_admin', {
+//         pageTitle: 'Admin Announcement',
+//         content: htmlContent
+//         });
+//     });
+// });
+
+// // --- ADMIN Announcement Edit Route  ---
+// app.get('/admin/announcement_edit', (req, res, next) => {
+//   // Check if the request came from fetch() or an AJAX call
+//   const isAjax = req.xhr || req.headers.accept.indexOf('json') > -1;
+
+//   if (isAjax) {
+//     // 👉 For JS fetch requests — return only the partial
+//     res.render('admin/announcement_edit', { layout: false });
+//   } else {
+//     // 👉 For normal browser navigation — render with full layout
+//     res.render('admin/announcement_edit', {}, (err, htmlContent) => {
+//       if (err) {
+//         console.error("EJS Rendering Error for /admin/announcement_edit:", err.message);
+//         return next(err);
+//       }
+//       res.render('layout_admin', {
+//         pageTitle: 'Admin Announcement Edit',
+//         content: htmlContent
+//       });
+//     });
+//   }
+// });
+
+// // --- ADMIN Site Media Route  ---
+// app.get('/admin/site_media', (req, res, next) => {
+//     res.render('admin/site_media', {}, (err, htmlContent) => {
+//         if (err) {
+//             console.error("EJS Rendering Error for /admin/site_media:", err.message);
+//             return next(err);
+//         }
+//         res.render('layout_admin', {
+//         pageTitle: 'Admin Site Media',
+//         content: htmlContent
+//         });
+//     });
+// });
+
+// // --- ADMIN Site Media Calendar Route ---
+// app.get('/admin/site_media_video', (req, res, next) => {
+//     res.render('admin/site_media_video', {}, (err, htmlContent) => {
+//         if (err) {
+//             console.error("EJS Rendering Error for /admin/site_media_video:", err.message);
+//             return next(err);
+//         }
+//         res.render('layout_admin', {
+//         pageTitle: 'Admin Site Media (Video)',
+//         content: htmlContent
+//         });
+//     });
+// });
+
+
+// // --- ADMIN Site Media Calendar Route ---
+// app.get('/admin/site_media_calendar', (req, res, next) => {
+//     res.render('admin/site_media_calendar', {}, (err, htmlContent) => {
+//         if (err) {
+//             console.error("EJS Rendering Error for /admin/site_media_calendar:", err.message);
+//             return next(err);
+//         }
+//         res.render('layout_admin', {
+//         pageTitle: 'Admin Site Media (Calendar)',
+//         content: htmlContent
+//         });
+//     });
+// });
+
+// // --- ADMIN Site Media Calendar Route ---
+// app.get('/admin/settings', (req, res, next) => {
+//     res.render('admin/settings', {}, (err, htmlContent) => {
+//         if (err) {
+//             console.error("EJS Rendering Error for /admin/settings:", err.message);
+//             return next(err);
+//         }
+//         res.render('layout_admin', {
+//         pageTitle: 'Admin Settings',
+//         content: htmlContent
+//         });
+//     });
+// });
 
 
 // --- FAQ Route ---
@@ -407,6 +485,24 @@ app.post("/api/visitor-exit", express.text(), async (req, res) => {
 });
 
 
+app.post("/api/set-session", (req, res) => {
+  const { access_token } = req.body;
+
+  if (!access_token) {
+    return res.status(400).json({ error: "Missing access token" });
+  }
+
+  res.cookie("access_token", access_token, {
+  httpOnly: true,
+  secure: false,        // ✅ allow on localhost
+  sameSite: "lax",      // ✅ more lenient for local testing
+  maxAge: 7 * 24 * 60 * 60 * 1000
+  });
+
+
+  console.log("✅ Access token cookie set");
+  res.json({ success: true });
+});
 
 
 

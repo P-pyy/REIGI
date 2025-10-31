@@ -75,7 +75,23 @@ if (loginForm) {
       }
 
       alert("✅ Login successful!");
-      window.location.href = "/admin/dashboard"; // redirect to dashboard
+      // window.location.href = "/admin/dashboard"; // redirect to dashboard
+      // ✅ Send access token to backend for cookie storage
+      const { data: sessionData } = await supabaseClient.auth.getSession();
+      const accessToken = sessionData?.session?.access_token;
+
+      if (accessToken) {
+        await fetch("/api/set-session", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ access_token: accessToken }), // 🔧 corrected
+      credentials: "include",
+    });
+      }
+
+      // Redirect after cookie is set
+      window.location.href = "/admin/dashboard";
+
     }
   });
 
