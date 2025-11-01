@@ -73,11 +73,15 @@ import { supabaseClient } from '/js/supabase-client.js';
 
     // Open FAQ and increment view
     window.openFAQ = async function(id) {
-      try {
-        const { error } = await supabaseClient.rpc("increment_view", { faq_id: id });
-        if (error) console.error("Error incrementing views:", error);
-      } catch (err) {
-        console.error("Unexpected error:", err.message);
-      }
-      window.location.href = `/faq-article?id=${id}`;
-    };
+  try {
+    await fetch('/api/increment-faq-view', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ faqId: id }),
+    });
+  } catch (err) {
+    console.error("Error incrementing views:", err);
+  }
+  window.location.href = `/faq-article?id=${id}`;
+};
+

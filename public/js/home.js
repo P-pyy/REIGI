@@ -420,42 +420,16 @@ if (faqVideo) {
 
 async function updateReplayCount() {
   const visitorId = getCookie("visitor_session_id");
-  if (!visitorId) {
-    console.warn("⚠️ No visitor session ID found, skipping replay update.");
-    return;
-  }
+  if (!visitorId) return;
 
   try {
-    // Fetch the visitor record safely
-    const { data, error: fetchError } = await supabaseClient
-      .from("visitors")
-      .select("video_replays")
-      .eq("visitor_id", visitorId)
-      .maybeSingle(); // 👈 prevents hard error if no row exists
-
-    if (fetchError) {
-      console.error("❌ Error fetching visitor replay count:", fetchError);
-      return;
-    }
-
-    const currentCount = data?.video_replays || 0;
-    const newCount = currentCount + 1;
-
-    // ✅ Upsert instead of update (ensures record always exists)
-    const { error: updateError } = await supabaseClient
-      .from("visitors")
-      .upsert(
-        { visitor_id: visitorId, video_replays: newCount },
-        { onConflict: "visitor_id" }
-      );
-
-    if (updateError) {
-      console.error("❌ Error updating replay count:", updateError);
-    } else {
-      console.log("✅ Replay count updated successfully!");
-      console.log("🎯 Updated replay count:", newCount);
-    }
+    await fetch("/api/update-replay", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ visitor_id: visitorId }),
+    });
+    console.log(" Replay count sent to server");
   } catch (err) {
-    console.error("⚠️ Unexpected error updating replay count:", err);
+    console.error(" Failed to update replay count:", err);
   }
 }

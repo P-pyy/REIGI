@@ -50,25 +50,25 @@ import { supabaseClient } from '/js/supabase-client.js';
 
   // Attach click handler (delegated so it works with dynamic results)
   resultsDiv.addEventListener("click", async e => {
-    const link = e.target.closest("a[data-faq-id]");
-    if (!link) return;
+  const link = e.target.closest("a[data-faq-id]");
+  if (!link) return;
 
-    e.preventDefault(); // stop instant navigation
-    const faqId = link.dataset.faqId;
+  e.preventDefault();
+  const faqId = link.dataset.faqId;
 
-    try {
-      // Call Postgres function to increment views
-      const { error: updateError } = await supabase.rpc("increment_faq_views", { faq_id: faqId });
-      if (updateError) throw updateError;
+  try {
+    await fetch('/api/increment-faq-view', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ faqId }),
+    });
+  } catch (err) {
+    console.error("Error incrementing FAQ views:", err.message);
+  }
 
-      // Redirect only after update succeeds
-      window.location.href = link.href;
-    } catch (err) {
-      console.error("Error incrementing FAQ views:", err.message);
-      // Redirect anyway if update fails
-      window.location.href = link.href;
-    }
-  });
+  window.location.href = link.href;
+});
+
 
   // Trigger search on typing
   searchInput.addEventListener("input", e => {
