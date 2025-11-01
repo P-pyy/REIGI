@@ -88,15 +88,7 @@ app.get('/admin/login_reset_password', (req, res, next) => {
   });
 });
 
-// ✅ PROTECT ALL ADMIN ROUTES BELOW THIS LINE
-// This middleware will apply to *every route* starting with /admin
 app.use('/admin', requireAdminLogin);
-
-// app.use('/admin', (req, res, next) => {
-//   console.log(`👮 Protecting route: ${req.originalUrl}`);
-//   next();
-// }, requireAdminLogin);
-
 
 // --- ADMIN Protected Routes ---
 app.get('/admin/dashboard', (req, res, next) => {
@@ -110,6 +102,13 @@ app.get('/admin/faqs', (req, res, next) => {
   res.render('admin/faqs', {}, (err, htmlContent) => {
     if (err) return next(err);
     res.render('layout_admin', { pageTitle: 'Admin FAQs', content: htmlContent });
+  });
+});
+
+app.get('/admin/kiosk', (req, res, next) => {
+  res.render('admin/kiosk', {}, (err, htmlContent) => {
+    if (err) return next(err);
+    res.render('layout_admin', { pageTitle: 'Admin Kiosk', content: htmlContent });
   });
 });
 
