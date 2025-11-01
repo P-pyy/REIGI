@@ -70,7 +70,7 @@ let currentUser = null; // ✅ define this globally
   currentUser = session.user; // ✅ assign the logged-in user here
 })();
 
-// Toggle
+// Toggle Sidebar
 document.addEventListener("DOMContentLoaded", () => {
   const toggleBtn = document.querySelector(".toggle-btn");
   const sidebar = document.querySelector(".sidebar");
@@ -89,6 +89,17 @@ document.addEventListener("DOMContentLoaded", () => {
       chartContainer?.classList.toggle("adjusted");
       faqCard?.classList.toggle("adjusted");
       window.dispatchEvent(new Event("resize"));
+    });
+  }
+
+   // ✅ Logout handler
+  const logoutBtn = document.querySelector(".logout");
+  if (logoutBtn) {
+    logoutBtn.addEventListener("click", async () => {
+      console.log("Logout clicked ✅");
+      const { error } = await supabaseClient.auth.signOut();
+      if (error) console.error("Logout error:", error.message);
+      else window.location.href = "/admin/login";
     });
   }
 

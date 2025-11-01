@@ -160,130 +160,6 @@ app.get('/admin/settings', (req, res, next) => {
 });
 
 
-
-// // --- ADMIN Route  ---
-// app.get('/admin/dashboard', (req, res, next) => {
-//     res.render('admin/dashboard', {}, (err, htmlContent) => {
-//         if (err) {
-//             console.error("EJS Rendering Error for /admin/dashboard:", err.message);
-//             return next(err);
-//         }
-//         res.render('layout_admin', {
-//         pageTitle: 'Admin Dashboard',
-//         content: htmlContent
-//         });
-//     });
-// });
-
-// // --- ADMIN FAQ Route  ---
-// app.get('/admin/faqs', (req, res, next) => {
-//     res.render('admin/faqs', {}, (err, htmlContent) => {
-//         if (err) {
-//             console.error("EJS Rendering Error for /admin/faqs:", err.message);
-//             return next(err);
-//         }
-//         res.render('layout_admin', {
-//         pageTitle: 'Admin FAQs',
-//         content: htmlContent
-//         });
-//     });
-// });
-
-// // --- ADMIN Announcement Route  ---
-// app.get('/admin/announcement', (req, res, next) => {
-//     res.render('admin/announcement', {}, (err, htmlContent) => {
-//         if (err) {
-//             console.error("EJS Rendering Error for /admin/announcement:", err.message);
-//             return next(err);
-//         }
-//         res.render('layout_admin', {
-//         pageTitle: 'Admin Announcement',
-//         content: htmlContent
-//         });
-//     });
-// });
-
-// // --- ADMIN Announcement Edit Route  ---
-// app.get('/admin/announcement_edit', (req, res, next) => {
-//   // Check if the request came from fetch() or an AJAX call
-//   const isAjax = req.xhr || req.headers.accept.indexOf('json') > -1;
-
-//   if (isAjax) {
-//     // 👉 For JS fetch requests — return only the partial
-//     res.render('admin/announcement_edit', { layout: false });
-//   } else {
-//     // 👉 For normal browser navigation — render with full layout
-//     res.render('admin/announcement_edit', {}, (err, htmlContent) => {
-//       if (err) {
-//         console.error("EJS Rendering Error for /admin/announcement_edit:", err.message);
-//         return next(err);
-//       }
-//       res.render('layout_admin', {
-//         pageTitle: 'Admin Announcement Edit',
-//         content: htmlContent
-//       });
-//     });
-//   }
-// });
-
-// // --- ADMIN Site Media Route  ---
-// app.get('/admin/site_media', (req, res, next) => {
-//     res.render('admin/site_media', {}, (err, htmlContent) => {
-//         if (err) {
-//             console.error("EJS Rendering Error for /admin/site_media:", err.message);
-//             return next(err);
-//         }
-//         res.render('layout_admin', {
-//         pageTitle: 'Admin Site Media',
-//         content: htmlContent
-//         });
-//     });
-// });
-
-// // --- ADMIN Site Media Calendar Route ---
-// app.get('/admin/site_media_video', (req, res, next) => {
-//     res.render('admin/site_media_video', {}, (err, htmlContent) => {
-//         if (err) {
-//             console.error("EJS Rendering Error for /admin/site_media_video:", err.message);
-//             return next(err);
-//         }
-//         res.render('layout_admin', {
-//         pageTitle: 'Admin Site Media (Video)',
-//         content: htmlContent
-//         });
-//     });
-// });
-
-
-// // --- ADMIN Site Media Calendar Route ---
-// app.get('/admin/site_media_calendar', (req, res, next) => {
-//     res.render('admin/site_media_calendar', {}, (err, htmlContent) => {
-//         if (err) {
-//             console.error("EJS Rendering Error for /admin/site_media_calendar:", err.message);
-//             return next(err);
-//         }
-//         res.render('layout_admin', {
-//         pageTitle: 'Admin Site Media (Calendar)',
-//         content: htmlContent
-//         });
-//     });
-// });
-
-// // --- ADMIN Site Media Calendar Route ---
-// app.get('/admin/settings', (req, res, next) => {
-//     res.render('admin/settings', {}, (err, htmlContent) => {
-//         if (err) {
-//             console.error("EJS Rendering Error for /admin/settings:", err.message);
-//             return next(err);
-//         }
-//         res.render('layout_admin', {
-//         pageTitle: 'Admin Settings',
-//         content: htmlContent
-//         });
-//     });
-// });
-
-
 // --- FAQ Route ---
 app.get('/faq', (req, res, next) => {
     // 1. Render the content partial (faq_user_menu.ejs)
@@ -389,7 +265,7 @@ const { createClient } = require("@supabase/supabase-js");
 
 const supabase = createClient(
   process.env.SUPABASE_URL,
-  process.env.SUPABASE_ANON_KEY
+  process.env.SUPABASE_SERVICE_ROLE_KEY
 );
 
 app.post('/api/log-visitor', async (req, res) => {
@@ -503,7 +379,70 @@ app.post("/api/set-session", (req, res) => {
   res.json({ success: true });
 });
 
+app.post("/api/update-replay", async (req, res) => {
+  try {
+    const { visitor_id } = req.body;
+    if (!visitor_id) return res.status(400).json({ error: "Missing visitor_id" });
 
+    // Fetch the current count
+    const { data, error: fetchError } = await supabase
+      .from("visitors")
+      .select("video_replays")
+      .eq("visitor_id", visitor_id)
+      .maybeSingle();
+
+    if (fetchError) throw fetchError;
+
+    const currentCount = data?.video_replays || 0;
+    const newCount = currentCount + 1;
+
+    const { error: updateError } = await supabase
+      .from("visitors")
+      .upsert(
+        { visitor_id, video_replays: newCount },
+        { onConflict: "visitor_id" }
+      );
+
+    if (updateError) throw updateError;
+
+    console.log(`🎥 Visitor ${visitor_id} replay count updated → ${newCount}`);
+    res.json({ success: true });
+  } catch (err) {
+    console.error("Error updating replay count:", err.message);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// --- Increment FAQ View Route ---
+app.post('/api/increment-faq-view', async (req, res) => {
+  try {
+    const { faqId } = req.body;
+    if (!faqId) return res.status(400).json({ error: 'faqId is required' });
+
+    const { data: faq, error: fetchError } = await supabase
+      .from('faqs')
+      .select('views')
+      .eq('id', faqId)
+      .maybeSingle();
+
+    if (fetchError) throw fetchError;
+    if (!faq) return res.status(404).json({ error: 'FAQ not found' });
+
+    const newViews = (faq.views || 0) + 1;
+
+    const { error: updateError } = await supabase
+      .from('faqs')
+      .update({ views: newViews })
+      .eq('id', faqId);
+
+    if (updateError) throw updateError;
+
+    res.json({ success: true, newViews });
+  } catch (err) {
+    console.error('Error incrementing FAQ view:', err.message);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
 
 
 

@@ -37,6 +37,17 @@ document.addEventListener("DOMContentLoaded", () => {
       window.dispatchEvent(new Event("resize"));
     });
   }
+
+   // ✅ Logout handler
+  const logoutBtn = document.querySelector(".logout");
+  if (logoutBtn) {
+    logoutBtn.addEventListener("click", async () => {
+      console.log("Logout clicked ✅");
+      const { error } = await supabaseClient.auth.signOut();
+      if (error) console.error("Logout error:", error.message);
+      else window.location.href = "/admin/login";
+    });
+  }
 });
 const faqGrid = document.getElementById("faq-grid");
 
