@@ -9,6 +9,8 @@ const PORT = process.env.PORT || 3000;
 
 
 
+
+
 app.use(express.json());
 app.use(cookieParser()); // ✅ must come before middleware that uses cookies
 
@@ -18,6 +20,11 @@ app.set('views', path.join(__dirname, 'views'));
 
 // Static Files Middleware
 app.use(express.static(path.join(__dirname, 'public')));
+
+// Routes
+const kioskRoutes = require("./routes/kiosk");
+app.use("/kiosk", kioskRoutes);
+
 
 // Add after your middleware setup
 app.use((req, res, next) => {
@@ -384,7 +391,7 @@ app.post("/api/update-replay", async (req, res) => {
     const { visitor_id } = req.body;
     if (!visitor_id) return res.status(400).json({ error: "Missing visitor_id" });
 
-    // Fetch the current count
+    // Fetch current count
     const { data, error: fetchError } = await supabase
       .from("visitors")
       .select("video_replays")
@@ -405,7 +412,7 @@ app.post("/api/update-replay", async (req, res) => {
 
     if (updateError) throw updateError;
 
-    console.log(`🎥 Visitor ${visitor_id} replay count updated → ${newCount}`);
+    console.log(` Visitor ${visitor_id} replay count updated → ${newCount}`);
     res.json({ success: true });
   } catch (err) {
     console.error("Error updating replay count:", err.message);

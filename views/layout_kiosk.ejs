@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#1976d2">
+
+  <title><%= pageTitle || 'Kiosk' %></title>
+
+  <!--  Link the kiosk PWA manifest -->
+  <link rel="manifest" href="/kiosk/manifest.json">
+  <link rel="icon" type="image/png" href="/kiosk/icons/icon-192x192.png">
+
+  <!--  Register service worker -->
+  <script>
+    if ("serviceWorker" in navigator) {
+      window.addEventListener("load", () => {
+        navigator.serviceWorker.register("/kiosk/service-worker.js")
+          .then(() => console.log("✅ Kiosk Service Worker registered"))
+          .catch(err => console.error("❌ SW registration failed:", err));
+      });
+    }
+  </script>
+
+  <!--  Make Supabase env variables available -->
+  <script>
+    window.__ENV__ = {
+      SUPABASE_URL: '<%= process.env.SUPABASE_URL %>',
+      SUPABASE_ANON_KEY: '<%= process.env.SUPABASE_ANON_KEY %>'
+    };
+  </script>
+
+  <!--  Optional: basic kiosk styles -->
+  <link rel="stylesheet" href="/kiosk/css/style.css">
+</head>
+
+<body class="kiosk-body">
+  <!-- This is where each kiosk page (index, checklist, queue, etc.) loads -->
+  <main class="kiosk-container">
+    <%- content %>
+  </main>
+
+  <!--  Include kiosk scripts -->
+  <script type="module" src="/kiosk/js/main.js"></script>
+</body>
+</html>
