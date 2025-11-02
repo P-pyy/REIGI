@@ -1,0 +1,23 @@
+{
+  "name": "URS Kiosk",
+  "short_name": "Kiosk",
+  "description": "Self-service kiosk for COR and other student requests",
+  "start_url": "/kiosk",
+  "scope": "/kiosk/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#1976d2",
+  "orientation": "landscape",
+  "icons": [
+    {
+      "src": "/kiosk/icons/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/kiosk/icons/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
