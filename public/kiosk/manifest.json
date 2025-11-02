@@ -2,7 +2,7 @@
   "name": "URS Kiosk",
   "short_name": "Kiosk",
   "description": "Self-service kiosk for COR and other student requests",
-  "start_url":"/kiosk?utm_source=homescreen",
+  "start_url":"/kiosk/",
   "scope": "/kiosk/",
   "display": "standalone",
   "background_color": "#ffffff",
