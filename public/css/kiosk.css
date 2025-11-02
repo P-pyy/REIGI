@@ -1,0 +1,266 @@
+body {
+  font-family: 'Montserrat', sans-serif;
+  background-color: #f5f7fa;
+  margin: 0;
+}
+
+
+.main-header h1 {
+  font-size: 35px;
+  margin-left: 80px;
+  padding-left: 50px;
+  font-weight: 600;
+  color: #0057b8;
+  margin: 0;
+}
+
+.main-content {
+  display: flex;
+  max-width: calc(100% - 278px);
+  min-height: 100vh;
+  transition: margin-left 0.3s ease, width 0.3s ease;
+  padding: 14rem 4rem 8rem 8rem;
+}
+
+.main-content.adjusted {
+  margin-left: 180px !important;
+  width: calc(100% - 2rem);
+}
+
+.faq-wrapper {
+  margin-left: 3rem;
+  max-width: 1200px;
+  padding: 0 20px;
+  width: 100%;
+}
+
+.faq-grid {
+  display: flex;
+  gap: 5rem;
+}
+
+.faq-cards {
+  background-color: #fcfcfc;
+  border-radius: 12px;
+  width: 290px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  padding: 30px 20px;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  gap: 5.5rem;
+}
+
+.faq-card:hover {
+  transform: translateY(-5px);
+  background: #0055A5;
+  color: #fcfcfc;
+}
+
+.faq-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.faq-title {
+  font-size: 24px;
+  margin-left: 15px;
+  margin-top: 80px;
+  font-weight: 600;
+  color: #2C2C2C;
+}
+
+.phosphor-icon {
+  font-size: 2.5rem;
+  margin-right: 10px;
+  height: 40px;
+  width: 40px;
+  margin-top: 60px;
+  color: #0055A5;
+}
+
+.faq-desc {
+  font-size: 14px;
+  color: #2C2C2C;
+  margin-top: 10px;
+  line-height: 1.5;
+}
+
+.card-footer {
+  display: flex;
+  justify-content: center;
+}
+
+.card-button {
+  background-color: #CDE4FF;
+  border: none;
+  margin-bottom: 50px;
+  height: 45px;
+  width: 160px;
+  padding: 10px 20px;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #000;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.card-button:hover {  
+  background: #0055A5;
+  color: #fcfcfc;
+}
+
+.faq-grid .faq-cards:nth-child(2) .card-footer {
+  margin-top: 30px;
+}
+
+.faq-grid .faq-cards:nth-child(2) .phosphor-icon {
+  margin-top: 80px; 
+}
+
+.faq-grid .faq-cards:nth-child(2) .faq-title {
+  margin-right: 40px; /* adjust value as you like (0–5px usually looks good) */
+}
+
+/* Table ui styles */
+/* admin_faq_enrollment_process   */
+
+.admin-esfaq-card {
+  margin-left: -50px;
+  width: 95%;         
+  max-width: 1800px; 
+}
+.admin-drfaq-card {
+  margin: 0 auto;
+  width: 95%;         
+  max-width: 1800px; 
+}
+#graduation-clearance-section {
+  padding-top: 20px !important;
+}
+.admin-gcfaq-card {
+  margin: 0 auto;
+  width: 95%;         
+  max-width: 1800px; 
+}
+
+.table-title th {
+  font-size: 16px;   
+  font-weight: 600;     
+  color: #2C2C2C;        
+  padding-bottom: 30px; 
+}
+.faq-table td {
+  font-size: 14px;     
+  font-weight: 400;      
+  color: #2C2C2C;        
+}
+
+.faq-table th,
+.faq-table td {
+  border: none !important;
+  background-color: transparent; 
+}
+
+.faq-table tbody tr:nth-child(odd) {
+  background-color: inherit;
+}
+
+.faq-table tbody tr:nth-child(even) {
+  background-color: #F2F6FC;
+}
+
+.edit-link {
+  text-decoration: none !important; 
+  color: #0055A5 !important;
+  font-size: 14px !important;
+  font-weight: 400 !important;
+}
+
+.edit-link:hover {
+  text-decoration: none !important;  
+}
+
+.trash-icon {
+  text-decoration: none !important; 
+}
+
+.trash-icon:hover {
+  text-decoration: none !important;
+  color: #dc3545; 
+}
+
+.btn-text {
+  font-size: 14px;    
+  font-weight: 500;  
+  color: #2C2C2C;    
+}
+
+.ph-plus {
+  vertical-align: middle;  
+  margin-right: 8px;    
+}
+
+
+.add-question-btn{
+  background-color: #CDE4FF; 
+  border-radius: 8px;
+  padding: 10px;
+}
+
+.table-wrapper {
+  overflow-y: auto;
+  max-height: 420px;    
+  overflow-y: auto;       
+  overflow-x: hidden;     
+  padding-right: 10px;    
+}
+
+.table-wrapper::-webkit-scrollbar {
+  width: 8px; 
+}
+
+.table-wrapper::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.table-wrapper::-webkit-scrollbar-thumb {
+  background: #1565c0; 
+  border-radius: 10px;
+}
+
+.table-wrapper::-webkit-scrollbar-thumb:hover {
+  background: #0d47a1;  
+}
+
+.fade-in { animation: fadeIn 0.2s ease-in-out; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+
+    #loading-overlay {
+      position: fixed; top:0; left:0; width:100%; height:100%;
+      background: rgba(255,255,255,0.8);
+      display: flex; align-items: center; justify-content: center;
+      z-index: 9999; opacity:0; pointer-events:none; transition: opacity 0.3s ease;
+    }
+    #loading-overlay.show { opacity:1; pointer-events: all; }
+
+/* edit text in table */
+
+.edit-faq {
+  text-decoration: none;  /* remove underline */
+  cursor: pointer;        /* show pointer on hover */
+}
+
+.edit-faq:hover {
+  text-decoration: underline; /* optional: underline only on hover */
+}
+
+
+
+
+
+
+
+
