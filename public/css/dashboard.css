@@ -892,9 +892,9 @@ body {
   transition: transform 0.2s ease;
   overflow: hidden;
 }
-.card:hover {
+/* .card:hover {
   transform: translateY(-3px);
-}
+} */
 .card h2 {
   font-size: 1.1rem;
   font-weight: 600;

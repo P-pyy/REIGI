@@ -19,7 +19,7 @@ body {
   max-width: calc(100% - 278px);
   min-height: 100vh;
   transition: margin-left 0.3s ease, width 0.3s ease;
-  padding: 14rem 4rem 8rem 8rem;
+  padding: 12rem 4rem 8rem 8rem;
 }
 
 .main-content.adjusted {
@@ -36,7 +36,10 @@ body {
 
 .faq-grid {
   display: flex;
-  gap: 5rem;
+  gap: 3rem;
+  align-items: center;
+  justify-content: center;
+  margin-top: 2rem;
 }
 
 .faq-cards {
@@ -215,7 +218,7 @@ body {
   max-height: 420px;    
   overflow-y: auto;       
   overflow-x: hidden;     
-  padding-right: 10px;    
+  /* padding-right: 10px;     */
 }
 
 .table-wrapper::-webkit-scrollbar {
@@ -259,8 +262,118 @@ body {
 
 
 
+.my-5-class {
+  margin-top: 0 !important;
+}
+
+.card.body {
+  padding: 0 !important;
+}
+
+tr, th, td {
+  text-align: left;
+}
+
+.row>* {
+  margin-top: 0 !important;
+}
+
+.faq-wrapper {
+  margin-left: 0 !important;
+}
+
+.sts-process {
+  width: 212px ;
+}
+
+.section-text {
+  color: #000;
+  font-size: .9rem;
+  font-weight: 600;
+}
+
+/* .requirements{} */
+
+.faq-form {
+  background-color: #fcfcfc;
+}
+
+.fill-up {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+}
+
+.fill {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+}
+
+.fill-upper {
+  display: flex;
+  justify-content: space-between; 
+  align-items: flex-start;         
+  width: 100%;
+  gap: 1rem;
+  padding: .7rem;
+  border-radius: 8px;
+  background-color: #CDE4FF;
+
+  flex-wrap: wrap;                 
+  word-break: break-word;          
+}
+
+.ph-plush {
+  background-color: #0055A5;
+  font-size: .8rem;
+  padding: .7rem;
+  color: #fcfcfc;
+  border-radius: 8px;
+}
+
+.ph-minos{
+  background-color: #a5001b;
+  font-size: .8rem;
+  padding: .7rem;
+  color: #fcfcfc;
+  border-radius: 12px;
+  flex-shrink: 0; 
+  margin-left: auto; 
+}
 
 
+.preview-card {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  background-color: #fcfcfc;
+  border-radius: 12px;
+  padding: 2rem;
+  box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.25);
 
+}
 
+.title-preview {
+  color: #000;
+  font-weight: 600;
+  font-size: 1.5rem;
+  padding: 1rem 1rem 1rem 0;
+}
 
+.faq-preview {
+  background-color: #F3F4F8;
+  border-radius: 8px;
+}
+
+.faq-preview-card {
+  background-color: #F3F4F8;
+  border-radius: 8px;
+}
+
+.directions {
+  font-size: 1rem;
+  font-weight: 600;
+}
