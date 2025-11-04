@@ -252,46 +252,6 @@ document.addEventListener("DOMContentLoaded", () => {
   loadActiveUsersChart();
 });
 
-
-
-
-
-
-
-// ✅ Load data from Supabase and update chart
-// async function loadActiveUsersChart() {
-//   const { data, error } = await supabaseClient
-//     .from("visitors")
-//     .select("visited_at, exited_at");
-
-//   if (error) {
-//     console.error("Error fetching visitors:", error.message);
-//     return;
-//   }
-
-//   const monthLabels = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", 
-//                        "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-//   const monthlyActiveUsers = Array(12).fill(0);
-//   const now = new Date();
-
-//   data.forEach(v => {
-//     const visited = new Date(v.visited_at);
-//     const exited = v.exited_at ? new Date(v.exited_at) : now;
-
-//     const startMonth = visited.getMonth();
-//     const endMonth = exited.getMonth();
-
-//     for (let m = startMonth; m <= endMonth; m++) {
-//       monthlyActiveUsers[m]++;
-//     }
-//   });
-
-//   // Update chart dynamically
-//   chart.data.labels = monthLabels;
-//   chart.data.datasets[0].data = monthlyActiveUsers;
-//   chart.update();
-// }
-
 async function loadActiveUsersChart() {
   if (!chart) return; // prevent accessing null chart
 
@@ -324,18 +284,6 @@ async function loadActiveUsersChart() {
   chart.data.datasets[0].data = monthlyActiveUsers;
   chart.update();
 }
-
-
-// ✅ Custom Legend
-// const legendContainer = document.getElementById("customLegend");
-// const dataset = chart.data.datasets[0];
-// const legendItem = document.createElement("div");
-// legendItem.className = "legend-item";
-// legendItem.innerHTML = `
-//   <span class="legend-circle"></span>
-//   <span class="legend-text">${dataset.label}</span>
-// `;
-// legendContainer.appendChild(legendItem);
 
 document.addEventListener("DOMContentLoaded", () => {
   if (!chart) return; // chart not yet initialized
