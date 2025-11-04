@@ -452,7 +452,6 @@ app.post('/api/increment-faq-view', async (req, res) => {
 });
 
 
-
 // 6. Server Start
 app.listen(PORT, () => {
     console.log(`Server is running at http://localhost:${PORT}`);

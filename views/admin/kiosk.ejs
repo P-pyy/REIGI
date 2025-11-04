@@ -109,21 +109,21 @@
       </div>
 
 <!-- Kiosk Editor Section (hidden by default) -->
-<div id="faq-editor-section" class="d-none my-5">
+<div id="faq-editor-section" class="d-none">
   <div class="row g-4">
     <!-- FAQ Post Form -->
     <div class="col-md-6">
       <div class="faq-form p-3 shadow-sm rounded bg-white h-100 font-weight-600">
-        <h5 class="mb-3">FAQ Details</h5>
+        <h5 class="mb-3 title-preview">FAQ Details</h5>
 
         <!-- Question Title -->
-        <input type="text" class="form-control mb-3" placeholder="Question Title">
+        <input type="text" class="form-control" placeholder="Question Title">
 
         <div class="requirements">
           <span class="section-text">Requirements</span>
           <div class="fill-up">
           <!-- FAQ Post Title -->
-            <input id="requirementInput" type="text" class="form-control mb-3" placeholder="Insert a Requirement here">
+            <input id="requirementInput" type="text" class="form-control" placeholder="Insert a Requirement here">
             <i class="ph-plus ph-plush"></i>
           </div>
         </div>
@@ -143,7 +143,7 @@
           <span class="section-text">Step-by-step Process</span>
           <div class="fill-up">
           <!-- FAQ Post Title -->
-            <input id="stepProcessInput" type="text" class="form-control mb-3" placeholder="Insert a Step process here">
+            <input id="stepProcessInput" type="text" class="form-control" placeholder="Insert a Step process here">
             <i class="ph-plus ph-plush"></i>
           </div>
         </div>
@@ -160,7 +160,7 @@
         </div>
 
         <!-- Image Upload -->
-        <div class="mb-4">
+        <div class="mb-4 img-upload-container">
           <div id="uploadArea"
             class="image-upload-area text-center d-flex flex-column align-items-center justify-content-center"
             onclick="document.getElementById('imageInput').click()">
@@ -179,7 +179,7 @@
         </div>
 
         <!-- Submit Button -->
-        <button class="btn btn-primary w-100">Submit</button>
+        <button class="btn-submit btn-primary w-100">Submit</button>
       </div>
     </div>
 
@@ -199,19 +199,27 @@
       </div>
 
       <div class="faq-preview-card p-4 rounded ">
-        <span class="preview-title">Step-by-step</span>
         <p class="mb-1 directions">Check the boxes that you’ve completed to proceed:</p>
         <p class="text-center mb-3 text-muted small"></p>
 
         <!-- Scrollable Paragraph -->
-        <div class="preview-text">
-          <input type="checkbox" class="form-control mb-3 checkbox-select">
-          <div class="checkbox-content">
-            <p>
+        <div class="preview-text checkbox-wrapper-4">
+            <input class="inp-cbx" id="step" type="checkbox"/>
+            <label class="cbx" for="step">
+              <span>
+                <svg width="12px" height="10px">
+                  <use xlink:href="#check-4"></use>
+                </svg>
+              </span>
+            </label>
+              <svg class="inline-svg">
+                <symbol id="check-4" viewbox="0 0 12 10">
+                  <polyline points="1.5 6 4.5 9 10.5 1"></polyline>
+                </symbol>
+              </svg>
+            <p class="checkbox-content">
               Step process directions
             </p>
-          </div>
-
         </div>
 
         <img class="preview-image mt-2" style="max-width:100%; display:none;" alt="FAQ Image Preview">
