@@ -285,6 +285,7 @@ body {
 .login-alerts .options {
   display: flex;
   flex-direction: column;
+  font-weight: 900;
   gap: 1.5rem;
   border: none;
   margin: 0;
@@ -294,6 +295,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  font-weight: 900;
 }
 .login-alerts .label {
   color: #1f2937;
@@ -535,14 +537,12 @@ body {
     transition: border-color 0.25s ease;
     }
     .form-container button {
-      width: 100%;
       padding: 12px;
-      border-radius: 6px;
-      background-color: #aac4ff;
       border: none;
       color: #000;
       font-weight: 500;
       cursor: pointer;
+      font-weight: 900;
     }
     .form-container {
       max-width: 600px;
@@ -567,7 +567,8 @@ body {
     }
     /* Make top controls like screenshot */
     #login-history-form .icon-btn {
-      font-size: 1.2rem;
+      font-size: 1.4rem;
+      font-weight: bolder;
     }
     #login-history-form h2 {
       font-weight: 600;
@@ -601,4 +602,6 @@ body {
       border-radius: 8px;
       background: #fff;
       box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+      flex-direction: column;
+      align-items: flex-start;
     }
