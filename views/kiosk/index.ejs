@@ -1,4 +1,75 @@
-<section class="kiosk-home">
-  <h1>Welcome to the URS Kiosk</h1>
-  <button onclick="window.location.href='/kiosk/checklist'">Start</button>
-</section>
+
+<div class="container">
+  <div class="search-container">
+    <h1 class="search-title">Search</h1>
+    <div class="input-voice-container">
+      <input type="text" class="form-control" placeholder="What's your Question?">
+      <button class="voice-btn"><i class="ph ph-microphone"></i>Voice Search</button>
+    </div>
+    <div class="faq-option-container">
+      <div class="faq-option">
+        <i class="ph ph-magnifying-glass"></i>
+        <span class="faq-option-name">Certificate of Registration (COR)</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="overlay-backdrop"></div>
+
+  <div class="container container-overlay">
+    <div class="navigation-head-container">
+      <a href="" id="back-btn"><i class="ph ph-arrow-left"></i></a>
+      <button class="speak-btn"><i class="ph ph-user-sound"></i>Read Aloud</button>
+    </div>
+
+    <div class="container-content">
+        <div class="title-container">
+          <h4 class="title-preview">Process</h4>
+          <p class="faq-name">Certificate of Registration</p>
+        </div>
+      <div class="process-container">
+        <div class="faq-preview p-3">
+          <p class="directions">Requirements</p>
+          <ol class="mt-2 mb-0">
+            <li class="faq-item">
+              Requirement 1
+            </li>
+          </ol>
+        </div>
+        <div class="faq-preview-card p-4 rounded ">
+          <p class="mb-1 directions">Check the boxes that you’ve completed to proceed:</p>
+          <p class="text-center mb-3 text-muted small"></p>
+
+          <!-- Scrollable Paragraph -->
+          <div class="preview-text checkbox-wrapper-4">
+              <input class="inp-cbx" id="step" type="checkbox"/>
+              <label class="cbx" for="step">
+                <span>
+                  <svg width="12px" height="10px">
+                    <use xlink:href="#check-4"></use>
+                  </svg>
+                </span>
+              </label>
+                <svg class="inline-svg">
+                  <symbol id="check-4" viewbox="0 0 12 10">
+                    <polyline points="1.5 6 4.5 9 10.5 1"></polyline>
+                  </symbol>
+                </svg>
+              <p class="checkbox-content">
+                Step process directions
+              </p>
+          </div>
+        </div>
+      </div>
+      <div class="img-section-container">
+        <img class="preview-image mt-2" style="max-width:100%; display:none;" alt="FAQ Image Preview">
+      </div>
+    </div>
+  </div>
+
+</div>
+
+
+<script type="module" src="/public/kiosk/js/main.js"></script>
+  
