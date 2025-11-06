@@ -6,12 +6,7 @@
       <input type="text" class="form-control" placeholder="What's your Question?">
       <button class="voice-btn"><i class="ph ph-microphone"></i>Voice Search</button>
     </div>
-    <div class="faq-option-container">
-      <div class="faq-option">
-        <i class="ph ph-magnifying-glass"></i>
-        <span class="faq-option-name">Certificate of Registration (COR)</span>
-      </div>
-    </div>
+    <div class="faq-option-container"></div>
   </div>
 </div>
 
@@ -32,9 +27,7 @@
         <div class="faq-preview p-3">
           <p class="directions">Requirements</p>
           <ol class="mt-2 mb-0">
-            <li class="faq-item">
-              Requirement 1
-            </li>
+            <li class="faq-item"></li>
           </ol>
         </div>
         <div class="faq-preview-card p-4 rounded ">
@@ -56,7 +49,6 @@
     </div>
   </div>
 
-  <div id="overlay-backdrop"></div>
 
   <div class="container container-overlay-form">
     <div class="navigation-head-container">
@@ -70,12 +62,34 @@
         </div>
       <div class="process-container">
         <div class="faq-preview-2 p-3">
-          <input type="text" class="form-control" placeholder="First Name">
-          <input type="text" class="form-control" placeholder="Last Name">
+          <input type="text" class="form-control" id="first-name-input" placeholder="First Name">
+          <input type="text" class="form-control" id="last-name-input" placeholder="Last Name">
         </div>
       </div>
         <div class="submit-container">
-          <button class="speak-btn" id="finish-btn">Finish</button>
+          <button class="speak-btn" id="finish-btn" disabled>Finish</button>
+        </div>
+    </div>
+  </div>  
+
+  <div class="container container-overlay-number">
+
+    <div class="container-content-num">
+      <div class="title-container">
+        <h4 class="title-preview-num">Your Queue number is:</h4>
+      </div>
+      <div class="process-container">
+        <div class="faq-preview-2 p-3">
+          <div class="number-container">
+            <h3 class="number-preview"></h4>
+          </div>
+          <div class="number-container">
+            <p class="message-name">Get your stub below and wait for your turn. Thank you! </p>
+          </div>
+        </div>
+      </div>
+        <div class="submit-container">
+          <button class="speak-btn" id="finish-btn-num">Finish</button>
         </div>
     </div>
   </div>  
