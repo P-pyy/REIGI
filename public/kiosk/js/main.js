@@ -8,11 +8,29 @@ document.addEventListener("DOMContentLoaded", async () => {
   const overlay = document.querySelector(".container-overlay");
   const backBtn = document.getElementById("back-btn");
   const backdrop = document.getElementById("overlay-backdrop");
+  const proceedBtn = document.getElementById("proceed-btn");
+  const formOverlay = document.querySelector(".container-overlay-form");
+
+  const backBtn1 = document.getElementById("back-btn-1"); 
+  const backBtn2 = document.getElementById("back-btn-2");
 
   const faqName = document.querySelector(".faq-name");
   const requirementsList = document.querySelector(".faq-preview ol");
   const stepsContainer = document.querySelector(".preview-text");
   const previewImage = document.querySelector(".preview-image");
+
+  // --- 2. ADD THIS HELPER FUNCTION ---
+    // This checks all checkboxes and enables/disables the proceed button
+    function updateProceedButtonState() {
+        const allCheckboxes = stepsContainer.querySelectorAll(".inp-cbx");
+        const checkedCheckboxes = stepsContainer.querySelectorAll(".inp-cbx:checked");
+
+        if (allCheckboxes.length > 0 && allCheckboxes.length === checkedCheckboxes.length) {
+            proceedBtn.disabled = false; // Enable the button
+        } else {
+            proceedBtn.disabled = true; // Disable the button
+        }
+    }
 
   // Load FAQ Data from Supabase
   async function loadFAQs() {
@@ -106,12 +124,41 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
 
-  // Hide Overlay on Back Click
-  backBtn.addEventListener("click", (e) => {
-    e.preventDefault();
-    overlay.classList.remove("is-visible");
-    backdrop.classList.remove("is-visible");
-  });
+// Hide Overlay on Back Click
+    backBtn1.addEventListener("click", (e) => { // Use backBtn1
+        e.preventDefault();
+        overlay.classList.remove("is-visible");
+        backdrop.classList.remove("is-visible");
+    });
+
+// Listen for changes on ANY checkbox inside the container
+    stepsContainer.addEventListener("change", (event) => {
+        // Check if the thing that changed was a checkbox
+        if (event.target.classList.contains("inp-cbx")) {
+            updateProceedButtonState(); // Re-check if the button should be enabled
+        }
+    });
+
+    // Listen for clicks on the Proceed Button
+    proceedBtn.addEventListener("click", () => {
+        // No need for 'if(disabled)' because a disabled button can't be clicked
+        
+        // Hide the first overlay
+        overlay.classList.remove("is-visible");
+        // Show the form overlay
+        formOverlay.classList.add("is-visible");
+        // The backdrop stays visible!
+    });
+
+    // Listen for clicks on the Form's Back Button
+    backBtn2.addEventListener("click", (e) => {
+        e.preventDefault();
+        
+        // Hide the form overlay
+        formOverlay.classList.remove("is-visible");
+        // Show the main overlay again
+        overlay.classList.add("is-visible");
+    });
 
   // Initial Load
   loadFAQs();
