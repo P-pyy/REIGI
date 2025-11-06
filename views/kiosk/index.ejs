@@ -19,7 +19,7 @@
 
   <div class="container container-overlay">
     <div class="navigation-head-container">
-      <a href="" id="back-btn"><i class="ph ph-arrow-left"></i></a>
+      <a href="" id="back-btn-1"><i class="ph ph-arrow-left"></i></a>
       <button class="speak-btn"><i class="ph ph-user-sound"></i>Read Aloud</button>
     </div>
 
@@ -51,10 +51,34 @@
         <img class="preview-image mt-2" style="max-width:100%; display:none;" alt="FAQ Image Preview">
       </div>
         <div class="submit-container">
-          <button class="speak-btn">Proceed</button>
+          <button class="speak-btn" id="proceed-btn" disabled>Proceed</button>
         </div>
     </div>
   </div>
+
+  <div id="overlay-backdrop"></div>
+
+  <div class="container container-overlay-form">
+    <div class="navigation-head-container">
+      <a href="" id="back-btn-2"><i class="ph ph-arrow-left"></i></a>
+    </div>
+
+    <div class="container-content">
+        <div class="title-container">
+          <h4 class="title-preview">Complete your Information</h4>
+          <p class="faq-name">Fill with your complete name</p>
+        </div>
+      <div class="process-container">
+        <div class="faq-preview-2 p-3">
+          <input type="text" class="form-control" placeholder="First Name">
+          <input type="text" class="form-control" placeholder="Last Name">
+        </div>
+      </div>
+        <div class="submit-container">
+          <button class="speak-btn" id="finish-btn">Finish</button>
+        </div>
+    </div>
+  </div>  
 
 
 </div>
