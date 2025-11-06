@@ -201,6 +201,14 @@
       renderRequirements();
       renderSteps();
 
+      // Clear image preview
+      const previewImage = editorSection?.querySelector(".preview-image");
+      if (previewImage) {
+        previewImage.src = "";
+        previewImage.style.display = "none";
+      }
+
+
       editorSection?.classList.add("d-none");
       documentRequestSection?.classList.remove("d-none");
       loadKioskData();
@@ -336,7 +344,7 @@
           <td>${row.requirements ? JSON.parse(row.requirements).map((r,i)=>`${i+1}. ${r}`).join("<br>") : ""}</td>
           <td>${row.steps ? JSON.parse(row.steps).map((s,i)=>`${i+1}. ${s}`).join("<br>") : ""}</td>
           <td>${row.image_url ? `<img src="${row.image_url}" alt="Image" style="width:60px;height:auto;border-radius:4px;">` : ""}</td>
-          <td>${new Date(row.created_at).toLocaleString()}</td>
+          <td>${new Date(row.created_at).toLocaleDateString()}</td>
           <td>
             <a href="#" class="text-primary me-2 edit-kiosk" data-id="${row.id}"><i class="ph ph-pencil-simple"></i></a>
             <a href="#" class="text-danger delete-kiosk" data-id="${row.id}"><i class="ph ph-trash"></i></a>

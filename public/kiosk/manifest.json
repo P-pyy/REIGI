@@ -4,7 +4,7 @@
   "description": "Self-service kiosk for COR and other student requests",
   "start_url":"/kiosk/",
   "scope": "/kiosk/",
-  "display": "standalone",
+  "display": "fullscreen",
   "background_color": "#ffffff",
   "theme_color": "#1976d2",
   "orientation": "landscape",
