@@ -732,3 +732,33 @@ tr, th, td {
     transform: scale(0.9);
   }
 }
+
+/* Highlight selected window */
+.window-container.active-window {
+  border: 2px solid #1976d2;
+  background-color: #e3f2fd;
+  transition: all 0.2s ease;
+}
+
+/* Highlight active window status in header */
+.window-status-pill.active-status {
+  background-color: #1976d2;
+  color: #fff;
+  border-radius: 20px;
+  padding: 4px 10px;
+}
+
+/* Online/Offline light indicators */
+.status-light {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  margin-right: 6px;
+}
+.status-light.offline {
+  background-color: #ccc;
+}
+.status-light.online {
+  background-color: #4caf50;
+}
