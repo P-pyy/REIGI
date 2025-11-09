@@ -83,13 +83,13 @@
               <span class="status-light offline"></span>
               Window 1
             </div>
-            <div id="status-window-1" class="window-status-pill">
+            <div id="status-window-2" class="window-status-pill">
               <span class="status-light offline"></span>
               Window 2
             </div>
           </div>
         </div>
-        <button class="card-button no-margin" data-target="enrollment-section"><i class="ph ph-scroll"></i>Finished Logs</button>
+        <button class="card-button no-margin" data-target="finished-section" id="finished-logs-btn"><i class="ph ph-scroll"></i>Finished Logs</button>
       </div>
 
 
@@ -132,6 +132,7 @@
           </div>
       </div>
 
+
   
         <div id="processing-section" class="card shadow-sm fade-in d-none container-que table-container">
           <div class="table-name">
@@ -149,22 +150,35 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <!-- rows dynamically injected -->
-                    <tr>
-                      <td>1</td>
-                      <td>J. Dela Cruz</td>
-                      <td>MM/DD/YY 00:00</td>
-                      <td>
-                        <div class="action-container">
-                          <button class="finish-card-button">Complete</button>
-                        </div>
-                      </td>
-                    </tr>
                 </tbody>
               </table>
             </div>
           </div>
         </div>
+    </div>
+
+    <!-- Finished Logs Section -->
+    <div id="finished-section" class="card shadow-sm fade-in d-none container-que table-container">
+      <div class="table-name">
+        <h2 class="title-table">Finished Logs</h2>
+      </div>
+      <div>
+        <div class="table-wrapper">
+          <table class="table align-middle faq-table">
+            <thead class="table-title">
+              <tr>
+                <th>No.</th>
+                <th>Name</th>
+                <th>Date & Time</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- rows dynamically injected -->
+            </tbody>
+          </table>
+        </div>
+      </div>
     </div>
 
       

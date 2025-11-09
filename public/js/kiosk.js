@@ -1,15 +1,10 @@
-  // =============================
   // Supabase Import
-  // =============================
   import { supabaseClient } from '/js/supabase-client.js';
 
-  // =============================
   // Main DOMContentLoaded
-  // =============================
   document.addEventListener("DOMContentLoaded", () => {
-    // -----------------------------
+
     // DOM Elements
-    // -----------------------------
     const editorSection = document.getElementById("faq-editor-section");
     const faqGrid = document.getElementById("faq-grid");
     const enrollmentSection = document.getElementById("enrollment-section");
@@ -41,17 +36,22 @@
     const chartContainer = document.querySelector(".chart-container");
     const faqCard = document.querySelector(".faq-card");
 
+    const windowButtons = document.querySelectorAll(".window-container");
+    const proceedButton = document.getElementById("proceed-button");
+    const windowNumberText = document.querySelector(".window-number");
+    const windowStatusPills = document.querySelectorAll(".window-status-pill");
+
+    const enrollmentTableBody = document.querySelector("#enrollment-section tbody");
+
     const logoutBtn = document.querySelector(".logout");
 
-    // -----------------------------
+
     // Data Arrays
-    // -----------------------------
     let requirements = [];
     let steps = [];
+    let selectedWindow = null;
 
-    // -----------------------------
     // Sidebar Toggle
-    // -----------------------------
     toggleBtn?.addEventListener("click", () => {
       sidebar.classList.toggle("small-sidebar");
       mainContent?.classList.toggle("adjusted");
@@ -62,9 +62,8 @@
       window.dispatchEvent(new Event("resize"));
     });
 
-    // -----------------------------
+
     // Logout Handler
-    // -----------------------------
     logoutBtn?.addEventListener("click", async () => {
       console.log("Logout clicked ✅");
       const { error } = await supabaseClient.auth.signOut();
@@ -72,34 +71,241 @@
       else window.location.href = "/admin/login";
     });
 
-    // -----------------------------
     // Section Toggle Logic
-    // -----------------------------
-  document.querySelectorAll(".card-button").forEach((button) => {
-  button.addEventListener("click", () => {
-    const targetId = button.getAttribute("data-target");
+    document.querySelectorAll(".card-button").forEach((button) => {
+    button.addEventListener("click", () => {
+      const targetId = button.getAttribute("data-target");
 
-    faqGrid.classList.add("d-none");
-    enrollmentSection.classList.add("d-none");
-    documentRequestSection.classList.add("d-none");
-    windowSelectSection.classList.add("d-none");
-    queueDashboardHeader.classList.add("d-none"); // Also hide the header
-    processingSection.classList.add("d-none");  // Also hide the 2nd table
+      faqGrid.classList.add("d-none");
+      enrollmentSection.classList.add("d-none");
+      documentRequestSection.classList.add("d-none");
+      windowSelectSection.classList.add("d-none");
+      queueDashboardHeader.classList.add("d-none"); 
+      processingSection.classList.add("d-none");  
 
-    document.getElementById(targetId)?.classList.remove("d-none");
+      document.getElementById(targetId)?.classList.remove("d-none");
 
-    if (button.id === "proceed-button") {
-        queueDashboardHeader.classList.remove("d-none");
-        processingSection.classList.remove("d-none"); 
+      if (button.id === "proceed-button") {
+          queueDashboardHeader.classList.remove("d-none");
+          processingSection.classList.remove("d-none"); 
+          loadProcessingData();  
+      }
+
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    });
+  });
+
+    // Handle window selection
+    windowButtons.forEach((btn, index) => {
+      btn.addEventListener("click", () => {
+        windowButtons.forEach(b => b.classList.remove("active-window"));
+        btn.classList.add("active-window");
+        selectedWindow = `WINDOW ${index + 1}`;
+        console.log("Selected:", selectedWindow);
+      });
+    });
+
+    // Proceed button handler
+    proceedButton.addEventListener("click", () => {
+      if (!selectedWindow) {
+        alert("⚠️ Please select a window first!");
+        return;
+      }
+
+      // Show queue dashboard + sections
+      document.getElementById("container-window-select").classList.add("d-none");
+      document.getElementById("queue-dashboard-header").classList.remove("d-none");
+      document.getElementById("enrollment-section").classList.remove("d-none");
+      document.getElementById("processing-section").classList.remove("d-none");
+
+
+      if (windowNumberText) {
+        windowNumberText.textContent = selectedWindow;
+      }
+
+      // Highlight selected window status in the header
+      windowStatusPills.forEach((pill, index) => {
+      const pillWindow = `WINDOW ${index + 1}`;
+      if (selectedWindow === pillWindow) {
+        pill.querySelector(".status-light").classList.remove("offline");
+        pill.querySelector(".status-light").classList.add("online");
+        pill.classList.add("active-status");
+      } else {
+        pill.querySelector(".status-light").classList.remove("online");
+        pill.querySelector(".status-light").classList.add("offline");
+        pill.classList.remove("active-status");
+      }
+    });
+    });
+
+    async function loadQueueData() { 
+    if (!enrollmentTableBody) return;
+
+    const { data, error } = await supabaseClient
+      .from("queue")
+      .select("*")
+      .eq("status", "queue")  
+      .order("queue_no", { ascending: true });
+
+    if (error) {
+      console.error("Error loading queue:", error);
+      return;
     }
 
-    window.scrollTo({ top: 0, behavior: "smooth" });
+  enrollmentTableBody.innerHTML = "";
+
+  data.forEach((row, index) => {
+    const tr = document.createElement("tr");
+    let actionContent = index === 0
+      ? `<div class="d-flex gap-2 align-items-center">
+           <button class="btn btn-sm btn-primary move-card-button" data-id="${row.id}">Move to Processing</button>
+           <button class="btn btn-sm btn-danger delete-queue-button" data-id="${row.id}">X</button>
+         </div>`
+      : `<span class="text-muted">Waiting</span>`;
+    
+    tr.innerHTML = `
+      <td>${row.queue_no}</td>
+      <td>${row.full_name}</td>
+      <td>${new Date(row.created_at).toLocaleString()}</td>
+      <td>${actionContent}</td>
+    `;
+    enrollmentTableBody.appendChild(tr);
   });
+
+  attachQueueActionHandlers();
+  attachQueueDeleteHandlers();
+}
+
+  // Optional: Remove hover styles globally for buttons with class "no-hover"
+  const style = document.createElement('style');
+  style.innerHTML = `
+    .no-hover:hover {
+      background-color: initial !important;
+      color: initial !important;
+      box-shadow: none !important;
+    }
+  `;
+  document.head.appendChild(style);
+
+
+  async function loadProcessingData() {
+  const processingTbody = document.querySelector("#processing-section tbody");
+  if (!processingTbody) return;
+
+  const { data, error } = await supabaseClient
+    .from("queue")
+    .select("*")
+    .eq("status", "processing")
+    .order("queue_no", { ascending: true });
+
+  if (error) return console.error(error);
+
+  processingTbody.innerHTML = "";
+  data.forEach(row => {
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td>${row.queue_no}</td>
+      <td>${row.full_name}</td>
+      <td>${new Date(row.created_at).toLocaleString()}</td>
+      <td>
+        <button class="btn btn-sm btn-success finish-card-button" data-id="${row.id}">Complete</button>
+      </td>
+    `;
+    processingTbody.appendChild(tr);
+  });
+
+  attachProcessingHandlers();
+}
+
+
+  // Move to Processing handler
+function attachQueueActionHandlers() {
+  document.querySelectorAll(".move-card-button").forEach(btn => {
+    btn.addEventListener("click", async () => {
+      const id = btn.dataset.id;
+
+      const { error } = await supabaseClient
+        .from("queue")
+        .update({ status: "processing" })
+        .eq("id", id);
+
+      if (error) return alert("❌ Failed to move to processing!");
+
+      await loadQueueData();
+      await loadProcessingData();
+    });
+  });
+}
+
+function attachProcessingHandlers() {
+  document.querySelectorAll(".finish-card-button").forEach(btn => {
+    btn.addEventListener("click", async () => {
+      const id = btn.dataset.id;
+
+      const { error } = await supabaseClient
+        .from("queue")
+        .update({ status: "finished" })
+        .eq("id", id);
+
+      if (error) return alert("❌ Failed to mark as finished!");
+
+      // Reload processing table
+      await loadProcessingData();
+    });
+  });
+}
+
+async function loadFinishedData() {
+  const finishedTbody = document.querySelector("#finished-section tbody");
+  if (!finishedTbody) return;
+
+  const { data, error } = await supabaseClient
+    .from("queue")
+    .select("*")
+    .eq("status", "finished")
+    .order("queue_no", { ascending: true });
+
+  if (error) return console.error(error);
+
+  finishedTbody.innerHTML = "";
+  data.forEach(row => {
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td>${row.queue_no}</td>
+      <td>${row.full_name}</td>
+      <td>${new Date(row.created_at).toLocaleString()}</td>
+    `;
+    finishedTbody.appendChild(tr);
+  });
+}
+
+const finishedLogsBtn = document.getElementById("finished-logs-btn");
+
+finishedLogsBtn?.addEventListener("click", async () => {
+  await loadFinishedData(); 
 });
 
-    // -----------------------------
+
+  // Delete X handler
+  function attachQueueDeleteHandlers() {
+    document.querySelectorAll(".delete-queue-button").forEach(btn => {
+      btn.addEventListener("click", async () => {
+        const id = btn.dataset.id;
+        if (!confirm("Are you sure you want to remove this person from the queue?")) return;
+
+        const { error } = await supabaseClient
+          .from("queue")
+          .delete()
+          .eq("id", id);
+
+        if (error) alert("❌ Failed to remove from queue!");
+        else loadQueueData();
+      });
+    });
+  }
+
+
     // Show FAQ Editor
-    // -----------------------------
     addButtons.forEach((btn) => {
       btn.addEventListener("click", () => {
         editorSection?.classList.remove("d-none");
@@ -112,9 +318,7 @@
       });
     });
 
-    // -----------------------------
     // Add Requirement
-    // -----------------------------
     const addRequirementIcon = requirementInput?.nextElementSibling;
     addRequirementIcon?.addEventListener("click", () => {
       const value = requirementInput.value.trim();
@@ -124,9 +328,7 @@
       renderRequirements();
     });
 
-    // -----------------------------
     // Add Step
-    // -----------------------------
     const addStepIcon = stepProcessInput?.nextElementSibling;
     addStepIcon?.addEventListener("click", () => {
       const value = stepProcessInput.value.trim();
@@ -136,9 +338,7 @@
       renderSteps();
     });
 
-    // -----------------------------
     // Image Preview
-    // -----------------------------
     imageInput?.addEventListener("change", () => {
       const file = imageInput.files[0];
       const previewImage = editorSection?.querySelector(".preview-image");
@@ -156,9 +356,7 @@
       }
     });
 
-    // -----------------------------
     // Submit → Save to Supabase
-    // -----------------------------
     const submitBtn = editorSection?.querySelector("button.btn-primary");
     submitBtn?.addEventListener("click", async (e) => {
       e.preventDefault();
@@ -227,9 +425,7 @@
       loadKioskData();
     });
 
-    // -----------------------------
     // Functions: Render Requirements & Steps
-    // -----------------------------
     function renderRequirements() {
       const container = requirementContainer.parentElement.parentElement;
       container.querySelector(".requirements-list")?.remove();
@@ -340,9 +536,8 @@
       }
     }
 
-    // -----------------------------
+
     // Load Kiosk Data
-    // -----------------------------
     async function loadKioskData() {
       const { data, error } = await supabaseClient.from("kiosk").select("*").order("created_at", { ascending: false });
       if (error) { console.error(error); return; }
@@ -369,9 +564,7 @@
       attachKioskEditDeleteHandlers();
     }
 
-    // -----------------------------
     // Edit/Delete Handlers
-    // -----------------------------
     function attachKioskEditDeleteHandlers() {
       document.querySelectorAll(".edit-kiosk").forEach(link => {
         link.addEventListener("click", async e => {
@@ -384,7 +577,6 @@
           steps = JSON.parse(data.steps || "[]");
           renderRequirements();
           renderSteps();
-          // --- Add this to show image in preview ---
           const previewImage = editorSection.querySelector(".preview-image");
           if (data.image_url && previewImage) {
             previewImage.src = data.image_url;
@@ -413,9 +605,19 @@
       });
     }
 
-    // -----------------------------
+    
     // Realtime Updates
-    // -----------------------------
+    supabaseClient.channel("realtime-queue")
+    .on("postgres_changes", { event: "*", schema: "public", table: "queue" }, async payload => {
+      console.log("Queue changed:", payload);
+      await loadQueueData();
+      await loadProcessingData();
+      await loadFinishedData();
+    })
+    .subscribe();
+
+    
+
     supabaseClient.channel("realtime-kiosk")
       .on("postgres_changes", { event: "*", schema: "public", table: "kiosk" }, async payload => {
         console.log("🔄 Kiosk table changed:", payload);
@@ -423,8 +625,8 @@
       })
       .subscribe();
 
-    // -----------------------------
     // Initial Load
-    // -----------------------------
     loadKioskData();
+    loadQueueData();
+    loadFinishedData();
   });
