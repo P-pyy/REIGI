@@ -127,8 +127,228 @@ body {
   margin-right: 40px; /* adjust value as you like (0–5px usually looks good) */
 }
 
-/* Table ui styles */
-/* admin_faq_enrollment_process   */
+.container-window-select {
+  display: flex;
+  flex-direction: column !important;
+  justify-content: center;
+  align-items: center;
+}
+
+.nav-container {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  padding: 1rem 0 1.5rem 0;
+}
+
+.container-text {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 1rem;
+  width: 100%;
+}
+
+.select-message {
+  margin-bottom: 0 !important;
+  font-size: 1.2rem;
+}
+
+.window-options-container {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.window-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 300px;
+  height: 320px;
+  background-color: #fcfcfc;
+  border-radius: 8px;
+  box-shadow: 0px 1px 2px 0px #00000040;
+  border: none;
+}
+
+.window-content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: .5rem;
+}
+
+.window-title {
+  font-weight: 600;
+}
+
+.no-margin {
+  margin-bottom: 0 !important;
+}
+
+.button-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  padding: 1rem;
+}
+
+.ph-user {
+  color: #0055A5;
+  border: none;
+  padding: .7rem;
+  border-radius: 20px;
+  font-weight: 600;
+  font-size: 1.8rem;
+}
+
+.ph-arrow-left {
+  color: rgba(0, 0, 0, 1);
+  border: none;
+  padding: .7rem;
+  border-radius: 20px;
+  font-size: 1.8rem;
+}
+
+.activenav-container {
+  display: flex; 
+  background-color: #fcfcfc;
+  box-shadow: 0px 1px 2px 0px #00000040;
+  border-radius: 12px;
+  justify-content: space-between;
+  padding: .5rem;
+  width: 500px;
+}
+
+.set {
+  justify-content: end;
+}
+
+.table-name {
+  display: flex;
+  align-items: center;
+  padding: .5rem;
+  justify-content: space-between;
+}
+
+.operating-name {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.window-number {
+  font-weight: 600;
+}
+
+.ttext, .title-table {
+  margin-bottom: 0 !important;
+}
+
+.table-container {
+  width: 520px;
+}
+
+.tables {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.active-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.active-text {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 0 !important;
+}
+
+.indicator-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.window-status-header {
+  background: #fff;
+  padding: 1rem;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+}
+
+.window-status-container {
+  display: flex;
+  gap: 1rem;
+}
+
+.window-status-pill {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border-radius: 20px;
+  color: #555;
+  transition: all 0.3s ease;
+}
+
+.status-light {
+  display: block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: #aaa; /* Default offline color */
+}
+
+.move-card-button {
+  background-color: #0055A5;
+  border: none;
+  padding: .5rem;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #fcfcfc;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.finish-card-button {
+  width: 100%;
+  background-color: #519f3e;
+  border: none;
+  padding: .5rem;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #fcfcfc;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+/* --- This is your "Offline" indicator --- */
+.status-light.offline {
+  background-color: #aaa;
+}
+
+/* --- This is your "Online" indicator --- */
+.status-light.online {
+  background-color: #28a745; /* Green */
+  box-shadow: 0 0 8px #28a745;
+}
+
+/* --- This is your "You are here" indicator --- */
+.window-status-pill.active-user {
+  background-color: #0055A5;
+  color: #fff;
+  font-weight: bold;
+}
 
 .admin-esfaq-card {
   margin-left: -50px;

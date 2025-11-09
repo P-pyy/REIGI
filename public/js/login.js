@@ -42,28 +42,88 @@ async function getUserLocation() {
 // =======================
 const loginForm = document.getElementById("loginForm");
 if (loginForm) {
-  loginForm.addEventListener("submit", async (e) => {
+  // loginForm.addEventListener("submit", async (e) => {
+  //   e.preventDefault();
+
+  //   const email = document.getElementById("email").value;
+  //   const password = document.getElementById("password").value;
+
+  //   const { data, error } = await supabaseClient.auth.signInWithPassword({
+  //     email,
+  //     password,
+  //   });
+
+  //   if (error) {
+  //     alert("❌ Login failed: " + error.message);
+  //   } else {
+  //     const user = data.user; // logged-in user
+
+  //     if (user) {
+  //       const parser = new UAParser();
+  //       const result = parser.getResult();
+  //       const friendlyDevice = `${result.os.name || "Unknown OS"} ${result.os.version || ""} - ${result.browser.name || "Unknown Browser"} ${result.browser.version || ""}`;
+
+  //       const userLocation = await getUserLocation(); // get City, Country
+
+  //       await supabaseClient.from("login_history").insert([
+  //         {
+  //           user_id: user.id,
+  //           device: friendlyDevice,
+  //           location: userLocation,
+  //         },
+  //       ]);
+  //     }
+
+  //     alert("✅ Login successful!");
+  //     // window.location.href = "/admin/dashboard"; // redirect to dashboard
+  //     // ✅ Send access token to backend for cookie storage
+  //     const { data: sessionData } = await supabaseClient.auth.getSession();
+  //     const accessToken = sessionData?.session?.access_token;
+
+  //     if (accessToken) {
+  //       await fetch("/api/set-session", {
+  //     method: "POST",
+  //     headers: { "Content-Type": "application/json" },
+  //     body: JSON.stringify({ access_token: accessToken }), // 🔧 corrected
+  //     credentials: "include",
+  //   });
+  //     }
+
+  //     // Redirect after cookie is set
+  //     window.location.href = "/admin/dashboard";
+
+  //   }
+  // });
+    loginForm.addEventListener("submit", async (e) => {
     e.preventDefault();
 
-    const email = document.getElementById("email").value;
-    const password = document.getElementById("password").value;
+    const button = loginForm.querySelector("button[type='submit']");
+    button.disabled = true; // ✅ prevent double-click
+    button.textContent = "Signing in...";
 
-    const { data, error } = await supabaseClient.auth.signInWithPassword({
-      email,
-      password,
-    });
+    try {
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
 
-    if (error) {
-      alert("❌ Login failed: " + error.message);
-    } else {
-      const user = data.user; // logged-in user
+      const { data, error } = await supabaseClient.auth.signInWithPassword({
+        email,
+        password,
+      });
 
+      if (error) {
+        alert("❌ Login failed: " + error.message);
+        button.disabled = false; // Re-enable on error
+        button.textContent = "Sign In";
+        return;
+      }
+
+      const user = data.user;
       if (user) {
         const parser = new UAParser();
         const result = parser.getResult();
         const friendlyDevice = `${result.os.name || "Unknown OS"} ${result.os.version || ""} - ${result.browser.name || "Unknown Browser"} ${result.browser.version || ""}`;
 
-        const userLocation = await getUserLocation(); // get City, Country
+        const userLocation = await getUserLocation();
 
         await supabaseClient.from("login_history").insert([
           {
@@ -75,25 +135,28 @@ if (loginForm) {
       }
 
       alert("✅ Login successful!");
-      // window.location.href = "/admin/dashboard"; // redirect to dashboard
-      // ✅ Send access token to backend for cookie storage
+
+      // Set session cookie
       const { data: sessionData } = await supabaseClient.auth.getSession();
       const accessToken = sessionData?.session?.access_token;
-
       if (accessToken) {
         await fetch("/api/set-session", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ access_token: accessToken }), // 🔧 corrected
-      credentials: "include",
-    });
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ access_token: accessToken }),
+          credentials: "include",
+        });
       }
 
-      // Redirect after cookie is set
       window.location.href = "/admin/dashboard";
-
+    } catch (err) {
+      console.error("Unexpected error:", err);
+      alert("⚠️ Something went wrong. Please try again.");
+      button.disabled = false;
+      button.textContent = "Sign In";
     }
   });
+
 
   // Show/Hide password toggle
   document.getElementById("showPassword").addEventListener("change", function () {

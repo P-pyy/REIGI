@@ -41,24 +41,44 @@ document.addEventListener('DOMContentLoaded', () => {
   if (!video || !faqsSection) return;
 
   
-  window.addEventListener('scroll', () => {
-    const faqsRect = faqsSection.getBoundingClientRect();
-    const middleY = window.innerHeight / 2;
+  // window.addEventListener('scroll', () => {
+  //   const faqsRect = faqsSection.getBoundingClientRect();
+  //   const middleY = window.innerHeight / 2;
 
-    if (faqsRect.top < middleY && faqsRect.bottom > middleY) {
-      video.classList.remove('fixed', 'hidden');
+  //   if (faqsRect.top < middleY && faqsRect.bottom > middleY) {
+  //     video.classList.remove('fixed', 'hidden');
+  //     video.classList.add('enlarged');
+  //     video.play();
+  //   } else if (faqsRect.top >= middleY) {
+  //     video.classList.remove('enlarged', 'hidden');
+  //     video.classList.add('fixed');
+  //     video.pause();
+  //   } else {
+  //     video.classList.remove('fixed', 'enlarged');
+  //     video.classList.add('hidden');
+  //     video.pause();
+  //   }
+  // });
+    window.addEventListener('scroll', () => {
+    const faqsRect = faqsSection.getBoundingClientRect();
+    const viewportHeight = window.innerHeight;
+
+    // When FAQ section is in view
+    if (faqsRect.top < viewportHeight && faqsRect.bottom > 0) {
+      video.classList.remove('hidden');
       video.classList.add('enlarged');
+      video.style.position = 'fixed'; // stay fixed only within section
       video.play();
-    } else if (faqsRect.top >= middleY) {
-      video.classList.remove('enlarged', 'hidden');
-      video.classList.add('fixed');
-      video.pause();
-    } else {
-      video.classList.remove('fixed', 'enlarged');
+    } 
+    // When FAQ section is scrolled past (below or above)
+    else {
+      video.classList.remove('enlarged');
       video.classList.add('hidden');
+      video.style.position = 'static'; // stop floating once out of view
       video.pause();
     }
   });
+
 });
 
 

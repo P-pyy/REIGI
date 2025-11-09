@@ -171,11 +171,25 @@ main {
     flex-direction: column;
 }
 
-.announcement-text h2 {
+/* .announcement-text h2 {
     font-size: 1.1rem;
     font-weight: 700;
     margin: 0 0 0.3rem 0;
     text-transform: uppercase;
+} */
+
+/* Limit long titles */
+.announcement-text h2 {
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin: 0 0 0.3rem 0;
+  text-transform: uppercase;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  line-height: 1.3;
 }
 
 .announcement-text .date {
@@ -185,10 +199,16 @@ main {
 }
 
 .announcement-text .description {
-    flex-grow: 1;
-    font-size: 0.9rem;
-    color: #444;
-    margin-bottom: 1rem;
+  flex-grow: 1;
+  font-size: 0.9rem;
+  color: #444;
+  margin-bottom: 1rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 3; 
+  -webkit-box-orient: vertical;
+  line-height: 1.4;
 }
 
 .read-more {
