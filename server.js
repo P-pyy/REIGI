@@ -2,7 +2,9 @@ require('dotenv').config();
 const express = require('express');
 const { requireAdminLogin } = require('./middleware/auth');
 const path = require('path');
-const cookieParser = require('cookie-parser'); // ✅ required for reading Supabase cookie tokens
+const cookieParser = require('cookie-parser'); 
+
+
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -485,6 +487,11 @@ app.post("/api/queue", async (req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 });
+
+
+
+
+
 
 
 

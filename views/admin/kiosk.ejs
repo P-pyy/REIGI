@@ -12,7 +12,7 @@
   </header>
 
   <!-- Main Content -->
-  <main class="main-content admin-faq flex-grow-1">
+  <main class="main-content admin-faq">
     <div class="faq-wrapper container">
 
       <!-- FAQ GRID -->
@@ -27,7 +27,7 @@
             </div>
           </div>
           <div class="card-footer">
-            <button class="card-button" data-target="enrollment-section">Proceed</button>
+            <button class="card-button" data-target="container-window-select">Proceed</button>
           </div>
         </div>
 
@@ -45,36 +45,130 @@
         </div>
       </div>
 
-            <!-- Queue Management Section -->
-      <div id="enrollment-section" class="d-none">
-        <div class="card shadow-sm admin-esfaq-card fade-in">
-          <div class="card-body">
+      <div class="container-window-select d-none" id="container-window-select">
+        <div class="nav-container">
+          <a href="/views/admin/kiosk.ejs"><i class="ph ph-arrow-left"></i></a>
+          <div class="container-text">
+            <p class="select-message">Select your window you want to operate:</p>
+          </div>
+        </div>
+
+          <div class="window-options-container">
+            <button class="window-container">
+              <div class="window-content">
+                <i class="ph ph-user"></i>
+                <h4 class="window-title">Window 1</h4>
+              </div>
+            </button>
+            <button class="window-container">
+              <div class="window-content">
+                <i class="ph ph-user"></i>
+                <h4 class="window-title">Window 2</h4>
+              </div>
+            </button>
+          </div>
+
+          <div class="button-container">
+            <button class="card-button no-margin" data-target="enrollment-section" id="proceed-button">Proceed</button>
+          </div>
+      </div>
+
+      <div class="nav-container d-none" id="queue-dashboard-header">
+        <div class="activenav-container">
+          <div class="active-container">
+            <span class="active-text">Active Windows:</span>
+          </div>
+          <div class="indicator-container">
+            <div id="status-window-1" class="window-status-pill">
+              <span class="status-light offline"></span>
+              Window 1
+            </div>
+            <div id="status-window-1" class="window-status-pill">
+              <span class="status-light offline"></span>
+              Window 2
+            </div>
+          </div>
+        </div>
+        <button class="card-button no-margin" data-target="enrollment-section"><i class="ph ph-scroll"></i>Finished Logs</button>
+      </div>
+
+
+    <div class="tables">
+        <!-- Queue Management Section -->
+        <div id="enrollment-section" class="d-none container-que table-container card shadow-sm fade-in">
+          <div class="table-name">
+            <h2 class="title-table">Queue</h2>
+            <div class="operating-name">
+              <p class="ttext">You are:</p>
+              <span class="window-number">WINDOW 1</span>
+            </div>
+          </div>
+          <div>
             <div class="table-wrapper">
               <table class="table align-middle faq-table">
                 <thead class="table-title">
                   <tr>
-                    <th>ID</th>
-                    <th>Question Title</th>
-                    <th>FAQ Post Title</th>
-                    <th>Question Details</th>
+                    <th>No.</th>
+                    <th>Name</th>
                     <th>Date & Time</th>
                     <th>Actions</th>
                   </tr>
                 </thead>
                 <tbody>
                   <!-- rows dynamically injected -->
+                   <tr>
+                      <td>1</td>
+                      <td>J. Dela Cruz</td>
+                      <td>MM/DD/YY 00:00</td>
+                      <td>
+                        <div class="action-container">
+                          <button class="move-card-button">Move to Processing</button>
+                        </div>
+                      </td>
+                    </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+      </div>
+
+  
+        <div id="processing-section" class="card shadow-sm fade-in d-none container-que table-container">
+          <div class="table-name">
+            <h2 class="title-table">Process</h2>
+          </div>
+          <div>
+            <div class="table-wrapper">
+              <table class="table align-middle faq-table">
+                <thead class="table-title">
+                  <tr>
+                    <th>No.</th>
+                    <th>Name</th>
+                    <th>Date & Time</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <!-- rows dynamically injected -->
+                    <tr>
+                      <td>1</td>
+                      <td>J. Dela Cruz</td>
+                      <td>MM/DD/YY 00:00</td>
+                      <td>
+                        <div class="action-container">
+                          <button class="finish-card-button">Complete</button>
+                        </div>
+                      </td>
+                    </tr>
                 </tbody>
               </table>
             </div>
           </div>
         </div>
-        <div class="text-center mt-3">
-          <button class="btn add-question-btn">
-            <i class="ph-bold ph-plus"></i>
-            <span class="btn-text">Add New Question</span>
-          </button>
-        </div>
-      </div>
+    </div>
+
+      
+
 
       <!-- Kiosk FAQ’s Section -->
       <div id="document-request-section" class="admin-drfaq-card d-none">

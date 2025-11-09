@@ -160,27 +160,42 @@ const editorPage = document.querySelector('.site-media-editor-page');
 if (editorPage) {
   const fileInput = editorPage.querySelector("input[type=file]");
   const previewBox = editorPage.querySelector(".image-box");
+  const uploadBox = editorPage.querySelector(".upload-box");
   const submitBtn = editorPage.querySelector(".submit-btn");
 
+  // --- Handle choose file ---
   fileInput?.addEventListener("change", (e) => {
     const file = e.target.files[0];
     if (!file) return;
 
     selectedFile = file;
-
-    if (file.type.startsWith("video")) {
-      const video = document.createElement("video");
-      video.controls = true;
-      video.src = URL.createObjectURL(file);
-      video.style.maxWidth = "100%";
-      video.style.borderRadius = "12px";
-      previewBox.innerHTML = "";
-      previewBox.appendChild(video);
-    }
+    showVideoPreview(file);
   });
 
+  // --- Handle drag and drop ---
+  if (uploadBox) {
+    // Prevent default behavior (avoid browser opening the file)
+    ["dragenter", "dragover", "dragleave", "drop"].forEach((eventName) => {
+      uploadBox.addEventListener(eventName, (e) => e.preventDefault(), false);
+      uploadBox.addEventListener(eventName, (e) => e.stopPropagation(), false);
+    });
+
+    // Optional: highlight on drag over
+    uploadBox.addEventListener("dragover", () => uploadBox.classList.add("dragover"));
+    uploadBox.addEventListener("dragleave", () => uploadBox.classList.remove("dragover"));
+    uploadBox.addEventListener("drop", (e) => {
+      uploadBox.classList.remove("dragover");
+      const file = e.dataTransfer.files[0];
+      if (!file) return;
+
+      selectedFile = file;
+      showVideoPreview(file);
+    });
+  }
+
+  // --- Submit ---
   submitBtn?.addEventListener("click", async () => {
-    if (!selectedFile) return alert("Please choose a file first!");
+    if (!selectedFile) return alert("Please choose or drop a file first!");
     if (!currentUser) return alert("User not logged in.");
 
     const type = "video";
@@ -189,7 +204,23 @@ if (editorPage) {
 
     await uploadToSupabase(selectedFile, folder, type, title);
   });
+
+  // --- Helper function ---
+  function showVideoPreview(file) {
+    if (file.type.startsWith("video")) {
+      const video = document.createElement("video");
+      video.controls = true;
+      video.src = URL.createObjectURL(file);
+      video.style.maxWidth = "100%";
+      video.style.borderRadius = "12px";
+      previewBox.innerHTML = "";
+      previewBox.appendChild(video);
+    } else {
+      alert("Please upload a valid video file (MP4 or WebM).");
+    }
+  }
 }
+
 
 // =======================
 // Upload Helper with PH time

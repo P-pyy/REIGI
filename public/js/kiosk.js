@@ -28,6 +28,10 @@
     const stepsPreviewContainer = editorSection?.querySelector(".preview-text");
 
     const kioskTableBody = document.querySelector("#document-request-section tbody");
+    const windowSelectSection = document.getElementById("container-window-select");
+
+    const queueDashboardHeader = document.getElementById("queue-dashboard-header");
+    const processingSection = document.getElementById("processing-section");
 
     const toggleBtn = document.querySelector(".toggle-btn");
     const sidebar = document.querySelector(".sidebar");
@@ -71,18 +75,27 @@
     // -----------------------------
     // Section Toggle Logic
     // -----------------------------
-    document.querySelectorAll(".card-button").forEach((button) => {
-      button.addEventListener("click", () => {
-        const targetId = button.getAttribute("data-target");
+  document.querySelectorAll(".card-button").forEach((button) => {
+  button.addEventListener("click", () => {
+    const targetId = button.getAttribute("data-target");
 
-        faqGrid.classList.add("d-none");
-        enrollmentSection.classList.add("d-none");
-        documentRequestSection.classList.add("d-none");
+    faqGrid.classList.add("d-none");
+    enrollmentSection.classList.add("d-none");
+    documentRequestSection.classList.add("d-none");
+    windowSelectSection.classList.add("d-none");
+    queueDashboardHeader.classList.add("d-none"); // Also hide the header
+    processingSection.classList.add("d-none");  // Also hide the 2nd table
 
-        document.getElementById(targetId)?.classList.remove("d-none");
-        window.scrollTo({ top: 0, behavior: "smooth" });
-      });
-    });
+    document.getElementById(targetId)?.classList.remove("d-none");
+
+    if (button.id === "proceed-button") {
+        queueDashboardHeader.classList.remove("d-none");
+        processingSection.classList.remove("d-none"); 
+    }
+
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  });
+});
 
     // -----------------------------
     // Show FAQ Editor

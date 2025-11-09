@@ -10,11 +10,19 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "@serialport/bindings-cpp": "^13.0.1",
+    "@serialport/stream": "^13.0.0",
     "@supabase/supabase-js": "^2.76.1",
     "cookie-parser": "^1.4.7",
     "dotenv": "^17.2.3",
     "ejs": "^3.1.10",
+    "escpos": "^3.0.0-alpha.6",
+    "escpos-serialport": "^3.0.0-alpha.4",
+    "escpos-usb": "^3.0.0-alpha.4",
     "express": "^5.1.0",
-    "express-ejs-layouts": "^2.5.1"
+    "express-ejs-layouts": "^2.5.1",
+    "pdf-to-printer": "^5.6.1",
+    "pdfkit": "^0.17.2",
+    "usb": "^2.16.0"
   }
 }
