@@ -328,29 +328,30 @@ finishBtn.addEventListener("click", async (e) => {
     firstNameInput.value = "";
     lastNameInput.value = "";
 
-    // 4️⃣ Trigger RawBT print
+    // 4️⃣ Trigger RawBT print (fixed version)
     const printContent = `
-      <html>
-        <body style="font-family: monospace; text-align: center;">
-          <h2>University of Rizal System</h2>
-          <h3>Queue Ticket</h3>
-          <p>Name: <b>${fullName}</b></p>
-          <p>Queue No: <b>${queueNumber}</b></p>
-          <p>Thank you! Please wait for your turn.</p>
-          <br><br>
-          <p style="font-size:10px;">Printed via REIGI Kiosk</p>
-        </body>
-      </html>
+    <html>
+      <body style="font-family: monospace; text-align: center;">
+        <h2>University of Rizal System</h2>
+        <h3>Queue Ticket</h3>
+        <p>Name: <b>${fullName}</b></p>
+        <p>Queue No: <b>${queueNumber}</b></p>
+        <p>Thank you! Please wait for your turn.</p>
+        <br>
+        <p style="font-size:10px;">Printed via REIGI Kiosk</p>
+      </body>
+    </html>
     `;
 
-    // Encode content for RawBT
+    // Encode the HTML text for URL safety
     const encoded = encodeURIComponent(printContent);
 
-    // RawBT intent link (Android)
-    const rawbtUrl = `intent://print/#Intent;scheme=rawbt;package=ru.a402d.rawbtprinter;S.rawdata=${encoded};end`;
+    // Use RawBT direct scheme — works on all modern Android Chrome PWAs
+    const rawbtUrl = `rawbt:print?data=${encoded}`;
 
-    // Open RawBT for automatic printing
+    // Open RawBT directly
     window.location.href = rawbtUrl;
+
 
   } catch (err) {
     console.error("❌ Error saving queue:", err.message);
@@ -358,49 +359,6 @@ finishBtn.addEventListener("click", async (e) => {
     finishBtn.disabled = false;
   }
 });
-
-// finishBtn.addEventListener("click", async (e) => {
-//   e.preventDefault();
-
-//   // Prevent double clicks
-//   if (finishBtn.disabled) return; 
-//   finishBtn.disabled = true;
-
-//   const firstName = firstNameInput.value.trim();
-//   const lastName = lastNameInput.value.trim();
-
-//   if (!firstName || !lastName) {
-//     alert("Please enter your complete name.");
-//     finishBtn.disabled = false; 
-//     return;
-//   }
-
-//   const fullName = `${firstName} ${lastName}`;
-
-//   try {
-//     const response = await fetch("/api/queue", {
-//       method: "POST",
-//       headers: { "Content-Type": "application/json" },
-//       body: JSON.stringify({ full_name: fullName }),
-//     });
-
-//     const result = await response.json();
-//     if (!response.ok) throw new Error(result.error || "Request failed");
-
-//     const queueData = result.data[0];
-//     numberPreview.textContent = queueData.queue_no.toString();
-
-//     overlayForm.classList.remove("is-visible");
-//     overlayNumber.classList.add("is-visible");
-//     firstNameInput.value = "";
-//     lastNameInput.value = "";
-//   } catch (err) {
-//     console.error("❌ Error saving queue:", err.message);
-//     alert("Something went wrong while saving your queue. Please try again.");
-//     finishBtn.disabled = false; 
-//   }
-// });
-
 
 // Reset back to the search screen
 const finishBtnNum = document.getElementById("finish-btn-num");
