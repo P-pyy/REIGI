@@ -812,21 +812,21 @@ document.addEventListener("DOMContentLoaded", async () => {
 
       const printContent = `
 ===============================
-University of Rizal System
-        Queue Ticket
+   University of Rizal System
+         Queue Ticket
 ===============================
 
-Name: ${fullName}
-Queue No: ${queueNumber}
+    Name: ${fullName}
+    Queue No: ${queueNumber}
 
-Thank you! Please wait
-for your turn.
+           Thank you! 
+    Please wait for your turn.
 
 -------------------------------
-Printed via REIGI Kiosk
+    Printed via REIGI Kiosk
       `;
       const encoded = encodeURIComponent(printContent);
-      window.location.href = `rawbt:print?data=${encoded}`;
+      window.location.href = `rawbt:printText:${encoded}`;
     } catch (err) {
       console.error("❌ Error saving queue:", err.message);
       alert("Something went wrong while saving your queue. Please try again.");
