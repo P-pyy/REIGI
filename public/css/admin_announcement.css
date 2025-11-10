@@ -60,6 +60,10 @@ main {
 }
 
 .announcement-table td {
+  white-space: nowrap;        /* keep text on one line */
+  overflow: hidden;           /* hide text that overflows */
+  text-overflow: ellipsis;    /* show "..." when truncated */
+  max-width: 200px;   
   font-size: 14px;     
   font-weight: 400;      
   color: #2C2C2C;        

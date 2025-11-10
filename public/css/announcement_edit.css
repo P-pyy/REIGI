@@ -91,7 +91,15 @@ margin-left: 20px
   font-size: 20px;      
   font-weight: 700;       
   color: #2C2C2C;          
-  
+  white-space: nowrap;        
+  overflow: hidden;          
+  text-overflow: ellipsis;    
+}
+
+#previewContent {        
+  white-space: nowrap;        
+  overflow: hidden;          
+  text-overflow: ellipsis;  
 }
 
 #previewDate strong {
