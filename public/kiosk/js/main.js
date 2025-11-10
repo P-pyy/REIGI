@@ -330,18 +330,21 @@ finishBtn.addEventListener("click", async (e) => {
 
     // 4️⃣ Trigger RawBT print (fixed version)
     const printContent = `
-    <html>
-      <body style="font-family: monospace; text-align: center;">
-        <h2>University of Rizal System</h2>
-        <h3>Queue Ticket</h3>
-        <p>Name: <b>${fullName}</b></p>
-        <p>Queue No: <b>${queueNumber}</b></p>
-        <p>Thank you! Please wait for your turn.</p>
-        <br>
-        <p style="font-size:10px;">Printed via REIGI Kiosk</p>
-      </body>
-    </html>
+    ===============================
+    University of Rizal System
+            Queue Ticket
+    ===============================
+
+    Name: ${fullName}
+    Queue No: ${queueNumber}
+
+    Thank you! Please wait
+    for your turn.
+
+    -------------------------------
+    Printed via REIGI Kiosk
     `;
+
 
     // Encode the HTML text for URL safety
     const encoded = encodeURIComponent(printContent);
