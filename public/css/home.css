@@ -97,7 +97,22 @@ section{
 }
 
 #faqVideo {
-    width: 600px;
+    width: 1000px;
+    max-width: 1000px;
+    border-radius: 8px;
+    margin: 7rem auto 0 auto;
+    display: block;
+    box-shadow: 0 8px 10px rgba(0, 0, 0, 0.2);
+    transition: all 0.7s ease, opacity 0.5s ease;
+    position: relative;
+    opacity: 1;
+    z-index: 1000;
+    cursor: pointer;
+    object-fit: contain;
+    
+    
+    /* orginal code*/
+    /* width: 600px;
     border-radius: 8px;
     margin-top: 7rem;
     margin-left: 375px;
@@ -107,14 +122,14 @@ section{
     transition: all 0.7s ease, opacity 0.5s ease;
     position: relative;
     opacity: 1;
-    z-index: 1000;
+    z-index: 1000; */
 }
 
 #faqVideo.fixed{
-    position: fixed;
-    top: 10px;
-    right: 20px;
-    width: 450px;
+    /*position: fixed;*/
+    top: -100px;
+    right: 650px;
+    /*width: 450px;*/
     cursor: pointer;
 }
 
