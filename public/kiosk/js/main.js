@@ -462,6 +462,8 @@ document.addEventListener("DOMContentLoaded", async () => {
   let recognition;
   let voiceMatched = false; // ✅ defined at top to avoid ReferenceError
   let transcriptBuffer = "";
+  let faqAliases = [];
+
 
   if ('webkitSpeechRecognition' in window) {
     recognition = new webkitSpeechRecognition();
@@ -511,7 +513,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     };
 
     // ✅ Live matching while speaking
-    recognition.onresult = (event) => {
+recognition.onresult = (event) => {
   let transcript = "";
   for (let i = event.resultIndex; i < event.results.length; i++) {
     transcript += event.results[i][0].transcript;
@@ -519,31 +521,32 @@ document.addEventListener("DOMContentLoaded", async () => {
   transcript = transcript.toLowerCase().trim();
   document.querySelector(".voice-subtitle").textContent = transcript;
 
-  // Find all matches, not just the first one
-  const matchedFAQs = kioskData.filter(faq =>
-    transcript.includes(faq.question_title.toLowerCase()) ||
-    faq.question_title.toLowerCase().includes(transcript)
-  );
+  // Match transcript against any keyword
+  let matchedFAQ = null;
+  for (let item of faqAliases) {
+    for (let kw of item.keywords) {
+      if (transcript.includes(kw)) {
+        matchedFAQ = item.faq;
+        break;
+      }
+    }
+    if (matchedFAQ) break;
+  }
 
-  if (matchedFAQs.length > 0 && !voiceMatched) {
+  if (matchedFAQ && !voiceMatched) {
     voiceMatched = true;
     recognition.stop();
 
-    // You can pick the first match or prioritize based on similarity
-    const matched = matchedFAQs[0];
-
     document.querySelector(".voice-title").textContent = "Recognized!";
-    document.querySelector(".voice-subtitle").textContent = matched.question_title;
+    document.querySelector(".voice-subtitle").textContent = matchedFAQ.question_title;
 
     setTimeout(() => {
       closeVoiceOverlay();
-      openFAQDetails(matched);
-    }, 600);
-  } else if (!voiceMatched) {
-    // Keep live updating subtitle with what user is saying
-    document.querySelector(".voice-subtitle").textContent = transcript;
+      openFAQDetails(matchedFAQ);
+    }, 400);
   }
 };
+
 
 
     // ✅ Console testing helper
@@ -638,6 +641,13 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
 
     attachFAQClickHandlers(data);
+
+     faqAliases = kioskData.map(faq => {
+    const acronyms = faq.question_title.match(/\b[A-Z]{2,}\b/) || [];
+    const words = faq.question_title.replace(/[()]/g, "").toLowerCase().split(/\s+/);
+    const keywords = [faq.question_title.toLowerCase(), ...words, ...acronyms.map(a => a.toLowerCase())];
+    return { faq, keywords };
+  });
   }
 
   function attachFAQClickHandlers(data) {
