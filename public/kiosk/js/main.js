@@ -781,130 +781,59 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   // Finish button with RawBT print
-//   finishBtn.addEventListener("click", async (e) => {
-//     e.preventDefault();
-//     if (finishBtn.disabled) return;
-//     finishBtn.disabled = true;
+  finishBtn.addEventListener("click", async (e) => {
+    e.preventDefault();
+    if (finishBtn.disabled) return;
+    finishBtn.disabled = true;
 
-//     const fullName = `${firstNameInput.value.trim()} ${lastNameInput.value.trim()}`;
-//     if (!fullName.trim()) {
-//       alert("Please enter your complete name.");
-//       finishBtn.disabled = false;
-//       return;
-//     }
+    const fullName = `${firstNameInput.value.trim()} ${lastNameInput.value.trim()}`;
+    if (!fullName.trim()) {
+      alert("Please enter your complete name.");
+      finishBtn.disabled = false;
+      return;
+    }
 
-//     try {
-//       const response = await fetch("/api/queue", {
-//         method: "POST",
-//         headers: { "Content-Type": "application/json" },
-//         body: JSON.stringify({ full_name: fullName }),
-//       });
-//       const result = await response.json();
-//       if (!response.ok) throw new Error(result.error || "Request failed");
+    try {
+      const response = await fetch("/api/queue", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ full_name: fullName }),
+      });
+      const result = await response.json();
+      if (!response.ok) throw new Error(result.error || "Request failed");
 
-//       const queueNumber = result.data[0].queue_no.toString();
-//       numberPreview.textContent = queueNumber;
+      const queueNumber = result.data[0].queue_no.toString();
+      numberPreview.textContent = queueNumber;
 
-//       formOverlay.classList.remove("is-visible");
-//       overlayNumber.classList.add("is-visible");
+      formOverlay.classList.remove("is-visible");
+      overlayNumber.classList.add("is-visible");
 
-//       firstNameInput.value = lastNameInput.value = "";
+      firstNameInput.value = lastNameInput.value = "";
 
-//       const printContent = `
-// ===============================
-//    University of Rizal System
-//          Queue Ticket
-// ===============================
-
-//     Name: ${fullName}
-//     Queue No: ${queueNumber}
-
-//            Thank you! 
-//     Please wait for your turn.
-
-// -------------------------------
-//     Printed via REIGI Kiosk
-//       `;
-      
-//     // ✅ Use RawBT JS to print directly
-//     RawBT.print({
-//       data: printContent,
-//       type: "TEXT",
-//       // Optional: specify printer name 
-//       printer: "POS58D"
-//     });
-//     } catch (err) {
-//       console.error("❌ Error saving queue:", err.message);
-//       alert("Something went wrong while saving your queue. Please try again.");
-//       finishBtn.disabled = false;
-//     }
-//   });
-
-finishBtn.addEventListener("click", async (e) => {
-  e.preventDefault();
-  if (finishBtn.disabled) return;
-  finishBtn.disabled = true;
-
-  const fullName = `${firstNameInput.value.trim()} ${lastNameInput.value.trim()}`;
-  if (!fullName.trim()) {
-    alert("Please enter your complete name.");
-    finishBtn.disabled = false;
-    return;
-  }
-
-  try {
-    // Save to queue
-    const response = await fetch("/api/queue", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ full_name: fullName }),
-    });
-    const result = await response.json();
-    if (!response.ok) throw new Error(result.error || "Request failed");
-
-    const queueNumber = result.data[0].queue_no.toString();
-    numberPreview.textContent = queueNumber;
-
-    // Show the number overlay
-    formOverlay.classList.remove("is-visible");
-    overlayNumber.classList.add("is-visible");
-
-    firstNameInput.value = lastNameInput.value = "";
-
-    // Prepare ticket content
-    const printContent = `
+      const printContent = `
 ===============================
    University of Rizal System
          Queue Ticket
 ===============================
 
-Name: ${fullName}
-Queue No: ${queueNumber}
+    Name: ${fullName}
+    Queue No: ${queueNumber}
 
-Thank you! Please wait for your turn.
+           Thank you! 
+    Please wait for your turn.
 
 -------------------------------
-Printed via REIGI Kiosk
-`;
-
-    // ✅ Use window.RawBT to print to your POS58D
-    if (window.RawBT && window.RawBT.print) {
-      window.RawBT.print({
-        data: printContent,
-        type: "TEXT",
-        printer: "BT:POS58D" // <- updated printer name
-      });
-    } else {
-      console.error("❌ RawBT not available. Did the script load correctly?");
-      alert("Printing failed: RawBT not available.");
+    Printed via REIGI Kiosk
+      `;
+    
+      const encoded = encodeURIComponent(printContent);
+      window.location.href = `rawbt:printText:${encoded}`;
+    } catch (err) {
+      console.error("❌ Error saving queue:", err.message);
+      alert("Something went wrong while saving your queue. Please try again.");
+      finishBtn.disabled = false;
     }
-
-  } catch (err) {
-    console.error("❌ Error saving queue:", err.message);
-    alert("Something went wrong while saving your queue. Please try again.");
-    finishBtn.disabled = false;
-  }
-});
+  });
 
 
   // Reset to search screen
