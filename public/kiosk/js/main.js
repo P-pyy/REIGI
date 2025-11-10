@@ -287,10 +287,10 @@ if (readBtn) {
 }
 
 // Finish Button Handler
+// Finish Button Handler (with RawBT print)
 finishBtn.addEventListener("click", async (e) => {
   e.preventDefault();
 
-  // Prevent double clicks
   if (finishBtn.disabled) return; 
   finishBtn.disabled = true;
 
@@ -306,6 +306,7 @@ finishBtn.addEventListener("click", async (e) => {
   const fullName = `${firstName} ${lastName}`;
 
   try {
+    // 1️⃣ Save to queue (API)
     const response = await fetch("/api/queue", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -316,18 +317,89 @@ finishBtn.addEventListener("click", async (e) => {
     if (!response.ok) throw new Error(result.error || "Request failed");
 
     const queueData = result.data[0];
-    numberPreview.textContent = queueData.queue_no.toString();
+    const queueNumber = queueData.queue_no.toString();
+    numberPreview.textContent = queueNumber;
 
+    // 2️⃣ Show number screen
     overlayForm.classList.remove("is-visible");
     overlayNumber.classList.add("is-visible");
+
+    // 3️⃣ Clear inputs
     firstNameInput.value = "";
     lastNameInput.value = "";
+
+    // 4️⃣ Trigger RawBT print
+    const printContent = `
+      <html>
+        <body style="font-family: monospace; text-align: center;">
+          <h2>University of Rizal System</h2>
+          <h3>Queue Ticket</h3>
+          <p>Name: <b>${fullName}</b></p>
+          <p>Queue No: <b>${queueNumber}</b></p>
+          <p>Thank you! Please wait for your turn.</p>
+          <br><br>
+          <p style="font-size:10px;">Printed via REIGI Kiosk</p>
+        </body>
+      </html>
+    `;
+
+    // Encode content for RawBT
+    const encoded = encodeURIComponent(printContent);
+
+    // RawBT intent link (Android)
+    const rawbtUrl = `intent://print/#Intent;scheme=rawbt;package=ru.a402d.rawbtprinter;S.rawdata=${encoded};end`;
+
+    // Open RawBT for automatic printing
+    window.location.href = rawbtUrl;
+
   } catch (err) {
     console.error("❌ Error saving queue:", err.message);
     alert("Something went wrong while saving your queue. Please try again.");
-    finishBtn.disabled = false; 
+    finishBtn.disabled = false;
   }
 });
+
+// finishBtn.addEventListener("click", async (e) => {
+//   e.preventDefault();
+
+//   // Prevent double clicks
+//   if (finishBtn.disabled) return; 
+//   finishBtn.disabled = true;
+
+//   const firstName = firstNameInput.value.trim();
+//   const lastName = lastNameInput.value.trim();
+
+//   if (!firstName || !lastName) {
+//     alert("Please enter your complete name.");
+//     finishBtn.disabled = false; 
+//     return;
+//   }
+
+//   const fullName = `${firstName} ${lastName}`;
+
+//   try {
+//     const response = await fetch("/api/queue", {
+//       method: "POST",
+//       headers: { "Content-Type": "application/json" },
+//       body: JSON.stringify({ full_name: fullName }),
+//     });
+
+//     const result = await response.json();
+//     if (!response.ok) throw new Error(result.error || "Request failed");
+
+//     const queueData = result.data[0];
+//     numberPreview.textContent = queueData.queue_no.toString();
+
+//     overlayForm.classList.remove("is-visible");
+//     overlayNumber.classList.add("is-visible");
+//     firstNameInput.value = "";
+//     lastNameInput.value = "";
+//   } catch (err) {
+//     console.error("❌ Error saving queue:", err.message);
+//     alert("Something went wrong while saving your queue. Please try again.");
+//     finishBtn.disabled = false; 
+//   }
+// });
 
 
 // Reset back to the search screen
