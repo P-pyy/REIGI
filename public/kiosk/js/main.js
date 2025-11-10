@@ -600,37 +600,38 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   
 
+  // ✅ Instant live-matching voice recognition
   recognition.onresult = (event) => {
-    // Combine all interim results
-    let transcript = "";
-    for (let i = event.resultIndex; i < event.results.length; i++) {
-      transcript += event.results[i][0].transcript;
-    }
-    transcript = transcript.toLowerCase().trim();
+    transcriptBuffer = "";
 
-    // Update subtitle live
+    for (let i = event.resultIndex; i < event.results.length; i++) {
+      transcriptBuffer += event.results[i][0].transcript;
+    }
+
+    const transcript = transcriptBuffer.toLowerCase().trim();
     document.querySelector(".voice-subtitle").textContent = transcript;
 
-    // Only check for match if the result is final
-    if (event.results[event.results.length - 1].isFinal) {
-      const matched = kioskData.find(faq =>
-        transcript.includes(faq.question_title.toLowerCase()) ||
-        faq.question_title.toLowerCase().includes(transcript)
-      );
+    // 🔍 Check immediately for a match, not just when final
+    const matched = kioskData.find(faq =>
+      transcript.includes(faq.question_title.toLowerCase()) ||
+      faq.question_title.toLowerCase().includes(transcript)
+    );
 
-      if (matched) {
-        console.log("✅ Matched FAQ:", matched.question_title);
-        document.querySelector(".voice-title").textContent = "Recognized!";
-        setTimeout(() => {
-          voiceOverlay.classList.remove("is-visible");
-          voiceBackdrop.classList.remove("is-visible");
-          openFAQDetails(matched);
-        }, 1000);
-      } else {
-        console.log("❌ No match found for:", transcript);
-        document.querySelector(".voice-title").textContent = "No match found";
-        // Subtitle already shows what user said
-      }
+    if (matched) {
+      console.log("✅ Matched early:", matched.question_title);
+
+      // Stop recognition immediately when match is found
+      recognition.stop();
+
+      // Update UI quickly
+      document.querySelector(".voice-title").textContent = "Recognized!";
+      document.querySelector(".voice-subtitle").textContent = matched.question_title;
+
+      // Fast open FAQ
+      setTimeout(() => {
+        closeVoiceOverlay();
+        openFAQDetails(matched);
+      }, 600);
     }
   };
 
@@ -662,7 +663,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   };
 
 }
-
+  let transcriptBuffer = "";
 
   // Voice overlay handlers
   voiceBtn.addEventListener("click", () => {
@@ -673,10 +674,17 @@ document.addEventListener("DOMContentLoaded", async () => {
     try { recognition.start(); } catch(err) { console.warn("Voice recognition already started", err); }
   });
 
+  // ✅ Voice overlay close (reset everything cleanly)
   function closeVoiceOverlay() {
+    if (recognition) recognition.stop(); // stop any active recognition
+    transcriptBuffer = ""; // clear transcript cache
+    document.querySelector(".voice-title").textContent = "Listening...";
+    document.querySelector(".voice-subtitle").textContent = "Speak the process name...";
     voiceOverlay.classList.remove("is-visible");
     voiceBackdrop.classList.remove("is-visible");
   }
+
+  // attach to buttons
   voiceBackBtn.addEventListener("click", e => { e.preventDefault(); closeVoiceOverlay(); });
   voiceCancelBtn.addEventListener("click", closeVoiceOverlay);
   voiceBackdrop.addEventListener("click", closeVoiceOverlay);
