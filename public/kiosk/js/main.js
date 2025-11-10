@@ -825,8 +825,14 @@ document.addEventListener("DOMContentLoaded", async () => {
 -------------------------------
     Printed via REIGI Kiosk
       `;
-      const encoded = encodeURIComponent(printContent);
-      window.location.href = `intent://printText:${encoded}#Intent;scheme=rawbt;package=ru.a402d.rawbtprinter;end`;
+      
+    // ✅ Use RawBT JS to print directly
+    RawBT.print({
+      data: printContent,
+      type: "TEXT",
+      // Optional: specify printer name 
+      printer: "POS58D"
+    });
     } catch (err) {
       console.error("❌ Error saving queue:", err.message);
       alert("Something went wrong while saving your queue. Please try again.");
