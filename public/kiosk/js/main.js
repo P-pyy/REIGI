@@ -512,31 +512,39 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     // ✅ Live matching while speaking
     recognition.onresult = (event) => {
-      let transcript = "";
-      for (let i = event.resultIndex; i < event.results.length; i++) {
-        transcript += event.results[i][0].transcript;
-      }
-      transcript = transcript.toLowerCase().trim();
-      document.querySelector(".voice-subtitle").textContent = transcript;
+  let transcript = "";
+  for (let i = event.resultIndex; i < event.results.length; i++) {
+    transcript += event.results[i][0].transcript;
+  }
+  transcript = transcript.toLowerCase().trim();
+  document.querySelector(".voice-subtitle").textContent = transcript;
 
-      const matched = kioskData.find(faq =>
-        transcript.includes(faq.question_title.toLowerCase()) ||
-        faq.question_title.toLowerCase().includes(transcript)
-      );
+  // Find all matches, not just the first one
+  const matchedFAQs = kioskData.filter(faq =>
+    transcript.includes(faq.question_title.toLowerCase()) ||
+    faq.question_title.toLowerCase().includes(transcript)
+  );
 
-      if (matched && !voiceMatched) {
-        voiceMatched = true;
-        recognition.stop();
+  if (matchedFAQs.length > 0 && !voiceMatched) {
+    voiceMatched = true;
+    recognition.stop();
 
-        document.querySelector(".voice-title").textContent = "Recognized!";
-        document.querySelector(".voice-subtitle").textContent = matched.question_title;
+    // You can pick the first match or prioritize based on similarity
+    const matched = matchedFAQs[0];
 
-        setTimeout(() => {
-          closeVoiceOverlay();
-          openFAQDetails(matched);
-        }, 600);
-      }
-    };
+    document.querySelector(".voice-title").textContent = "Recognized!";
+    document.querySelector(".voice-subtitle").textContent = matched.question_title;
+
+    setTimeout(() => {
+      closeVoiceOverlay();
+      openFAQDetails(matched);
+    }, 600);
+  } else if (!voiceMatched) {
+    // Keep live updating subtitle with what user is saying
+    document.querySelector(".voice-subtitle").textContent = transcript;
+  }
+};
+
 
     // ✅ Console testing helper
     window.testVoiceInput = (testText) => {
