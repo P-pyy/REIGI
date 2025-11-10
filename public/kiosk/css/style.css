@@ -64,11 +64,108 @@ body {
   color: #fcfcfc;
   border: none;
   padding: .7rem;
-  border-radius: 20px ;
+  border-radius: 20px;
   justify-content: center;
   align-items: center;
   width: 250px !important;
   gap: 10px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.voice-btn:hover {
+  background-color: #0b5ed7;
+}
+
+/* Voice Search Overlay */
+.voice-search-overlay {
+  visibility: hidden;
+  opacity: 0;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) translateY(50px);
+  width: 500px;
+  background-color: #fff;
+  border-radius: 20px;
+  z-index: 10000;
+  transition: all 0.3s ease-in-out;
+}
+
+.voice-search-overlay.is-visible {
+  visibility: visible;
+  opacity: 1;
+  transform: translate(-50%, -50%) translateY(0);
+}
+
+.voice-search-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem;
+  position: relative;
+}
+
+.voice-back-btn {
+  position: absolute;
+  left: 1rem;
+  top: 1rem;
+  text-decoration: none;
+}
+
+.voice-title {
+  color: #0154A4;
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+  margin-top: 2rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.voice-retry {
+  font-size: 1rem;
+  color: #0154A4;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.voice-subtitle {
+  color: #666;
+  margin-bottom: 2rem;
+}
+
+.voice-cancel-btn {
+  background-color: #871919;
+  color: #fff;
+  border: none;
+  padding: 0.8rem 2rem;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background-color 0.3s ease;
+}
+
+.voice-cancel-btn:hover {
+  background-color: #a02020;
+}
+
+#voice-overlay-backdrop {
+  visibility: hidden;
+  opacity: 0;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 9999;
+  transition: all 0.3s ease-in-out;
+}
+
+#voice-overlay-backdrop.is-visible {
+  visibility: visible;
+  opacity: 1;
 }
 
 .speak-btn {
