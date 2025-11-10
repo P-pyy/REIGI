@@ -231,6 +231,9 @@ section{
 .card-content h3{
     font-size: 16px;
     margin: 10px 0 5px;
+    white-space: nowrap;        
+    overflow: hidden;          
+    text-overflow: ellipsis;  
 }
 
 .card-content .date{
@@ -244,6 +247,9 @@ section{
     color: #555;
     margin-bottom: 10px;
     line-height: 1.4;
+    white-space: nowrap;        
+    overflow: hidden;          
+    text-overflow: ellipsis;   
 }
 
 .read-more{
