@@ -105,9 +105,9 @@
               <button class="confirmation-btn" id="exit-logout-btn" style="background-color: #c41e1e;">Log Out</button>
             </div>
           </div>
-
       </div>
-
+      
+      <div id="overlay-backdrop"></div>
 
       <div class="nav-container d-none" id="queue-dashboard-header">
         <div style="display: flex; justify-content: space-between; align-items: center; width: 100%; gap: 2rem;">
@@ -128,6 +128,61 @@
           </div>
         </div>
         <button class="card-button no-margin" data-target="finished-section" id="finished-logs-btn"><i class="ph ph-scroll"></i>Finished Logs</button>
+      </div>
+
+      <div class="delete-popup-container" id="delete-popup">
+        <div class="x-container">
+          <a href=""><i class="ph ph-x"></i></a>
+        </div>
+        <div class="popup-content">
+          <h5 class="popup-text">Delete Ticket "<span class="id text">ID</span>"?</h5>
+          <p class="message-text">This action cannot be undone.</p>
+        </div>
+        <div class="button-container">
+          <button class="popup-btn-delete color-btn">Delete</button>
+        </div>
+      </div>
+
+      
+      <div class="logout-popup-container" id="logout-popup">
+        <div class="x-container">
+          <a href=""><i class="ph ph-x"></i></a>
+        </div>
+        <div class="popup-content">
+          <h5 class="popup-text">Do you want to exit as "<span class="id text">Window 1</span>"?</h5>
+          <p class="message-text">You'll need to choose your window again after.</p>
+        </div>
+        <div class="button-container">
+          <button class="popup-btn-delete color-btn">Logout</button>
+        </div>
+      </div>
+
+      <div class="processing-popup-container" id="processing-popup">
+        <div class="x-container">
+          <a href=""><i class="ph ph-x"></i></a>
+        </div>
+        <div class="popup-content">
+          <h5 class="popup-text">Confirm to move</h5>
+          <h5 class="popup-text">Ticket "<span class="id text">ID</span>" to the Processing table ?</h5>
+          <p class="message-text">This action cannot be undone.</p>
+        </div>
+        <div class="button-container">
+          <button class="popup-btn-delete color-btn-yes">Move to Processing</button>
+        </div>
+      </div>
+
+      <div class="confirm-popup-container" id="confirm-popup">
+        <div class="x-container">
+          <a href=""><i class="ph ph-x"></i></a>
+        </div>
+        <div class="popup-content">
+          <h5 class="popup-text">Confirm to finish processing</h5>
+          <h5 class="popup-text">Ticket "<span class="id text">ID</span>"?</h5>
+          <p class="message-text">This action cannot be undone.</p>
+        </div>
+        <div class="button-container">
+          <button class="popup-btn-delete color-btn-yes">Confirm</button>
+        </div>
       </div>
 
 
