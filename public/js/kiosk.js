@@ -74,6 +74,8 @@
     // Section Toggle Logic
     document.querySelectorAll(".card-button").forEach((button) => {
     button.addEventListener("click", () => {
+      if (button.id === "proceed-button") return;
+
       const targetId = button.getAttribute("data-target");
 
       faqGrid.classList.add("d-none");
@@ -84,12 +86,6 @@
       processingSection.classList.add("d-none");  
 
       document.getElementById(targetId)?.classList.remove("d-none");
-
-      if (button.id === "proceed-button") {
-          queueDashboardHeader.classList.remove("d-none");
-          processingSection.classList.remove("d-none"); 
-          loadProcessingData();  
-      }
 
       window.scrollTo({ top: 0, behavior: "smooth" });
     });
@@ -105,37 +101,102 @@
       });
     });
 
-    // Proceed button handler
+    // Proceed button handler 
     proceedButton.addEventListener("click", () => {
       if (!selectedWindow) {
         alert("⚠️ Please select a window first!");
         return;
       }
 
-      // Show queue dashboard + sections
+      const confirmationModal = document.getElementById("window-confirmation-modal");
+      const confirmationWindowText = document.getElementById("confirmation-window-text");
+      confirmationWindowText.textContent = selectedWindow;
+      confirmationModal.classList.remove("d-none");
+    });
+
+    // Confirmation modal controls
+    const _confirmationModal = document.getElementById("window-confirmation-modal");
+    const _closeConfirmBtn = document.getElementById("confirmation-close-btn");
+    const _confirmBtn = document.getElementById("confirmation-btn");
+
+    _closeConfirmBtn?.addEventListener("click", () => {
+      _confirmationModal.classList.add("d-none");
+    });
+
+    const confirmBackdrop = _confirmationModal?.querySelector(".window-confirmation-backdrop");
+    confirmBackdrop?.addEventListener("click", () => {
+      _confirmationModal.classList.add("d-none");
+    });
+
+    _confirmBtn?.addEventListener("click", () => {
+      // close modal
+      _confirmationModal.classList.add("d-none");
+
+      // now reveal the tables (switch to main kiosk interface)
       document.getElementById("container-window-select").classList.add("d-none");
       document.getElementById("queue-dashboard-header").classList.remove("d-none");
       document.getElementById("enrollment-section").classList.remove("d-none");
       document.getElementById("processing-section").classList.remove("d-none");
 
+      // Show back button in header
+      document.getElementById("back-to-window-select").classList.remove("d-none");
 
-      if (windowNumberText) {
-        windowNumberText.textContent = selectedWindow;
-      }
+      // load data and update UI
+      loadQueueData();
+      loadProcessingData();
+
+      if (windowNumberText) windowNumberText.textContent = selectedWindow;
 
       // Highlight selected window status in the header
       windowStatusPills.forEach((pill, index) => {
-      const pillWindow = `WINDOW ${index + 1}`;
-      if (selectedWindow === pillWindow) {
-        pill.querySelector(".status-light").classList.remove("offline");
-        pill.querySelector(".status-light").classList.add("online");
-        pill.classList.add("active-status");
-      } else {
-        pill.querySelector(".status-light").classList.remove("online");
-        pill.querySelector(".status-light").classList.add("offline");
-        pill.classList.remove("active-status");
-      }
+        const pillWindow = `WINDOW ${index + 1}`;
+        if (selectedWindow === pillWindow) {
+          pill.querySelector(".status-light").classList.remove("offline");
+          pill.querySelector(".status-light").classList.add("online");
+          pill.classList.add("active-status");
+        } else {
+          pill.querySelector(".status-light").classList.remove("online");
+          pill.querySelector(".status-light").classList.add("offline");
+          pill.classList.remove("active-status");
+        }
+      });
     });
+
+    // Back button to return to window selection
+    const backToWindowSelectBtn = document.getElementById("back-to-window-select");
+    backToWindowSelectBtn?.addEventListener("click", (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      console.log("Back button clicked! selectedWindow:", selectedWindow);
+      // Show exit confirmation modal instead of immediately going back
+      const exitConfirmationModal = document.getElementById("exit-confirmation-modal");
+      const exitWindowText = document.getElementById("exit-window-text");
+      console.log("Exit modal element:", exitConfirmationModal);
+      exitWindowText.textContent = selectedWindow;
+      exitConfirmationModal.classList.remove("d-none");
+      console.log("Exit modal d-none removed, modal now:", exitConfirmationModal.className);
+    });
+
+    // Exit confirmation modal controls
+    const exitConfirmModal = document.getElementById("exit-confirmation-modal");
+    const exitCloseBtn = document.getElementById("exit-close-btn");
+    const exitLogoutBtn = document.getElementById("exit-logout-btn");
+    const exitBackdrop = document.querySelector("#exit-confirmation-modal .window-confirmation-backdrop");
+
+    exitCloseBtn?.addEventListener("click", () => {
+      exitConfirmModal.classList.add("d-none");
+    });
+
+    exitBackdrop?.addEventListener("click", () => {
+      exitConfirmModal.classList.add("d-none");
+    });
+
+    exitLogoutBtn?.addEventListener("click", async () => {
+      exitConfirmModal.classList.add("d-none");
+      console.log("Logging out...");
+      const { error } = await supabaseClient.auth.signOut();
+      if (error) console.error("Logout error:", error.message);
+      else window.location.href = "/admin/login";
     });
 
     async function loadQueueData() { 
@@ -176,7 +237,6 @@
   attachQueueDeleteHandlers();
 }
 
-  // Optional: Remove hover styles globally for buttons with class "no-hover"
   const style = document.createElement('style');
   style.innerHTML = `
     .no-hover:hover {
@@ -216,7 +276,6 @@
 
   attachProcessingHandlers();
 }
-
 
   // Move to Processing handler
 function attachQueueActionHandlers() {

@@ -9,6 +9,9 @@
   <!-- HEADER -->
   <header class="main-header d-flex justify-content-between align-items-center px-4">
     <h1 class="mb-0">Kiosk Settings</h1>
+    <button class="back-arrow-btn d-none" id="back-to-window-select" style="margin-right: 2rem;">
+      <i class="ph ph-arrow-left"></i>
+    </button>
   </header>
 
   <!-- Main Content -->
@@ -69,23 +72,58 @@
           </div>
 
           <div class="button-container">
-            <button class="card-button no-margin" data-target="enrollment-section" id="proceed-button">Proceed</button>
+              <button class="card-button no-modal" data-target="enrollment-section" id="proceed-button">Proceed</button>
           </div>
+
+           <!-- Window Confirmation Modal -->
+          <div class="window-confirmation-modal d-none" id="window-confirmation-modal">
+            <div class="window-confirmation-backdrop"></div>
+
+            <div class="window-confirmation-content">
+              <button class="confirmation-close-btn" id="confirmation-close-btn">
+                <i class="ph ph-x"></i>
+              </button>
+              <h3 class="confirmation-title">
+                Are you sure you're <span id="confirmation-window-text">Window 1</span>?
+              </h3>
+              <button class="confirmation-btn" id="confirmation-btn">Confirm</button>
+            </div>
+          </div>
+
+          <!-- Exit Confirmation Modal -->
+          <div class="window-confirmation-modal d-none" id="exit-confirmation-modal">
+            <div class="window-confirmation-backdrop"></div>
+
+            <div class="window-confirmation-content">
+              <button class="confirmation-close-btn" id="exit-close-btn">
+                <i class="ph ph-x"></i>
+              </button>
+              <h3 class="confirmation-title">
+                Do you want to exit as <span id="exit-window-text" style="font-weight: 700;">Window 1</span>?
+              </h3>
+              <p style="color: #666; font-size: 0.95rem; margin: 0.5rem 0 1.5rem 0;">You'll need to choose your window again after.</p>
+              <button class="confirmation-btn" id="exit-logout-btn" style="background-color: #c41e1e;">Log Out</button>
+            </div>
+          </div>
+
       </div>
 
+
       <div class="nav-container d-none" id="queue-dashboard-header">
-        <div class="activenav-container">
-          <div class="active-container">
-            <span class="active-text">Active Windows:</span>
-          </div>
-          <div class="indicator-container">
-            <div id="status-window-1" class="window-status-pill">
-              <span class="status-light offline"></span>
-              Window 1
+        <div style="display: flex; justify-content: space-between; align-items: center; width: 100%; gap: 2rem;">
+          <div class="activenav-container">
+            <div class="active-container">
+              <span class="active-text">Active Windows:</span>
             </div>
-            <div id="status-window-2" class="window-status-pill">
-              <span class="status-light offline"></span>
-              Window 2
+            <div class="indicator-container">
+              <div id="status-window-1" class="window-status-pill">
+                <span class="status-light offline"></span>
+                Window 1
+              </div>
+              <div id="status-window-2" class="window-status-pill">
+                <span class="status-light offline"></span>
+                Window 2
+              </div>
             </div>
           </div>
         </div>
@@ -132,8 +170,6 @@
           </div>
       </div>
 
-
-  
         <div id="processing-section" class="card shadow-sm fade-in d-none container-que table-container">
           <div class="table-name">
             <h2 class="title-table">Process</h2>
@@ -182,8 +218,6 @@
     </div>
 
       
-
-
       <!-- Kiosk FAQ’s Section -->
       <div id="document-request-section" class="admin-drfaq-card d-none">
         <div class="card shadow-sm fade-in">
