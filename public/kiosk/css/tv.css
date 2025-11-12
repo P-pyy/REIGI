@@ -1,0 +1,124 @@
+body {
+  font-family: 'Montserrat', sans-serif;
+  background-color: #fcfcfc;
+  margin: 0;
+}
+
+.main-container {
+    display: flex;
+    flex-direction: column;
+}
+
+.title-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 3rem;
+    height: 10vh;
+}
+
+.title-text {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.h1-text {
+    font-size: 2.5rem;
+    font-weight: 400;
+    color: #191919;
+    margin: 0;
+}
+
+.h1-title-text {
+    font-size: 3rem;
+    font-weight: 600;
+    color: #0057b8;
+    margin: 0;
+}
+
+.date-text-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+}
+
+.time-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.date-text, .time-text, .AM-PM-text {
+    font-size: 1.5rem;
+    color: #191919;
+    letter-spacing: .2rem;
+}
+
+.container-content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.window-1-container, .window-2-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 50%;
+    height: 35vh;
+    gap: 2rem;
+    border: 1px solid #e3e3e3;
+}
+
+.container-ticket-number-window {
+    border-radius: 1rem;
+    background-color: #0057b8;
+    padding: 1rem;
+    width: fit-content;
+}
+
+.number-text-window{
+    color: #fcfcfc;
+    font-size: 5rem;
+}
+
+.number-text {
+    color: #fcfcfc;
+    font-size: 2.2rem;
+}
+
+.container-ticket-number {
+    border-radius: 1rem;
+    background-color: #0057b8;
+    color: #fcfcfc;
+    padding: 1rem;
+    font-size: 2.5rem;
+    width: fit-content;
+}
+
+.waiting-text-container {
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+}
+
+.waiting-container {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+}
+
+.waiting-text {
+    padding: 2rem;
+    font-size: 2rem;
+    color: #191919;
+}
+
+.tickets-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 3rem;
+}
