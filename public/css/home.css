@@ -97,7 +97,7 @@ section{
 }
 
 #faqVideo {
-    width: 1000px;
+    width: 800px;
     max-width: 1000px;
     border-radius: 8px;
     margin: 7rem auto 0 auto;
@@ -127,8 +127,8 @@ section{
 
 #faqVideo.fixed{
     /*position: fixed;*/
-    top: -100px;
-    right: 650px;
+    top: -90px;
+    right: 450px;
     /*width: 450px;*/
     cursor: pointer;
 }

@@ -27,6 +27,7 @@
 
     const queueDashboardHeader = document.getElementById("queue-dashboard-header");
     const processingSection = document.getElementById("processing-section");
+    const moveToProcessingBtns = document.querySelectorAll(".move-to-processing-btn");
 
     const backdrop = document.getElementById("overlay-backdrop");
       
@@ -186,6 +187,27 @@
       });
     });
 
+    moveToProcessingBtns.forEach(btn => {
+    btn.addEventListener("click", () => {
+      // Get the current window name
+      const windowName = btn.dataset.window || "Unknown Window";
+
+      // Find the row of this button
+      const row = btn.closest("tr");
+
+      // Update the status and window columns
+      const statusCell = row.querySelector("td:nth-child(3)");
+      const windowCell = row.querySelector("td:nth-child(4)");
+
+      statusCell.textContent = "Processing";
+      windowCell.textContent = windowName;
+
+      // Optionally, disable the button to prevent multiple moves
+      btn.disabled = true;
+      btn.textContent = "In Process";
+    });
+  });
+
     // Back button to return to window selection
     const backToWindowSelectBtn = document.getElementById("back-to-window-select");
     backToWindowSelectBtn?.addEventListener("click", (e) => {
@@ -265,6 +287,7 @@
       <td>${row.queue_no}</td>
       <td>${row.full_name}</td>
       <td>${new Date(row.created_at).toLocaleString()}</td>
+      <td>${row.window_name || "N/A"}</td>
       <td>${actionContent}</td>
     `;
     enrollmentTableBody.appendChild(tr);
@@ -303,6 +326,7 @@
     tr.innerHTML = `
       <td>${row.queue_no}</td>
       <td>${row.full_name}</td>
+      <td>${row.window_name || "N/A"}</td>
       <td>${new Date(row.created_at).toLocaleString()}</td>
       <td>
         <button class="btn btn-sm btn-success finish-card-button" data-id="${row.id}">Complete</button>
@@ -310,6 +334,7 @@
     `;
     processingTbody.appendChild(tr);
   });
+
 
   attachProcessingHandlers();
 }
@@ -326,9 +351,51 @@ function attachQueueActionHandlers() {
       // Get the queue number from the table row
       const queueNo = btn.closest("tr").querySelector("td:first-child").textContent;
 
-      // Set data on the popup
-      processingPopup.dataset.currentId = id;
-      processingPopupName.textContent = queueNo; // Show the ticket number
+      if (!selectedWindow) {
+        alert("⚠️ Please select a window first!");
+        return;
+      }
+
+      // Check if this window already has a processing item
+      const { data: processingData, error: processingError } = await supabaseClient
+        .from("queue")
+        .select("*")
+        .eq("status", "processing")
+        .eq("window_name", selectedWindow);
+
+      if (processingError) {
+        console.error("Error checking processing queue:", processingError);
+        return;
+      }
+
+
+      if (processingData.length > 0) {
+      // Disable only buttons for this window
+      document.querySelectorAll(".move-card-button").forEach(btn => {
+        const row = btn.closest("tr");
+        const windowCell = row.querySelector("td:nth-child(4)");
+        if (windowCell && windowCell.textContent === selectedWindow) {
+          btn.disabled = true;
+          btn.classList.add("no-hover");
+          btn.textContent = "In Process";
+        }
+      });
+
+      // No alert
+      return;
+    }
+
+
+      // Move selected queue item to processing
+      const { error } = await supabaseClient
+        .from("queue")
+        .update({
+          status: "processing",
+          window_name: selectedWindow
+        })
+        .eq("id", id);
+
+      if (error) return alert("❌ Failed to move to processing!");
 
       // Show the popup
       processingPopup.classList.add("is-visible");
@@ -337,7 +404,9 @@ function attachQueueActionHandlers() {
   });
 }
 
-// REPLACE your old function with this:
+
+
+
 function attachProcessingHandlers() {
   document.querySelectorAll(".finish-card-button").forEach(btn => {
     btn.addEventListener("click", (e) => {
@@ -347,9 +416,16 @@ function attachProcessingHandlers() {
       // Get the queue number from the table row
       const queueNo = btn.closest("tr").querySelector("td:first-child").textContent;
 
-      // Set data on the popup
-      confirmPopup.dataset.currentId = id;
-      confirmPopupName.textContent = queueNo; // Show the ticket number
+      const { error } = await supabaseClient
+      .from("queue")
+      .update({
+      status: "finished",
+      window_name: selectedWindow || "Unassigned",
+    })
+      .eq("id", id);
+
+
+      if (error) return alert("❌ Failed to mark as finished!");
 
       // Show the popup
       confirmPopup.classList.add("is-visible");
