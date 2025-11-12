@@ -29,30 +29,6 @@
     const processingSection = document.getElementById("processing-section");
     const moveToProcessingBtns = document.querySelectorAll(".move-to-processing-btn");
 
-    const backdrop = document.getElementById("overlay-backdrop");
-      
-    const deletePopup = document.getElementById("delete-popup");
-    const deletePopupCloseBtn = deletePopup.querySelector(".x-container a");
-    const deletePopupConfirmBtn = deletePopup.querySelector(".color-btn");
-    const deletePopupName = deletePopup.querySelector(".id.text");
-
-    const logoutPopup = document.getElementById("logout-popup");
-    const logoutPopupCloseBtn = logoutPopup.querySelector(".x-container a");
-    const logoutPopupConfirmBtn = logoutPopup.querySelector(".color-btn");
-    const logoutPopupName = logoutPopup.querySelector(".id.text");
-
-    // Processing Popup
-    const processingPopup = document.getElementById("processing-popup");
-    const processingPopupCloseBtn = processingPopup.querySelector(".x-container a");
-    const processingPopupConfirmBtn = processingPopup.querySelector(".color-btn-yes");
-    const processingPopupName = processingPopup.querySelector(".id.text");
-
-    // Confirm Finish Popup
-    const confirmPopup = document.getElementById("confirm-popup");
-    const confirmPopupCloseBtn = confirmPopup.querySelector(".x-container a");
-    const confirmPopupConfirmBtn = confirmPopup.querySelector(".color-btn-yes");
-    const confirmPopupName = confirmPopup.querySelector(".id.text");
-
     const toggleBtn = document.querySelector(".toggle-btn");
     const sidebar = document.querySelector(".sidebar");
     const mainContent = document.querySelector(".main-content");
@@ -213,27 +189,14 @@
     backToWindowSelectBtn?.addEventListener("click", (e) => {
       e.preventDefault();
       e.stopPropagation();
-
-      // Set the window name and show the popup
-      logoutPopupName.textContent = selectedWindow;
-      logoutPopup.classList.add("is-visible");
-      backdrop.classList.add("is-visible");
-    });
-
-    // --- New Logout Popup Handlers ---
-    logoutPopupCloseBtn.addEventListener("click", (e) => {
-      e.preventDefault();
-      logoutPopup.classList.remove("is-visible");
-      backdrop.classList.remove("is-visible");
-    });
-
-    logoutPopupConfirmBtn.addEventListener("click", async () => {
-      // This is an "Exit Window", not a full logout
-      logoutPopup.classList.remove("is-visible");
-      backdrop.classList.remove("is-visible");
-      
-      // Reload the page to go back to the start
-      window.location.reload(); 
+      console.log("Back button clicked! selectedWindow:", selectedWindow);
+      // Show exit confirmation modal instead of immediately going back
+      const exitConfirmationModal = document.getElementById("exit-confirmation-modal");
+      const exitWindowText = document.getElementById("exit-window-text");
+      console.log("Exit modal element:", exitConfirmationModal);
+      exitWindowText.textContent = selectedWindow;
+      exitConfirmationModal.classList.remove("d-none");
+      console.log("Exit modal d-none removed, modal now:", exitConfirmationModal.className);
     });
 
     // Exit confirmation modal controls
@@ -279,7 +242,7 @@
     let actionContent = index === 0
       ? `<div class="d-flex gap-2 align-items-center">
            <button class="btn btn-sm btn-primary move-card-button" data-id="${row.id}">Move to Processing</button>
-           <button class="btn btn-sm btn-danger delete-queue-button" data-id="${row.id}" data-name="${row.full_name}">X</button>
+           <button class="btn btn-sm btn-danger delete-queue-button" data-id="${row.id}">X</button>
          </div>`
       : `<span class="text-muted">Waiting</span>`;
     
@@ -339,17 +302,11 @@
   attachProcessingHandlers();
 }
 
-
-
-// REPLACE your old function with this:
+  // Move to Processing handler
 function attachQueueActionHandlers() {
   document.querySelectorAll(".move-card-button").forEach(btn => {
-    btn.addEventListener("click", (e) => {
-      e.preventDefault();
+    btn.addEventListener("click", async () => {
       const id = btn.dataset.id;
-      
-      // Get the queue number from the table row
-      const queueNo = btn.closest("tr").querySelector("td:first-child").textContent;
 
       if (!selectedWindow) {
         alert("⚠️ Please select a window first!");
@@ -397,9 +354,8 @@ function attachQueueActionHandlers() {
 
       if (error) return alert("❌ Failed to move to processing!");
 
-      // Show the popup
-      processingPopup.classList.add("is-visible");
-      backdrop.classList.add("is-visible");
+      await loadQueueData();
+      await loadProcessingData();
     });
   });
 }
@@ -409,12 +365,8 @@ function attachQueueActionHandlers() {
 
 function attachProcessingHandlers() {
   document.querySelectorAll(".finish-card-button").forEach(btn => {
-    btn.addEventListener("click", (e) => {
-      e.preventDefault();
+    btn.addEventListener("click", async () => {
       const id = btn.dataset.id;
-      
-      // Get the queue number from the table row
-      const queueNo = btn.closest("tr").querySelector("td:first-child").textContent;
 
       const { error } = await supabaseClient
       .from("queue")
@@ -427,68 +379,11 @@ function attachProcessingHandlers() {
 
       if (error) return alert("❌ Failed to mark as finished!");
 
-      // Show the popup
-      confirmPopup.classList.add("is-visible");
-      backdrop.classList.add("is-visible");
+      // Reload processing table
+      await loadProcessingData();
     });
   });
 }
-
-// --- ADDED: Handlers for Processing Popup ---
-processingPopupCloseBtn.addEventListener("click", (e) => {
-  e.preventDefault();
-  processingPopup.classList.remove("is-visible");
-  backdrop.classList.remove("is-visible");
-  delete processingPopup.dataset.currentId;
-});
-
-processingPopupConfirmBtn.addEventListener("click", async () => {
-  const id = processingPopup.dataset.currentId;
-  if (!id) return;
-
-  const { error } = await supabaseClient
-    .from("queue")
-    .update({ status: "processing" })
-    .eq("id", id);
-
-  if (error) return alert("❌ Failed to move to processing!");
-
-  // Hide popup and reload data
-  processingPopup.classList.remove("is-visible");
-  backdrop.classList.remove("is-visible");
-  delete processingPopup.dataset.currentId;
-  
-  await loadQueueData();
-  await loadProcessingData();
-});
-
-
-// --- ADDED: Handlers for Confirm Finish Popup ---
-confirmPopupCloseBtn.addEventListener("click", (e) => {
-  e.preventDefault();
-  confirmPopup.classList.remove("is-visible");
-  backdrop.classList.remove("is-visible");
-  delete confirmPopup.dataset.currentId;
-});
-
-confirmPopupConfirmBtn.addEventListener("click", async () => {
-  const id = confirmPopup.dataset.currentId;
-  if (!id) return;
-
-  const { error } = await supabaseClient
-    .from("queue")
-    .update({ status: "finished" })
-    .eq("id", id);
-
-  if (error) return alert("❌ Failed to mark as finished!");
-
-  // Hide popup and reload data
-  confirmPopup.classList.remove("is-visible");
-  backdrop.classList.remove("is-visible");
-  delete confirmPopup.dataset.currentId;
-  
-  await loadProcessingData();
-});
 
 async function loadFinishedData() {
   const finishedTbody = document.querySelector("#finished-section tbody");
@@ -520,67 +415,27 @@ finishedLogsBtn?.addEventListener("click", async () => {
   await loadFinishedData(); 
 });
 
-// Delete X handler
-function attachQueueDeleteHandlers() {
-  document.querySelectorAll(".delete-queue-button").forEach(btn => {
-    btn.addEventListener("click", (e) => {
-      e.preventDefault(); // Stop any link behavior
-      
-      const id = btn.dataset.id;
-      const name = btn.dataset.name;
 
-      // Store the ID on the popup itself
-      deletePopup.dataset.currentId = id; 
-      
-      // Set the name in the popup text
-      deletePopupName.textContent = name; 
+  // Delete X handler
+  function attachQueueDeleteHandlers() {
+    document.querySelectorAll(".delete-queue-button").forEach(btn => {
+      btn.addEventListener("click", async () => {
+        const id = btn.dataset.id;
+        if (!confirm("Are you sure you want to remove this person from the queue?")) return;
 
-      // Show the popup AND the backdrop
-      deletePopup.classList.add("is-visible");
-      backdrop.classList.add("is-visible");
+        const { error } = await supabaseClient
+          .from("queue")
+          .delete()
+          .eq("id", id);
+
+        if (error) alert("❌ Failed to remove from queue!");
+        else loadQueueData();
+      });
     });
-  });
-}
-
-// --- ADD THIS (Handles the "Delete" button inside the popup) ---
-deletePopupConfirmBtn.addEventListener("click", async () => {
-  const id = deletePopup.dataset.currentId;
-  if (!id) return; // Safety check
-
-  const { error } = await supabaseClient
-    .from("queue")
-    .delete()
-    .eq("id", id);
-
-  if (error) {
-    alert("❌ Failed to remove from queue!");
   }
-  
-  // Hide the popup and backdrop
-  deletePopup.classList.remove("is-visible");
-  backdrop.classList.remove("is-visible");
-  delete deletePopup.dataset.currentId; // Clear the stored ID
-  
-  if (!error) {
-    loadQueueData(); // Reload the queue *after* hiding
-  }
-});
 
-deletePopupCloseBtn.addEventListener("click", (e) => {
-  e.preventDefault();
-  deletePopup.classList.remove("is-visible");
-  backdrop.classList.remove("is-visible");
-  delete deletePopup.dataset.currentId; // Clear the stored ID
-});
 
-backdrop.addEventListener("click", () => {
-  deletePopup.classList.remove("is-visible");
-  logoutPopup.classList.remove("is-visible");
-  processingPopup.classList.remove("is-visible");
-  confirmPopup.classList.remove("is-visible");
-});
-
-    // Show FAQ Editor 
+    // Show FAQ Editor
     addButtons.forEach((btn) => {
       btn.addEventListener("click", () => {
         editorSection?.classList.remove("d-none");

@@ -130,63 +130,6 @@
         <button class="card-button no-margin" data-target="finished-section" id="finished-logs-btn"><i class="ph ph-scroll"></i>Finished Logs</button>
       </div>
 
-      <div id="overlay-backdrop"></div>
-
-
-      <div class="delete-popup-container" id="delete-popup">
-        <div class="x-container">
-          <a href=""><i class="ph ph-x"></i></a>
-        </div>
-        <div class="popup-content">
-          <h5 class="popup-text">Delete Ticket "<span class="id text">ID</span>"?</h5>
-          <p class="message-text">This action cannot be undone.</p>
-        </div>
-        <div class="button-container">
-          <button class="popup-btn-delete color-btn">Delete</button>
-        </div>
-      </div>
-
-      
-      <div class="logout-popup-container" id="logout-popup">
-        <div class="x-container">
-          <a href=""><i class="ph ph-x"></i></a>
-        </div>
-        <div class="popup-content">
-          <h5 class="popup-text">Do you want to exit as "<span class="id text">Window 1</span>"?</h5>
-          <p class="message-text">You'll need to choose your window again after.</p>
-        </div>
-        <div class="button-container">
-          <button class="popup-btn-delete color-btn">Logout</button>
-        </div>
-      </div>
-
-      <div class="processing-popup-container" id="processing-popup">
-        <div class="x-container">
-          <a href=""><i class="ph ph-x"></i></a>
-        </div>
-        <div class="popup-content">
-          <h5 class="popup-text">Confirm to move Ticket "<span class="id text">ID</span>" to the Processing table ?</h5>
-          <p class="message-text">This action cannot be undone.</p>
-        </div>
-        <div class="button-container">
-          <button class="popup-btn-delete color-btn-yes">Move to Processing</button>
-        </div>
-      </div>
-
-      <div class="confirm-popup-container" id="confirm-popup">
-        <div class="x-container">
-          <a href=""><i class="ph ph-x"></i></a>
-        </div>
-        <div class="popup-content">
-          <h5 class="popup-text">Confirm to finish processing</h5>
-          <h5 class="popup-text">Ticket "<span class="id text">ID</span>"?</h5>
-          <p class="message-text">This action cannot be undone.</p>
-        </div>
-        <div class="button-container">
-          <button class="popup-btn-delete color-btn-yes">Confirm</button>
-        </div>
-      </div>
-
 
     <div class="tables">
         <!-- Queue Management Section -->
@@ -227,6 +170,13 @@
           </div>
       </div>
 
+      <div class="delete-popup-container">
+        <div class="x-container">
+          <a href=""><i class="ph ph-x"></i></a>
+        </div>
+        
+      </div>
+
         <div id="processing-section" class="card shadow-sm fade-in d-none container-que table-container">
           <div class="table-name">
             <h2 class="title-table">Process</h2>
@@ -250,8 +200,6 @@
           </div>
         </div>
     </div>
-
-
 
     <!-- Finished Logs Section -->
     <div id="finished-section" class="card shadow-sm fade-in d-none container-que table-container">
