@@ -5,12 +5,8 @@ const path = require('path');
 const cookieParser = require('cookie-parser'); 
 
 
-
 const app = express();
 const PORT = process.env.PORT || 3000;
-
-
-
 
 
 app.use(express.json());
@@ -488,11 +484,30 @@ app.post("/api/queue", async (req, res) => {
   }
 });
 
+// Example server.js snippet
+app.post("/api/unlock-window", async (req, res) => {
+  const { windowName, tabId } = req.body;
 
+  if (!windowName || !tabId) return res.status(400).json({ error: "Missing windowName or tabId" });
 
+  try {
+    const { error } = await supabase
+      .from("active_windows")
+      .update({ is_active: false, current_tab_id: null })
+      .eq("window_name", windowName)
+      .eq("current_tab_id", tabId);
 
+    if (error) {
+      console.error("Unlock failed:", error);
+      return res.status(500).json({ error: error.message });
+    }
 
-
+    return res.status(200).json({ success: true });
+  } catch (err) {
+    console.error("Server error:", err);
+    return res.status(500).json({ error: err.message });
+  }
+});
 
 
 // 6. Server Start
