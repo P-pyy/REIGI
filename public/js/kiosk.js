@@ -66,50 +66,112 @@ document.addEventListener("DOMContentLoaded", () => {
   let steps = [];
   let selectedWindow = null;
 
-  // --- Hide everything initially ---
   queueDashboardHeader.classList.add("d-none");
   enrollmentSection.classList.add("d-none");
   processingSection.classList.add("d-none");
 
-  // --- Auto Resume Active Window ---
-  if (savedWindow) {
-    console.log("Auto-resuming window:", savedWindow);
-    selectedWindow = savedWindow;
 
-    // Hide selection only if user already confirmed before
-    windowSelectSection.classList.add("d-none");
-    faqGrid?.classList.add("d-none");
-    editorSection?.classList.add("d-none");
-    documentRequestSection?.classList.add("d-none");
-
-    // Show queue sections
-    queueDashboardHeader.classList.remove("d-none");
-    enrollmentSection.classList.remove("d-none");
-    processingSection.classList.remove("d-none");
-    document.getElementById("back-to-window-select").classList.remove("d-none");
-
-    if (windowNumberText) windowNumberText.textContent = selectedWindow;
-
-    // Update status pills
-    windowStatusPills.forEach((pill, index) => {
-      const pillWindow = `WINDOW ${index + 1}`;
-      const light = pill.querySelector(".status-light");
-      if (savedWindow === pillWindow) {
-        light.classList.remove("offline");
-        light.classList.add("online");
-        pill.classList.add("active-status");
-      } else {
-        light.classList.remove("online");
-        light.classList.add("offline");
-        pill.classList.remove("active-status");
-      }
-    });
-
-    // Load queue data
-    loadQueueData();
-    loadProcessingData();
+  let tabId = localStorage.getItem("tabId");
+  if (!tabId) {
+      tabId = crypto.randomUUID();
+      localStorage.setItem("tabId", tabId);
   }
 
+  if (savedWindow) {
+    proceedButton?.classList.add("d-none");
+    windowButtons.forEach(btn => btn.classList.add("d-none"));
+}
+
+
+  //  Resume Active Window ---
+  window.addEventListener("load", async () => {
+    const savedWindow = localStorage.getItem("activeWindow");
+    if (!savedWindow) return; // No active window, keep selection UI visible
+
+    try {
+        const { data: windowData } = await supabaseClient
+            .from("active_windows")
+            .select("*")
+            .eq("window_name", savedWindow)
+            .single();
+
+        if (!windowData) {
+            localStorage.removeItem("activeWindow");
+            return;
+        }
+
+        // If another tab was using it, maybe alert user or allow takeover
+        if (windowData.current_tab_id !== tabId) {
+            console.log("Another tab might be using this window, but resuming anyway...");
+        }
+
+        selectedWindow = savedWindow;
+
+        // ✅ HIDE selection UI immediately
+        windowSelectSection.classList.add("d-none");
+        faqGrid?.classList.add("d-none");
+        editorSection?.classList.add("d-none");
+
+        // ✅ SHOW queue UI
+        showQueueUI(selectedWindow);
+
+        // Update DB with current tab
+        await supabaseClient
+            .from("active_windows")
+            .update({ current_tab_id: tabId, is_active: true })
+            .eq("window_name", selectedWindow);
+
+    } catch (err) {
+        console.error("Error restoring window:", err);
+        localStorage.removeItem("activeWindow");
+    }
+});
+
+//   window.addEventListener("load", async () => {
+//   const savedWindow = localStorage.getItem("activeWindow");
+//   if (!savedWindow) return;
+
+//   try {
+//     const { data: windowData } = await supabaseClient
+//       .from("active_windows")
+//       .select("*")
+//       .eq("window_name", savedWindow)
+//       .single();
+
+//     if (!windowData) {
+//       localStorage.removeItem("activeWindow");
+//       return;
+//     }
+
+//     // If another tab was using it, maybe alert user or allow takeover
+//     if (windowData.current_tab_id !== tabId) {
+//       console.log("Another tab might be using this window, but resuming anyway...");
+//     }
+
+//     selectedWindow = savedWindow;
+//     showQueueUI(selectedWindow);
+
+//     // Update DB with current tab
+//     await supabaseClient
+//       .from("active_windows")
+//       .update({ current_tab_id: tabId, is_active: true })
+//       .eq("window_name", selectedWindow);
+
+//   } catch (err) {
+//     console.error("Error restoring window:", err);
+//     localStorage.removeItem("activeWindow");
+//   }
+// });
+
+
+async function updateActiveWindow() {
+  if (selectedWindow) {
+    await supabaseClient
+      .from("active_windows")
+      .update({ current_tab_id: tabId, is_active: true })
+      .eq("window_name", selectedWindow);
+  }
+}
 
 
   // Sidebar Toggle
@@ -123,7 +185,7 @@ document.addEventListener("DOMContentLoaded", () => {
     window.dispatchEvent(new Event("resize"));
   });
 
-  // Logout Handler
+
   logoutBtn?.addEventListener("click", async () => {
     console.log("Logout clicked ✅");
     const { error } = await supabaseClient.auth.signOut();
@@ -131,7 +193,7 @@ document.addEventListener("DOMContentLoaded", () => {
     else window.location.href = "/admin/login";
   });
 
-  // Section Toggle Logic
+  // Section Toggle 
   document.querySelectorAll(".card-button").forEach((button) => {
     button.addEventListener("click", () => {
       if (button.id === "proceed-button") return;
@@ -153,15 +215,41 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  // Handle window selection
-  windowButtons.forEach((btn, index) => {
-    btn.addEventListener("click", () => {
-      windowButtons.forEach(b => b.classList.remove("active-window"));
-      btn.classList.add("active-window");
-      selectedWindow = `WINDOW ${index + 1}`;
-      console.log("Selected:", selectedWindow);
-    });
+
+
+// Optional: Unlock stale windows on page load (older than 15s)
+async function cleanupStaleWindows() {
+  const fifteenSecondsAgo = new Date(Date.now() - 15000).toISOString();
+  await supabaseClient
+    .from("active_windows")
+    .update({ is_active: false, current_tab_id: null })
+    .lt("last_heartbeat", fifteenSecondsAgo);
+}
+
+// Call cleanup on page load
+cleanupStaleWindows();
+
+
+// Unlock the current window
+function unlockWindow() {
+  if (!selectedWindow) return;
+
+  const url = `${window.location.origin}/api/unlock-window`;
+  const payload = JSON.stringify({
+    window_name: selectedWindow,
+    current_tab_id: tabId
   });
+
+  navigator.sendBeacon(url, payload);
+}
+
+
+// Unlock on logout
+logoutBtn.addEventListener("click", async () => {
+  await unlockWindow();
+  window.location.href = "/admin/login";
+});
+
 
   // Proceed button handler
   proceedButton.addEventListener("click", () => {
@@ -175,7 +263,7 @@ document.addEventListener("DOMContentLoaded", () => {
     confirmationModal.classList.remove("d-none");
   });
 
-  // Confirmation modal controls
+  // Confirmation modal
   const _confirmationModal = document.getElementById("window-confirmation-modal");
   const _closeConfirmBtn = document.getElementById("confirmation-close-btn");
   const _confirmBtn = document.getElementById("confirmation-btn");
@@ -213,8 +301,136 @@ document.addEventListener("DOMContentLoaded", () => {
   loadProcessingData();
 });
 
+// ==========================
+// HANDLE WINDOW BUTTON CLICK
+// ==========================
+windowButtons.forEach((btn, index) => {
+  btn.addEventListener("click", async () => {
+    const windowName = `Window ${index + 1}`;
 
-  // --- REPLACED: Back button now shows #logout-popup ---
+    try {
+      const { data, error } = await supabaseClient
+    .from("active_windows")
+    .update({
+      is_active: true,
+      current_tab_id: tabId,
+      last_heartbeat: new Date().toISOString()
+    })
+    .eq("window_name", windowName)
+    .is("current_tab_id", null) // <-- use .is() instead of .eq()
+    .select();
+
+
+      if (error || !data || data.length === 0) {
+        return alert(`${windowName} is already in use by another tab!`);
+      }
+
+      // Unlock previously selected window
+      if (selectedWindow && selectedWindow !== windowName) {
+        await unlockWindow(selectedWindow);
+      }
+
+      selectedWindow = windowName;
+      localStorage.setItem("activeWindow", selectedWindow);
+
+      // Update UI
+      windowButtons.forEach(b => b.classList.remove("active-window"));
+      btn.classList.add("active-window");
+      updateStatusPills(selectedWindow);
+
+      console.log("Selected and locked:", selectedWindow);
+
+    } catch (err) {
+      console.error("Error locking window:", err);
+    }
+  });
+});
+
+// ==========================
+// UPDATE STATUS PILLS UI
+// ==========================
+function updateStatusPills(activeWindow) {
+  windowStatusPills.forEach((pill, idx) => {
+    const light = pill.querySelector(".status-light");
+    const pillWindow = `Window ${idx + 1}`;
+    if (activeWindow?.toLowerCase() === pillWindow.toLowerCase()) {
+      light.classList.remove("offline");
+      light.classList.add("online");
+      pill.classList.add("active-status");
+    } else {
+      light.classList.remove("online");
+      light.classList.add("offline");
+      pill.classList.remove("active-status");
+    }
+  });
+}
+
+// ==========================
+// HEARTBEAT (KEEP WINDOW ALIVE)
+// ==========================
+setInterval(async () => {
+  if (!selectedWindow) return;
+
+  try {
+    await supabaseClient
+      .from("active_windows")
+      .update({ last_heartbeat: new Date().toISOString() })
+      .eq("window_name", selectedWindow)
+      .eq("current_tab_id", tabId);
+  } catch (err) {
+    console.error("Heartbeat failed:", err);
+  }
+}, 5000); // every 5 seconds
+
+// ==========================
+// UNLOCK WINDOW FUNCTION
+// ==========================
+async function unlockWindow(windowName = selectedWindow) {
+  if (!windowName) return;
+
+  try {
+    await supabaseClient
+      .from("active_windows")
+      .update({ is_active: false, current_tab_id: null })
+      .eq("window_name", windowName)
+      .eq("current_tab_id", tabId);
+  } catch (err) {
+    console.error("Failed to unlock window:", err);
+  }
+}
+
+// ==========================
+// AUTO-UNLOCK ON TAB CLOSE/REFRESH
+// ==========================
+window.addEventListener("beforeunload", () => {
+  if (!selectedWindow) return;
+
+  const payload = JSON.stringify({ windowName: selectedWindow, tabId });
+  const blob = new Blob([payload], { type: 'application/json' });
+
+  navigator.sendBeacon("/api/unlock-window", blob);
+});
+
+
+// ==========================
+// SHOW QUEUE SECTION AFTER PROCEED
+// ==========================
+function showQueueUI(windowName) {
+  windowSelectSection.classList.add("d-none");
+  queueDashboardHeader.classList.remove("d-none");
+  enrollmentSection.classList.remove("d-none");
+  processingSection.classList.remove("d-none");
+  document.getElementById("back-to-window-select").classList.remove("d-none");
+
+  if (windowNumberText) windowNumberText.textContent = windowName;
+
+  updateStatusPills(windowName);
+
+  loadQueueData();
+  loadProcessingData();
+}
+
+
   const backToWindowSelectBtn = document.getElementById("back-to-window-select");
   backToWindowSelectBtn?.addEventListener("click", (e) => {
     e.preventDefault();
@@ -232,11 +448,31 @@ document.addEventListener("DOMContentLoaded", () => {
     backdrop.classList.remove("is-visible");
   });
 
-    logoutPopupConfirmBtn.addEventListener("click", () => {
-    // User chose to log out of this window
+  logoutPopupConfirmBtn.addEventListener("click", async () => {
+    if (selectedWindow) {
+        try {
+            await unlockWindow(); // wait for DB to unlock
+        } catch (err) {
+            console.error("Failed to unlock window:", err);
+        }
+    }
+
+    // Clear tables
+    const tables = [
+        enrollmentTableBody,
+        document.querySelector("#processing-section tbody"),
+        document.querySelector("#finished-section tbody"),
+        kioskTableBody
+    ];
+
+    tables.forEach(tbody => {
+        if (tbody) tbody.innerHTML = "";
+    });
+
     localStorage.removeItem("activeWindow");
     window.location.reload();
-  });
+});
+
 
 
 
@@ -257,7 +493,6 @@ document.addEventListener("DOMContentLoaded", () => {
     data.forEach((row, index) => {
       const tr = document.createElement("tr");
       
-      // --- UPDATED: Added data-name and data-queue-no to move button ---
       let actionContent = index === 0
         ? `<div class="d-flex gap-2 align-items-center">
              <button class="btn btn-sm btn-primary move-card-button" data-id="${row.id}" data-name="${row.full_name}" data-queue-no="${row.queue_no}">Move to Processing</button>
@@ -279,7 +514,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   const style = document.createElement('style');
-  style.innerHTML = `...`; // Your style tag
+  style.innerHTML = `...`; 
   document.head.appendChild(style);
 
   async function loadProcessingData() {
@@ -296,8 +531,7 @@ document.addEventListener("DOMContentLoaded", () => {
     processingTbody.innerHTML = "";
     data.forEach(row => {
       const tr = document.createElement("tr");
-      
-      // --- UPDATED: Added data-name and data-queue-no to finish button ---
+
       tr.innerHTML = `
         <td>${row.queue_no}</td>
         <td>${row.full_name}</td>
@@ -313,7 +547,7 @@ document.addEventListener("DOMContentLoaded", () => {
     attachProcessingHandlers();
   }
 
-  // --- REPLACED: Move to Processing handler (now shows popup) ---
+  // Move to Processing handler
   function attachQueueActionHandlers() {
   document.querySelectorAll(".move-card-button").forEach(btn => {
     btn.addEventListener("click", async (e) => {
@@ -322,7 +556,6 @@ document.addEventListener("DOMContentLoaded", () => {
       const name = btn.dataset.name;
       const queueNo = btn.dataset.queueNo;
 
-      // --- NEW: Check if this window already has a processing item ---
       const { data: processingData, error } = await supabaseClient
         .from("queue")
         .select("*")
@@ -338,11 +571,9 @@ document.addEventListener("DOMContentLoaded", () => {
         return alert(`⚠️ ${selectedWindow} already has a processing item. Complete it first!`);
       }
 
-      // Set data on the popup
       processingPopup.dataset.currentId = id;
       processingPopupName.textContent = `#${queueNo} (${name})`;
-      
-      // Show the popup
+
       processingPopup.classList.add("is-visible");
       backdrop.classList.add("is-visible");
     });
@@ -350,7 +581,7 @@ document.addEventListener("DOMContentLoaded", () => {
 }
 
 
-  // --- REPLACED: Finish button handler (now shows popup) ---
+  // Finish button handler
   function attachProcessingHandlers() {
     document.querySelectorAll(".finish-card-button").forEach(btn => {
       btn.addEventListener("click", (e) => {
@@ -359,18 +590,16 @@ document.addEventListener("DOMContentLoaded", () => {
         const name = btn.dataset.name;
         const queueNo = btn.dataset.queueNo;
 
-        // Set data on the popup
         confirmPopup.dataset.currentId = id;
         confirmPopupName.textContent = `#${queueNo} (${name})`;
 
-        // Show the popup
         confirmPopup.classList.add("is-visible");
         backdrop.classList.add("is-visible");
       });
     });
   }
 
-  // --- NEW: Handlers for Processing Popup ---
+  // Handlers for Processing Popup ---
   processingPopupCloseBtn.addEventListener("click", (e) => {
     e.preventDefault();
     processingPopup.classList.remove("is-visible");
@@ -382,7 +611,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const id = processingPopup.dataset.currentId;
     if (!id) return;
 
-    // This is your *original* logic
     const { error } = await supabaseClient
     .from("queue")
     .update({ 
@@ -395,7 +623,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (error) return alert("❌ Failed to move to processing!");
 
-    // Hide popup and reload data
     processingPopup.classList.remove("is-visible");
     backdrop.classList.remove("is-visible");
     delete processingPopup.dataset.currentId;
@@ -404,7 +631,7 @@ document.addEventListener("DOMContentLoaded", () => {
     await loadProcessingData();
   });
 
-  // --- NEW: Handlers for Confirm Finish Popup ---
+  // Handlers for Confirm Finish Popup ---
   confirmPopupCloseBtn.addEventListener("click", (e) => {
     e.preventDefault();
     confirmPopup.classList.remove("is-visible");
@@ -416,7 +643,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const id = confirmPopup.dataset.currentId;
     if (!id) return;
 
-    // This is your *original* logic
     const { error } = await supabaseClient
       .from("queue")
       .update({ status: "finished" })
@@ -424,7 +650,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (error) return alert("❌ Failed to mark as finished!");
 
-    // Hide popup and reload data
     confirmPopup.classList.remove("is-visible");
     backdrop.classList.remove("is-visible");
     delete confirmPopup.dataset.currentId;
@@ -465,7 +690,6 @@ document.addEventListener("DOMContentLoaded", () => {
     finishedTbody.appendChild(tr);
   });
 
-  // Reattach delete handlers since new buttons are added
   attachQueueDeleteHandlers();
 }
 
@@ -475,29 +699,26 @@ document.addEventListener("DOMContentLoaded", () => {
     await loadFinishedData();
   });
 
-  // --- REPLACED: Delete X handler (now shows popup) ---
+  // REPLACED: Delete handler 
   function attachQueueDeleteHandlers() {
     document.querySelectorAll(".delete-queue-button").forEach(btn => {
       btn.addEventListener("click", (e) => {
-        e.preventDefault(); // Stop any link behavior
+        e.preventDefault();
         
         const id = btn.dataset.id;
         const name = btn.dataset.name;
 
-        // Store the ID on the popup itself
         deletePopup.dataset.currentId = id;
         
-        // Set the name in the popup text
         deletePopupName.textContent = name;
 
-        // Show the popup AND the backdrop
         deletePopup.classList.add("is-visible");
         backdrop.classList.add("is-visible");
       });
     });
   }
 
-  // --- NEW: Handlers for Delete Popup ---
+  // Handlers for Delete Popup ---
   deletePopupConfirmBtn.addEventListener("click", async () => {
     const id = deletePopup.dataset.currentId;
     if (!id) return; 
@@ -511,7 +732,6 @@ document.addEventListener("DOMContentLoaded", () => {
       alert("❌ Failed to remove from queue!");
     }
 
-    // Hide the popup and backdrop
     deletePopup.classList.remove("is-visible");
     backdrop.classList.remove("is-visible");
     delete deletePopup.dataset.currentId;
@@ -528,7 +748,6 @@ document.addEventListener("DOMContentLoaded", () => {
     delete deletePopup.dataset.currentId;
   });
 
-  // --- NEW: Universal Backdrop Click Handler ---
   backdrop.addEventListener("click", () => {
     // This will close ANY open modal
     deletePopup.classList.remove("is-visible");
@@ -537,10 +756,7 @@ document.addEventListener("DOMContentLoaded", () => {
     confirmPopup.classList.remove("is-visible");
   });
 
-  // ... (rest of your file: Show FAQ Editor, Add/Render Requirements, etc.) ...
-  // ... (These functions are not related to the popups and are fine) ...
 
-  
     // Show FAQ Editor 
     addButtons.forEach((btn) => {
       btn.addEventListener("click", () => {
@@ -840,6 +1056,8 @@ document.addEventListener("DOMContentLoaded", () => {
         });
       });
     }
+
+
 
   // Realtime Updates
   supabaseClient.channel("realtime-queue")
