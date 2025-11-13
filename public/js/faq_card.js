@@ -51,7 +51,7 @@ import { supabaseClient } from '/js/supabase-client.js';
     // Call the function
     loadFaq();
 
-    // Handle Go Back button
-    document.querySelector(".go-back-btn").addEventListener("click", () => {
-      window.location.href = "/faq";
-    });
+  // Handle Go Back button
+  document.querySelector(".go-back-btn").addEventListener("click", () => {
+  history.back();
+});
