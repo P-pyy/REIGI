@@ -172,11 +172,47 @@
         <!-- Date & Time -->
         <input type="date" class="form-control mb-3">
 
-        <!-- Details -->
-        <textarea class="form-control mb-3" rows="4" placeholder="Put the details here..."></textarea>
+        <div class="requirements">
+          <span class="section-text">Requirements</span>
+          <div class="fill-up">
+          <!-- FAQ Post Title -->
+            <input id="requirementInput" type="text" class="form-control" placeholder="Insert a Requirement here">
+            <i class="ph-plus ph-plush"></i>
+          </div>
+        </div>
+
+        <div class="requirements">
+          <div class="fill">
+            <div class="fill-upper">
+            <!-- FAQ Post Title -->
+              <span>Added Requirement</span>
+            </div>
+            <i class="ph-minus ph-minos"></i>
+          </div>
+        </div>
+        
+
+        <div class="requirements">
+          <span class="section-text">Step-by-step Process</span>
+          <div class="fill-up">
+          <!-- FAQ Post Title -->
+            <input id="stepProcessInput" type="text" class="form-control" placeholder="Insert a Step process here">
+            <i class="ph-plus ph-plush"></i>
+          </div>
+        </div>
+
+        <div class="requirements">
+          <div class="fill">
+            <div class="fill-upper">
+            <!-- FAQ Post Title -->
+              <span>Added Process</span>
+            </div>
+              <i class="ph-minus ph-minos"></i>
+          </div>
+        </div>
 
         <!-- Image Upload -->
-        <div class="mb-4">
+        <div class="mb-4 img-upload-container">
           <div id="uploadArea"
             class="image-upload-area text-center d-flex flex-column align-items-center justify-content-center"
             onclick="document.getElementById('imageInput').click()">
@@ -200,33 +236,43 @@
     </div>
 
     <!-- Post Preview -->
-    <div class="col-md-6">
-      <!-- Title Added -->
-      <h4 class="fw-bold mb-3 text-uppercase text-primary">POST PREVIEW</h4>
 
-      <div class="faq-preview p-3 shadow-sm mb-3 rounded bg-white">
-        <strong>FREQUENTLY ASKED QUESTIONS:</strong>
+    
+    <div class="col-md-6 preview-card">
+      <!-- Title Added -->
+      <h4 class="title-preview">Preview</h4>
+
+      <div class="faq-preview p-3">
+        <p class="directions">Requirements</p>
         <ol class="mt-2 mb-0">
           <li class="faq-item">
-            1. How to get my Transcript of Records (TOR)?
-            <i class="ph-bold ph-arrow-up-right faq-icon"></i>
+            Requirement 1
           </li>
         </ol>
       </div>
 
-      <div class="faq-preview-card p-4 shadow-sm rounded bg-white">
-        <h5 class="fw-bold preview-title">Shifting / Program Transfer</h5>
-        <p class="text-center mb-1 text-muted small">Updated: MM/DD/YY</p>
-        <p class="text-center mb-3 text-muted small">By: URSAC Registrar</p>
+      <div class="faq-preview-card p-4 rounded ">
+        <p class="mb-1 directions">Check the boxes that you’ve completed to proceed:</p>
+        <p class="text-center mb-3 text-muted small"></p>
 
         <!-- Scrollable Paragraph -->
-        <div class="preview-text">
-          <p>
-            "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua..."
-          </p>
-          <p>
-            Section 1.10.32 of "de Finibus Bonorum et Malorum", written by Cicero in 45 BC ...
-          </p>
+        <div class="preview-text checkbox-wrapper-4">
+            <input class="inp-cbx" id="step" type="checkbox"/>
+            <label class="cbx" for="step">
+              <span>
+                <svg width="12px" height="10px">
+                  <use xlink:href="#check-4"></use>
+                </svg>
+              </span>
+            </label>
+              <svg class="inline-svg">
+                <symbol id="check-4" viewbox="0 0 12 10">
+                  <polyline points="1.5 6 4.5 9 10.5 1"></polyline>
+                </symbol>
+              </svg>
+            <p class="checkbox-content">
+              Step process directions
+            </p>
         </div>
 
         <img class="preview-image mt-2" style="max-width:100%; display:none;" alt="FAQ Image Preview">
@@ -234,7 +280,6 @@
     </div>
   </div>
 </div>
-
 
     </div>
   </main>
