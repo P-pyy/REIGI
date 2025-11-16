@@ -623,3 +623,13 @@ body {
   display: flex;
   flex-direction: column;
 }
+
+.faq-category-title {
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.faq-preview-question {
+  background-color: #F3F4F8;
+  border-radius: 8px;
+}
