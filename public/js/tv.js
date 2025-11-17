@@ -45,8 +45,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (processingError) return console.error(processingError);
 
     // Update window numbers
-    const window1Ticket = processingData.find(d => d.window_name === "WINDOW 1");
-    const window2Ticket = processingData.find(d => d.window_name === "WINDOW 2");
+    const window1Ticket = processingData.find(d => d.window_name?.toLowerCase() === "window 1".toLowerCase());
+    const window2Ticket = processingData.find(d => d.window_name?.toLowerCase() === "window 2".toLowerCase());
+
 
     window1Number.textContent = window1Ticket ? window1Ticket.queue_no : 0;
     window2Number.textContent = window2Ticket ? window2Ticket.queue_no : 0;
