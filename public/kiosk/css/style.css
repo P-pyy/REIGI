@@ -4,8 +4,8 @@
   box-sizing: border-box;
   font-family: 'Montserrat', sans-serif;
   text-decoration: none;
+  
 }
-
 
 body {
   background: #f7f8fc;
@@ -13,6 +13,10 @@ body {
   /* display: flex; */
   justify-content: space-between;
   padding: 10rem;
+}
+
+.kiosk-body {
+  height: 100vh !important;
 }
 
 .preload * {
@@ -24,19 +28,19 @@ body {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  width: 700px;
+  width: 100%;
   gap: 2rem;
 }
 
 .search-title {
-  font-size: 4rem;
+  font-size: 5.5rem;
   color: #0154A4;
 }
 
 .input-voice-container {
   display: flex;
   gap: 1rem;
-  width: 100%;
+  width: 1000px;
 }
 
 .form-control {
@@ -55,7 +59,7 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-
+  height: 70vh;
 }
 
 .voice-btn {
@@ -215,9 +219,10 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 1rem;
+  gap: 1.5rem;
   background: rgba(239, 240, 248, 1);
-  width: 250px;
+  width: 300px;
+  height: 100px;
   padding: 1.5rem;
   border-radius: 20px;
 }
