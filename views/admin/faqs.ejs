@@ -70,7 +70,8 @@
                     <th>ID</th>
                     <th>Question Title</th>
                     <th>FAQ Post Title</th>
-                    <th>Question Details</th>
+                    <th>Requirements</th>
+                    <th>Steps</th>
                     <th>Image</th>
                     <th>Date & Time</th>
                     <th>Actions</th>
@@ -102,7 +103,8 @@
                     <th>ID</th>
                     <th>Question Title</th>
                     <th>FAQ Post Title</th>
-                    <th>Question Details</th>
+                    <th>Requirements</th>
+                    <th>Steps</th>
                     <th>Image</th>
                     <th>Date & Time</th>
                     <th>Actions</th>
@@ -134,7 +136,8 @@
                     <th>ID</th>
                     <th>Question Title</th>
                     <th>FAQ Post Title</th>
-                    <th>Question Details</th>
+                    <th>Requirements</th>
+                    <th>Steps</th>
                     <th>Image</th>
                     <th>Date & Time</th>
                     <th>Actions</th>
@@ -181,10 +184,9 @@
           </div>
         </div>
 
-        <div class="requirements">
+        <div class="requirements" id="requirements-container">
           <div class="fill">
             <div class="fill-upper">
-            <!-- FAQ Post Title -->
               <span>Added Requirement</span>
             </div>
             <i class="ph-minus ph-minos"></i>
@@ -201,13 +203,12 @@
           </div>
         </div>
 
-        <div class="requirements">
+        <div class="requirements" id="steps-container">
           <div class="fill">
             <div class="fill-upper">
-            <!-- FAQ Post Title -->
               <span>Added Process</span>
             </div>
-              <i class="ph-minus ph-minos"></i>
+            <i class="ph-minus ph-minos"></i>
           </div>
         </div>
 
@@ -246,23 +247,24 @@
         <p class="faq-category-title">FREQUENTLY ASKED QUESTIONS:</p>
         <ol class="mt-2 mb-0">
           <li class="faq-item">
-            Requirement 1
           </li>
         </ol>
       </div>
 
       <div class="faq-preview p-3">
         <p class="directions">Requirements</p>
-        <ol class="mt-2 mb-0">
+        <ol class="mt-2 mb-0 requirementsPreview" style="padding-left:20px;">
           <li class="faq-item">
-            Requirement 1
           </li>
         </ol>
       </div>
 
       <div class="faq-preview-card p-4 rounded ">
-        <p class="mb-1 directions">Check the boxes that you’ve completed to proceed:</p>
+        <p class="mb-1 directions"></p>
         <p class="text-center mb-3 text-muted small"></p>
+
+          <!-- Steps Preview Container -->
+          <div class="steps-preview-container"></div>
 
         <!-- Scrollable Paragraph -->
         <div class="preview-text checkbox-wrapper-4">
