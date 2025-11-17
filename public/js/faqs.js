@@ -14,10 +14,15 @@ import { supabaseClient } from '/js/supabase-client.js';
 })();
 
 // =======================
-// Section Toggle
+// MAIN APP LOGIC
 // =======================
-
 document.addEventListener("DOMContentLoaded", () => {
+  
+  // --- ALL YOUR CODE MUST GO INSIDE HERE ---
+
+  // =======================
+  // DOM Elements
+  // =======================
   const toggleBtn = document.querySelector(".toggle-btn");
   const sidebar = document.querySelector(".sidebar");
   const mainContent = document.querySelector(".main-content");
@@ -26,6 +31,37 @@ document.addEventListener("DOMContentLoaded", () => {
   const chartContainer = document.querySelector(".chart-container");
   const faqCard = document.querySelector(".faq-card");
 
+  const faqGrid = document.getElementById("faq-grid");
+  const enrollmentSection = document.getElementById("enrollment-section");
+  const documentRequestSection = document.getElementById("document-request-section");
+  const graduationClearanceSection = document.getElementById("graduation-clearance-section");
+  const faqEditorSection = document.getElementById("faq-editor-section");
+
+  // Inputs
+  const questionTitleInput = document.querySelector("#faq-editor-section input[placeholder='Question Title']");
+  const faqPostTitleInput = document.querySelector("#faq-editor-section input[placeholder='FAQ Post Title']");
+  const dateInput = document.querySelector("#faq-editor-section input[type='date']");
+  const detailsTextarea = document.querySelector("#faq-editor-section textarea"); // This is missing in your HTML, will be null
+  const imageInput = document.querySelector("#faq-editor-section input[type='file']");
+
+  // Preview elements
+  const previewQuestionItem = document.querySelector(".faq-preview .faq-item");
+  const previewTitle = document.querySelector(".faq-preview-card .preview-title");
+  const previewDate = document.querySelector(".faq-preview-card .text-center.mb-1.text-muted.small");
+  const previewText = document.querySelector(".faq-preview-card .preview-text");
+  const previewImage = document.querySelector(".faq-preview-card .preview-image");
+
+  const faqSubmitBtn = document.querySelector("#faq-editor-section button.btn-primary");
+
+  // =======================
+  // Globals
+  // =======================
+  let currentCategory = null;
+  let editingId = null; // track edit vs add
+
+  // =======================
+  // Sidebar & Logout
+  // =======================
   if (toggleBtn && sidebar) {
     toggleBtn.addEventListener("click", () => {
       sidebar.classList.toggle("small-sidebar");
@@ -38,7 +74,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-   // ✅ Logout handler
   const logoutBtn = document.querySelector(".logout");
   if (logoutBtn) {
     logoutBtn.addEventListener("click", async () => {
@@ -48,421 +83,367 @@ document.addEventListener("DOMContentLoaded", () => {
       else window.location.href = "/admin/login";
     });
   }
-});
-const faqGrid = document.getElementById("faq-grid");
 
-document.querySelectorAll(".card-button").forEach((button) => {
-  button.addEventListener("click", () => {
-    const target = button.getAttribute("data-target");
-    if (target) {
+  // =======================
+  // Section Toggle
+  // =======================
+  document.querySelectorAll(".card-button").forEach((button) => {
+    button.addEventListener("click", () => {
+      const target = button.getAttribute("data-target");
+      if (target) {
+        faqGrid.classList.add("d-none");
+        enrollmentSection.classList.add("d-none");
+        documentRequestSection.classList.add("d-none");
+        graduationClearanceSection.classList.add("d-none");
+        faqEditorSection.classList.add("d-none");
+
+        document.getElementById(target).classList.remove("d-none");
+
+        const category = target.replace("-section", "");
+        loadFaqsForCategory(category);
+      }
+    });
+  });
+
+  // =======================
+  // Add Question Button
+  // =======================
+  document.querySelectorAll(".add-question-btn").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const parentSection = btn.closest("div[id$='section']");
+      if (parentSection) {
+        currentCategory = parentSection.id.replace("-section", "");
+        // This is the logic you wanted:
+        // 1. Hide the parent section (the active table)
+        parentSection.classList.add("d-none"); 
+      }
+
+      // Reset form + preview every time Add is clicked
+      resetFaqForm();
+      editingId = null;
+      faqSubmitBtn.textContent = "Add FAQ";
+
+      // 2. Hide all other sections (just in case)
       faqGrid.classList.add("d-none");
-      document
-        .querySelectorAll(
-          "#enrollment-section, #document-request-section, #graduation-clearance-section"
-        )
-        .forEach((sec) => sec.classList.add("d-none"));
+      enrollmentSection.classList.add("d-none");
+      documentRequestSection.classList.add("d-none");
+      graduationClearanceSection.classList.add("d-none");
 
-      document.getElementById(target).classList.remove("d-none");
+      // 3. Show the editor
+      faqEditorSection.classList.remove("d-none");
+    });
+  });
 
-      const category = target.replace("-section", ""); // ✅ keep same as ID
-      loadFaqsForCategory(category);
+
+  // =======================
+  // FAQ Editor Live Preview
+  // =======================
+
+  // 1. Question Title → Preview list
+  if (questionTitleInput && previewQuestionItem) {
+    questionTitleInput.addEventListener("input", () => {
+      previewQuestionItem.innerHTML =
+        (questionTitleInput.value.trim() !== ""
+          ? `1. ${questionTitleInput.value}`
+          : "1. How to get my Transcript of Records (TOR)?") +
+        ` <i class="ph-bold ph-arrow-up-right faq-icon"></i>`;
+    });
+  }
+
+  // 2. FAQ Post Title → Preview title
+  if (faqPostTitleInput && previewTitle) {
+    faqPostTitleInput.addEventListener("input", () => {
+      previewTitle.textContent =
+        faqPostTitleInput.value.trim() !== ""
+          ? faqPostTitleInput.value
+          : "Shifting / Program Transfer";
+    });
+  }
+
+  // 3. Date → Preview date
+  if (dateInput && previewDate) {
+    dateInput.addEventListener("input", () => {
+      if (dateInput.value) {
+        const d = new Date(dateInput.value);
+        const formatted = d.toLocaleDateString("en-US", {
+          month: "2-digit",
+          day: "2-digit",
+          year: "2-digit"
+        });
+        previewDate.textContent = `Updated: ${formatted}`;
+      } else {
+        previewDate.textContent = "Updated: MM/DD/YY";
+      }
+    });
+  }
+
+  // 4. Details → Preview text (Note: <textarea> is missing from your HTML)
+  if (detailsTextarea && previewText) {
+    detailsTextarea.addEventListener("input", () => {
+      if (detailsTextarea.value.trim() !== "") {
+        const paragraphs = detailsTextarea.value
+          .split("\n")
+          .filter(p => p.trim() !== "")
+          .map(p => `<p>${p}</p>`)
+          .join("");
+        previewText.innerHTML = paragraphs;
+      } else {
+        previewText.innerHTML = `
+          <p>"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua..."</p>
+          <p>Section 1.10.32 of "de Finibus Bonorum et Malorum", written by Cicero in 45 BC ...</p>
+        `;
+      }
+    });
+  }
+
+  // 5. Image → Preview image
+  if (imageInput && previewImage) {
+    imageInput.addEventListener("change", () => {
+      const file = imageInput.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = e => {
+          previewImage.src = e.target.result;
+          previewImage.style.display = "block";
+        };
+        reader.readAsDataURL(file);
+      } else {
+        previewImage.src = "";
+        previewImage.style.display = "none";
+      }
+    });
+  }
+
+  // =======================
+  // Load FAQs
+  // =======================
+  async function loadFaqsForCategory(category) {
+    currentCategory = category;
+    const { data, error } = await supabaseClient
+      .from("faqs")
+      .select("*")
+      .eq("category", category)
+      .order("created_at", { ascending: true });
+
+    if (error) {
+      console.error("Error loading FAQs:", error.message);
+      return;
     }
-  });
-});
 
-// =======================
-// Add Question Button
-// =======================
-document.querySelectorAll(".add-question-btn").forEach((btn) => {
-  btn.addEventListener("click", () => {
-    const parentSection = btn.closest("div[id$='section']");
-    if (parentSection) {
-      currentCategory = parentSection.id.replace("-section", "");
-    }
+    const tableBody = document.querySelector(`#${category}-section tbody`);
+    if (!tableBody) return; // safety check
+    
+    tableBody.innerHTML = "";
+    data.forEach((faq, index) => {
+      const row = document.createElement("tr");
+      row.innerHTML = `
+        <td>${index + 1}</td>
+        <td>${faq.question_title || ""}</td>
+        <td>${faq.post_title || ""}</td>
+        <td>${faq.details || ""}</td>
+        <td>${faq.image_url ? `<img src="${faq.image_url}" style="width:60px;height:auto;border-radius:4px;">` : ""}</td>
+        <td>${faq.date_posted || ""}</td>
+        <td>
+          <a href="#" class="text-primary me-2 edit-faq" data-id="${faq.id}">Edit</a>
+          <a href="#" class="text-danger delete-faq" data-id="${faq.id}">
+            <i class="ph ph-trash"></i>
+          </a>
+        </td>
+      `;
+      tableBody.appendChild(row);
+    });
 
-    // Reset form + preview every time Add is clicked
-    resetFaqForm();
-    editingId = null;
-    faqSubmitBtn.textContent = "Add FAQ";
+    attachEditDeleteHandlers();
+  }
 
-    faqGrid.classList.add("d-none");
-    document.querySelectorAll(
-      "#enrollment-section, #document-request-section, #graduation-clearance-section"
-    ).forEach((sec) => sec.classList.add("d-none"));
+  // =======================
+  // Edit + Delete Handlers
+  // =======================
+  function attachEditDeleteHandlers() {
+    // Edit
+    document.querySelectorAll(".edit-faq").forEach(link => {
+      link.addEventListener("click", async e => {
+        e.preventDefault();
+        const id = link.dataset.id;
+        const { data, error } = await supabaseClient
+          .from("faqs")
+          .select("*")
+          .eq("id", id)
+          .single();
 
-    document.getElementById("faq-editor-section").classList.remove("d-none");
-  });
-});
+        if (error) {
+          console.error("Error fetching FAQ:", error);
+          return;
+        }
 
+        currentCategory = data.category;
+        editingId = id;
 
-// ===== FAQ Editor Live Preview =====
+        // Hide table sections
+        enrollmentSection.classList.add("d-none");
+        documentRequestSection.classList.add("d-none");
+        graduationClearanceSection.classList.add("d-none");
+        faqGrid.classList.add("d-none");
 
-// Inputs
-const questionTitleInput = document.querySelector("#faq-editor-section input[placeholder='Question Title']");
-const faqPostTitleInput  = document.querySelector("#faq-editor-section input[placeholder='FAQ Post Title']");
-const dateInput          = document.querySelector("#faq-editor-section input[type='date']");
-const detailsTextarea    = document.querySelector("#faq-editor-section textarea");
-const imageInput         = document.querySelector("#faq-editor-section input[type='file']"); // <-- add image input
+        // Show editor
+        faqEditorSection.classList.remove("d-none");
 
-// Preview elements
-const previewQuestionItem = document.querySelector(".faq-preview .faq-item");
-const previewTitle        = document.querySelector(".faq-preview-card .preview-title");
-const previewDate         = document.querySelector(".faq-preview-card .text-center.mb-1.text-muted.small");
-const previewText         = document.querySelector(".faq-preview-card .preview-text");
-const previewImage        = document.querySelector(".faq-preview-card .preview-image"); // <-- add preview image element
+        // Fill form
+        if(questionTitleInput) questionTitleInput.value = data.question_title;
+        if(faqPostTitleInput) faqPostTitleInput.value = data.post_title;
+        if(dateInput) dateInput.value = data.date_posted || "";
+        if(detailsTextarea) detailsTextarea.value = data.details || "";
 
-// 1. Question Title → Preview list
-if (questionTitleInput && previewQuestionItem) {
-  questionTitleInput.addEventListener("input", () => {
-    previewQuestionItem.innerHTML =
-      (questionTitleInput.value.trim() !== ""
-        ? `1. ${questionTitleInput.value}`
-        : "1. How to get my Transcript of Records (TOR)?") +
-      ` <i class="ph-bold ph-arrow-up-right faq-icon"></i>`;
-  });
-}
+        // Update preview
+        if (previewQuestionItem) {
+          previewQuestionItem.innerHTML = (data.question_title ? `1. ${data.question_title}` : "1. How to get my Transcript of Records (TOR)?") + ` <i class="ph-bold ph-arrow-up-right faq-icon"></i>`;
+        }
+        if (previewTitle) previewTitle.textContent = data.post_title || "Shifting / Program Transfer";
+        
+        if (previewDate) {
+          if (data.date_posted) {
+            const d = new Date(data.date_posted);
+            previewDate.textContent = "Updated: " + d.toLocaleDateString("en-US", { month: "2-digit", day: "2-digit", year: "2-digit" });
+          } else {
+            previewDate.textContent = "Updated: MM/DD/YY";
+          }
+        }
+        
+        if (previewText) {
+          previewText.innerHTML = data.details ? data.details.split("\n").filter(p => p.trim() !== "").map(p => `<p>${p}</p>`).join("") : `<p>"Lorem ipsum dolor sit amet..."</p>`;
+        }
 
-// 2. FAQ Post Title → Preview title
-if (faqPostTitleInput && previewTitle) {
-  faqPostTitleInput.addEventListener("input", () => {
-    previewTitle.textContent =
-      faqPostTitleInput.value.trim() !== ""
-        ? faqPostTitleInput.value
-        : "Shifting / Program Transfer";
-  });
-}
+        // Image preview
+        if (data.image_url) {
+          previewImage.src = data.image_url;
+          previewImage.style.display = "block";
+        } else {
+          previewImage.src = "";
+          previewImage.style.display = "none";
+        }
 
-// 3. Date → Preview date
-if (dateInput && previewDate) {
-  dateInput.addEventListener("input", () => {
-    if (dateInput.value) {
-      const d = new Date(dateInput.value);
-      const formatted = d.toLocaleDateString("en-US", {
-        month: "2-digit",
-        day: "2-digit",
-        year: "2-digit"
+        faqSubmitBtn.textContent = "Update FAQ";
       });
-      previewDate.textContent = `Updated: ${formatted}`;
-    } else {
-      previewDate.textContent = "Updated: MM/DD/YY";
+    });
+
+    // Delete
+    document.querySelectorAll(".delete-faq").forEach(btn => {
+      btn.addEventListener("click", async e => {
+        e.preventDefault();
+        const id = btn.dataset.id;
+        if (confirm("Are you sure you want to delete this FAQ?")) {
+          const { error } = await supabaseClient.from("faqs").delete().eq("id", id);
+          if (error) {
+            alert("Error deleting FAQ!");
+            console.error(error);
+          } else {
+            alert("FAQ deleted successfully!");
+            loadFaqsForCategory(currentCategory);
+          }
+        }
+      });
+    });
+  }
+
+  // =======================
+  // Submit Handler
+  // =======================
+  faqSubmitBtn.addEventListener("click", async e => {
+    e.preventDefault();
+    if (!currentCategory) {
+      alert("⚠️ No category selected. Please go back and choose a section.");
+      return;
     }
-  });
-}
+    
+    // Note: Your HTML form is missing 'detailsTextarea'
+    // This will only save the question_title, post_title, date and image
+    
+    const file = imageInput?.files[0];
+    let imageUrl = null;
 
-// 4. Details → Preview text (supports multiple paragraphs)
-if (detailsTextarea && previewText) {
-  detailsTextarea.addEventListener("input", () => {
-    if (detailsTextarea.value.trim() !== "") {
-      const paragraphs = detailsTextarea.value
-        .split("\n") // split by new lines
-        .filter(p => p.trim() !== "") // ignore empty lines
-        .map(p => `<p>${p}</p>`) // wrap each in <p>
-        .join(""); // join them together
+    if (file) {
+      const { data, error } = await supabaseClient.storage
+        .from("faqs")
+        .upload(`faq-images/${Date.now()}-${file.name}`, file, { upsert: true });
+      if (error) {
+        alert("Image upload failed: " + error.message);
+        return;
+      }
+      const { data: publicData } = supabaseClient.storage.from("faqs").getPublicUrl(data.path);
+      imageUrl = publicData.publicUrl;
+    }
 
-      previewText.innerHTML = paragraphs;
+    const faqData = {
+      category: currentCategory,
+      question_title: questionTitleInput?.value.trim() || "",
+      post_title: faqPostTitleInput?.value.trim() || "",
+      details: detailsTextarea?.value.trim() || "",
+      date_posted: dateInput?.value || null,
+      ...(imageUrl ? { image_url: imageUrl } : (editingId ? {} : {image_url: null})),
+    };
+
+    // If we are editing and NOT uploading a new image, we don't want to overwrite
+    // the existing image_url with null.
+    if (editingId && !imageUrl) {
+      delete faqData.image_url; // Don't update the image URL if no new file
+    }
+
+    if (editingId) {
+      // Update
+      const { error } = await supabaseClient
+        .from("faqs")
+        .update(faqData)
+        .eq("id", editingId);
+      if (error) {
+        alert("Error updating FAQ: " + error.message);
+      } else {
+        alert("FAQ updated successfully ✅");
+        resetFaqForm();
+      }
+      editingId = null;
+      faqSubmitBtn.textContent = "Add FAQ";
     } else {
+      // Insert
+      const { error } = await supabaseClient.from("faqs").insert(faqData);
+      if (error) {
+        alert("Error adding FAQ: " + error.message);
+      } else {
+        alert("FAQ added successfully ✅");
+        resetFaqForm();
+      }
+    }
+
+    // Hide editor + show table again
+    faqEditorSection.classList.add("d-none");
+    document.getElementById(`${currentCategory}-section`).classList.remove("d-none");
+    loadFaqsForCategory(currentCategory);
+  });
+
+  // =======================
+  // Reset Form Function
+  // =======================
+  function resetFaqForm() {
+    if(questionTitleInput) questionTitleInput.value = "";
+    if(faqPostTitleInput) faqPostTitleInput.value = "";
+    if(detailsTextarea) detailsTextarea.value = "";
+    if(dateInput) dateInput.value = "";
+    if(imageInput) imageInput.value = "";
+
+    // Reset preview content
+    if (previewQuestionItem) {
+      previewQuestionItem.innerHTML = `1. How to get my Transcript of Records (TOR)? <i class="ph-bold ph-arrow-up-right faq-icon"></i>`;
+    }
+    if (previewTitle) previewTitle.textContent = "Shifting / Program Transfer";
+    if (previewDate) previewDate.textContent = "Updated: MM/DD/YY";
+    if (previewText) {
       previewText.innerHTML = `
         <p>"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua..."</p>
         <p>Section 1.10.32 of "de Finibus Bonorum et Malorum", written by Cicero in 45 BC ...</p>
       `;
     }
-  });
-}
-
-// 5. Image → Preview image
-if (imageInput && previewImage) {
-  imageInput.addEventListener("change", () => {
-    const file = imageInput.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = e => {
-        previewImage.src = e.target.result;
-        previewImage.style.display = "block"; // show image
-      };
-      reader.readAsDataURL(file);
-    } else {
+    if (previewImage) {
       previewImage.src = "";
-      previewImage.style.display = "none"; // hide if no image
-    }
-  });
-}
-
-// =======================
-// Globals
-// =======================
-let currentCategory = null;
-let editingId = null; // track edit vs add
-
-// =======================
-// Load FAQs with category-based ID
-// =======================
-async function loadFaqsForCategory(category) {
-   currentCategory = category; // ✅ always remember which section is active
-  const { data, error } = await supabaseClient
-    .from("faqs")
-    .select("*")
-    .eq("category", category)
-    .order("created_at", { ascending: true });
-
-  if (error) {
-    console.error("Error loading FAQs:", error.message);
-    return;
-  }
-
-  const tableBody = document.querySelector(`#${category}-section tbody`);
-  tableBody.innerHTML = "";
-
-  data.forEach((faq, index) => {
-    const row = document.createElement("tr");
-    row.innerHTML = `
-      <td>${index + 1}</td>
-      <td>${faq.question_title}</td>
-      <td>${faq.post_title}</td>
-      <td>${faq.details || ""}</td>
-      <td>${
-        faq.image_url
-          ? `<img src="${faq.image_url}" style="width:60px;height:auto;border-radius:4px;">`
-          : ""
-      }</td>
-      <td>${faq.date_posted || ""}</td>
-      <td>
-        <a href="#" class="text-primary me-2 edit-faq" data-id="${faq.id}">Edit</a>
-        <a href="#" class="text-danger delete-faq" data-id="${faq.id}">
-          <i class="ph ph-trash"></i>
-        </a>
-      </td>
-    `;
-    tableBody.appendChild(row);
-  });
-
-  attachEditDeleteHandlers(); // ✅ re-attach handlers
-}
-
-// =======================
-// Edit + Delete Handlers
-// =======================
-function attachEditDeleteHandlers() {
-  // Edit
-  document.querySelectorAll(".edit-faq").forEach(link => {
-    link.addEventListener("click", async e => {
-      e.preventDefault();
-      const id = link.dataset.id;
-
-      const { data, error } = await supabaseClient
-        .from("faqs")
-        .select("*")
-        .eq("id", id)
-        .single();
-
-      if (error) {
-        console.error("Error fetching FAQ:", error);
-        return;
-      }
-
-      currentCategory = data.category; // ✅ remember category
-      editingId = id;
-
-      // Hide all sections
-      document.querySelectorAll(
-        "#enrollment-section, #document-request-section, #graduation-clearance-section"
-      ).forEach(sec => sec.classList.add("d-none"));
-
-      // Show editor
-      document.getElementById("faq-editor-section").classList.remove("d-none");
-
-      // Fill form
-      document.querySelector("#faq-editor-section input[placeholder='Question Title']").value = data.question_title;
-      document.querySelector("#faq-editor-section input[placeholder='FAQ Post Title']").value = data.post_title;
-      document.querySelector("#faq-editor-section input[type='date']").value = data.date_posted || "";
-      document.querySelector("#faq-editor-section textarea").value = data.details || "";
-
-      // ✅ Update preview immediately
-      previewQuestionItem.innerHTML =
-        (data.question_title
-          ? `1. ${data.question_title}`
-          : "1. How to get my Transcript of Records (TOR)?") +
-        ` <i class="ph-bold ph-arrow-up-right faq-icon"></i>`;
-
-      previewTitle.textContent = data.post_title || "Shifting / Program Transfer";
-
-      if (data.date_posted) {
-        const d = new Date(data.date_posted);
-        previewDate.textContent =
-          "Updated: " +
-          d.toLocaleDateString("en-US", { month: "2-digit", day: "2-digit", year: "2-digit" });
-      } else {
-        previewDate.textContent = "Updated: MM/DD/YY";
-      }
-
-      previewText.innerHTML = data.details
-        ? data.details
-            .split("\n")
-            .filter(p => p.trim() !== "")
-            .map(p => `<p>${p}</p>`)
-            .join("")
-        : `<p>"Lorem ipsum dolor sit amet..."</p>`;
-
-      // Image preview
-      const previewImg = document.querySelector("#faq-editor-section .preview-image");
-      if (data.image_url) {
-        previewImg.src = data.image_url;
-        previewImg.style.display = "block";
-      } else {
-        previewImg.src = "";
-        previewImg.style.display = "none";
-      }
-
-      // Update button
-      const submitBtn = document.querySelector("#faq-editor-section button.btn-primary");
-      submitBtn.textContent = "Update FAQ";
-  
-    });
-  });
-
-  // Delete
-  document.querySelectorAll(".delete-faq").forEach(btn => {
-    btn.addEventListener("click", async e => {
-      e.preventDefault();
-      const id = btn.dataset.id;
-
-      if (confirm("Are you sure you want to delete this FAQ?")) {
-        const { error } = await supabaseClient.from("faqs").delete().eq("id", id);
-        if (error) {
-          alert("Error deleting FAQ!");
-          console.error(error);
-        } else {
-          alert("FAQ deleted successfully!");
-          loadFaqsForCategory(currentCategory);
-        }
-      }
-    });
-  });
-}
-
-// =======================
-// Submit Handler
-// =======================
-const faqSubmitBtn = document.querySelector("#faq-editor-section button.btn-primary");
-faqSubmitBtn.addEventListener("click", async e => {
-  e.preventDefault();
-
-  if (!currentCategory) {
-    alert("⚠️ No category selected. Please go back and choose a section.");
-    return;
-  }
-
-  const questionTitleInput = document.querySelector("input[placeholder='Question Title']");
-  const postTitleInput = document.querySelector("input[placeholder='FAQ Post Title']");
-  const detailsTextarea = document.querySelector("textarea");
-  const dateInput = document.querySelector("input[type='date']");
-  const fileInput = document.querySelector("input[type='file']");
-  const file = fileInput?.files[0];
-  let imageUrl = null;
-
-  // Upload image if any
-  if (file) {
-    const { data, error } = await supabaseClient.storage
-      .from("faqs")
-      .upload(`faq-images/${Date.now()}-${file.name}`, file, { upsert: true });
-
-    if (error) {
-      alert("Image upload failed: " + error.message);
-      return;
-    }
-
-    const { data: publicData } = supabaseClient.storage.from("faqs").getPublicUrl(data.path);
-    imageUrl = publicData.publicUrl;
-  }
-
-  if (editingId) {
-    // Update
-    const { error } = await supabaseClient
-      .from("faqs")
-      .update({
-        question_title: questionTitleInput.value.trim(),
-        post_title: postTitleInput.value.trim(),
-        details: detailsTextarea.value.trim(),
-        date_posted: dateInput.value,
-        ...(imageUrl ? { image_url: imageUrl } : {}),
-        category: currentCategory,
-      })
-      .eq("id", editingId);
-
-    if (error) {
-      alert("Error updating FAQ: " + error.message);
-    } else {
-      alert("FAQ updated successfully ✅");
-      resetFaqForm(); // ✅ reset form + preview after update
-    }
-
-    editingId = null;
-    faqSubmitBtn.textContent = "Add FAQ";
-  } else {
-    // Insert
-    const { error } = await supabaseClient.from("faqs").insert({
-      category: currentCategory,
-      question_title: questionTitleInput.value.trim(),
-      post_title: postTitleInput.value.trim(),
-      details: detailsTextarea.value.trim(),
-      image_url: imageUrl,
-      date_posted: dateInput.value,
-    });
-
-    if (error) {
-      alert("Error adding FAQ: " + error.message);
-    } else {
-      alert("FAQ added successfully ✅");
-      resetFaqForm(); // ✅ reset form + preview after add
+      previewImage.style.display = "none";
     }
   }
-
-  // ✅ Reset form inputs after submit
-  questionTitleInput.value = "";
-  postTitleInput.value = "";
-  detailsTextarea.value = "";
-  dateInput.value = "";
-  fileInput.value = "";
-  document.querySelector("img.preview-image").style.display = "none";
-
-  // Hide editor + show table again
-  document.getElementById("faq-editor-section").classList.add("d-none");
-  document.getElementById(`${currentCategory}-section`).classList.remove("d-none");
-  loadFaqsForCategory(currentCategory);
-
-   // ✅ Reload table
-  loadFaqsForCategory(currentCategory);
 });
-
-function resetFaqForm() {
-  // Clear form inputs
-  questionTitleInput.value = "";
-  faqPostTitleInput.value = "";
-  detailsTextarea.value = "";
-  dateInput.value = "";
-  imageInput.value = "";
-
-  // Reset preview content
-  previewQuestionItem.innerHTML =
-    `1. How to get my Transcript of Records (TOR)? <i class="ph-bold ph-arrow-up-right faq-icon"></i>`;
-  previewTitle.textContent = "Shifting / Program Transfer";
-  previewDate.textContent = "Updated: MM/DD/YY";
-  previewText.innerHTML = `
-    <p>"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua..."</p>
-    <p>Section 1.10.32 of "de Finibus Bonorum et Malorum", written by Cicero in 45 BC ...</p>
-  `;
-  previewImage.src = "";
-  previewImage.style.display = "none";
-}
-
-// Remove Supabase config section and use supabaseClient throughout the file
-(async () => {
-  const { data: { session } } = await supabaseClient.auth.getSession();
-  // ...rest of the code
-})();
-
-
-
-
-
-
-
