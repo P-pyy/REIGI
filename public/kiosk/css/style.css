@@ -703,4 +703,13 @@ a {
   font-size: 1.2rem;
 }
 
+.preview-image {
+  transition: opacity 0.2s ease-in-out; 
+  opacity: 0; 
+  display: block;
+}
+
+.preview-image.loaded {
+  opacity: 1; 
+}
 
