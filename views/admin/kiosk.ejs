@@ -282,39 +282,48 @@
 
       
       <!-- Kiosk FAQ’s Section -->
-      <div id="document-request-section" class="admin-drfaq-card d-none">
-        <div class="card shadow-sm fade-in">
-          <div class="card-body">
-            <div class="table-wrapper">
-              <table class="table align-middle faq-table">
-                <thead class="table-title">
-                  <tr>
-                    <th>ID</th>
-                    <th>Question Title</th>
-                    <th>Requirements</th>
-                    <th class="sts-process">Step-by-step Process</th>
-                    <th>Image</th>
-                    <th>Date</th>
-                    <th></th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <!-- rows dynamically injected -->
-                </tbody>
-              </table>
+      <div id="document-request-section" class="d-none">
+        <div class="back-container d-none">
+            <a href="" class="back-btn"><i class="ph ph-arrow-left"></i></a>
+        </div>
+        <div class="container-group">
+          <div class="card shadow-sm fade-in">
+            <div class="card-body">
+              <div class="table-wrapper">
+                <table class="table align-middle faq-table">
+                  <thead class="table-title">
+                    <tr>
+                      <th>ID</th>
+                      <th>Question Title</th>
+                      <th>Requirements</th>
+                      <th class="sts-process">Step-by-step Process</th>
+                      <th>Image</th>
+                      <th>Date</th>
+                      <th></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <!-- rows dynamically injected -->
+                  </tbody>
+                </table>
+              </div>
             </div>
           </div>
+          <div class="text-center mt-3">
+            <button class="btn add-question-btn">
+              <i class="ph-bold ph-plus"></i>
+              <span class="btn-text">Add a FAQ</span>
+            </button>
+          </div>
         </div>
-        <div class="text-center mt-3">
-          <button class="btn add-question-btn">
-            <i class="ph-bold ph-plus"></i>
-            <span class="btn-text">Add a FAQ</span>
-          </button>
-        </div>
+
       </div>
 
 <!-- Kiosk Editor Section (hidden by default) -->
 <div id="faq-editor-section" class="d-none">
+  <div class="back-container d-none">
+      <a href="" class="back-btn"><i class="ph ph-arrow-left"></i></a>
+  </div>  
   <div class="row g-4">
     <!-- FAQ Post Form -->
     <div class="col-md-6">

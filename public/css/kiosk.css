@@ -990,3 +990,22 @@ tr, th, td {
   visibility: visible; 
   opacity: 1;
 }
+
+#document-request-section{
+  display: flex;
+  /* margin-left: -145px;
+  margin-top: -50px; */
+}
+
+.container-group {
+  display: flex;
+  flex-direction: column;
+}
+
+#faq-editor-section {
+  display: flex;
+}
+
+.back-container {
+  margin-top: 0;
+}

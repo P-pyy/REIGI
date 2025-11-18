@@ -540,9 +540,12 @@ async function loadTopFAQs() {
       ? `<i class="ph ph-caret-up faq-icon-u text-success"></i>`
       : `<i class="ph ph-caret-down faq-icon-d text-danger"></i>`;
 
+    const safeTitle = faq.question_title.replace(/"/g, '&quot;');
+
     faqList.innerHTML += `
-      <li>
-        ${faq.question_title}
+      <li class="faq-top-list" title="${safeTitle}"> <span class="faq-list-text">
+          ${faq.question_title}
+        </span>
         <span class="float-end">
           ${icon} ${faq.views}
         </span>

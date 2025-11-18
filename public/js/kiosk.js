@@ -65,6 +65,7 @@ document.addEventListener("DOMContentLoaded", () => {
   let requirements = [];
   let steps = [];
   let selectedWindow = null;
+  let lastSectionId = 'faq-grid';
 
   queueDashboardHeader.classList.add("d-none");
   enrollmentSection.classList.add("d-none");
@@ -194,24 +195,77 @@ async function updateActiveWindow() {
   });
 
   // Section Toggle 
-  document.querySelectorAll(".card-button").forEach((button) => {
-    button.addEventListener("click", () => {
-      if (button.id === "proceed-button") return;
-      const targetId = button.getAttribute("data-target");
-      
+   document.querySelectorAll(".card-button").forEach((button) => {
+     button.addEventListener("click", () => {
+       if (button.id === "proceed-button") return;
+
+       const targetId = button.getAttribute("data-target");
+
+       if (targetId) {
+         // 1. Track the section we are going to
+         lastSectionId = targetId; 
+         // 2. Hide all main views
+         faqGrid.classList.add("d-none");
+         enrollmentSection.classList.add("d-none");
+         documentRequestSection.classList.add("d-none");
+         windowSelectSection.classList.add("d-none");
+         queueDashboardHeader.classList.add("d-none");
+         processingSection.classList.add("d-none");
+         if (editorSection) editorSection.classList.add("d-none"); 
+         // 3. Show the target section
+         const targetEl = document.getElementById(targetId);
+         if (targetEl) {
+           targetEl.classList.remove("d-none");  
+           // 4. SHOW THE BACK BUTTON (Specific to this section)
+           const backContainer = targetEl.querySelector(".back-container");
+           if (backContainer) {
+             backContainer.classList.remove("d-none");
+           }
+         } 
+         window.scrollTo({ top: 0, behavior: "smooth" });
+       }
+     });
+   });
+
+   // =======================
+  // Back Button Logic
+  // =======================
+  document.querySelectorAll(".back-btn").forEach(button => {
+    button.addEventListener("click", (e) => {
+      e.preventDefault();
+
+      const currentContainer = button.closest("div[id$='section']");
+
+      // 1. Hide ALL sections first
       faqGrid.classList.add("d-none");
       enrollmentSection.classList.add("d-none");
       documentRequestSection.classList.add("d-none");
-      windowSelectSection.classList.add("d-none");
-      queueDashboardHeader.classList.add("d-none");
-      processingSection.classList.add("d-none");
+      if (editorSection) editorSection.classList.add("d-none");
 
-      const targetEl = document.getElementById(targetId);
-      if (targetEl) {
-        targetEl.classList.remove("d-none");
+      // 2. Hide ALL back-containers
+      document.querySelectorAll(".back-container").forEach(container => {
+          container.classList.add("d-none");
+      });
+
+      // 3. Determine Destination
+      if (currentContainer && currentContainer.id === 'faq-editor-section') {
+          const previousEl = document.getElementById(lastSectionId);
+          if (previousEl) {
+              previousEl.classList.remove("d-none");
+              
+              // Re-show the back button for that Table
+              const backContainer = previousEl.querySelector(".back-container");
+              if (backContainer) backContainer.classList.remove("d-none");
+          } else {
+             // Fallback
+             faqGrid.classList.remove("d-none");
+          }
+      } else {
+          // CASE B: In Table -> Go back to Grid
+          faqGrid.classList.remove("d-none");
+          // Reset tracker
+          lastSectionId = 'faq-grid'; 
       }
-
-      window.scrollTo({ top: 0, behavior: "smooth" });
     });
   });
 
@@ -760,13 +814,28 @@ function showQueueUI(windowName) {
     // Show FAQ Editor 
     addButtons.forEach((btn) => {
       btn.addEventListener("click", () => {
+        // 1. Track where we came from (The Table Section)
+        const parentSection = btn.closest("div[id$='section']");
+        if (parentSection) {
+          lastSectionId = parentSection.id;
+          parentSection.classList.add("d-none"); // Hide the table
+        }
+
+        // 2. Show Editor
         editorSection?.classList.remove("d-none");
 
+        // 3. Hide others (Safety)
         faqGrid?.classList.add("d-none");
         enrollmentSection?.classList.add("d-none");
         documentRequestSection?.classList.add("d-none");
 
-        window.scrollTo({ top: editorSection.offsetTop, behavior: "smooth" });
+        // 4. SHOW EDITOR BACK BUTTON
+        const editorBackContainer = editorSection?.querySelector(".back-container");
+        if (editorBackContainer) {
+          editorBackContainer.classList.remove("d-none");
+        }
+
+        window.scrollTo({ top: editorSection?.offsetTop || 0, behavior: "smooth" });
       });
     });
 

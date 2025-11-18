@@ -1019,3 +1019,67 @@ body {
   }
 }
 
+
+.float-end {
+  display: flex;
+  width: 50px;
+}
+
+.faq-top-list {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.8rem;
+  position: relative;
+  list-style: none;
+}
+
+.faq-top-list .faq-list-text {
+  flex-grow: 1; 
+  white-space: nowrap; 
+  overflow: hidden; 
+  text-overflow: ellipsis; 
+  min-width: 0; 
+  
+  font-weight: 550;
+  font-size: 16px;
+}
+
+.faq-top-list .float-end {
+  display: flex;
+  width: 50px; 
+  flex-shrink: 0;
+  margin-left: 15px;
+  position: static; 
+  top: auto; 
+  right: auto;
+  transform: none; 
+}
+
+.styled-tooltip-btn {
+  position: relative; 
+}
+
+.styled-tooltip-btn::after {
+  content: attr(data-placeholder); 
+  
+  position: absolute;
+  bottom: 120%;
+  left: 50%;
+  transform: translateX(-50%);
+  
+  opacity: 0;
+  visibility: hidden;
+  
+  padding: 5px 10px;
+  background: #0055A5 !important;
+  color: #fcfcfc;
+  border-radius: 4px;
+  white-space: nowrap;
+  transition: opacity 0.2s;
+}
+
+.styled-tooltip-btn:hover::after {
+  opacity: 1;
+  visibility: visible;
+}

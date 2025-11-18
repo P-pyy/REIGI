@@ -64,7 +64,8 @@ document.addEventListener("DOMContentLoaded", () => {
   // Globals
   // =======================
   let currentCategory = null;
-  let editingId = null; 
+  let editingId = null;
+  let lastSectionId = 'faq-grid';
 
   // =======================
   // Sidebar & Logout
@@ -96,17 +97,32 @@ document.addEventListener("DOMContentLoaded", () => {
   // =======================
   document.querySelectorAll(".card-button").forEach((button) => {
     button.addEventListener("click", () => {
-      const target = button.getAttribute("data-target");
-      if (target) {
+      const targetId = button.getAttribute("data-target");
+      if (targetId) {
+        lastSectionId = targetId;
+        // 1. Hide all main containers
         faqGrid.classList.add("d-none");
         enrollmentSection.classList.add("d-none");
         documentRequestSection.classList.add("d-none");
         graduationClearanceSection.classList.add("d-none");
         faqEditorSection.classList.add("d-none");
 
-        document.getElementById(target).classList.remove("d-none");
+        // 2. Find the specific target section (e.g., #enrollment-section)
+        const targetEl = document.getElementById(targetId);
 
-        const category = target.replace("-section", "");
+        if (targetEl) {
+          // 3. Show the target section itself
+          targetEl.classList.remove("d-none");
+
+          // 4. FIND AND SHOW THE BACK BUTTON CONTAINER INSIDE THE TARGET SECTION
+          // We use querySelector on the targetEl to limit the search scope.
+          const backContainer = targetEl.querySelector(".back-container");
+          if (backContainer) {
+            backContainer.classList.remove("d-none");
+          }
+        }
+
+        const category = targetId.replace("-section", "");
         loadFaqsForCategory(category);
       }
     });
@@ -121,6 +137,8 @@ document.addEventListener("DOMContentLoaded", () => {
       if (parentSection) {
         currentCategory = parentSection.id.replace("-section", "");
         parentSection.classList.add("d-none"); 
+
+        lastSectionId = parentSection.id;
       }
 
       resetFaqForm();
@@ -135,8 +153,60 @@ document.addEventListener("DOMContentLoaded", () => {
 
       // 3. Show the editor
       faqEditorSection.classList.remove("d-none");
+
+      const editorBackContainer = faqEditorSection.querySelector(".back-container");
+        if (editorBackContainer) {
+            editorBackContainer.classList.remove("d-none");
+        }
     });
   });
+
+// =======================
+// Back Button (Explicit Logic)
+// =======================
+// =======================
+// Back Button (Corrected Logic)
+// =======================
+document.querySelectorAll(".back-btn").forEach(button => {
+  button.addEventListener("click", (e) => {
+    e.preventDefault(); 
+
+    // Find the currently active section *before* hiding everything
+    // This button is either in a Table Section or the Editor Section.
+    const currentContainer = button.closest("div[id$='section']");
+
+    // 1. Hide ALL sections (tables + editor)
+    enrollmentSection.classList.add("d-none");
+    documentRequestSection.classList.add("d-none");
+    graduationClearanceSection.classList.add("d-none");
+    faqEditorSection.classList.add("d-none");
+
+    // 2. Hide ALL back-containers
+    document.querySelectorAll(".back-container").forEach(container => {
+        container.classList.add("d-none");
+    }); 
+
+    // 3. Determine where to go back to
+    if (currentContainer.id === 'faq-editor-section') {
+        // If we are currently in the Editor, go back to the last known Table View
+        const previousEl = document.getElementById(lastSectionId);
+        if (previousEl) {
+            previousEl.classList.remove("d-none");
+            
+            // Re-show the back button for the Table section
+            const backContainer = previousEl.querySelector(".back-container");
+            if (backContainer) {
+                backContainer.classList.remove("d-none");
+            }
+        }
+    } else {
+        // If we are currently in a Table View (e.g., enrollment-section), go straight to the Grid
+        faqGrid.classList.remove("d-none");
+        // Reset lastSectionId to 'faq-grid' for the next navigation cycle
+        lastSectionId = 'faq-grid';
+    }
+  });
+});
 
 
   // =======================
@@ -144,14 +214,14 @@ document.addEventListener("DOMContentLoaded", () => {
   // =======================
 
   // 1. Question Title → Preview list
-  if (questionTitleInput) {
+if (questionTitleInput) {
   questionTitleInput.addEventListener("input", () => {
-    const questionPreview = document.querySelector(".faq-preview .question-title-preview");
-    if (questionPreview) {
-      questionPreview.textContent =
-        questionTitleInput.value.trim() !== ""
-          ? questionTitleInput.value
-          : "How to get my Transcript of Records (TOR)?";
+    // We target the list item <li> (the .faq-item) that holds the question text
+    const faqPreviewLi = document.querySelector(".faq-preview-question ol li.faq-item");
+    if (faqPreviewLi) {
+      faqPreviewLi.textContent = questionTitleInput.value.trim() !== ""
+        ? questionTitleInput.value.trim()
+        : "The Question Title goes here";
     }
   });
 }
@@ -160,11 +230,12 @@ document.addEventListener("DOMContentLoaded", () => {
   // 2. FAQ Post Title → Preview title
 if (faqPostTitleInput) {
   faqPostTitleInput.addEventListener("input", () => {
-    const faqPreviewLi = document.querySelector(".faq-preview-question ol li.faq-item");
-    if (faqPreviewLi) {
-      faqPreviewLi.textContent = faqPostTitleInput.value.trim() !== "" 
-        ? faqPostTitleInput.value.trim() 
-        : "Requirement 1";
+    // We target the main title element H4 (the .title-preview)
+    const titlePreview = document.querySelector(".preview-card .faq-name");
+    if (titlePreview) {
+      titlePreview.textContent = faqPostTitleInput.value.trim() !== ""
+        ? faqPostTitleInput.value.trim()
+        : "Preview";
     }
   });
 }
@@ -308,11 +379,17 @@ function attachEditDeleteHandlers() {
         renderSteps();
 
         // Update preview question
-        if (previewQuestionItem) {
-          previewQuestionItem.innerHTML = `${data.question_title || ""} <i class="ph-bold ph-arrow-up-right faq-icon"></i>`;
+        // The list item will now display the main Question Title (data.question_title)
+        const faqPreviewLi = document.querySelector(".faq-preview-question ol li.faq-item");
+        if (faqPreviewLi) {
+          faqPreviewLi.textContent = data.question_title || "The Question Title goes here";
         }
-
-        if (previewPostTitle) previewPostTitle.textContent = data.post_title || "Shifting / Program Transfer";
+        
+        // The main title (H4 .title-preview) will now display the FAQ Post Title
+        const titlePreview = document.querySelector(".preview-card .faq-name");
+        if (titlePreview) {
+            titlePreview.textContent = data.post_title || "Preview";
+        }
         if (previewCategoryTitle) previewCategoryTitle.textContent = "FREQUENTLY ASKED QUESTIONS:";
 
 
