@@ -117,11 +117,11 @@ body {
 /* admin_faq_enrollment_process   */
 
 .admin-esfaq-card {
-  margin-left: -50px;
-  width: 95%;         
   max-width: 1800px; 
 }
 .admin-drfaq-card {
+  display: flex;
+  flex-direction: column;
   margin: 0 auto;
   width: 95%;         
   max-width: 1800px; 
@@ -139,18 +139,30 @@ body {
   font-size: 16px;   
   font-weight: 600;     
   color: #2C2C2C;        
-  padding-bottom: 30px; 
+  vertical-align: top;
+
+  position: sticky;
+  top: 0;           
+  z-index: 10;     
 }
 .faq-table td {
   font-size: 14px;     
   font-weight: 400;      
-  color: #2C2C2C;        
+  color: #2C2C2C;
+  vertical-align: top;
 }
 
-.faq-table th,
+.faq-table th{
+  border: none !important;
+  background-color: transparent; 
+  text-align: left;
+  background-color: #fcfcfc;
+}
+
 .faq-table td {
   border: none !important;
   background-color: transparent; 
+  text-align: left;
 }
 
 .faq-table tbody tr:nth-child(odd) {
@@ -207,20 +219,20 @@ body {
   padding-right: 10px;    
 }
 
-.table-wrapper::-webkit-scrollbar {
+.tbody::-webkit-scrollbar {
   width: 8px; 
 }
 
-.table-wrapper::-webkit-scrollbar-track {
+.tbody::-webkit-scrollbar-track {
   background: transparent;
 }
 
-.table-wrapper::-webkit-scrollbar-thumb {
+.tbody::-webkit-scrollbar-thumb {
   background: #1565c0; 
   border-radius: 10px;
 }
 
-.table-wrapper::-webkit-scrollbar-thumb:hover {
+.tbody::-webkit-scrollbar-thumb:hover {
   background: #0d47a1;  
 }
 
@@ -616,7 +628,9 @@ body {
 }
 
 #faq-editor-section {
-  margin-top: 0 !important;
+  margin-top: -50px !important;
+  margin-left: -120px;
+  display: flex;
 }
 
 .container-faq-preview {
@@ -632,4 +646,79 @@ body {
 .faq-preview-question {
   background-color: #F3F4F8;
   border-radius: 8px;
+}
+
+.th-text {
+  display: inline-block;
+}
+
+.faq-table {
+  width: 100%; 
+  table-layout: fixed;
+  border: none !important;
+  background-color: transparent; 
+  text-align: left;
+}
+
+.faq-table .table-title th:nth-child(1) { /* ID */
+  width: 40px; 
+}
+
+.faq-table .table-title th:nth-child(2) { /* Question Title */
+  width: 120px; 
+}
+
+.faq-table .table-title th:nth-child(3) { /* FAQ Post Title */
+  width: 120px;
+}
+
+.faq-table .table-title th:nth-child(4) { /* Question Details */
+  width: 40%;
+}
+
+.faq-table .table-title th:nth-child(5) { /* Image */
+  width: 45%;
+}
+
+.faq-table .table-title th:nth-child(6) { /* Date & Time */
+  width: 70px;
+}
+
+.faq-table .table-title th:nth-child(7) { /* Action */
+  width: 100px; 
+}
+
+.faq-table .table-title th:nth-child(8) { /* Action */
+  width: 80px; 
+}
+
+
+.ph-arrow-left {
+  color: rgba(0, 0, 0, 1);
+  border: none;
+  padding: .7rem;
+  border-radius: 20px ;
+  font-size: 1.8rem;
+}
+
+#enrollment-section, #document-request-section, #graduation-clearance-section{
+  display: flex;
+  margin-left: -145px;
+  margin-top: -50px;
+}
+
+.back-container {
+  top: -50px;
+}
+
+.container-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.text-center{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 1.5rem;
 }
