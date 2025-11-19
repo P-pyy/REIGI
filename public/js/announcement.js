@@ -18,8 +18,6 @@ async function fetchAnnouncements() {
     console.error("❌ Error fetching announcements:", error.message);
     return [];
   }
-  return data || [];
-}
 
 function renderAnnouncements(announcements) {
   const grid = document.querySelector(".announcement-grid");
@@ -38,7 +36,7 @@ function renderAnnouncements(announcements) {
   // Render announcements
   grid.innerHTML = ""; // Clear previous
 
-  announcements.forEach((item) => {
+  announcements.forEach((item, index) => {  
     const dateObj = new Date(item.scheduled_datetime);
     const formattedDate = dateObj.toLocaleDateString("en-US", {
       year: "2-digit",
@@ -59,6 +57,7 @@ function renderAnnouncements(announcements) {
     `;
     grid.appendChild(card);
   });
+});
 
   window.PhosphorIcons?.replace?.();
 }

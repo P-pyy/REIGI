@@ -30,7 +30,7 @@
             </div>
           </div>
           <div class="card-footer">
-            <button class="card-button" data-target="container-window-select">Proceed</button>
+            <button class="card-button card-button-2 pad" data-target="container-window-select">Proceed</button>
           </div>
         </div>
 
@@ -43,14 +43,16 @@
             </div>
           </div>
           <div class="card-footer">
-            <button class="card-button" data-target="document-request-section">Proceed</button>
+            <button class="card-button card-button-2 pad" data-target="document-request-section">Proceed</button>
           </div>
         </div>
       </div>
 
       <div class="container-window-select d-none" id="container-window-select">
         <div class="nav-container">
-          <a href="/views/admin/kiosk.ejs"><i class="ph ph-arrow-left"></i></a>
+          <a href="/views/admin/kiosk.ejs">
+            <!-- <i class="ph ph-arrow-left"></i> -->
+          </a>
           <div class="container-text">
             <p class="select-message">Select your window you want to operate:</p>
           </div>
@@ -72,7 +74,7 @@
           </div>
 
           <div class="button-container">
-              <button class="card-button no-modal" data-target="enrollment-section" id="proceed-button">Proceed</button>
+              <button class="card-button card-button-2 pad no-modal" data-target="enrollment-section" id="proceed-button">Proceed</button>
           </div>
 
            <!-- Window Confirmation Modal -->
@@ -109,6 +111,7 @@
       
       <div id="overlay-backdrop"></div>
 
+    <div class="container-grouper">
       <div class="nav-container d-none" id="queue-dashboard-header">
         <div style="display: flex; justify-content: space-between; align-items: center; width: 100%; gap: 2rem;">
           <div class="activenav-container">
@@ -127,7 +130,7 @@
             </div>
           </div>
         </div>
-        <button class="card-button no-margin" data-target="finished-section" id="finished-logs-btn"><i class="ph ph-scroll"></i>Finished Logs</button>
+        <button class="card-button card-button-2 no-margin" data-target="finished-section" id="finished-logs-btn"><i class="ph ph-scroll"></i>Finished Logs</button>
       </div>
 
       <div class="delete-popup-container" id="delete-popup">
@@ -257,7 +260,7 @@
     </div>
 
     <!-- Finished Logs Section -->
-    <div id="finished-section" class="card shadow-sm fade-in d-none container-que table-container">
+    <div id="finished-section" class="card shadow-sm fade-in d-none container-que table-container  widthy">
       <div class="table-name">
         <h2 class="title-table">Finished Logs</h2>
       </div>
@@ -279,6 +282,9 @@
         </div>
       </div>
     </div>
+  </div>
+
+      
 
       
       <!-- Kiosk FAQ’s Section -->

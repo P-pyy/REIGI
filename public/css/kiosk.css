@@ -96,24 +96,46 @@ body {
 }
 
 .card-button {
-    align-items: center;
-    background-color: #CDE4FF;
-    display: flex;
-    justify-content: center;
-    border: none;
-    margin-bottom: 50px;
-    padding: 10px 20px;
-    border-radius: 12px;
-    font-size: 14px;
-    font-weight: 500;
-    color: #000;
-    cursor: pointer;
-    transition: background-color 0.2s;
+  width: 200px;
+  align-items: center;
+  background-color: #CDE4FF;
+  display: flex;
+  justify-content: center;
+  border: none;
+  margin-bottom: 50px;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #000;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.card-button-2 {
+  width: 200px;
+  align-items: center;
+  background-color: #CDE4FF;
+  display: flex;
+  justify-content: center;
+  border: none;
+  margin-bottom: 50px;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 500;
+  padding: 0 !important;
+  color: #000;
+  cursor: pointer;
+  transition: background-color 0.2s;
 }
 
 .card-button:hover {  
   background: #0055A5;
   color: #fcfcfc;
+}
+
+.card-button-2:hover {  
+  color: #000 !important;
+  background: #CDE4FF !important;
 }
 
 .faq-grid .faq-cards:nth-child(2) .card-footer {
@@ -212,6 +234,15 @@ body {
   padding: .7rem;
   border-radius: 20px;
   font-size: 1.8rem;
+}
+
+.ph-scroll {
+  color: rgba(0, 0, 0, 1);
+  border: none;
+  padding: .7rem;
+  border-radius: 20px;
+  font-weight: 600;
+  font-size: 1.2rem;
 }
 
 .activenav-container {
@@ -317,6 +348,7 @@ body {
   font-weight: 500;
   color: #fcfcfc;
   cursor: pointer;
+  width: 170px;
   transition: background-color 0.2s;
 }
 
@@ -496,7 +528,6 @@ tr, th, td {
 
 .faq-wrapper {
   margin-left: 0 !important;
-  margin-top: -50px;
 }
 
 .sts-process {
@@ -875,6 +906,8 @@ tr, th, td {
   transform: scale(1.1);
 }
 
+
+
 /* ! POPUPS */
 
 .delete-popup-container {
@@ -995,6 +1028,7 @@ tr, th, td {
 
 #document-request-section{
   display: flex;
+  flex-direction: column !important;
   /* margin-left: -145px;
   margin-top: -50px; */
 }
@@ -1010,4 +1044,46 @@ tr, th, td {
 
 .back-container {
   margin-top: 0;
+}
+
+.container-grouper {
+  display: flex;
+  flex-direction: column;
+  margin-top: -50px;
+}
+
+.btn-danger {
+  padding: .6rem !important;
+  background-color: #be2a2a;
+  color: #fcfcfc;
+}
+
+.btn-danger:hover {
+  padding: .6rem !important;
+  background-color: #ae0a0a;
+  color: #fcfcfc;
+}
+
+.pad {
+  padding: 1rem !important;
+}
+
+.widthy {
+  width: 100% !important;
+}
+
+.faq-table .table-title th:nth-child(1) { /* ID */
+  width: 40px !important; 
+}
+
+.faq-table .table-title th:nth-child(2) { /* ID */
+  width: 50% !important; 
+}
+
+.faq-table .table-title th:nth-child(3) { /* Question Title */
+  width: 120px !important; 
+}
+
+.faq-table .table-title th:nth-child(4) { /* FAQ Post Title */
+  width: 120px !important;
 }
