@@ -23,7 +23,7 @@ main {
 }
 .announcement-box {
   margin-left: 40px;
-  display: flex;
+  display: block;
 }
 
 .admin-announcement-main {
