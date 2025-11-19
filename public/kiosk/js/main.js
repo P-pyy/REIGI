@@ -438,11 +438,9 @@ recognition.onresult = (event) => {
     `;
     const encodedContent = encodeURIComponent(printContent);
 
-    // Direct RawBT intent for Android
-    // "package=com.elysium.thermoprinter" = RawBT app
-    // "S.text=" = the content to print
-    // "end" = closes the intent
-    window.location.href = `intent:#Intent;action=android.intent.action.VIEW;scheme=rawbt;package=com.elysium.thermoprinter;S.text=${encodedContent};end`;
+    // Fully automatic print to a specific RawBT printer
+    // Replace PRINTER_NAME with your RawBT printer's name
+    window.location.href = `intent:#Intent;action=android.intent.action.VIEW;scheme=rawbt;package=com.elysium.thermoprinter;S.text=${encodedContent};S.printer=POS58D;end`;
 
   } catch (err) {
     console.error("❌ Error saving queue:", err.message);
