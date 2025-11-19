@@ -1,8 +1,5 @@
 import { supabaseClient } from '/js/supabase-client.js';
 
-// =======================
-// Check Admin Login
-// =======================
 (async () => {
   const { data: { session } } = await supabaseClient.auth.getSession();
   if (!session) {
@@ -12,15 +9,8 @@ import { supabaseClient } from '/js/supabase-client.js';
   }
 })();
 
-// =======================
-// MAIN APP LOGIC
-// =======================
 document.addEventListener("DOMContentLoaded", () => {
   
-
-  // =======================
-  // DOM Elements
-  // =======================
   const toggleBtn = document.querySelector(".toggle-btn");
   const sidebar = document.querySelector(".sidebar");
   const mainContent = document.querySelector(".main-content");
@@ -35,13 +25,11 @@ document.addEventListener("DOMContentLoaded", () => {
   const graduationClearanceSection = document.getElementById("graduation-clearance-section");
   const faqEditorSection = document.getElementById("faq-editor-section");
 
-  // Inputs
   const questionTitleInput = document.querySelector("#faq-editor-section input[placeholder='Question Title']");
   const faqPostTitleInput = document.querySelector("#faq-editor-section input[placeholder='FAQ Post Title']");
   const dateInput = document.querySelector("#faq-editor-section input[type='date']");
   const imageInput = document.querySelector("#faq-editor-section input[type='file']");
 
-  // Requirements & Steps inputs + containers
   const requirementInput = document.getElementById("requirementInput");
   const stepProcessInput = document.getElementById("stepProcessInput");
   const requirementsContainer = document.getElementById("requirements-container");
@@ -49,8 +37,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const requirementsPreview = document.querySelector(".requirementsPreview");
   const stepsPreviewContainer = document.querySelector(".steps-preview-container");
 
-
-  // Preview elements
   const previewQuestionItem = document.querySelector(".faq-preview .faq-item");
   const previewPostTitle = document.querySelector(".preview-post-title");
   const previewCategoryTitle = document.querySelector(".faq-category-title");
@@ -60,15 +46,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const faqSubmitBtn = document.querySelector("#faq-editor-section button.btn-primary");
 
-  // =======================
-  // Globals
-  // =======================
   let currentCategory = null;
   let editingId = null; 
 
-  // =======================
-  // Sidebar & Logout
-  // =======================
   if (toggleBtn && sidebar) {
     toggleBtn.addEventListener("click", () => {
       sidebar.classList.toggle("small-sidebar");
@@ -90,10 +70,7 @@ document.addEventListener("DOMContentLoaded", () => {
       else window.location.href = "/admin/login";
     });
   }
-
-  // =======================
-  // Section Toggle
-  // =======================
+  
   document.querySelectorAll(".card-button").forEach((button) => {
     button.addEventListener("click", () => {
       const target = button.getAttribute("data-target");
@@ -112,9 +89,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  // =======================
-  // Add Question Button
-  // =======================
+
   document.querySelectorAll(".add-question-btn").forEach((btn) => {
     btn.addEventListener("click", () => {
       const parentSection = btn.closest("div[id$='section']");
@@ -127,23 +102,16 @@ document.addEventListener("DOMContentLoaded", () => {
       editingId = null;
       faqSubmitBtn.textContent = "Add FAQ";
 
-      // 2. Hide all other sections (just in case)
       faqGrid.classList.add("d-none");
       enrollmentSection.classList.add("d-none");
       documentRequestSection.classList.add("d-none");
       graduationClearanceSection.classList.add("d-none");
 
-      // 3. Show the editor
       faqEditorSection.classList.remove("d-none");
     });
   });
 
 
-  // =======================
-  // FAQ Editor Live Preview
-  // =======================
-
-  // 1. Question Title → Preview list
   if (questionTitleInput) {
   questionTitleInput.addEventListener("input", () => {
     const questionPreview = document.querySelector(".faq-preview .question-title-preview");
@@ -156,8 +124,6 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 }
 
-
-  // 2. FAQ Post Title → Preview title
 if (faqPostTitleInput) {
   faqPostTitleInput.addEventListener("input", () => {
     const faqPreviewLi = document.querySelector(".faq-preview-question ol li.faq-item");
@@ -169,8 +135,6 @@ if (faqPostTitleInput) {
   });
 }
 
-
-  // 3. Date → Preview date
   if (dateInput && previewDate) {
     dateInput.addEventListener("input", () => {
       if (dateInput.value) {
@@ -187,7 +151,6 @@ if (faqPostTitleInput) {
     });
   }
 
-  // 5. Image → Preview image
   if (imageInput && previewImage) {
     imageInput.addEventListener("change", () => {
       const file = imageInput.files[0];
@@ -205,9 +168,6 @@ if (faqPostTitleInput) {
     });
   }
 
-  // =======================
-  // Load FAQs
-  // =======================
   async function loadFaqsForCategory(category) {
   currentCategory = category;
   const { data, error } = await supabaseClient
@@ -253,10 +213,6 @@ if (faqPostTitleInput) {
   attachEditDeleteHandlers();
 }
 
-
-  // =======================
-// Edit + Delete Handlers
-// =======================
 function attachEditDeleteHandlers() {
   // EDIT FAQ
   document.querySelectorAll(".edit-faq").forEach(link => {
@@ -276,21 +232,17 @@ function attachEditDeleteHandlers() {
         currentCategory = data.category;
         editingId = id;
 
-        // Hide table sections
         enrollmentSection.classList.add("d-none");
         documentRequestSection.classList.add("d-none");
         graduationClearanceSection.classList.add("d-none");
         faqGrid.classList.add("d-none");
 
-        // Show editor
         faqEditorSection.classList.remove("d-none");
 
-        // Fill form fields
         questionTitleInput.value = data.question_title || "";
         faqPostTitleInput.value = data.post_title || "";
         dateInput.value = data.date_posted || "";
         
-        // Parse requirements and steps from JSON
         try {
           requirements = data.requirements ? JSON.parse(data.requirements) : [];
         } catch {
@@ -303,11 +255,9 @@ function attachEditDeleteHandlers() {
           steps = [];
         }
 
-        // Render editor and preview
         renderRequirements();
         renderSteps();
 
-        // Update preview question
         if (previewQuestionItem) {
           previewQuestionItem.innerHTML = `${data.question_title || ""} <i class="ph-bold ph-arrow-up-right faq-icon"></i>`;
         }
@@ -325,10 +275,8 @@ function attachEditDeleteHandlers() {
           }
         }
 
-        // Clear preview text (if any)
         if (previewText) previewText.innerHTML = "";
 
-        // Image preview
         if (previewImage) {
           if (data.image_url) {
             previewImage.src = data.image_url;
@@ -347,7 +295,6 @@ function attachEditDeleteHandlers() {
     });
   });
 
-  // DELETE FAQ
   document.querySelectorAll(".delete-faq").forEach(btn => {
     btn.addEventListener("click", async e => {
       e.preventDefault();
@@ -368,10 +315,6 @@ function attachEditDeleteHandlers() {
   });
 }
 
-
-// =======================
-// Submit Handler
-// =======================
 faqSubmitBtn.addEventListener("click", async e => {
   e.preventDefault();
   if (!currentCategory) {
@@ -379,7 +322,6 @@ faqSubmitBtn.addEventListener("click", async e => {
     return;
   }
 
-  // Upload image if selected
   const file = imageInput?.files[0];
   let imageUrl = null;
 
@@ -395,7 +337,6 @@ faqSubmitBtn.addEventListener("click", async e => {
     imageUrl = publicData.publicUrl;
   }
 
-  // Prepare data object
   const faqData = {
     category: currentCategory,
     question_title: questionTitleInput?.value.trim() || "",
@@ -429,18 +370,12 @@ faqSubmitBtn.addEventListener("click", async e => {
   loadFaqsForCategory(currentCategory);
 });
 
-
-
-  // =======================
-  // Reset Form Function
-  // =======================
   function resetFaqForm() {
     if(questionTitleInput) questionTitleInput.value = "";
     if(faqPostTitleInput) faqPostTitleInput.value = "";
     if(dateInput) dateInput.value = "";
     if(imageInput) imageInput.value = "";
 
-    // Reset preview content
     if (previewQuestionItem) {
       previewQuestionItem.innerHTML = `<i class="ph-bold ph-arrow-up-right faq-icon"></i>`;
     }
@@ -456,13 +391,9 @@ faqSubmitBtn.addEventListener("click", async e => {
     }
   }
 
-  // =======================
-  // Requirements & Steps state + renderers
-  // =======================
   let requirements = [];
   let steps = [];
 
-  // Add Requirement handler (plus icon next to input)
   const addRequirementIcon = requirementInput?.nextElementSibling;
   addRequirementIcon?.addEventListener("click", () => {
     const value = requirementInput.value.trim();
@@ -472,7 +403,6 @@ faqSubmitBtn.addEventListener("click", async e => {
     renderRequirements();
   });
 
-  // Add Step handler
   const addStepIcon = stepProcessInput?.nextElementSibling;
   addStepIcon?.addEventListener("click", () => {
     const value = stepProcessInput.value.trim();
@@ -483,7 +413,6 @@ faqSubmitBtn.addEventListener("click", async e => {
   });
 
   function renderRequirements() {
-    // Editor list
     if (requirementsContainer) {
       requirementsContainer.innerHTML = "";
       if (requirements.length === 0) {
@@ -511,7 +440,6 @@ faqSubmitBtn.addEventListener("click", async e => {
       }
     }
 
-    // Preview list
     if (requirementsPreview) {
       requirementsPreview.innerHTML = "";
       requirements.forEach(req => {
@@ -524,7 +452,6 @@ faqSubmitBtn.addEventListener("click", async e => {
   }
 
   function renderSteps() {
-  // Editor list
   if (stepsContainer) {
     stepsContainer.innerHTML = "";
     if (steps.length === 0) {
@@ -552,7 +479,6 @@ faqSubmitBtn.addEventListener("click", async e => {
     }
   }
 
-  // Preview container
   if (stepsPreviewContainer) {
     stepsPreviewContainer.innerHTML = "";
     if (steps.length > 0) {
@@ -569,10 +495,6 @@ faqSubmitBtn.addEventListener("click", async e => {
 
 });
 
-
-// =======================
-// Realtime Updates
-// =======================
 const faqRealtimeChannel = supabaseClient
   .channel("realtime-faqs")
   .on(

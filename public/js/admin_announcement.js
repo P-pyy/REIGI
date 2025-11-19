@@ -1,19 +1,14 @@
 import { supabaseClient } from '/js/supabase-client.js';
 
-// =======================
-// Check Admin Login
-// =======================
 (async () => {
   const { data: { session } } = await supabaseClient.auth.getSession();
   if (!session) {
-    window.location.href = "login.html";  // Redirect if not logged in
+    window.location.href = "login.html"; 
   } else {
-    // Set the authenticated session to use admin access rights
     supabaseClient.auth.setSession(session.access_token);
   }
 })();
 
-// Toggle
 document.addEventListener("DOMContentLoaded", () => {
   const toggleBtn = document.querySelector(".toggle-btn");
   const sidebar = document.querySelector(".sidebar");
@@ -35,7 +30,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-   // ✅ Logout handler
   const logoutBtn = document.querySelector(".logout");
   if (logoutBtn) {
     logoutBtn.addEventListener("click", async () => {
@@ -48,9 +42,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
 });
 
-// =======================
-// DOMContentLoaded
-// =======================
 window.addEventListener("DOMContentLoaded", async function () {
   const tbody = document.querySelector(".announcement-table tbody");
   const overlay = document.getElementById("loading-overlay");
@@ -58,7 +49,6 @@ window.addEventListener("DOMContentLoaded", async function () {
   function showLoading() { overlay.classList.add("show"); }
   function hideLoading() { overlay.classList.remove("show"); }
 
-  // Fetch announcements
   async function fetchAnnouncements() {
     showLoading();
     const { data, error } = await supabaseClient
@@ -73,11 +63,10 @@ window.addEventListener("DOMContentLoaded", async function () {
     return data;
   }
 
-  // Render table
 function renderTable(announcements) {
   tbody.innerHTML = "";
 
-  announcements.forEach((item, index) => {  //  add index here
+  announcements.forEach((item, index) => {  
     const dateObj = new Date(item.scheduled_datetime);
 
     const formattedDate = dateObj.toLocaleDateString("en-PH", { 
@@ -114,8 +103,6 @@ function renderTable(announcements) {
     tbody.appendChild(row);
   });
 
-
-    // Delete
     document.querySelectorAll(".trash-icon").forEach(btn => {
       btn.addEventListener("click", async function (e) {
         e.preventDefault();
@@ -132,7 +119,6 @@ function renderTable(announcements) {
     });
 
 
-  // Edit
 document.querySelectorAll(".edit-link").forEach(link => {
   link.addEventListener("click", async e => {
     e.preventDefault();
@@ -145,12 +131,10 @@ document.querySelectorAll(".edit-link").forEach(link => {
     tableCard.style.display = "none";
     addBtn.style.display = "none";
 
-    // ✅ Fetch the EJS-rendered route instead of static file
     const res = await fetch("/admin/announcement_edit");
     formContainer.innerHTML = await res.text();
     formContainer.style.display = "block";
 
-    // ✅ Import JS from public folder (served statically)
     setTimeout(() => {
       import("/js/announcement_edit.js")
         .then(module => module.initAnnouncementEdit(id))
@@ -162,14 +146,10 @@ document.querySelectorAll(".edit-link").forEach(link => {
 if (window.PhosphorIcons) window.PhosphorIcons.replace();
   }
 
-
-  // Initial fetch & render
 const announcements = await fetchAnnouncements();
 renderTable(announcements);
 
-// =======================
-// Enable Supabase Realtime Updates
-// =======================
+
 supabaseClient
   .channel('realtime:announcements')
   .on(
@@ -187,9 +167,7 @@ supabaseClient
 
 });
 
-// =======================
-// Add New Announcement
-// =======================
+
 document.getElementById("add-announcement-btn").addEventListener("click", async () => {
   const tableCard = document.querySelector(".admin-announcement-card");
   const addBtn = document.getElementById("add-announcement-btn");
@@ -204,7 +182,7 @@ document.getElementById("add-announcement-btn").addEventListener("click", async 
 
   setTimeout(() => {
      import("/js/announcement_edit.js")
-      .then(module => module.initAnnouncementEdit()) // new announcement
+      .then(module => module.initAnnouncementEdit()) 
       .catch(err => console.error(err));
   }, 50);
 });

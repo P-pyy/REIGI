@@ -1,12 +1,8 @@
 import { supabaseClient } from '/js/supabase-client.js';
 
-// Get id from URL
 const params = new URLSearchParams(window.location.search);
 const faqId = params.get("id");
 
-// ===============================
-// Load FAQ function
-// ===============================
 async function loadFaq() {
   const { data, error } = await supabaseClient
     .from("faqs")
@@ -19,10 +15,8 @@ async function loadFaq() {
     return;
   }
 
-  // Question title & post title
   document.querySelector(".faq-name").textContent = data.post_title || "";
 
-  // Requirements
   const requirementsContainer = document.querySelector(".faq-preview ol");
   requirementsContainer.innerHTML = "";
   let requirements = [];
@@ -41,9 +35,8 @@ async function loadFaq() {
     });
   }
 
-  // Steps
   const stepsContainer = document.querySelector(".preview-text");
-  stepsContainer.innerHTML = ""; // clear previous content
+  stepsContainer.innerHTML = "";
   let steps = [];
   try { steps = data.steps ? JSON.parse(data.steps) : []; } catch(e){ }
 
@@ -57,7 +50,6 @@ async function loadFaq() {
     stepsContainer.innerHTML = "<p>No steps provided.</p>";
   }
 
-  // Image
   const imgEl = document.querySelector(".preview-image");
   if (data.image_url) {
     imgEl.src = data.image_url;
@@ -67,9 +59,6 @@ async function loadFaq() {
   }
 }
 
-// ===============================
-// Real-time subscription
-// ===============================
 supabaseClient
   .channel('realtime-faqs')
   .on(
@@ -77,19 +66,12 @@ supabaseClient
     { event: '*', schema: 'public', table: 'faqs', filter: `id=eq.${faqId}` },
     async (payload) => {
       console.log('FAQ updated in realtime:', payload);
-      await loadFaq(); // reload FAQ dynamically
+      await loadFaq();
     }
   )
   .subscribe();
-
-// ===============================
-// Initial load
-// ===============================
 loadFaq();
 
-// ===============================
-// Go Back button
-// ===============================
 document.querySelector(".go-back-btn").addEventListener("click", () => {
   history.back();
 });

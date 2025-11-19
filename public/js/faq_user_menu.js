@@ -3,7 +3,6 @@ import { supabaseClient } from '/js/supabase-client.js';
   const searchInput = document.getElementById("faq-search");
   const resultsDiv = document.getElementById("search-results");
 
-  // Map categories to readable text
   function formatCategory(cat) {
     const map = {
       "enrollment": "Enrollment",
@@ -13,7 +12,6 @@ import { supabaseClient } from '/js/supabase-client.js';
     return map[cat] || "FAQ";
   }
 
-  // Search FAQs
   async function searchFAQs(query) {
     if (!query.trim()) {
       resultsDiv.innerHTML = "";
@@ -48,7 +46,6 @@ import { supabaseClient } from '/js/supabase-client.js';
   }
   
 
-  // Attach click handler (delegated so it works with dynamic results)
   resultsDiv.addEventListener("click", async e => {
   const link = e.target.closest("a[data-faq-id]");
   if (!link) return;
@@ -70,7 +67,6 @@ import { supabaseClient } from '/js/supabase-client.js';
 });
 
 
-  // Trigger search on typing
   searchInput.addEventListener("input", e => {
     searchFAQs(e.target.value);
   });

@@ -1,14 +1,8 @@
 import { supabaseClient } from '/js/supabase-client.js';
 
-// =======================
-// Get ID from URL
-// =======================
 const params = new URLSearchParams(window.location.search);
 const id = params.get("id");
 
-// =======================
-// Fetch Single Announcement
-// =======================
 async function fetchAnnouncementById(id) {
   const { data, error } = await supabaseClient
     .from("announcements")
@@ -23,9 +17,6 @@ async function fetchAnnouncementById(id) {
   return data;
 }
 
-// =======================
-// Fetch All Announcements
-// =======================
 async function fetchAllAnnouncements() {
   const { data, error } = await supabaseClient
     .from("announcements")
@@ -39,9 +30,6 @@ async function fetchAllAnnouncements() {
   return data || [];
 }
 
-// =======================
-// Render Main Article
-// =======================
 function renderArticle(announcement) {
   const container = document.querySelector(".article-placeholder");
   if (!container) return;
@@ -49,7 +37,6 @@ function renderArticle(announcement) {
   let title, subtitle, text, img;
 
   if (!announcement) {
-    // 🔹 Default fallback
     title = "Welcome to REIGI";
     subtitle = "--/--/--";
     text = "Stay tuned for updates and announcements from the registrar’s office.";
@@ -85,9 +72,6 @@ function renderArticle(announcement) {
   });
 }
 
-// =======================
-// Skeleton Loader for Article + Sidebar
-// =======================
 function renderSkeletons() {
   const container = document.querySelector(".article-placeholder");
   const section = document.querySelector(".announcement-wrapper");
@@ -106,13 +90,10 @@ function renderSkeletons() {
   }
 
   if (section) {
-    section.style.display = "none"; // hide "Other Announcements" while loading
+    section.style.display = "none"; 
   }
 }
 
-// =======================
-// Render "Other Announcements"
-// =======================
 function renderOtherAnnouncements(all, currentId) {
   const wrapper = document.querySelector(".other-announcements-scroll");
   const section = document.querySelector(".announcement-wrapper");
@@ -168,13 +149,10 @@ function renderOtherAnnouncements(all, currentId) {
   });
 }
 
-// =======================
-// Init
-// =======================
 async function initArticlePage() {
   if (!id) return;
 
-  renderSkeletons(); // hide "Other Announcements" while loading
+  renderSkeletons(); 
 
   const announcement = await fetchAnnouncementById(id);
   renderArticle(announcement);
@@ -182,7 +160,6 @@ async function initArticlePage() {
   const allAnnouncements = await fetchAllAnnouncements();
   renderOtherAnnouncements(allAnnouncements, id);
 
-  // ✅ Enable Supabase Realtime
   supabaseClient
     .channel('realtime:announcements')
     .on(
@@ -191,7 +168,6 @@ async function initArticlePage() {
       async (payload) => {
         console.log("📡 Realtime update:", payload.eventType);
 
-        // Refresh both main article and list
         const updated = await fetchAnnouncementById(id);
         renderArticle(updated);
 

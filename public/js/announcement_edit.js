@@ -1,19 +1,12 @@
 import { supabaseClient } from '/js/supabase-client.js';
 
-// =======================
-// Ensure User Logged In
-// =======================
 (async () => {
   const { data: { session } } = await supabaseClient.auth.getSession();
   if (!session) window.location.href = "login.html";
 })();
 
-//HEADER JS
 document.getElementById("page-title").textContent = "Announcements Edit";
 
-// =======================
-// Real-time Preview
-// =======================
 function setupPreview() {
   const titleInput = document.getElementById("announcementTitle");
   const detailsInput = document.getElementById("announcementDetails");
@@ -61,9 +54,6 @@ function setupPreview() {
   }
 }
 
-// =======================
-// Load Announcement (Edit)
-// =======================
 async function loadAnnouncement(editId) {
   if (!editId) return;
 
@@ -86,12 +76,10 @@ async function loadAnnouncement(editId) {
 
 
   if (data.scheduled_datetime) {
-    const dt = new Date(data.scheduled_datetime); // automatically converts to local time
+    const dt = new Date(data.scheduled_datetime); 
 
-    // Set input value for <input type="datetime-local">
     document.getElementById("scheduledDateTime").value = dt.toISOString().slice(0,16);
 
-    // Set preview
     document.getElementById("previewDateTime").innerHTML = `
       <strong>${dt.toLocaleDateString("en-PH")}</strong> • 
       <span class="text-muted">${dt.toLocaleTimeString("en-PH", {hour:'2-digit',minute:'2-digit', hour12:true})}</span>
@@ -107,9 +95,6 @@ async function loadAnnouncement(editId) {
   if (form) form.dataset.editId = editId;
 }
 
-// =======================
-// Submit Handler
-// =======================
 function setupSubmitHandler() {
   const form = document.getElementById("announcementForm");
   if (!form) return;
@@ -124,14 +109,12 @@ function setupSubmitHandler() {
     let imageUrl = document.getElementById("previewImage").src;
     const imageInput = document.getElementById("imageInput");
 
-    // Convert input local time to UTC
     if (dateTime) {
       const localDt = new Date(dateTime);
-      dateTime = localDt.toISOString(); // store as UTC
+      dateTime = localDt.toISOString(); 
     }
 
     try {
-      // Upload image if new file selected
       if (imageInput.files.length > 0) {
         const file = imageInput.files[0];
         const fileName = `${Date.now()}_${file.name}`;
@@ -147,12 +130,10 @@ function setupSubmitHandler() {
       const payload = { title, details, scheduled_datetime: dateTime, image_url: imageUrl };
 
       if (editId !== "") {
-        // Update existing announcement
         const { error } = await supabaseClient.from("announcements").update(payload).eq("id", editId);
         if (error) throw new Error(error.message);
         alert("Announcement updated!");
       } else {
-        // Insert new announcement
         const { error } = await supabaseClient.from("announcements").insert([payload]);
         if (error) throw new Error(error.message);
         alert("Announcement added!");
@@ -167,9 +148,6 @@ function setupSubmitHandler() {
   });
 }
 
-// =======================
-// Init Function
-// =======================
 export function initAnnouncementEdit(editId = null) {
   setupPreview();
   setupSubmitHandler();
