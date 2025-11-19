@@ -96,6 +96,10 @@ body {
 }
 
 .card-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
   background-color: #CDE4FF;
   border: none;
   margin-bottom: 50px;
@@ -376,6 +380,10 @@ body {
   padding-bottom: 30px; 
 }
 .faq-table td {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100px;
   font-size: 14px;     
   font-weight: 400;      
   color: #2C2C2C;        

@@ -383,6 +383,24 @@ body {
 
 
 /* FAQ */
+.faq-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;               /* small spacing */
+  width: 100%;
+}
+
+.faq-title {
+  flex: 1;                /* take remaining space */
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.faq-count {
+  flex-shrink: 0;         /* prevents shrinking */
+}
+
 .faq-card {
   height: 342px;
   border-radius: 12px;

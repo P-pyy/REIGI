@@ -449,12 +449,11 @@ async function loadTopFAQs() {
       : `<i class="ph ph-caret-down faq-icon-d text-danger"></i>`;
 
     faqList.innerHTML += `
-      <li>
-        ${faq.question_title}
-        <span class="float-end">
-          ${icon} ${faq.views}
-        </span>
-      </li>`;
+    <li class="faq-item">
+    <span class="faq-title">${faq.question_title}</span>
+    <span class="faq-count">${icon} ${faq.views}</span>
+  </li>
+      `;
   });
 }
 
