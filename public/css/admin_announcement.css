@@ -24,6 +24,7 @@ main {
 .announcement-box {
   margin-left: 40px;
   display: flex;
+  flex-direction: column;
 }
 
 .admin-announcement-main {
