@@ -389,36 +389,37 @@ recognition.onresult = (event) => {
     });
   }
 
+
   finishBtn.addEventListener("click", async (e) => {
-  e.preventDefault();
-  if (finishBtn.disabled) return;
-  finishBtn.disabled = true;
+    e.preventDefault();
+    if (finishBtn.disabled) return;
+    finishBtn.disabled = true;
 
-  const fullName = `${firstNameInput.value.trim()} ${lastNameInput.value.trim()}`;
-  if (!fullName.trim()) {
-    alert("Please enter your complete name.");
-    finishBtn.disabled = false;
-    return;
-  }
+    const fullName = `${firstNameInput.value.trim()} ${lastNameInput.value.trim()}`;
+    if (!fullName.trim()) {
+      alert("Please enter your complete name.");
+      finishBtn.disabled = false;
+      return;
+    }
 
-  try {
-    const response = await fetch("/api/queue", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ full_name: fullName }),
-    });
-    const result = await response.json();
-    if (!response.ok) throw new Error(result.error || "Request failed");
+    try {
+      const response = await fetch("/api/queue", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ full_name: fullName }),
+      });
+      const result = await response.json();
+      if (!response.ok) throw new Error(result.error || "Request failed");
 
-    const queueNumber = result.data[0].queue_no.toString();
-    numberPreview.textContent = queueNumber;
+      const queueNumber = result.data[0].queue_no.toString();
+      numberPreview.textContent = queueNumber;
 
-    formOverlay.classList.remove("is-visible");
-    overlayNumber.classList.add("is-visible");
+      formOverlay.classList.remove("is-visible");
+      overlayNumber.classList.add("is-visible");
 
-    firstNameInput.value = lastNameInput.value = "";
+      firstNameInput.value = lastNameInput.value = "";
 
-    const printContent = `
+      const printContent = `
 ===============================
    University of Rizal System
          Queue Ticket
@@ -432,80 +433,16 @@ recognition.onresult = (event) => {
 
 -------------------------------
     Printed via REIGI Kiosk
-    `;
-
-    const encoded = encodeURIComponent(printContent);
-
-    // ===== Invisible iframe to trigger RawBT printing =====
-    const iframe = document.createElement("iframe");
-    iframe.style.display = "none";
-    iframe.src = `rawbt:printText:${encoded}`;
-    document.body.appendChild(iframe);
-
-    // Remove iframe after a few seconds
-    setTimeout(() => document.body.removeChild(iframe), 3000);
-
-  } catch (err) {
-    console.error("❌ Error saving queue:", err.message);
-    alert("Something went wrong while saving your queue. Please try again.");
-    finishBtn.disabled = false;
-  }
-});
-
-
-//   finishBtn.addEventListener("click", async (e) => {
-//     e.preventDefault();
-//     if (finishBtn.disabled) return;
-//     finishBtn.disabled = true;
-
-//     const fullName = `${firstNameInput.value.trim()} ${lastNameInput.value.trim()}`;
-//     if (!fullName.trim()) {
-//       alert("Please enter your complete name.");
-//       finishBtn.disabled = false;
-//       return;
-//     }
-
-//     try {
-//       const response = await fetch("/api/queue", {
-//         method: "POST",
-//         headers: { "Content-Type": "application/json" },
-//         body: JSON.stringify({ full_name: fullName }),
-//       });
-//       const result = await response.json();
-//       if (!response.ok) throw new Error(result.error || "Request failed");
-
-//       const queueNumber = result.data[0].queue_no.toString();
-//       numberPreview.textContent = queueNumber;
-
-//       formOverlay.classList.remove("is-visible");
-//       overlayNumber.classList.add("is-visible");
-
-//       firstNameInput.value = lastNameInput.value = "";
-
-//       const printContent = `
-// ===============================
-//    University of Rizal System
-//          Queue Ticket
-// ===============================
-
-//     Name: ${fullName}
-//     Queue No: ${queueNumber}
- 
-//     Please wait for your turn.
-//            Thank you!
-
-// -------------------------------
-//     Printed via REIGI Kiosk
-//       `;
+      `;
     
-//       const encoded = encodeURIComponent(printContent);
-//       window.location.href = `rawbt:printText:${encoded}`;
-//     } catch (err) {
-//       console.error("❌ Error saving queue:", err.message);
-//       alert("Something went wrong while saving your queue. Please try again.");
-//       finishBtn.disabled = false;
-//     }
-//   });
+      const encoded = encodeURIComponent(printContent);
+          window.open(`rawbt:printText:${encoded}`, "_blank");
+    } catch (err) {
+      console.error("❌ Error saving queue:", err.message);
+      alert("Something went wrong while saving your queue. Please try again.");
+      finishBtn.disabled = false;
+    }
+  });
 
   const finishBtnNum = document.getElementById("finish-btn-num");
   finishBtnNum.addEventListener("click", () => {
@@ -524,5 +461,4 @@ recognition.onresult = (event) => {
     })
     .subscribe();
 });
-
 
