@@ -60,6 +60,15 @@ document.addEventListener("DOMContentLoaded", () => {
   const savedWindow = localStorage.getItem("activeWindow");
   const logoutBtn = document.querySelector(".logout");
 
+  // ===== Prevent UI Flicker on Page Load =====
+  faqGrid?.classList.add("d-none");
+  editorSection?.classList.add("d-none");
+  documentRequestSection?.classList.add("d-none");
+  enrollmentSection?.classList.add("d-none");
+  processingSection?.classList.add("d-none");
+  queueDashboardHeader?.classList.add("d-none");
+  windowSelectSection?.classList.add("d-none");
+
   
   // Data Arrays
   let requirements = [];
@@ -85,8 +94,21 @@ document.addEventListener("DOMContentLoaded", () => {
 
   //  Resume Active Window ---
   window.addEventListener("load", async () => {
-    const savedWindow = localStorage.getItem("activeWindow");
-    if (!savedWindow) return; // No active window, keep selection UI visible
+
+     // Keep everything hidden first
+    faqGrid.classList.add("d-none");
+    editorSection.classList.add("d-none");
+    enrollmentSection.classList.add("d-none");
+    processingSection.classList.add("d-none");
+    documentRequestSection.classList.add("d-none");
+    queueDashboardHeader.classList.add("d-none");
+    windowSelectSection.classList.add("d-none");
+
+    if (!savedWindow) {
+    faqGrid?.classList.remove("d-none");
+    return;
+  }
+
 
     try {
         const { data: windowData } = await supabaseClient
