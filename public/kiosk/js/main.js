@@ -436,11 +436,13 @@ recognition.onresult = (event) => {
 -------------------------------
     Printed via REIGI Kiosk
     `;
-
     const encodedContent = encodeURIComponent(printContent);
 
-    // Android intent for RawBT
-    window.location.href = `intent://printText/${encodedContent}#Intent;scheme=rawbt;package=com.elysium.thermoprinter;end`;
+    // Direct RawBT intent for Android
+    // "package=com.elysium.thermoprinter" = RawBT app
+    // "S.text=" = the content to print
+    // "end" = closes the intent
+    window.location.href = `intent:#Intent;action=android.intent.action.VIEW;scheme=rawbt;package=com.elysium.thermoprinter;S.text=${encodedContent};end`;
 
   } catch (err) {
     console.error("❌ Error saving queue:", err.message);
@@ -448,6 +450,7 @@ recognition.onresult = (event) => {
     finishBtn.disabled = false;
   }
 });
+
 
 
   const finishBtnNum = document.getElementById("finish-btn-num");
