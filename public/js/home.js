@@ -40,41 +40,20 @@ document.addEventListener('DOMContentLoaded', () => {
   
   if (!video || !faqsSection) return;
 
-  
-  // window.addEventListener('scroll', () => {
-  //   const faqsRect = faqsSection.getBoundingClientRect();
-  //   const middleY = window.innerHeight / 2;
-
-  //   if (faqsRect.top < middleY && faqsRect.bottom > middleY) {
-  //     video.classList.remove('fixed', 'hidden');
-  //     video.classList.add('enlarged');
-  //     video.play();
-  //   } else if (faqsRect.top >= middleY) {
-  //     video.classList.remove('enlarged', 'hidden');
-  //     video.classList.add('fixed');
-  //     video.pause();
-  //   } else {
-  //     video.classList.remove('fixed', 'enlarged');
-  //     video.classList.add('hidden');
-  //     video.pause();
-  //   }
-  // });
     window.addEventListener('scroll', () => {
     const faqsRect = faqsSection.getBoundingClientRect();
     const viewportHeight = window.innerHeight;
 
-    // When FAQ section is in view
     if (faqsRect.top < viewportHeight && faqsRect.bottom > 0) {
       video.classList.remove('hidden');
       video.classList.add('enlarged');
-      video.style.position = 'fixed'; // stay fixed only within section
+      video.style.position = 'fixed'; 
       video.play();
     } 
-    // When FAQ section is scrolled past (below or above)
     else {
       video.classList.remove('enlarged');
       video.classList.add('hidden');
-      video.style.position = 'static'; // stop floating once out of view
+      video.style.position = 'static';
       video.pause();
     }
   });
@@ -82,17 +61,11 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 
-
-    /* --- home.html initializer --- */
 function initHome() {
   console.log("Home page initialized");
-  // put your home-specific JS here later
 }
 
 
-// =======================
-// Load FAQ Video
-// =======================
 async function loadFaqVideo() {
   const { data, error } = await supabaseClient
     .from("sitemedia")
@@ -104,10 +77,9 @@ async function loadFaqVideo() {
   if (!error && data.length > 0) {
     const faqVideo = document.getElementById("faqVideo");
     if (faqVideo) {
-      faqVideo.src = data[0].file_url; // directly set src on video element
-      faqVideo.load(); // reload video
+      faqVideo.src = data[0].file_url; 
+      faqVideo.load(); 
       faqVideo.play().catch(() => {
-        // autoplay might be blocked by browser
         console.log("Autoplay blocked, user interaction required.");
       });
     }
@@ -115,20 +87,17 @@ async function loadFaqVideo() {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-  loadFaqVideo(); // load the video when page loads
+  loadFaqVideo();
 });
 
-
-// Handle visibility change (tab switching)
 document.addEventListener("visibilitychange", () => {
   if (!faqVideo) return;
 
   if (document.hidden) {
-    // 🔇 Pause when tab is hidden
+
     faqVideo.pause();
     console.log("⏸️ Tab hidden — video paused");
   } else {
-    // ▶️ Try to resume when tab is visible
     const faqsSection = document.getElementById("faqs");
     if (faqsSection) {
       const faqsRect = faqsSection.getBoundingClientRect();
@@ -137,13 +106,12 @@ document.addEventListener("visibilitychange", () => {
       if (faqsRect.top < middleY && faqsRect.bottom > middleY) {
         faqVideo
           .play()
-          .then(() => console.log("▶️ Video resumed automatically"))
+          .then(() => console.log(" Video resumed automatically"))
           .catch(() => {
-            console.log("⚠️ Autoplay blocked — waiting for user interaction...");
-            // Resume once the user interacts
+            console.log(" Autoplay blocked — waiting for user interaction...");
             const resumeHandler = () => {
               faqVideo.play();
-              console.log("✅ Video resumed after user interaction");
+              console.log(" Video resumed after user interaction");
               document.removeEventListener("click", resumeHandler);
             };
             document.addEventListener("click", resumeHandler);
@@ -153,13 +121,6 @@ document.addEventListener("visibilitychange", () => {
   }
 });
 
-
-
-
-
-// =======================
-// Load Undergraduate Calendar
-// =======================
 async function loadUndergradCalendar() {
   const { data, error } = await supabaseClient
     .from("sitemedia")
@@ -179,9 +140,6 @@ async function loadUndergradCalendar() {
   }
 }
 
-// =======================
-// Load Graduate Calendar
-// =======================
 async function loadGradCalendar() {
   const { data, error } = await supabaseClient
     .from("sitemedia")
@@ -201,7 +159,6 @@ async function loadGradCalendar() {
   }
 }
 
-
 document.addEventListener("DOMContentLoaded", () => {
   const faqBtn = document.getElementById("faq-btn");
   if (faqBtn) {
@@ -214,10 +171,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
 async function loadTodayAnnouncements() {
   const container = document.getElementById("announcements-container");
-  if (!container) return; // ✅ stop safely if not found
+  if (!container) return; 
 
-
-  // Fetch announcements for today
   const today = new Date().toISOString().slice(0, 10);
   const { data, error } = await supabaseClient
     .from("announcements")
@@ -226,7 +181,7 @@ async function loadTodayAnnouncements() {
     .lte("scheduled_datetime", today + "T23:59:59")
     .order("scheduled_datetime", { ascending: false });
 
-  container.innerHTML = ""; // clear old content
+  container.innerHTML = ""; 
 
   if (error) {
     container.innerHTML = `<p>Error loading announcements.</p>`;
@@ -239,7 +194,6 @@ async function loadTodayAnnouncements() {
     return;
   }
 
-  // Render cards
   data.forEach(item => {
     const dateObj = new Date(item.scheduled_datetime);
     const formattedDate = dateObj.toLocaleDateString("en-US", { year: "2-digit", month: "2-digit", day: "2-digit" });
@@ -261,9 +215,6 @@ async function loadTodayAnnouncements() {
   });
 }
 
-// -----------------------
-// Check if an <a> click is internal
-// -----------------------
 function isInternalLink(event) {
   const anchor = event.target.closest('a');
   if (!anchor || !anchor.href) return false;
@@ -276,9 +227,6 @@ function isInternalLink(event) {
   }
 }
 
-// -----------------------
-// Event listeners
-// -----------------------
 
 document.addEventListener("DOMContentLoaded", () => {
   loadUndergradCalendar();
@@ -287,12 +235,7 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 
-
-// =======================
-// Realtime Subscriptions
-// =======================
 document.addEventListener("DOMContentLoaded", () => {
-  // 📢 Listen for ANNOUNCEMENTS changes (today’s updates)
   supabaseClient
     .channel("realtime:announcements")
     .on(
@@ -300,12 +243,11 @@ document.addEventListener("DOMContentLoaded", () => {
       { event: "*", schema: "public", table: "announcements" },
       async (payload) => {
         console.log("📢 Realtime announcement change detected:", payload);
-        await loadTodayAnnouncements(); // Refresh announcements dynamically
+        await loadTodayAnnouncements();
       }
     )
     .subscribe();
 
-  // 🎥 Listen for FAQ video changes
   supabaseClient
     .channel("realtime:sitemedia_video")
     .on(
@@ -320,7 +262,6 @@ document.addEventListener("DOMContentLoaded", () => {
     )
     .subscribe();
 
-  // 📅 Listen for UNDERGRAD calendar changes
   supabaseClient
     .channel("realtime:sitemedia_calendar")
     .on(
@@ -335,7 +276,6 @@ document.addEventListener("DOMContentLoaded", () => {
     )
     .subscribe();
 
-  // 🎓 Listen for GRAD calendar changes
   supabaseClient
     .channel("realtime:sitemedia_calendar_grad")
     .on(
@@ -351,10 +291,6 @@ document.addEventListener("DOMContentLoaded", () => {
     .subscribe();
 });
 
-
-
-
-// home.js 
 
 function getCookie(name) {
   const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
@@ -381,7 +317,6 @@ async function logVisitor() {
 
   const deviceType = getDeviceType();
 
-  // ✅ Always call backend to handle exited_at reset
   try {
     await fetch("/api/log-visitor", {
       method: "POST",
@@ -393,14 +328,12 @@ async function logVisitor() {
   }
 }
 
-// Run on page load
 logVisitor();
 
 window.addEventListener("beforeunload", async () => {
   const visitorSessionId = getCookie("visitor_session_id");
   if (!visitorSessionId) return;
 
-  // Send the exit time to Supabase
   navigator.sendBeacon(
     "/api/visitor-exit",
     JSON.stringify({ visitor_session_id: visitorSessionId, exited_at: new Date().toISOString() })
@@ -414,24 +347,19 @@ function getDeviceType() {
   return "Others";
 }
 
-// VIDEO REPLAY TRACKING
 const faqVideo = document.getElementById("faqVideo");
 
 if (faqVideo) {
   console.log("🎥 Replay tracking active for visitor.");
 
-  // Track how many times the video loops
   faqVideo.addEventListener("timeupdate", () => {
-    // When the video reaches the end (within 0.3 seconds), count a replay
     if (faqVideo.currentTime >= faqVideo.duration - 0.3) {
       if (!faqVideo.hasCountedReplay) {
-        faqVideo.hasCountedReplay = true; // prevent multiple triggers
+        faqVideo.hasCountedReplay = true; 
         console.log("🔁 User replayed the FAQ video!");
 
-        // Example of Supabase update
         updateReplayCount();
 
-        // Reset flag after short delay (for next loop)
         setTimeout(() => faqVideo.hasCountedReplay = false, 1000);
       }
     }

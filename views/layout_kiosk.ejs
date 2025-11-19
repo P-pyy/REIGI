@@ -4,14 +4,11 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#1976d2">
-  <!-- Enable fullscreen on Android -->
   <meta name="mobile-web-app-capable" content="yes">
 
-  <!-- Enable fullscreen on iOS (if ever tested on iPad) -->
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
-  <!-- Optional but recommended for newer Android PWAs -->
   <meta name="apple-touch-fullscreen" content="yes">
   <meta name="fullscreen" content="yes">
 
@@ -20,11 +17,9 @@
 
   <title><%= pageTitle || 'Kiosk' %></title>
 
-  <!--  Link the kiosk PWA manifest -->
   <link rel="manifest" href="/kiosk/manifest.json">
   <link rel="icon" type="image/png" href="/kiosk/icons/icon-192x192.png">
 
-  <!--  Register service worker -->
   <script>
     if ("serviceWorker" in navigator) {
       window.addEventListener("load", () => {
@@ -35,7 +30,6 @@
     }
   </script>
 
-  <!--  Make Supabase env variables available -->
   <script>
     window.__ENV__ = {
       SUPABASE_URL: '<%= process.env.SUPABASE_URL %>',
@@ -43,17 +37,14 @@
     };
   </script>
 
-  <!--  Optional: basic kiosk styles -->
   <link rel="stylesheet" href="/kiosk/css/style.css">
 </head>
 
 <body class="kiosk-body">
-  <!-- This is where each kiosk page (index, checklist, queue, etc.) loads -->
   <main class="preload">
     <%- content %>
   </main>
 
-  <!--  Include kiosk scripts -->
   <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.min.js"></script>
   <script src="https://unpkg.com/@phosphor-icons/web"></script>

@@ -1,13 +1,7 @@
 import { supabaseClient } from '/js/supabase-client.js';
 window.supabaseClient = supabaseClient;
 
-
-
-
-// =======================
-// Check Admin Login
-// =======================
-let currentUser = null; // ✅ define this globally
+let currentUser = null; 
 
 (async () => {
   const { data: { session } } = await supabaseClient.auth.getSession();
@@ -18,18 +12,16 @@ let currentUser = null; // ✅ define this globally
     return;
   }
 
-  currentUser = session.user; // ✅ assign the logged-in user here
+  currentUser = session.user; 
 
-  // Only after supabaseClient is initialized and user session is valid
 const announcementsChannel = supabaseClient
-  .channel('realtime-announcements-dashboard') // unique channel name
+  .channel('realtime-announcements-dashboard') 
   .on(
     'postgres_changes',
     { event: '*', schema: 'public', table: 'announcements' },
     async (payload) => {
       console.log('🔄 Announcements table changed:', payload);
 
-      // Recalculate the number of announcements this month
       const annNumElem = document.querySelector(".ann-num");
       if (!annNumElem) return;
 
@@ -55,18 +47,14 @@ const announcementsChannel = supabaseClient
   )
   .subscribe();
 
-  // =======================
-// Realtime: Visitors Table
-// =======================
 const visitorsChannel = supabaseClient
-  .channel('realtime-visitors-dashboard') // unique channel name
+  .channel('realtime-visitors-dashboard') 
   .on(
     'postgres_changes',
     { event: '*', schema: 'public', table: 'visitors' },
     async (payload) => {
       console.log('🔄 Visitors table changed:', payload);
 
-      // Update all dashboard metrics dependent on visitors table
       await loadActiveUsersChart();
       await loadDeviceTypes();
       await loadBounceRate();
@@ -76,36 +64,29 @@ const visitorsChannel = supabaseClient
   )
   .subscribe();
 
-  // =======================
-// Realtime: FAQs Table
-// =======================
 const faqsChannel = supabaseClient
-  .channel('realtime-faqs-dashboard') // unique channel name
+  .channel('realtime-faqs-dashboard') 
   .on(
     'postgres_changes',
     { event: '*', schema: 'public', table: 'faqs' },
     async (payload) => {
       console.log('🔄 FAQs table changed:', payload);
 
-      // Refresh top FAQs and total views
       await loadTopFAQs();
       await loadTotalFAQViews();
     }
   )
   .subscribe();
 
-  // =======================
-// Realtime: Site Media Table
-// =======================
+
 const sitemediaChannel = supabaseClient
-  .channel('realtime-sitemedia-dashboard') // unique channel name
+  .channel('realtime-sitemedia-dashboard') 
   .on(
     'postgres_changes',
     { event: '*', schema: 'public', table: 'sitemedia' },
     async (payload) => {
       console.log('🔄 SiteMedia table changed:', payload);
 
-      // Update latest video date
       const { data: videoData, error: videoError } = await supabaseClient
         .from("sitemedia")
         .select("uploaded_at")
@@ -120,7 +101,6 @@ const sitemediaChannel = supabaseClient
         document.getElementById("video-date").textContent = "No data yet";
       }
 
-      // Update latest calendar date
       const { data: calendarData, error: calError } = await supabaseClient
         .from("sitemedia")
         .select("uploaded_at")
@@ -137,10 +117,6 @@ const sitemediaChannel = supabaseClient
     }
   )
   .subscribe();
-
-
-
-
 
 })();
 
@@ -166,7 +142,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // Highlight active page
     const currentPage = window.location.pathname.split("/").pop();
     document.querySelectorAll(".menu li a").forEach(link => {
       if (link.getAttribute("href") === currentPage) {
@@ -174,11 +149,10 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
 
-  // ✅ Logout handler
   const logoutBtn = document.querySelector(".logout");
   if (logoutBtn) {
     logoutBtn.addEventListener("click", async () => {
-      console.log("Logout clicked ✅");
+      console.log("Logout clicked");
       const { error } = await supabaseClient.auth.signOut();
       if (error) console.error("Logout error:", error.message);
       else window.location.href = "/admin/login";
@@ -186,36 +160,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 });
 
-
-// ✅ Line Chart Setup
-// const ctx = document.getElementById("myChart").getContext("2d");
-// const chart = new Chart(ctx, {
-//   type: "line",
-//   data: {
-//     labels: [], // will be filled dynamically
-//     datasets: [{
-//       label: "Active Users",
-//       data: [], // will be filled dynamically
-//       borderColor: "#0055A5",
-//       backgroundColor: "rgba(0, 85, 165, 0.1)",
-//       fill: true,
-//       tension: 0.4,
-//       pointRadius: 0
-//     }]
-//   },
-//   options: {
-//     responsive: true,
-//     maintainAspectRatio: false,
-//     layout: { padding: { left: 0, right: 30, top: 30, bottom: 0 } },
-//     scales: {
-//       x: { title: { display: true, text: "Month" }, ticks: { align: "start" } },
-//       y: { title: { display: true, text: "Active users" }, ticks: { stepSize: 10, min: 0, max: 50 } }
-//     },
-//     plugins: { legend: { display: false } }
-//   }
-// });
-
-let chart = null; // global
+let chart = null; 
 
 document.addEventListener("DOMContentLoaded", () => {
   const canvas = document.getElementById("myChart");
@@ -248,12 +193,11 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // ✅ Once chart is ready, now load data
   loadActiveUsersChart();
 });
 
 async function loadActiveUsersChart() {
-  if (!chart) return; // prevent accessing null chart
+  if (!chart) return; 
 
   const { data, error } = await supabaseClient
     .from("visitors")
@@ -279,14 +223,13 @@ async function loadActiveUsersChart() {
     }
   });
 
-  // ✅ Safely update chart
   chart.data.labels = monthLabels;
   chart.data.datasets[0].data = monthlyActiveUsers;
   chart.update();
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-  if (!chart) return; // chart not yet initialized
+  if (!chart) return;
 
   const legendContainer = document.getElementById("customLegend");
   if (!legendContainer) return;
@@ -303,10 +246,6 @@ document.addEventListener("DOMContentLoaded", () => {
   legendContainer.appendChild(legendItem);
 });
 
-
-
-
-// ✅ Pie Chart (device types)
 const devCtx = document.getElementById("deviceChart");
 const deviceChart = new Chart(devCtx, {
   type: "doughnut",
@@ -317,9 +256,6 @@ const deviceChart = new Chart(devCtx, {
   options: { responsive: true, cutout: "50%", plugins: { legend: { display: false } }, maintainAspectRatio: false }
 });
 
-// =======================
-// Device Types Chart
-// =======================
 async function loadDeviceTypes() {
   const { data, error } = await supabaseClient.from("visitors").select("device_type");
   if (error || !data) {
@@ -347,11 +283,6 @@ async function loadDeviceTypes() {
     <div class="percentage-item"><span>Computer</span><span>${cPercent}%</span></div>`;
 }
 
-
-
-// =======================
-// Bounce Rate (fixed)
-// =======================
 async function loadBounceRate() {
   const { data, error } = await supabaseClient.from("visitors").select("visited_at, exited_at");
   if (error || !data) return;
@@ -365,7 +296,7 @@ async function loadBounceRate() {
   let bounced = 0;
   data.forEach(v => {
     if (!v.exited_at) {
-      bounced++; // still active or exit not recorded
+      bounced++; 
     } else {
       const start = new Date(v.visited_at).getTime();
       const exit = new Date(v.exited_at).getTime();
@@ -378,9 +309,6 @@ async function loadBounceRate() {
   document.querySelector(".bounce-percent").textContent = bounceRate + "%";
 }
 
-// =======================
-// Run after DOM Ready
-// =======================
 document.addEventListener("DOMContentLoaded", () => {
   loadDeviceTypes();
   loadBounceRate();
@@ -391,16 +319,11 @@ document.addEventListener("DOMContentLoaded", () => {
   loadActiveUsersChart();
 })
 
-
-// =======================
-// Load Announcements Count This Month
-// =======================
 window.addEventListener("DOMContentLoaded", async () => {
   const annNumElem = document.querySelector(".ann-num");
 
   if (!annNumElem) return;
 
-  // Get first and last day of current month
   const now = new Date();
   const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
   const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59);
@@ -417,12 +340,10 @@ window.addEventListener("DOMContentLoaded", async () => {
     return;
   }
 
-  // Update dashboard
   annNumElem.textContent = data.length;
   annNumElem.style.visibility = "visible";
 });
 
-// Helper to format date as MM/DD/YY
 function formatDate(dateString) {
   const d = new Date(dateString);
   return d.toLocaleDateString("en-US", {
@@ -432,9 +353,6 @@ function formatDate(dateString) {
   });
 }
 
-// ==========================
-// Get latest FAQ video
-// ==========================
 const { data: videoData, error: videoError } = await supabaseClient
   .from("sitemedia")
   .select("uploaded_at")
@@ -449,9 +367,6 @@ if (!videoError && videoData?.length > 0) {
   document.getElementById("video-date").textContent = "No data yet";
 }
 
-// ==========================
-// Get latest Academic Calendar
-// ==========================
 const { data: calendarData, error: calError } = await supabaseClient
   .from("sitemedia")
   .select("uploaded_at")
@@ -466,9 +381,6 @@ if (!calError && calendarData?.length > 0) {
   document.getElementById("calendar-date").textContent = "No data yet";
 }
 
-
-
-// Show total FAQ video replays (sum across all visitors)
 async function loadVideoReplayCount() {
   const { data, error } = await supabaseClient
     .from("visitors")
@@ -496,8 +408,6 @@ async function loadTotalWebsiteVisits() {
   const totalVisits = count || 0;
   const totalElem = document.querySelector(".t-website .card-number");
   const growthElem = document.querySelector(".t-website .card-subtext");
-
-  // Compare with localStorage
   const lastTotal = parseInt(localStorage.getItem("lastTotalVisits")) || 0;
   const diff = totalVisits - lastTotal;
 
@@ -517,8 +427,6 @@ async function loadTotalWebsiteVisits() {
   localStorage.setItem("lastTotalVisits", totalVisits);
 }
 
-
-// Show Top 5 FAQs (with up/down trend)
 async function loadTopFAQs() {
   const { data, error } = await supabaseClient
     .from("faqs")
@@ -550,7 +458,6 @@ async function loadTopFAQs() {
   });
 }
 
-// ✅ Fetch all FAQs with stats for admin
 async function getFaqStats() {
   try {
     const { data, error } = await supabaseClient
@@ -575,28 +482,23 @@ getFaqStats().then(faqs => {
   });
 });
 
-// ✅ Load Total FAQ Views
 async function loadTotalFAQViews() {
   try {
     const { data, error } = await supabaseClient
       .from("faqs")
-      .select("views, last_week_views"); // make sure to get last_week_views too
+      .select("views, last_week_views"); 
 
     if (error) {
       console.error("Error fetching FAQ views:", error.message);
       return;
     }
 
-    // Sum all views
     const totalViews = data.reduce((sum, faq) => sum + (faq.views || 0), 0);
-
-    // Update the card number
     const totalFAQCard = document.querySelector(".total-faq .card-number");
     const cardSubtext = document.querySelector(".total-faq .card-subtext");
 
     if (totalFAQCard) totalFAQCard.textContent = totalViews;
 
-    // Compare with last week for growth
     const lastWeekTotal = data.reduce((sum, faq) => sum + (faq.last_week_views || 0), 0);
 
     if (cardSubtext) {

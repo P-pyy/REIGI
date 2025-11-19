@@ -1,6 +1,5 @@
 import { supabaseClient } from '/js/supabase-client.js';
 
-    // Load only ENROLLMENT by default
     async function loadFAQs() {
       const { data, error } = await supabaseClient
         .from("faqs")
@@ -26,17 +25,16 @@ import { supabaseClient } from '/js/supabase-client.js';
     }
     loadFAQs();
 
-    // search across all categories
     const searchInput = document.getElementById("faq-search");
     const resultsDiv = document.getElementById("search-results");
 
      async function searchFAQs(query) {
   if (!query.trim()) {
     resultsDiv.innerHTML = "";
-    resultsDiv.style.display = "none"; // hide results when empty
+    resultsDiv.style.display = "none"; 
     return;
   } else {
-    resultsDiv.style.display = "block"; // show results when typing
+    resultsDiv.style.display = "block";
   }
 
   const { data, error } = await supabaseClient
@@ -63,15 +61,12 @@ import { supabaseClient } from '/js/supabase-client.js';
   `).join("");
   }
 
-    // Trigger search on typing
     searchInput.addEventListener("input", e => {
       searchFAQs(e.target.value);
     });
 
-    // Load default category FAQs on page load
    document.addEventListener("DOMContentLoaded", loadFAQs);
 
-    // Open FAQ and increment view
     window.openFAQ = async function(id) {
   try {
     await fetch('/api/increment-faq-view', {

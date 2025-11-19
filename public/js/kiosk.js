@@ -1,10 +1,7 @@
-// Supabase Import
 import { supabaseClient } from '/js/supabase-client.js';
 
-// Main DOMContentLoaded
 document.addEventListener("DOMContentLoaded", () => {
 
-  // DOM Elements
   const editorSection = document.getElementById("faq-editor-section");
   const faqGrid = document.getElementById("faq-grid");
   const enrollmentSection = document.getElementById("enrollment-section");
@@ -60,7 +57,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const savedWindow = localStorage.getItem("activeWindow");
   const logoutBtn = document.querySelector(".logout");
 
-  // ===== Prevent UI Flicker on Page Load =====
   faqGrid?.classList.add("d-none");
   editorSection?.classList.add("d-none");
   documentRequestSection?.classList.add("d-none");
@@ -69,8 +65,6 @@ document.addEventListener("DOMContentLoaded", () => {
   queueDashboardHeader?.classList.add("d-none");
   windowSelectSection?.classList.add("d-none");
 
-  
-  // Data Arrays
   let requirements = [];
   let steps = [];
   let selectedWindow = null;
@@ -91,11 +85,8 @@ document.addEventListener("DOMContentLoaded", () => {
     windowButtons.forEach(btn => btn.classList.add("d-none"));
 }
 
-
-  //  Resume Active Window ---
   window.addEventListener("load", async () => {
 
-     // Keep everything hidden first
     faqGrid.classList.add("d-none");
     editorSection.classList.add("d-none");
     enrollmentSection.classList.add("d-none");
@@ -122,22 +113,18 @@ document.addEventListener("DOMContentLoaded", () => {
             return;
         }
 
-        // If another tab was using it, maybe alert user or allow takeover
         if (windowData.current_tab_id !== tabId) {
             console.log("Another tab might be using this window, but resuming anyway...");
         }
 
         selectedWindow = savedWindow;
 
-        // ✅ HIDE selection UI immediately
         windowSelectSection.classList.add("d-none");
         faqGrid?.classList.add("d-none");
         editorSection?.classList.add("d-none");
 
-        // ✅ SHOW queue UI
         showQueueUI(selectedWindow);
 
-        // Update DB with current tab
         await supabaseClient
             .from("active_windows")
             .update({ current_tab_id: tabId, is_active: true })
@@ -149,43 +136,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 });
 
-//   window.addEventListener("load", async () => {
-//   const savedWindow = localStorage.getItem("activeWindow");
-//   if (!savedWindow) return;
-
-//   try {
-//     const { data: windowData } = await supabaseClient
-//       .from("active_windows")
-//       .select("*")
-//       .eq("window_name", savedWindow)
-//       .single();
-
-//     if (!windowData) {
-//       localStorage.removeItem("activeWindow");
-//       return;
-//     }
-
-//     // If another tab was using it, maybe alert user or allow takeover
-//     if (windowData.current_tab_id !== tabId) {
-//       console.log("Another tab might be using this window, but resuming anyway...");
-//     }
-
-//     selectedWindow = savedWindow;
-//     showQueueUI(selectedWindow);
-
-//     // Update DB with current tab
-//     await supabaseClient
-//       .from("active_windows")
-//       .update({ current_tab_id: tabId, is_active: true })
-//       .eq("window_name", selectedWindow);
-
-//   } catch (err) {
-//     console.error("Error restoring window:", err);
-//     localStorage.removeItem("activeWindow");
-//   }
-// });
-
-
 async function updateActiveWindow() {
   if (selectedWindow) {
     await supabaseClient
@@ -195,8 +145,6 @@ async function updateActiveWindow() {
   }
 }
 
-
-  // Sidebar Toggle
   toggleBtn?.addEventListener("click", () => {
     sidebar.classList.toggle("small-sidebar");
     mainContent?.classList.toggle("adjusted");
@@ -209,13 +157,12 @@ async function updateActiveWindow() {
 
 
   logoutBtn?.addEventListener("click", async () => {
-    console.log("Logout clicked ✅");
+    console.log("Logout clicked ");
     const { error } = await supabaseClient.auth.signOut();
     if (error) console.error("Logout error:", error.message);
     else window.location.href = "/admin/login";
   });
 
-  // Section Toggle 
   document.querySelectorAll(".card-button").forEach((button) => {
     button.addEventListener("click", () => {
       if (button.id === "proceed-button") return;
@@ -238,8 +185,6 @@ async function updateActiveWindow() {
   });
 
 
-
-// Optional: Unlock stale windows on page load (older than 15s)
 async function cleanupStaleWindows() {
   const fifteenSecondsAgo = new Date(Date.now() - 15000).toISOString();
   await supabaseClient
@@ -248,11 +193,8 @@ async function cleanupStaleWindows() {
     .lt("last_heartbeat", fifteenSecondsAgo);
 }
 
-// Call cleanup on page load
 cleanupStaleWindows();
 
-
-// Unlock the current window
 function unlockWindow() {
   if (!selectedWindow) return;
 
@@ -265,18 +207,14 @@ function unlockWindow() {
   navigator.sendBeacon(url, payload);
 }
 
-
-// Unlock on logout
 logoutBtn.addEventListener("click", async () => {
   await unlockWindow();
   window.location.href = "/admin/login";
 });
 
-
-  // Proceed button handler
   proceedButton.addEventListener("click", () => {
     if (!selectedWindow) {
-      alert("⚠️ Please select a window first!");
+      alert(" Please select a window first!");
       return;
     }
     const confirmationModal = document.getElementById("window-confirmation-modal");
@@ -285,7 +223,6 @@ logoutBtn.addEventListener("click", async () => {
     confirmationModal.classList.remove("d-none");
   });
 
-  // Confirmation modal
   const _confirmationModal = document.getElementById("window-confirmation-modal");
   const _closeConfirmBtn = document.getElementById("confirmation-close-btn");
   const _confirmBtn = document.getElementById("confirmation-btn");
@@ -303,12 +240,10 @@ logoutBtn.addEventListener("click", async () => {
   _confirmBtn?.addEventListener("click", () => {
   _confirmationModal.classList.add("d-none");
 
-  // Hide FAQ and other UI
   faqGrid.classList.add("d-none");
   editorSection?.classList.add("d-none");
   documentRequestSection.classList.add("d-none");
 
-  // Show queue sections
   windowSelectSection.classList.add("d-none");
   queueDashboardHeader.classList.remove("d-none");
   enrollmentSection.classList.remove("d-none");
@@ -318,14 +253,10 @@ logoutBtn.addEventListener("click", async () => {
   if (windowNumberText) windowNumberText.textContent = selectedWindow;
   localStorage.setItem("activeWindow", selectedWindow);
 
-  // Load data
   loadQueueData();
   loadProcessingData();
 });
 
-// ==========================
-// HANDLE WINDOW BUTTON CLICK
-// ==========================
 windowButtons.forEach((btn, index) => {
   btn.addEventListener("click", async () => {
     const windowName = `Window ${index + 1}`;
@@ -339,7 +270,7 @@ windowButtons.forEach((btn, index) => {
       last_heartbeat: new Date().toISOString()
     })
     .eq("window_name", windowName)
-    .is("current_tab_id", null) // <-- use .is() instead of .eq()
+    .is("current_tab_id", null) 
     .select();
 
 
@@ -347,7 +278,6 @@ windowButtons.forEach((btn, index) => {
         return alert(`${windowName} is already in use by another tab!`);
       }
 
-      // Unlock previously selected window
       if (selectedWindow && selectedWindow !== windowName) {
         await unlockWindow(selectedWindow);
       }
@@ -355,7 +285,6 @@ windowButtons.forEach((btn, index) => {
       selectedWindow = windowName;
       localStorage.setItem("activeWindow", selectedWindow);
 
-      // Update UI
       windowButtons.forEach(b => b.classList.remove("active-window"));
       btn.classList.add("active-window");
       updateStatusPills(selectedWindow);
@@ -368,9 +297,6 @@ windowButtons.forEach((btn, index) => {
   });
 });
 
-// ==========================
-// UPDATE STATUS PILLS UI
-// ==========================
 function updateStatusPills(activeWindow) {
   windowStatusPills.forEach((pill, idx) => {
     const light = pill.querySelector(".status-light");
@@ -387,9 +313,6 @@ function updateStatusPills(activeWindow) {
   });
 }
 
-// ==========================
-// HEARTBEAT (KEEP WINDOW ALIVE)
-// ==========================
 setInterval(async () => {
   if (!selectedWindow) return;
 
@@ -402,11 +325,8 @@ setInterval(async () => {
   } catch (err) {
     console.error("Heartbeat failed:", err);
   }
-}, 5000); // every 5 seconds
+}, 5000); 
 
-// ==========================
-// UNLOCK WINDOW FUNCTION
-// ==========================
 async function unlockWindow(windowName = selectedWindow) {
   if (!windowName) return;
 
@@ -421,9 +341,6 @@ async function unlockWindow(windowName = selectedWindow) {
   }
 }
 
-// ==========================
-// AUTO-UNLOCK ON TAB CLOSE/REFRESH
-// ==========================
 window.addEventListener("beforeunload", () => {
   if (!selectedWindow) return;
 
@@ -433,10 +350,6 @@ window.addEventListener("beforeunload", () => {
   navigator.sendBeacon("/api/unlock-window", blob);
 });
 
-
-// ==========================
-// SHOW QUEUE SECTION AFTER PROCEED
-// ==========================
 function showQueueUI(windowName) {
   windowSelectSection.classList.add("d-none");
   queueDashboardHeader.classList.remove("d-none");
@@ -452,7 +365,6 @@ function showQueueUI(windowName) {
   loadProcessingData();
 }
 
-
   const backToWindowSelectBtn = document.getElementById("back-to-window-select");
   backToWindowSelectBtn?.addEventListener("click", (e) => {
     e.preventDefault();
@@ -463,7 +375,6 @@ function showQueueUI(windowName) {
     backdrop.classList.add("is-visible");
   });
 
-  // --- NEW: Handlers for Logout Popup ---
   logoutPopupCloseBtn.addEventListener("click", (e) => {
     e.preventDefault();
     logoutPopup.classList.remove("is-visible");
@@ -473,13 +384,12 @@ function showQueueUI(windowName) {
   logoutPopupConfirmBtn.addEventListener("click", async () => {
     if (selectedWindow) {
         try {
-            await unlockWindow(); // wait for DB to unlock
+            await unlockWindow(); 
         } catch (err) {
             console.error("Failed to unlock window:", err);
         }
     }
 
-    // Clear tables
     const tables = [
         enrollmentTableBody,
         document.querySelector("#processing-section tbody"),
@@ -494,9 +404,6 @@ function showQueueUI(windowName) {
     localStorage.removeItem("activeWindow");
     window.location.reload();
 });
-
-
-
 
   async function loadQueueData() {
     if (!enrollmentTableBody) return;
@@ -569,7 +476,6 @@ function showQueueUI(windowName) {
     attachProcessingHandlers();
   }
 
-  // Move to Processing handler
   function attachQueueActionHandlers() {
   document.querySelectorAll(".move-card-button").forEach(btn => {
     btn.addEventListener("click", async (e) => {
@@ -586,11 +492,11 @@ function showQueueUI(windowName) {
 
       if (error) {
         console.error(error);
-        return alert("⚠️ Failed to check processing queue!");
+        return alert(" Failed to check processing queue!");
       }
 
       if (processingData.length > 0) {
-        return alert(`⚠️ ${selectedWindow} already has a processing item. Complete it first!`);
+        return alert(` ${selectedWindow} already has a processing item. Complete it first!`);
       }
 
       processingPopup.dataset.currentId = id;
@@ -602,8 +508,6 @@ function showQueueUI(windowName) {
   });
 }
 
-
-  // Finish button handler
   function attachProcessingHandlers() {
     document.querySelectorAll(".finish-card-button").forEach(btn => {
       btn.addEventListener("click", (e) => {
@@ -621,7 +525,6 @@ function showQueueUI(windowName) {
     });
   }
 
-  // Handlers for Processing Popup ---
   processingPopupCloseBtn.addEventListener("click", (e) => {
     e.preventDefault();
     processingPopup.classList.remove("is-visible");
@@ -653,7 +556,6 @@ function showQueueUI(windowName) {
     await loadProcessingData();
   });
 
-  // Handlers for Confirm Finish Popup ---
   confirmPopupCloseBtn.addEventListener("click", (e) => {
     e.preventDefault();
     confirmPopup.classList.remove("is-visible");
@@ -721,7 +623,6 @@ function showQueueUI(windowName) {
     await loadFinishedData();
   });
 
-  // REPLACED: Delete handler 
   function attachQueueDeleteHandlers() {
     document.querySelectorAll(".delete-queue-button").forEach(btn => {
       btn.addEventListener("click", (e) => {
@@ -740,7 +641,6 @@ function showQueueUI(windowName) {
     });
   }
 
-  // Handlers for Delete Popup ---
   deletePopupConfirmBtn.addEventListener("click", async () => {
     const id = deletePopup.dataset.currentId;
     if (!id) return; 
@@ -751,7 +651,7 @@ function showQueueUI(windowName) {
       .eq("id", id);
 
     if (error) {
-      alert("❌ Failed to remove from queue!");
+      alert(" Failed to remove from queue!");
     }
 
     deletePopup.classList.remove("is-visible");
@@ -771,15 +671,12 @@ function showQueueUI(windowName) {
   });
 
   backdrop.addEventListener("click", () => {
-    // This will close ANY open modal
     deletePopup.classList.remove("is-visible");
     logoutPopup.classList.remove("is-visible");
     processingPopup.classList.remove("is-visible");
     confirmPopup.classList.remove("is-visible");
   });
-
-
-    // Show FAQ Editor 
+ 
     addButtons.forEach((btn) => {
       btn.addEventListener("click", () => {
         editorSection?.classList.remove("d-none");
@@ -792,7 +689,6 @@ function showQueueUI(windowName) {
       });
     });
 
-    // Add Requirement
     const addRequirementIcon = requirementInput?.nextElementSibling;
     addRequirementIcon?.addEventListener("click", () => {
       const value = requirementInput.value.trim();
@@ -802,7 +698,6 @@ function showQueueUI(windowName) {
       renderRequirements();
     });
 
-    // Add Step
     const addStepIcon = stepProcessInput?.nextElementSibling;
     addStepIcon?.addEventListener("click", () => {
       const value = stepProcessInput.value.trim();
@@ -812,7 +707,6 @@ function showQueueUI(windowName) {
       renderSteps();
     });
 
-    // Image Preview
     imageInput?.addEventListener("change", () => {
       const file = imageInput.files[0];
       const previewImage = editorSection?.querySelector(".preview-image");
@@ -830,7 +724,6 @@ function showQueueUI(windowName) {
       }
     });
 
-    // Submit → Save to Supabase
     const submitBtn = editorSection?.querySelector("button.btn-primary");
     submitBtn?.addEventListener("click", async (e) => {
       e.preventDefault();
@@ -839,7 +732,7 @@ function showQueueUI(windowName) {
       const editingId = editorSection.dataset.editingId || null;
 
       if (!questionTitle || requirements.length === 0 || steps.length === 0) {
-        alert("⚠️ Please fill all fields and add at least one requirement and process.");
+        alert(" Please fill all fields and add at least one requirement and process.");
         return;
       }
 
@@ -861,7 +754,7 @@ function showQueueUI(windowName) {
         }).eq("id", editingId);
         if (error) alert("❌ Failed to update record!");
         else {
-          alert("✅ Record updated successfully!");
+          alert(" Record updated successfully!");
           delete editorSection.dataset.editingId;
           submitBtn.textContent = "Add Record";
         }
@@ -876,7 +769,6 @@ function showQueueUI(windowName) {
         else alert("✅ Record added successfully!");
       }
 
-      // Reset form
       questionTitleInput.value = "";
       requirementInput.value = "";
       stepProcessInput.value = "";
@@ -886,7 +778,6 @@ function showQueueUI(windowName) {
       renderRequirements();
       renderSteps();
 
-      // Clear image preview
       const previewImage = editorSection?.querySelector(".preview-image");
       if (previewImage) {
         previewImage.src = "";
@@ -899,7 +790,6 @@ function showQueueUI(windowName) {
       loadKioskData();
     });
 
-    // Functions: Render Requirements & Steps
     function renderRequirements() {
       const container = requirementContainer.parentElement.parentElement;
       container.querySelector(".requirements-list")?.remove();
@@ -937,7 +827,6 @@ function showQueueUI(windowName) {
         container.appendChild(listDiv);
       }
 
-      // Update Preview
       if (requirementsPreview) {
         requirementsPreview.innerHTML = "";
         requirements.forEach(req => {
@@ -1010,8 +899,6 @@ function showQueueUI(windowName) {
       }
     }
 
-
-    // Load Kiosk Data
     async function loadKioskData() {
       const { data, error } = await supabaseClient.from("kiosk").select("*").order("created_at", { ascending: false });
       if (error) { console.error(error); return; }
@@ -1038,7 +925,6 @@ function showQueueUI(windowName) {
       attachKioskEditDeleteHandlers();
     }
 
-    // Edit/Delete Handlers
     function attachKioskEditDeleteHandlers() {
       document.querySelectorAll(".edit-kiosk").forEach(link => {
         link.addEventListener("click", async e => {
@@ -1073,15 +959,12 @@ function showQueueUI(windowName) {
           const id = btn.dataset.id;
           if (!confirm("Are you sure you want to delete this record?")) return;
           const { error } = await supabaseClient.from("kiosk").delete().eq("id", id);
-          if (error) { alert("❌ Failed to delete record!"); }
-          else { alert("✅ Record deleted successfully!"); loadKioskData(); }
+          if (error) { alert(" Failed to delete record!"); }
+          else { alert(" Record deleted successfully!"); loadKioskData(); }
         });
       });
     }
 
-
-
-  // Realtime Updates
   supabaseClient.channel("realtime-queue")
     .on("postgres_changes", { event: "*", schema: "public", table: "queue" }, async (payload) => {
       console.log("Queue changed:", payload);
@@ -1098,7 +981,6 @@ function showQueueUI(windowName) {
     })
     .subscribe();
 
-  // Initial Load
   loadKioskData();
   loadQueueData();
   loadFinishedData();

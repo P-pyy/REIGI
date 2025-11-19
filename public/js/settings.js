@@ -1,4 +1,3 @@
-// Toggle sidebar
 document.addEventListener("DOMContentLoaded", () => {
   const toggleBtn = document.querySelector(".toggle-btn");
   const sidebar = document.querySelector(".sidebar");
@@ -20,7 +19,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-   // ✅ Logout handler
   const logoutBtn = document.querySelector(".logout");
   if (logoutBtn) {
     logoutBtn.addEventListener("click", async () => {
@@ -33,7 +31,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
 });
 
-// <!-- Swap Forms JS -->
 const swapLinks = document.querySelectorAll(".swap-link");
 const forms = document.querySelectorAll(".form-section");
 const backBtns = document.querySelectorAll(".back-btn");
@@ -43,22 +40,18 @@ const sectionsToHide = [
   document.getElementById("account-history"),
 ];
 
-// Swap to forms
 swapLinks.forEach((link) => {
   link.addEventListener("click", (e) => {
     e.preventDefault();
     const targetId = link.dataset.target;
 
-    // Hide security + account history
     sectionsToHide.forEach((sec) => (sec.style.display = "none"));
 
-    // Hide all forms, show selected
     forms.forEach((f) => (f.style.display = "none"));
     document.getElementById(targetId).style.display = "flex";
   });
 });
 
-// Back buttons
 backBtns.forEach((btn) => {
   btn.addEventListener("click", () => {
     forms.forEach((f) => (f.style.display = "none"));
@@ -66,7 +59,6 @@ backBtns.forEach((btn) => {
   });
 });
 
-// Close buttons (same as back)
 closeBtns.forEach((btn) => {
   btn.addEventListener("click", () => {
     forms.forEach((f) => (f.style.display = "none"));
@@ -74,27 +66,18 @@ closeBtns.forEach((btn) => {
   });
 });
 
-
-
 import { supabaseClient } from '/js/supabase-client.js';
 
-
-
-// =======================
-// Check Admin Login
-// =======================
 (async () => {
   const { data: { session } } = await supabaseClient.auth.getSession();
   if (!session) {
-    window.location.href = "login.html";  // Redirect if not logged in
+    window.location.href = "login.html"; 
   } else {
-    // Set the authenticated session to use admin access rights
     supabaseClient.auth.setSession(session.access_token);
   }
 })();
 
 async function getUserLocation() {
-  // Check if geolocation is available
   if ("geolocation" in navigator) {
     return new Promise((resolve) => {
       navigator.geolocation.getCurrentPosition(
@@ -102,7 +85,6 @@ async function getUserLocation() {
           const { latitude, longitude } = position.coords;
 
           try {
-            // Use a reverse geocoding API to get city, country
             const res = await fetch(
               `https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json`
             );
@@ -128,9 +110,6 @@ async function getUserLocation() {
   }
 }
 
-
-
-// Utility: show Bootstrap alert inside a form
 function showMessage(form, message, type = "danger") {
   let msgDiv = form.querySelector(".form-message");
   if (!msgDiv) {
@@ -141,9 +120,6 @@ function showMessage(form, message, type = "danger") {
   msgDiv.innerHTML = `<div class="alert alert-${type}" role="alert">${message}</div>`;
 }
 
-// =======================
-// CHANGE PASSWORD FORM
-// =======================
 const changePasswordForm = document.getElementById("changePasswordForm");
 
 if (changePasswordForm) {
@@ -155,20 +131,18 @@ if (changePasswordForm) {
     const reenterNewPassword =
       changePasswordForm.reenterNewPassword.value.trim();
 
-    // Validate new password match
     if (newPassword !== reenterNewPassword) {
       showMessage(changePasswordForm, "❌ New passwords do not match", "danger");
       return;
     }
 
-    // Re-authenticate user
     const { data: sessionData, error: sessionError } =
       await supabaseClient.auth.getSession();
 
     if (sessionError || !sessionData.session) {
       showMessage(
         changePasswordForm,
-        "❌ Please log in again to change your password.",
+        " Please log in again to change your password.",
         "danger"
       );
       return;
@@ -176,7 +150,6 @@ if (changePasswordForm) {
 
     const userEmail = sessionData.session.user.email;
 
-    // Check current password
     const { error: signInError } = await supabaseClient.auth.signInWithPassword({
       email: userEmail,
       password: currentPassword,
@@ -187,7 +160,6 @@ if (changePasswordForm) {
       return;
     }
 
-    // Update password
     const { error: updateError } = await supabaseClient.auth.updateUser({
       password: newPassword,
     });
@@ -197,7 +169,7 @@ if (changePasswordForm) {
     } else {
       showMessage(
         changePasswordForm,
-        "✅ Password updated successfully!",
+        " Password updated successfully!",
         "success"
       );
       changePasswordForm.reset();
@@ -205,9 +177,6 @@ if (changePasswordForm) {
   });
 }
 
-// =======================
-// CHANGE EMAIL FORM
-// =======================
 const changeEmailForm = document.getElementById("changeEmailForm");
 
 if (changeEmailForm) {
@@ -217,14 +186,13 @@ if (changeEmailForm) {
     const currentEmail = changeEmailForm.currentEmail.value.trim();
     const newEmail = changeEmailForm.newEmail.value.trim();
 
-    // Get current session
     const { data: sessionData, error: sessionError } =
       await supabaseClient.auth.getSession();
 
     if (sessionError || !sessionData.session) {
       showMessage(
         changeEmailForm,
-        "❌ Please log in again to change your email.",
+        " Please log in again to change your email.",
         "danger"
       );
       return;
@@ -235,13 +203,12 @@ if (changeEmailForm) {
     if (currentEmail !== loggedInEmail) {
       showMessage(
         changeEmailForm,
-        "❌ The current email does not match your logged-in email.",
+        " The current email does not match your logged-in email.",
         "danger"
       );
       return;
     }
 
-    // ✅ Update email with redirectTo (important for confirmation links)
     const { data: updatedUser, error: updateError } =
       await supabaseClient.auth.updateUser(
         { email: newEmail },
@@ -255,7 +222,6 @@ if (changeEmailForm) {
     if (updateError) {
       showMessage(changeEmailForm, "❌ " + updateError.message, "danger");
     } else {
-      // 🔄 Refresh user to check status
       const { data: refreshedUser, error: refreshError } =
         await supabaseClient.auth.getUser();
 
@@ -263,18 +229,17 @@ if (changeEmailForm) {
 
       let message = "";
       if (refreshedUser?.user?.new_email) {
-        message = `⚠️ Email change is pending confirmation.<br>
+        message = ` Email change is pending confirmation.<br>
           Current active email: <b>${refreshedUser.user.email}</b><br>
           New email (unconfirmed): <b>${refreshedUser.user.new_email}</b><br>
-          📩 Please check your inbox and confirm the new email.`;
+           Please check your inbox and confirm the new email.`;
       } else {
-        message = `✅ Email updated successfully!<br>
+        message = ` Email updated successfully!<br>
           Active email is now: <b>${refreshedUser?.user?.email}</b>`;
       }
 
       showMessage(changeEmailForm, message, "success");
 
-      // Logout and redirect after a short delay
       setTimeout(async () => {
         await supabaseClient.auth.signOut();
         window.location.href = "login.html";
@@ -282,10 +247,6 @@ if (changeEmailForm) {
     }
   });
 }
-
-// ======================= 
-// LOGIN ALERTS + HISTORY
-// =======================
 
 const alertEmail = document.getElementById("alertEmail");
 const currentDevice = document.getElementById("currentDevice");
@@ -302,19 +263,17 @@ async function loadUserAlertsAndHistory() {
 
   if (alertEmail) alertEmail.textContent = user.email;
 
-  // Insert current login into history
   try {
     const parser = new UAParser();
     const result = parser.getResult();
     const friendlyDevice = `${result.os.name || "Unknown OS"} ${result.os.version || ""} - ${result.browser.name || "Unknown Browser"} ${result.browser.version || ""}`;
 
-    const userLocation = await getUserLocation(); // City, Country
+    const userLocation = await getUserLocation();
 
   } catch (err) {
     console.error("Error inserting login history:", err);
   }
 
-  // Fetch login history
   const { data: history, error } = await supabaseClient
     .from("login_history")
     .select("*")
@@ -325,7 +284,6 @@ async function loadUserAlertsAndHistory() {
     return;
   }
 
-  // Show latest session
   if (history.length > 0) {
     const latest = history[0];
     const date = new Date(latest.login_time).toLocaleString();
@@ -340,7 +298,6 @@ async function loadUserAlertsAndHistory() {
     currentDevice.innerHTML = "<p class='text-muted'>No current session found.</p>";
   }
 
-  // Show saved devices
   loginHistoryList.innerHTML = "";
   if (history.length === 0) {
     loginHistoryList.innerHTML = "<p class='text-muted'>No login history available.</p>";
@@ -348,7 +305,7 @@ async function loadUserAlertsAndHistory() {
   }
 
   history.forEach((item, index) => {
-    if (index === 0) return; // skip latest
+    if (index === 0) return; 
 
     const deviceItem = document.createElement("div");
     deviceItem.className = "device-item";
@@ -367,5 +324,4 @@ async function loadUserAlertsAndHistory() {
   });
 }
 
-// Load alerts & history when page is ready
 loadUserAlertsAndHistory();

@@ -1,13 +1,7 @@
 import { supabaseClient } from '/js/supabase-client.js';
 
-// =======================
-// Global Announcement Store
-// =======================
 let allAnnouncements = [];
 
-// =======================
-// Fetch Announcements
-// =======================
 async function fetchAnnouncements() {
   const { data, error } = await supabaseClient
     .from("announcements")
@@ -25,7 +19,6 @@ function renderAnnouncements(announcements) {
   const grid = document.querySelector(".announcement-grid");
   if (!grid) return;
 
-  // If there are no announcements at all or after filtering
   if (!announcements || announcements.length === 0) {
     grid.innerHTML = `
       <p class="no-announcements" style="grid-column:1/-1; text-align:center; padding:40px; font-size:1.2rem; color:#555;">
@@ -35,8 +28,7 @@ function renderAnnouncements(announcements) {
     return;
   }
 
-  // Render announcements
-  grid.innerHTML = ""; // Clear previous
+  grid.innerHTML = ""; 
 
   announcements.forEach((item) => {
     const dateObj = new Date(item.scheduled_datetime);
@@ -63,10 +55,6 @@ function renderAnnouncements(announcements) {
   window.PhosphorIcons?.replace?.();
 }
 
-
-// =======================
-// Filter Announcements
-// =======================
 function filterAnnouncements() {
   const searchInput = document.getElementById("search")?.value.toLowerCase() || "";
   const monthSelect = document.getElementById("month")?.value.toLowerCase() || "default";
@@ -87,9 +75,7 @@ function filterAnnouncements() {
   });
 }
 
-// =======================
-// Setup Filters
-// =======================
+
 function setupFilters() {
   const searchInput = document.getElementById("search");
   const monthSelect = document.getElementById("month");
@@ -105,9 +91,6 @@ function setupFilters() {
   monthSelect.addEventListener("change", filterAndRender);
 }
 
-// =======================
-// Init
-// =======================
 async function initAnnouncementsIndex() {
   const grid = document.querySelector(".announcement-grid");
   if (grid) {
@@ -118,13 +101,9 @@ async function initAnnouncementsIndex() {
     `;
   }
 
-  // Load announcements once
   allAnnouncements = await fetchAnnouncements();
   renderAnnouncements(allAnnouncements);
 
-    // =======================
-  // Enable Realtime Updates
-  // =======================
   supabaseClient
     .channel('realtime:announcements')
     .on(
@@ -133,7 +112,6 @@ async function initAnnouncementsIndex() {
       async (payload) => {
         console.log('🔄 Realtime change detected:', payload);
 
-        // Re-fetch announcements when something changes
         allAnnouncements = await fetchAnnouncements();
         const filtered = filterAnnouncements();
         renderAnnouncements(filtered);
@@ -141,12 +119,9 @@ async function initAnnouncementsIndex() {
     )
     .subscribe();
 
-
-  // Setup real-time filtering
   setupFilters();
 
 
 }
 
-// ✅ Run when DOM is ready
 document.addEventListener("DOMContentLoaded", initAnnouncementsIndex);

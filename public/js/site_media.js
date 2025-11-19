@@ -1,6 +1,4 @@
-
-    // Handle dynamic content swap
-    document.addEventListener('click', async (e) => {
+ document.addEventListener('click', async (e) => {
       if (e.target.classList.contains('upload-btn')) {
         const targetFile = e.target.dataset.target;
         const mediaContainer = document.getElementById('media-container');
@@ -17,7 +15,6 @@
     });
 
 
-    //Content swap with changes in header
     document.addEventListener('DOMContentLoaded', () => {
       const uploadButtons = document.querySelectorAll('.upload-btn');
       uploadButtons.forEach(button => {
@@ -30,14 +27,9 @@
       });
     });
 
-// =======================
-// Supabase Config
-// =======================
+
 import { supabaseClient } from '/js/supabase-client.js';
 
-// =======================
-// Helper: Format date to Philippine Time
-// =======================
 function formatPHDate(utcDateString) {
   const dateObj = new Date(utcDateString);
   return dateObj.toLocaleString("en-PH", {
@@ -51,12 +43,7 @@ function formatPHDate(utcDateString) {
   });
 }
 
-
-
-// =======================
-// Check Admin Login
-// =======================
-let currentUser = null; // ✅ define this globally
+let currentUser = null; 
 
 (async () => {
   const { data: { session } } = await supabaseClient.auth.getSession();
@@ -67,10 +54,9 @@ let currentUser = null; // ✅ define this globally
     return;
   }
 
-  currentUser = session.user; // ✅ assign the logged-in user here
+  currentUser = session.user;
 })();
 
-// Toggle Sidebar
 document.addEventListener("DOMContentLoaded", () => {
   const toggleBtn = document.querySelector(".toggle-btn");
   const sidebar = document.querySelector(".sidebar");
@@ -92,11 +78,10 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-   // ✅ Logout handler
   const logoutBtn = document.querySelector(".logout");
   if (logoutBtn) {
     logoutBtn.addEventListener("click", async () => {
-      console.log("Logout clicked ✅");
+      console.log("Logout clicked ");
       const { error } = await supabaseClient.auth.signOut();
       if (error) console.error("Logout error:", error.message);
       else window.location.href = "/admin/login";
@@ -105,13 +90,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
 });
 
-
-// =======================
-// Upload Logic (Video + Calendar)
-// =======================
 let selectedFile = null;
 
-// Calendar Sections (Undergraduate & Graduate)
 document.querySelectorAll(".calendar-section").forEach(section => {
   const fileInput = section.querySelector("input[type=file]");
   const previewBox = section.querySelector(".preview-box");
@@ -154,7 +134,6 @@ document.querySelectorAll(".calendar-section").forEach(section => {
   });
 });
 
-// Video Section (site_media_video.html)
 const editorPage = document.querySelector('.site-media-editor-page');
 
 if (editorPage) {
@@ -163,7 +142,6 @@ if (editorPage) {
   const uploadBox = editorPage.querySelector(".upload-box");
   const submitBtn = editorPage.querySelector(".submit-btn");
 
-  // --- Handle choose file ---
   fileInput?.addEventListener("change", (e) => {
     const file = e.target.files[0];
     if (!file) return;
@@ -172,15 +150,12 @@ if (editorPage) {
     showVideoPreview(file);
   });
 
-  // --- Handle drag and drop ---
   if (uploadBox) {
-    // Prevent default behavior (avoid browser opening the file)
     ["dragenter", "dragover", "dragleave", "drop"].forEach((eventName) => {
       uploadBox.addEventListener(eventName, (e) => e.preventDefault(), false);
       uploadBox.addEventListener(eventName, (e) => e.stopPropagation(), false);
     });
 
-    // Optional: highlight on drag over
     uploadBox.addEventListener("dragover", () => uploadBox.classList.add("dragover"));
     uploadBox.addEventListener("dragleave", () => uploadBox.classList.remove("dragover"));
     uploadBox.addEventListener("drop", (e) => {
@@ -193,7 +168,6 @@ if (editorPage) {
     });
   }
 
-  // --- Submit ---
   submitBtn?.addEventListener("click", async () => {
     if (!selectedFile) return alert("Please choose or drop a file first!");
     if (!currentUser) return alert("User not logged in.");
@@ -205,7 +179,6 @@ if (editorPage) {
     await uploadToSupabase(selectedFile, folder, type, title);
   });
 
-  // --- Helper function ---
   function showVideoPreview(file) {
     if (file.type.startsWith("video")) {
       const video = document.createElement("video");
@@ -221,14 +194,9 @@ if (editorPage) {
   }
 }
 
-
-// =======================
-// Upload Helper with PH time
-// =======================
 async function uploadToSupabase(file, folder, type, title) {
   const filePath = `${folder}/${Date.now()}_${file.name}`;
 
-  // Upload to storage
   const { error: uploadError } = await supabaseClient.storage
     .from("sitemedia")
     .upload(filePath, file, { upsert: true });
@@ -238,18 +206,11 @@ async function uploadToSupabase(file, folder, type, title) {
     return alert("Upload failed: " + uploadError.message);
   }
 
-  // Get public URL
   const { data: urlData } = supabaseClient.storage.from("sitemedia").getPublicUrl(filePath);
   const fileUrl = urlData.publicUrl;
-
-  // =======================
-  // Get current PH time correctly
-  // =======================
   const phTime = new Date().toLocaleString("en-US", { timeZone: "Asia/Manila" });
-  const uploadedAt = new Date(phTime).toISOString(); // ISO string for Supabase
+  const uploadedAt = new Date(phTime).toISOString(); 
 
-
-  // Insert record into DB with uploaded_at in PH time
   const { error: dbError } = await supabaseClient.from("sitemedia").insert([{
     title,
     filename: file.name,
@@ -266,54 +227,11 @@ async function uploadToSupabase(file, folder, type, title) {
 
   alert(`${title} uploaded successfully!`);
 
-  // Redirect to sitemedia.html after upload
   window.location.href = "/admin/site_media";
 }
 
-// async function uploadToSupabase(file, folder, type, title) {
-//   const filePath = `${folder}/${Date.now()}_${file.name}`;
-
-//   // Upload to storage
-//   const { error: uploadError } = await supabaseClient.storage
-//     .from("sitemedia")
-//     .upload(filePath, file, { upsert: true });
-
-//   if (uploadError) {
-//     console.error("Storage upload error:", uploadError.message);
-//     return alert("Upload failed: " + uploadError.message);
-//   }
-
-//   // Get public URL
-//   const { data: urlData } = supabaseClient.storage.from("sitemedia").getPublicUrl(filePath);
-//   const fileUrl = urlData.publicUrl;
-
-//   // Insert record into DB
-//   const { error: dbError } = await supabaseClient.from("sitemedia").insert([{
-//     title,
-//     filename: file.name,
-//     file_url: fileUrl,
-//     type,
-//     user_id: currentUser.id,
-//   }]);
-
-//   if (dbError) {
-//     console.error("Database insert error:", dbError.message);
-//     return alert("Database save failed: " + dbError.message);
-//   }
-
-//   alert(`${title} uploaded successfully!`);
-
-//   // Redirect to sitemedia.html after upload
-// window.location.href = "/admin/site_media";
-// }
-
-// =======================
-// Load Latest Media
-// =======================
 window.addEventListener("DOMContentLoaded", async () => {
-  // =======================
-  // Load FAQ Video
-  // =======================
+
   const { data: videoData, error: videoError } = await supabaseClient
     .from("sitemedia")
     .select("*")
@@ -335,9 +253,6 @@ window.addEventListener("DOMContentLoaded", async () => {
     if (fileNameEl) fileNameEl.textContent = videoData[0].filename;
   }
 
-// =======================
-// Load Latest Calendars (Undergrad + Grad)
-// =======================
 const { data: calendars, error: calError } = await supabaseClient
   .from("sitemedia")
   .select("*")
@@ -345,11 +260,9 @@ const { data: calendars, error: calError } = await supabaseClient
   .order("id", { ascending: false });
 
 if (!calError && calendars?.length > 0) {
-  // Separate undergrad and grad
   const undergrad = calendars.find(c => c.type === "calendar");
   const grad = calendars.find(c => c.type === "calendar_grad");
 
-  // Always populate both preview boxes
   if (undergrad) {
     const preview = document.querySelector("#undergraduate-section .preview-box");
     if (preview) {
@@ -364,8 +277,7 @@ if (!calError && calendars?.length > 0) {
     }
   }
 
-  // Update the Academic Calendar card on sitemedia.html
-  const latest = calendars[0]; // most recent
+  const latest = calendars[0]; 
   const card = document.querySelector(".right-card .image-box");
   const fileNameEl = document.querySelector(".right-card .file-name");
   if (card) {
@@ -373,7 +285,6 @@ if (!calError && calendars?.length > 0) {
     if (fileNameEl) fileNameEl.textContent = latest.filename;
   }
   
-  // Auto-show the latest one in dropdown
   const selected = document.getElementById("selected");
   if (selected) {
     if (latest.type === "calendar_grad") {
@@ -389,12 +300,9 @@ if (!calError && calendars?.length > 0) {
 }
 });
 
-// =======================
-// Dropdown Menu Logic
-// =======================
 (function () {
   const dropdown = document.getElementById("dropdown");
-  if (!dropdown) return; // <-- prevent error if not on this page
+  if (!dropdown) return; 
 
   const dropdownContent = document.getElementById("dropdown-content");
   const selected = document.getElementById("selected");
@@ -408,7 +316,6 @@ if (!calError && calendars?.length > 0) {
       selected.textContent = value;
       dropdown.classList.remove("open");
 
-      // Toggle sections
       document.getElementById("undergraduate-section").classList.remove("active");
       document.getElementById("graduate-section").classList.remove("active");
 

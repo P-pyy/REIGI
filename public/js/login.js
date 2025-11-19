@@ -1,8 +1,6 @@
-// login.js
 import { supabaseClient } from '/js/supabase-client.js';
 
 async function getUserLocation() {
-  // Check if geolocation is available
   if ("geolocation" in navigator) {
     return new Promise((resolve) => {
       navigator.geolocation.getCurrentPosition(
@@ -10,7 +8,6 @@ async function getUserLocation() {
           const { latitude, longitude } = position.coords;
 
           try {
-            // Use a reverse geocoding API to get city, country
             const res = await fetch(
               `https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json`
             );
@@ -37,68 +34,14 @@ async function getUserLocation() {
 }
 
 
-// =======================
-// LOGIN FORM
-// =======================
 const loginForm = document.getElementById("loginForm");
 if (loginForm) {
-  // loginForm.addEventListener("submit", async (e) => {
-  //   e.preventDefault();
 
-  //   const email = document.getElementById("email").value;
-  //   const password = document.getElementById("password").value;
-
-  //   const { data, error } = await supabaseClient.auth.signInWithPassword({
-  //     email,
-  //     password,
-  //   });
-
-  //   if (error) {
-  //     alert("❌ Login failed: " + error.message);
-  //   } else {
-  //     const user = data.user; // logged-in user
-
-  //     if (user) {
-  //       const parser = new UAParser();
-  //       const result = parser.getResult();
-  //       const friendlyDevice = `${result.os.name || "Unknown OS"} ${result.os.version || ""} - ${result.browser.name || "Unknown Browser"} ${result.browser.version || ""}`;
-
-  //       const userLocation = await getUserLocation(); // get City, Country
-
-  //       await supabaseClient.from("login_history").insert([
-  //         {
-  //           user_id: user.id,
-  //           device: friendlyDevice,
-  //           location: userLocation,
-  //         },
-  //       ]);
-  //     }
-
-  //     alert("✅ Login successful!");
-  //     // window.location.href = "/admin/dashboard"; // redirect to dashboard
-  //     // ✅ Send access token to backend for cookie storage
-  //     const { data: sessionData } = await supabaseClient.auth.getSession();
-  //     const accessToken = sessionData?.session?.access_token;
-
-  //     if (accessToken) {
-  //       await fetch("/api/set-session", {
-  //     method: "POST",
-  //     headers: { "Content-Type": "application/json" },
-  //     body: JSON.stringify({ access_token: accessToken }), // 🔧 corrected
-  //     credentials: "include",
-  //   });
-  //     }
-
-  //     // Redirect after cookie is set
-  //     window.location.href = "/admin/dashboard";
-
-  //   }
-  // });
     loginForm.addEventListener("submit", async (e) => {
     e.preventDefault();
 
     const button = loginForm.querySelector("button[type='submit']");
-    button.disabled = true; // ✅ prevent double-click
+    button.disabled = true;
     button.textContent = "Signing in...";
 
     try {
@@ -112,7 +55,7 @@ if (loginForm) {
 
       if (error) {
         alert("❌ Login failed: " + error.message);
-        button.disabled = false; // Re-enable on error
+        button.disabled = false; 
         button.textContent = "Sign In";
         return;
       }
@@ -134,9 +77,8 @@ if (loginForm) {
         ]);
       }
 
-      alert("✅ Login successful!");
+      alert(" Login successful!");
 
-      // Set session cookie
       const { data: sessionData } = await supabaseClient.auth.getSession();
       const accessToken = sessionData?.session?.access_token;
       if (accessToken) {
@@ -151,27 +93,21 @@ if (loginForm) {
       window.location.href = "/admin/dashboard";
     } catch (err) {
       console.error("Unexpected error:", err);
-      alert("⚠️ Something went wrong. Please try again.");
+      alert(" Something went wrong. Please try again.");
       button.disabled = false;
       button.textContent = "Sign In";
     }
   });
 
 
-  // Show/Hide password toggle
   document.getElementById("showPassword").addEventListener("change", function () {
     const passwordInput = document.getElementById("password");
     passwordInput.type = this.checked ? "text" : "password";
   });
 }
 
-
-
-// =======================
-// FORGOT PASSWORD (EMAIL ENTRY FORM)
-// =======================
 const resetForm = document.getElementById("resetForm");
-const msg = document.getElementById("message"); // message element for feedback
+const msg = document.getElementById("message"); 
 
 if (resetForm) {
   resetForm.addEventListener("submit", async (e) => {
@@ -198,10 +134,6 @@ if (resetForm) {
   });
 }
 
-
-// =======================
-// RESET PASSWORD FORM
-// =======================
 const resetPasswordForm = document.getElementById("resetPasswordForm");
 if (resetPasswordForm) {
   resetPasswordForm.addEventListener("submit", async (e) => {
@@ -223,10 +155,10 @@ if (resetPasswordForm) {
 
     const status = document.getElementById("resetStatus");
     if (error) {
-      status.textContent = "❌ " + error.message;
+      status.textContent = " " + error.message;
       status.style.color = "red";
     } else {
-      status.textContent = "✅ Password has been reset. Redirecting to login...";
+      status.textContent = " Password has been reset. Redirecting to login...";
       status.style.color = "green";
 
       setTimeout(() => {
@@ -235,7 +167,6 @@ if (resetPasswordForm) {
     }
   });
 
-  // Show/Hide password toggle
   document.getElementById("showPassword").addEventListener("change", function () {
     const pw1 = document.getElementById("newPassword");
     const pw2 = document.getElementById("reenterPassword");

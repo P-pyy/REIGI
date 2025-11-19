@@ -10,21 +10,17 @@ const PORT = process.env.PORT || 3000;
 
 
 app.use(express.json());
-app.use(cookieParser()); // ✅ must come before middleware that uses cookies
+app.use(cookieParser()); 
 
-// View Engine Setup
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
-// Static Files Middleware
+
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Routes
 const kioskRoutes = require("./routes/kiosk");
 app.use("/kiosk", kioskRoutes);
 
-
-// Add after your middleware setup
 app.use((req, res, next) => {
   res.locals.env = {
     SUPABASE_URL: process.env.SUPABASE_URL,
@@ -33,7 +29,6 @@ app.use((req, res, next) => {
   next();
 });
 
-// --- Root Route  ---
 app.get('/', (req, res, next) => {
   res.render('client/home', {}, (err, htmlContent) => {
     if (err) return next(err);
@@ -45,7 +40,6 @@ app.get('/', (req, res, next) => {
   });
 });
 
-// --- ADMIN Login Route  ---
 app.get('/admin/login', (req, res, next) => {
   res.render('admin/login', {}, (err, htmlContent) => {
     if (err) {
@@ -53,7 +47,6 @@ app.get('/admin/login', (req, res, next) => {
       return next(err);
     }
 
-    // 👇 Use layout_admin so it includes the ENV script automatically
     res.render('layout_admin', {
       pageTitle: 'Admin Login',
       content: htmlContent
@@ -61,7 +54,6 @@ app.get('/admin/login', (req, res, next) => {
   });
 });
 
-// --- ADMIN Login Enter Email Route  ---
 app.get('/admin/login_enter_email', (req, res, next) => {
   res.render('admin/login_enter_email', {}, (err, htmlContent) => {
     if (err) {
@@ -69,7 +61,6 @@ app.get('/admin/login_enter_email', (req, res, next) => {
       return next(err);
     }
 
-    // 👇 Use layout_admin so it includes the ENV script automatically
     res.render('layout_admin', {
       pageTitle: 'Admin Login Enter Email',
       content: htmlContent
@@ -77,7 +68,6 @@ app.get('/admin/login_enter_email', (req, res, next) => {
   });
 });
 
-// --- ADMIN Login Reset Route  ---
 app.get('/admin/login_reset_password', (req, res, next) => {
   res.render('admin/login_reset_password', {}, (err, htmlContent) => {
     if (err) {
@@ -85,7 +75,6 @@ app.get('/admin/login_reset_password', (req, res, next) => {
       return next(err);
     }
 
-    // 👇 Use layout_admin so it includes the ENV script automatically
     res.render('layout_admin', {
       pageTitle: 'Admin Login Reset Password',
       content: htmlContent
@@ -95,7 +84,6 @@ app.get('/admin/login_reset_password', (req, res, next) => {
 
 app.use('/admin', requireAdminLogin);
 
-// --- ADMIN Protected Routes ---
 app.get('/admin/dashboard', (req, res, next) => {
   res.render('admin/dashboard', {}, (err, htmlContent) => {
     if (err) return next(err);
@@ -164,19 +152,13 @@ app.get('/admin/settings', (req, res, next) => {
   });
 });
 
-
-// --- FAQ Route ---
 app.get('/faq', (req, res, next) => {
-    // 1. Render the content partial (faq_user_menu.ejs)
     res.render('client/faq_user_menu', {}, (err, htmlContent) => {
         if (err) {
-            // Log the error to your console so you can read it
             console.error("EJS Rendering Error for /faq:", err.message); 
-            // Send a clear error message back to the browser
             return res.status(500).send("Server Error: Check Console for EJS file error.");
         } 
-        
-        // 2. Render the final layout
+
         res.render('layout_client', { 
             pageTitle: "REIGI - FAQ's Menu",
             content: htmlContent 
@@ -184,8 +166,6 @@ app.get('/faq', (req, res, next) => {
     });
 });
 
-
-// --- FAQ Enrollment Route ---
 app.get('/faq_enrollment_process', (req, res, next) => {
     res.render('client/faq_enrollment_process', {}, (err, htmlContent) => {
         if (err) {
@@ -193,21 +173,18 @@ app.get('/faq_enrollment_process', (req, res, next) => {
             return next(err);
         }
         res.render('layout_client', {
-            pageTitle: "FAQ - Enrollment Process", // Define the title
+            pageTitle: "FAQ - Enrollment Process",
             content: htmlContent
         });
     });
 });
 
-// --- Single FAQ Article Route ---
 app.get('/faq-article', (req, res, next) => {
-    // 1. Render the content partial (faq_card.ejs)
     res.render('client/faq_card', {}, (err, htmlContent) => {
         if (err) {
             console.error("EJS Rendering Error for /faq-article:", err.message);
             return next(err);
         }
-        // 2. Render the final layout
         res.render('layout_client', {
             pageTitle: "FAQ Article Details", 
             content: htmlContent
@@ -215,7 +192,6 @@ app.get('/faq-article', (req, res, next) => {
     });
 });
 
-// --- FAQ Document Request Route ---
 app.get('/faq_document_request', (req, res, next) => {
     res.render('client/faq_document_request', {}, (err, htmlContent) => {
         if (err) {
@@ -229,7 +205,6 @@ app.get('/faq_document_request', (req, res, next) => {
     });
 });
 
-// --- FAQ Graduation & Clearance Route ---
 app.get('/faq_graduation_clearance', (req, res, next) => {
     res.render('client/faq_graduation_clearance', {}, (err, htmlContent) => {
         if (err) {
@@ -243,7 +218,6 @@ app.get('/faq_graduation_clearance', (req, res, next) => {
     });
 });
 
-// --- Announcements Route ---
 app.get('/announcement', (req, res, next) => {
     res.render('client/announcement', {}, (err, htmlContent) => {
         if (err) return next(err); 
@@ -254,7 +228,6 @@ app.get('/announcement', (req, res, next) => {
     });
 });
 
-// --- Announcement Article Route ---
 app.get('/announcement-article', (req, res, next) => {
     res.render('client/announcement_article', {}, (err, htmlContent) => {
         if (err) return next(err); 
@@ -265,7 +238,6 @@ app.get('/announcement-article', (req, res, next) => {
     });
 });
 
-// --- Log Visitor API --- //
 const { createClient } = require("@supabase/supabase-js");
 
 const supabase = createClient(
@@ -281,7 +253,6 @@ app.post('/api/log-visitor', async (req, res) => {
     const now = new Date();
     const THIRTY_MINUTES = 30 * 60 * 1000;
 
-    // 🔹 Fetch the latest visit for this visitor_id
     const { data: lastVisit, error: fetchError } = await supabase
       .from("visitors")
       .select("*")
@@ -292,7 +263,6 @@ app.post('/api/log-visitor', async (req, res) => {
 
     if (fetchError) throw fetchError;
 
-    // 🔹 CASE 1: If no visit yet OR expired for more than 30 minutes → upsert new
     if (
       !lastVisit ||
       (lastVisit.exited_at && now - new Date(lastVisit.exited_at) > THIRTY_MINUTES)
@@ -312,7 +282,6 @@ app.post('/api/log-visitor', async (req, res) => {
       if (error) throw error;
       console.log("🆕 New or refreshed visitor session:", visitor_id);
     }
-    // 🔹 CASE 2: Still within 30 mins → update exited_at to null (keep same session)
     else {
       const { error } = await supabase
         .from("visitors")
@@ -329,8 +298,6 @@ app.post('/api/log-visitor', async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
-
-
 
 
 app.post("/api/visitor-exit", express.text(), async (req, res) => {
@@ -356,7 +323,6 @@ app.post("/api/visitor-exit", express.text(), async (req, res) => {
       return res.status(500).send("Error updating exit time");
     }
 
-    // ✅ Respond quickly (important for navigator.sendBeacon)
     res.status(200).send("Exit logged successfully");
   } catch (err) {
     console.error("Invalid exit payload:", err.message);
@@ -374,8 +340,8 @@ app.post("/api/set-session", (req, res) => {
 
   res.cookie("access_token", access_token, {
   httpOnly: true,
-  secure: false,        // ✅ allow on localhost
-  sameSite: "lax",      // ✅ more lenient for local testing
+  secure: false,       
+  sameSite: "lax",    
   maxAge: 7 * 24 * 60 * 60 * 1000
   });
 
@@ -389,7 +355,6 @@ app.post("/api/update-replay", async (req, res) => {
     const { visitor_id } = req.body;
     if (!visitor_id) return res.status(400).json({ error: "Missing visitor_id" });
 
-    // Fetch current count
     const { data, error: fetchError } = await supabase
       .from("visitors")
       .select("video_replays")
@@ -418,7 +383,6 @@ app.post("/api/update-replay", async (req, res) => {
   }
 });
 
-// --- Increment FAQ View Route ---
 app.post('/api/increment-faq-view', async (req, res) => {
   try {
     const { faqId } = req.body;
@@ -457,7 +421,6 @@ app.post("/api/queue", async (req, res) => {
       return res.status(400).json({ error: "Full name is required" });
     }
 
-    // Get the latest queue number
     const { data: lastQueue, error: fetchError } = await supabase
       .from("queue")
       .select("queue_no")
@@ -469,7 +432,6 @@ app.post("/api/queue", async (req, res) => {
 
     const nextNumber = lastQueue ? lastQueue.queue_no + 1 : 1;
 
-    // Insert new queue entry using service role key
     const { data, error: insertError } = await supabase
       .from("queue")
       .insert([{ queue_no: nextNumber, full_name }])
@@ -484,7 +446,6 @@ app.post("/api/queue", async (req, res) => {
   }
 });
 
-// Example server.js snippet
 app.post("/api/unlock-window", async (req, res) => {
   const { windowName, tabId } = req.body;
 
@@ -509,8 +470,6 @@ app.post("/api/unlock-window", async (req, res) => {
   }
 });
 
-
-// 6. Server Start
 app.listen(PORT, () => {
     console.log(`Server is running at http://localhost:${PORT}`);
 });
