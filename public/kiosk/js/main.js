@@ -1,20 +1,16 @@
-// Import Supabase Client
 import { supabaseClient } from '/js/supabase-client.js';
 
-// Main Logic
 document.addEventListener("DOMContentLoaded", async () => {
   const faqOptionContainer = document.querySelector(".faq-option-container");
   const overlay = document.querySelector(".container-overlay");
   const backdrop = document.getElementById("overlay-backdrop");
 
-  // Voice Search Elements
   const voiceBtn = document.querySelector(".voice-btn");
   const voiceOverlay = document.querySelector(".voice-search-overlay");
   const voiceBackdrop = document.getElementById("voice-overlay-backdrop");
   const voiceBackBtn = document.querySelector(".voice-back-btn");
   const voiceCancelBtn = document.querySelector(".voice-cancel-btn");
 
-  // Form & navigation
   const proceedBtn = document.getElementById("proceed-btn");
   const formOverlay = document.querySelector(".container-overlay-form");
   const backBtn1 = document.getElementById("back-btn-1");
@@ -31,12 +27,10 @@ document.addEventListener("DOMContentLoaded", async () => {
   const lastNameInput = formOverlay.querySelector('input[placeholder="Last Name"]');
   const numberPreview = document.querySelector(".number-preview");
 
-  // Global FAQ data
   let kioskData = [];
 
-  // Voice Recognition Setup
   let recognition;
-  let voiceMatched = false; // ✅ defined at top to avoid ReferenceError
+  let voiceMatched = false; 
   let transcriptBuffer = "";
   let faqAliases = [];
 
@@ -59,17 +53,14 @@ document.addEventListener("DOMContentLoaded", async () => {
       document.querySelector(".voice-subtitle").textContent = "Please try again.";
     };
 
-    // ✅ Fix "Didn't hear you" flash
     recognition.onend = () => {
       console.log("🎤 Voice recognition ended");
 
-      // Only show retry if no match found
       if (!voiceMatched) {
         const voiceTitleEl = document.querySelector(".voice-title");
         voiceTitleEl.innerHTML = `Didn't hear you :( <a href="#" class="voice-retry">Retry</a>`;
         document.querySelector(".voice-subtitle").textContent = "Please try again.";
 
-        // Remove any existing listeners by cloning
         const retryButton = voiceTitleEl.querySelector(".voice-retry");
         retryButton.replaceWith(retryButton.cloneNode(true));
         const newRetry = voiceTitleEl.querySelector(".voice-retry");
@@ -88,7 +79,6 @@ document.addEventListener("DOMContentLoaded", async () => {
       }
     };
 
-    // ✅ Live matching while speaking
 recognition.onresult = (event) => {
   let transcript = "";
   for (let i = event.resultIndex; i < event.results.length; i++) {
@@ -97,10 +87,13 @@ recognition.onresult = (event) => {
   transcript = transcript.toLowerCase().trim();
   document.querySelector(".voice-subtitle").textContent = transcript;
 
-  // Match transcript against any keyword
   let matchedFAQ = null;
   for (let item of faqAliases) {
     for (let kw of item.keywords) {
+      if (transcript === kw || transcript.includes(` ${kw} `) || transcript.startsWith(`${kw} `) || transcript.endsWith(` ${kw}`)) {
+        matchedFAQ = item.faq;
+        break;
+      }
       if (transcript.includes(kw)) {
         matchedFAQ = item.faq;
         break;
@@ -123,9 +116,6 @@ recognition.onresult = (event) => {
   }
 };
 
-
-
-    // ✅ Console testing helper
     window.testVoiceInput = (testText) => {
       const transcript = testText.toLowerCase().trim();
       console.log("🎙️ [Test] Transcript:", transcript);
@@ -153,7 +143,6 @@ recognition.onresult = (event) => {
     };
   }
 
-  // ✅ Voice overlay open/close
   voiceBtn.addEventListener("click", () => {
     voiceOverlay.classList.add("is-visible");
     voiceBackdrop.classList.add("is-visible");
@@ -180,7 +169,6 @@ recognition.onresult = (event) => {
   voiceCancelBtn.addEventListener("click", closeVoiceOverlay);
   voiceBackdrop.addEventListener("click", closeVoiceOverlay);
 
-  // Checkbox & form validation
   function updateProceedButtonState() {
     const all = stepsContainer.querySelectorAll(".inp-cbx");
     const checked = stepsContainer.querySelectorAll(".inp-cbx:checked");
@@ -219,28 +207,23 @@ recognition.onresult = (event) => {
     attachFAQClickHandlers(data);
 
     faqAliases = kioskData.map(faq => {
-    // Extract acronym inside parentheses: (TOR)
-    const parenthesisAcronym = faq.question_title.match(/\(([A-Z]{2,})\)/);
+        const rawTitle = faq.question_title;
+        const lowerTitle = rawTitle.toLowerCase();
+        const cleanWords = lowerTitle.replace(/[^a-z0-9\s]/g, "").split(/\s+/).filter(w => w.length > 0);
+        const existingAcronyms = rawTitle.match(/\b[A-Z]{2,}\b/) || [];
+        const generatedAcronym = cleanWords.map(word => word[0]).join(""); 
+        const keywords = [
+            lowerTitle,                    
+            ...cleanWords,                 
+            ...existingAcronyms.map(a => a.toLowerCase()), 
+            generatedAcronym              
+        ];
 
-    // Extract any standalone uppercase acronyms
-    const standaloneAcronyms = faq.question_title.match(/\b[A-Z]{2,}\b/g) || [];
+        const uniqueKeywords = [...new Set(keywords)];
 
-    const acronyms = [
-      ...(parenthesisAcronym ? [parenthesisAcronym[1]] : []),
-      ...standaloneAcronyms
-    ];
-
-    const words = faq.question_title.replace(/[()]/g, "").toLowerCase().split(/\s+/);
-
-    const keywords = [
-      faq.question_title.toLowerCase(), 
-      ...words, 
-      ...acronyms.map(a => a.toLowerCase())
-    ];
-
-    return { faq, keywords };
-  });
-}
+        return { faq, keywords: uniqueKeywords };
+    });
+  }
 
   function attachFAQClickHandlers(data) {
     document.querySelectorAll(".faq-option").forEach(option => {
@@ -256,7 +239,6 @@ recognition.onresult = (event) => {
     backdrop.classList.add("is-visible");
     faqName.textContent = selected.question_title;
 
-    // Requirements
     requirementsList.innerHTML = "";
     (JSON.parse(selected.requirements || "[]")).forEach(r => {
       const li = document.createElement("li");
@@ -264,7 +246,6 @@ recognition.onresult = (event) => {
       requirementsList.appendChild(li);
     });
 
-    // Steps
     stepsContainer.innerHTML = "";
     (JSON.parse(selected.steps || "[]")).forEach((step, i) => {
       const cbxId = `step-${selected.id}-${i}`;
@@ -289,16 +270,35 @@ recognition.onresult = (event) => {
     proceedBtn.disabled = true;
     updateProceedButtonState();
 
-    // Image
+    previewImage.classList.remove("loaded"); 
+    previewImage.style.display = "none"; 
+    previewImage.src = ""; 
+
     if (selected.image_url) {
-      previewImage.src = selected.image_url;
-      previewImage.style.display = "block";
+        const imgLoader = new Image();
+        const timestampedUrl = `${selected.image_url}?t=${Date.now()}`; 
+        
+        imgLoader.src = timestampedUrl;
+
+        imgLoader.onload = () => {
+            previewImage.src = timestampedUrl;
+            previewImage.style.display = "block";
+
+            requestAnimationFrame(() => {
+               previewImage.classList.add("loaded"); 
+            });
+        };
+
+        imgLoader.onerror = () => {
+            console.error("Failed to load image:", selected.image_url);
+            previewImage.style.display = "none";
+        };
+
     } else {
-      previewImage.style.display = "none";
+        previewImage.style.display = "none";
     }
   }
 
-  // Overlay navigation
   backBtn1.addEventListener("click", (e) => {
     e.preventDefault();
     overlay.classList.remove("is-visible");
@@ -334,7 +334,6 @@ recognition.onresult = (event) => {
     }
   }
 
-  // Read Aloud setup
   const readBtn = document.querySelector(".speak-btn");
   let isReading = false;
   let currentUtterance = null;
@@ -390,37 +389,36 @@ recognition.onresult = (event) => {
     });
   }
 
-  // Finish button with RawBT print
   finishBtn.addEventListener("click", async (e) => {
-    e.preventDefault();
-    if (finishBtn.disabled) return;
-    finishBtn.disabled = true;
+  e.preventDefault();
+  if (finishBtn.disabled) return;
+  finishBtn.disabled = true;
 
-    const fullName = `${firstNameInput.value.trim()} ${lastNameInput.value.trim()}`;
-    if (!fullName.trim()) {
-      alert("Please enter your complete name.");
-      finishBtn.disabled = false;
-      return;
-    }
+  const fullName = `${firstNameInput.value.trim()} ${lastNameInput.value.trim()}`;
+  if (!fullName.trim()) {
+    alert("Please enter your complete name.");
+    finishBtn.disabled = false;
+    return;
+  }
 
-    try {
-      const response = await fetch("/api/queue", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ full_name: fullName }),
-      });
-      const result = await response.json();
-      if (!response.ok) throw new Error(result.error || "Request failed");
+  try {
+    const response = await fetch("/api/queue", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ full_name: fullName }),
+    });
+    const result = await response.json();
+    if (!response.ok) throw new Error(result.error || "Request failed");
 
-      const queueNumber = result.data[0].queue_no.toString();
-      numberPreview.textContent = queueNumber;
+    const queueNumber = result.data[0].queue_no.toString();
+    numberPreview.textContent = queueNumber;
 
-      formOverlay.classList.remove("is-visible");
-      overlayNumber.classList.add("is-visible");
+    formOverlay.classList.remove("is-visible");
+    overlayNumber.classList.add("is-visible");
 
-      firstNameInput.value = lastNameInput.value = "";
+    firstNameInput.value = lastNameInput.value = "";
 
-      const printContent = `
+    const printContent = `
 ===============================
    University of Rizal System
          Queue Ticket
@@ -428,25 +426,87 @@ recognition.onresult = (event) => {
 
     Name: ${fullName}
     Queue No: ${queueNumber}
-
-           Thank you! 
+ 
     Please wait for your turn.
+           Thank you!
 
 -------------------------------
     Printed via REIGI Kiosk
-      `;
+    `;
+
+    const encoded = encodeURIComponent(printContent);
+
+    // ===== Invisible iframe to trigger RawBT printing =====
+    const iframe = document.createElement("iframe");
+    iframe.style.display = "none";
+    iframe.src = `rawbt:printText:${encoded}`;
+    document.body.appendChild(iframe);
+
+    // Remove iframe after a few seconds
+    setTimeout(() => document.body.removeChild(iframe), 3000);
+
+  } catch (err) {
+    console.error("❌ Error saving queue:", err.message);
+    alert("Something went wrong while saving your queue. Please try again.");
+    finishBtn.disabled = false;
+  }
+});
+
+
+//   finishBtn.addEventListener("click", async (e) => {
+//     e.preventDefault();
+//     if (finishBtn.disabled) return;
+//     finishBtn.disabled = true;
+
+//     const fullName = `${firstNameInput.value.trim()} ${lastNameInput.value.trim()}`;
+//     if (!fullName.trim()) {
+//       alert("Please enter your complete name.");
+//       finishBtn.disabled = false;
+//       return;
+//     }
+
+//     try {
+//       const response = await fetch("/api/queue", {
+//         method: "POST",
+//         headers: { "Content-Type": "application/json" },
+//         body: JSON.stringify({ full_name: fullName }),
+//       });
+//       const result = await response.json();
+//       if (!response.ok) throw new Error(result.error || "Request failed");
+
+//       const queueNumber = result.data[0].queue_no.toString();
+//       numberPreview.textContent = queueNumber;
+
+//       formOverlay.classList.remove("is-visible");
+//       overlayNumber.classList.add("is-visible");
+
+//       firstNameInput.value = lastNameInput.value = "";
+
+//       const printContent = `
+// ===============================
+//    University of Rizal System
+//          Queue Ticket
+// ===============================
+
+//     Name: ${fullName}
+//     Queue No: ${queueNumber}
+ 
+//     Please wait for your turn.
+//            Thank you!
+
+// -------------------------------
+//     Printed via REIGI Kiosk
+//       `;
     
-      const encoded = encodeURIComponent(printContent);
-      window.location.href = `rawbt:printText:${encoded}`;
-    } catch (err) {
-      console.error("❌ Error saving queue:", err.message);
-      alert("Something went wrong while saving your queue. Please try again.");
-      finishBtn.disabled = false;
-    }
-  });
+//       const encoded = encodeURIComponent(printContent);
+//       window.location.href = `rawbt:printText:${encoded}`;
+//     } catch (err) {
+//       console.error("❌ Error saving queue:", err.message);
+//       alert("Something went wrong while saving your queue. Please try again.");
+//       finishBtn.disabled = false;
+//     }
+//   });
 
-
-  // Reset to search screen
   const finishBtnNum = document.getElementById("finish-btn-num");
   finishBtnNum.addEventListener("click", () => {
     overlayNumber.classList.remove("is-visible");
@@ -454,10 +514,8 @@ recognition.onresult = (event) => {
     window.location.reload();
   });
 
-  // Initial load
   loadFAQs();
 
-  // Supabase realtime listener
   supabaseClient
     .channel("realtime-kiosk-app")
     .on("postgres_changes", { event: "*", schema: "public", table: "kiosk" }, async () => {
@@ -466,4 +524,5 @@ recognition.onresult = (event) => {
     })
     .subscribe();
 });
+
 
