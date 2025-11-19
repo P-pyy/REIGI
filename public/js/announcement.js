@@ -1,160 +1,188 @@
 import { supabaseClient } from '/js/supabase-client.js';
 
-// Global State
-let allAnnouncements = [];
+(async () => {
+  const { data: { session } } = await supabaseClient.auth.getSession();
+  if (!session) {
+    window.location.href = "login.html"; 
+  } else {
+    supabaseClient.auth.setSession(session.access_token);
+  }
+})();
 
 document.addEventListener("DOMContentLoaded", () => {
-  initAnnouncementsIndex();
-  attachNavigationHandlers(); 
+  const toggleBtn = document.querySelector(".toggle-btn");
+  const sidebar = document.querySelector(".sidebar");
+  const mainContent = document.querySelector(".main-content");
+  const mainHeader = document.querySelector(".main-header");
+  const rowSumCards = document.querySelector(".row-sum-cards");
+  const chartContainer = document.querySelector(".chart-container");
+  const faqCard = document.querySelector(".faq-card");
+
+  if (toggleBtn && sidebar) {
+    toggleBtn.addEventListener("click", () => {
+      sidebar.classList.toggle("small-sidebar");
+      mainContent?.classList.toggle("adjusted");
+      mainHeader?.classList.toggle("adjusted");
+      rowSumCards?.classList.toggle("adjusted");
+      chartContainer?.classList.toggle("adjusted");
+      faqCard?.classList.toggle("adjusted");
+      window.dispatchEvent(new Event("resize"));
+    });
+  }
+
+  const logoutBtn = document.querySelector(".logout");
+  if (logoutBtn) {
+    logoutBtn.addEventListener("click", async () => {
+      console.log("Logout clicked ✅");
+      const { error } = await supabaseClient.auth.signOut();
+      if (error) console.error("Logout error:", error.message);
+      else window.location.href = "/admin/login";
+    });
+  }
+
 });
 
-async function initAnnouncementsIndex() {
-  const loadingOverlay = document.getElementById("loading-overlay");
-  const tableBody = document.querySelector(".announcement-table tbody");
+window.addEventListener("DOMContentLoaded", async function () {
+  const tbody = document.querySelector(".announcement-table tbody");
+  const overlay = document.getElementById("loading-overlay");
 
-  if (loadingOverlay) loadingOverlay.classList.remove("d-none");
-  if (tableBody) tableBody.innerHTML = ""; 
+  function showLoading() { overlay.classList.add("show"); }
+  function hideLoading() { overlay.classList.remove("show"); }
 
-  allAnnouncements = await fetchAnnouncements();
-  renderAnnouncementTable(allAnnouncements);
-
-  if (loadingOverlay) loadingOverlay.classList.add("d-none");
-
-  // Realtime Updates
-  supabaseClient
-    .channel('realtime:announcements')
-    .on('postgres_changes', { event: '*', schema: 'public', table: 'announcements' }, async () => {
-       allAnnouncements = await fetchAnnouncements();
-       renderAnnouncementTable(allAnnouncements);
-    })
-    .subscribe();
-}
-
-async function fetchAnnouncements() {
-  const { data, error } = await supabaseClient
-    .from("announcements")
-    .select("*")
-    .order("scheduled_datetime", { ascending: false });
-
-  if (error) {
-    console.error("Error fetching announcements:", error.message);
-    return [];
-  }
-  return data || [];
-}
-
-function renderAnnouncementTable(announcements) {
-  const tableBody = document.querySelector(".announcement-table tbody");
-  if (!tableBody) return;
-
-  if (!announcements || announcements.length === 0) {
-    tableBody.innerHTML = `<tr><td colspan="8" class="text-center py-4 text-muted">No announcements found.</td></tr>`;
-    return;
+  async function fetchAnnouncements() {
+    showLoading();
+    const { data, error } = await supabaseClient
+      .from("announcements")
+      .select("*")
+      .order("scheduled_datetime", { ascending: false });
+    hideLoading();
+    if (error) {
+      console.error("Error fetching announcements:", error.message);
+      return [];
+    }
+    return data;
   }
 
-  tableBody.innerHTML = ""; 
+function renderTable(announcements) {
+  tbody.innerHTML = "";
 
-  announcements.forEach((item) => {
+  announcements.forEach((item, index) => {  
     const dateObj = new Date(item.scheduled_datetime);
-    const dateStr = dateObj.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
-    const timeStr = dateObj.toLocaleTimeString("en-US", { hour: '2-digit', minute: '2-digit' });
+
+    const formattedDate = dateObj.toLocaleDateString("en-PH", { 
+      year: "2-digit", 
+      month: "2-digit", 
+      day: "2-digit" 
+    });
+    const formattedTime = dateObj.toLocaleTimeString("en-PH", { 
+      hour: "2-digit", 
+      minute: "2-digit", 
+      hour12: true 
+    });
 
     const row = document.createElement("tr");
-    
-    // 🎯 LOGIC: 
-    // 1. First TD has class "toggle-cell" to match your CSS.
-    // 2. Icon uses "ph-bold ph-caret-down" to match your icon set.
+    row.classList.add("fade-in");
     row.innerHTML = `
-      <td class="toggle-cell" style="vertical-align: top; padding-top: 1rem;">
-          <i class="ph-bold ph-caret-down"></i>
-      </td>
-
-      <td style="vertical-align: top; padding-top: 1rem;">${item.id}</td>
-
-      <td style="vertical-align: top; padding-top: 1rem; font-weight: 600;">${item.title}</td>
-      
+      <td>${index + 1}</td>   <!--  Use index instead of DB id -->
+      <td>${item.title}</td>
+      <td>${item.details}</td>
       <td>
-        <div class="expandable-content">
-           ${item.details || "<span class='text-muted'>No details.</span>"}
-        </div>
+        <img src="${item.image_url}" 
+             alt="announcement image" 
+             style="width:60px; height:auto; border-radius:4px;">
       </td>
-
-      <td style="vertical-align: top; padding-top: 1rem;">
-        ${item.image_url 
-          ? `<img src="${item.image_url}" style="width: 60px; height: 40px; object-fit: cover; border-radius: 4px;">` 
-          : `<span class="text-muted small">No Img</span>`}
-      </td>
-
-      <td style="vertical-align: top; padding-top: 1rem;">${dateStr}</td>
-
-      <td style="vertical-align: top; padding-top: 1rem;">${timeStr}</td>
-
-      <td style="vertical-align: top; padding-top: 1rem;">
-         <button class="btn btn-sm text-primary edit-btn" data-id="${item.id}"><i class="ph-bold ph-pencil-simple"></i></button>
-         <button class="btn btn-sm text-danger delete-btn" data-id="${item.id}"><i class="ph-bold ph-trash"></i></button>
+      <td>${formattedDate}</td>
+      <td>${formattedTime}</td>
+      <td>
+        <a href="#" class="text-primary me-2 edit-link" data-id="${item.id}">Edit</a>
+        <a href="#" class="text-danger trash-icon" data-id="${item.id}">
+          <i class="ph ph-trash"></i>
+        </a>
       </td>
     `;
-    tableBody.appendChild(row);
+    tbody.appendChild(row);
   });
 
-  // 🔄 Reload Icons (Crucial for dynamic content)
-  if (window.PhosphorIcons) {
-      window.PhosphorIcons.replace();
-  }
-  
-  attachCollapseHandlers();
-}
-
-function attachCollapseHandlers() {
-  document.querySelectorAll('.toggle-cell').forEach(td => {
-    td.addEventListener('click', (e) => {
-      e.preventDefault();
-      const row = td.closest('tr');
-      
-      // Select icon (works for both <i> and auto-generated <svg>)
-      const icon = td.querySelector('i, svg'); 
-
-      row.classList.toggle('row-expanded');
-
-      if (icon) {
-        // Direct style manipulation for rotation
-        icon.style.transform = row.classList.contains('row-expanded') 
-          ? "rotate(180deg)" 
-          : "rotate(0deg)";
-      }
+    document.querySelectorAll(".trash-icon").forEach(btn => {
+      btn.addEventListener("click", async function (e) {
+        e.preventDefault();
+        const id = this.dataset.id;
+        if (confirm("Are you sure you want to delete this announcement?")) {
+          const { error } = await supabaseClient.from("announcements").delete().eq("id", id);
+          if (error) alert("Failed to delete: " + error.message);
+          else {
+            const announcements = await fetchAnnouncements();
+            renderTable(announcements);
+          }
+        }
+      });
     });
-  });
-}
 
-function attachNavigationHandlers() {
+
+document.querySelectorAll(".edit-link").forEach(link => {
+  link.addEventListener("click", async e => {
+    e.preventDefault();
+    const id = link.dataset.id;
+
+    const tableCard = document.querySelector(".admin-announcement-card");
     const addBtn = document.getElementById("add-announcement-btn");
-    const backBtn = document.querySelector(".back-btn");
-    const tableContainer = document.querySelector(".container-group");
-    const editFormContainer = document.getElementById("edit-form-container");
-    const backContainer = document.querySelector(".back-container");
+    const formContainer = document.getElementById("edit-form-container");
 
-    if (addBtn) {
-        addBtn.addEventListener("click", () => {
-            tableContainer.classList.add("d-none");
-            addBtn.parentElement.classList.add("d-none");
-            
-            if (editFormContainer) {
-                editFormContainer.style.display = "block"; 
-                editFormContainer.innerHTML = "<h3>Editor Placeholder</h3>"; 
-            }
-            if (backContainer) backContainer.classList.remove("d-none");
-        });
-    }
+    tableCard.style.display = "none";
+    addBtn.style.display = "none";
 
-    if (backBtn) {
-        backBtn.addEventListener("click", (e) => {
-            if (editFormContainer && editFormContainer.style.display === "block") {
-                 e.preventDefault();
-                 editFormContainer.style.display = "none";
-                 tableContainer.classList.remove("d-none");
-                 if (addBtn) addBtn.parentElement.classList.remove("d-none");
-                 // Don't hide backContainer if you want it to act as 'Back to Dashboard'
-            }
-        });
+    const res = await fetch("/admin/announcement_edit");
+    formContainer.innerHTML = await res.text();
+    formContainer.style.display = "block";
+
+    setTimeout(() => {
+      import("/js/announcement_edit.js")
+        .then(module => module.initAnnouncementEdit(id))
+        .catch(err => console.error("Failed to load announcement_edit.js:", err));
+    }, 50);
+  });
+});
+
+if (window.PhosphorIcons) window.PhosphorIcons.replace();
+  }
+
+const announcements = await fetchAnnouncements();
+renderTable(announcements);
+
+
+supabaseClient
+  .channel('realtime:announcements')
+  .on(
+    'postgres_changes',
+    { event: '*', schema: 'public', table: 'announcements' },
+    async (payload) => {
+      console.log("📡 Realtime update received:", payload.eventType);
+
+      const announcements = await fetchAnnouncements();
+      renderTable(announcements);
     }
-}
+  )
+  .subscribe();
+
+
+});
+
+
+document.getElementById("add-announcement-btn").addEventListener("click", async () => {
+  const tableCard = document.querySelector(".admin-announcement-card");
+  const addBtn = document.getElementById("add-announcement-btn");
+  const formContainer = document.getElementById("edit-form-container");
+
+  tableCard.style.display = "none";
+  addBtn.style.display = "none";
+
+  const res = await fetch("/admin/announcement_edit");
+  formContainer.innerHTML = await res.text();
+  formContainer.style.display = "block";
+
+  setTimeout(() => {
+     import("/js/announcement_edit.js")
+      .then(module => module.initAnnouncementEdit()) 
+      .catch(err => console.error(err));
+  }, 50);
+});
