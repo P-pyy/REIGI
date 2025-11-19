@@ -389,39 +389,36 @@ recognition.onresult = (event) => {
     });
   }
 
-
   finishBtn.addEventListener("click", async (e) => {
-  e.preventDefault();
-  if (finishBtn.disabled) return;
-  finishBtn.disabled = true;
+    e.preventDefault();
+    if (finishBtn.disabled) return;
+    finishBtn.disabled = true;
 
-  const fullName = `${firstNameInput.value.trim()} ${lastNameInput.value.trim()}`;
-  if (!fullName.trim()) {
-    alert("Please enter your complete name.");
-    finishBtn.disabled = false;
-    return;
-  }
+    const fullName = `${firstNameInput.value.trim()} ${lastNameInput.value.trim()}`;
+    if (!fullName.trim()) {
+      alert("Please enter your complete name.");
+      finishBtn.disabled = false;
+      return;
+    }
 
-  try {
-    // Save queue number to server
-    const response = await fetch("/api/queue", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ full_name: fullName }),
-    });
-    const result = await response.json();
-    if (!response.ok) throw new Error(result.error || "Request failed");
+    try {
+      const response = await fetch("/api/queue", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ full_name: fullName }),
+      });
+      const result = await response.json();
+      if (!response.ok) throw new Error(result.error || "Request failed");
 
-    const queueNumber = result.data[0].queue_no.toString();
-    numberPreview.textContent = queueNumber;
+      const queueNumber = result.data[0].queue_no.toString();
+      numberPreview.textContent = queueNumber;
 
-    formOverlay.classList.remove("is-visible");
-    overlayNumber.classList.add("is-visible");
+      formOverlay.classList.remove("is-visible");
+      overlayNumber.classList.add("is-visible");
 
-    firstNameInput.value = lastNameInput.value = "";
+      firstNameInput.value = lastNameInput.value = "";
 
-    // Prepare ticket content
-    const printContent = `
+      const printContent = `
 ===============================
    University of Rizal System
          Queue Ticket
@@ -435,21 +432,16 @@ recognition.onresult = (event) => {
 
 -------------------------------
     Printed via REIGI Kiosk
-    `;
-    const encodedContent = encodeURIComponent(printContent);
-
-    // Fully automatic print to a specific RawBT printer
-    // Replace PRINTER_NAME with your RawBT printer's name
-    window.location.href = `intent:#Intent;action=android.intent.action.VIEW;scheme=rawbt;package=com.elysium.thermoprinter;S.text=${encodedContent};S.printer=POS58D;end`;
-
-  } catch (err) {
-    console.error("❌ Error saving queue:", err.message);
-    alert("Something went wrong while saving your queue. Please try again.");
-    finishBtn.disabled = false;
-  }
-});
-
-
+      `;
+    
+      const encoded = encodeURIComponent(printContent);
+      window.location.href = `rawbt:printText:${encoded}`;
+    } catch (err) {
+      console.error("❌ Error saving queue:", err.message);
+      alert("Something went wrong while saving your queue. Please try again.");
+      finishBtn.disabled = false;
+    }
+  });
 
   const finishBtnNum = document.getElementById("finish-btn-num");
   finishBtnNum.addEventListener("click", () => {
@@ -468,4 +460,5 @@ recognition.onresult = (event) => {
     })
     .subscribe();
 });
+
 
