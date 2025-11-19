@@ -87,9 +87,9 @@ function filterAnnouncements() {
   });
 }
 
-// =======================
+// ======================
 // Setup Filters
-// =======================
+// ======================
 function setupFilters() {
   const searchInput = document.getElementById("search");
   const monthSelect = document.getElementById("month");
