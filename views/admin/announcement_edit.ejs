@@ -1,76 +1,93 @@
 <!-- css link -->
-  <link rel="stylesheet" href="/css/announcement_edit.css">
+<link rel="stylesheet" href="/css/announcement_edit.css">
 
-<!-- Main Content -->
-<div class="row justify-content-center edit-row">
-    <!-- Left Card - Form -->
-    <div class="col-lg-4 form-section">
-        <div class="card shadow-sm admin-announcement-card">
-            <div class="card-body">
-                <h5 class="card-title mb-4 announcement-post-text">Announcement Post</h5>
+<!--  Wrapper that hides everything by default -->
+<div id="announcementWrapper" style="display:none;">
+    
+    <!-- Main Content -->
+    <div class="row justify-content-center edit-row">
 
-                <!-- Form Wrapper -->
-                <form id="announcementForm">
-                    <!-- Image Upload -->
-                    <div class="mb-4">
-                        <div id="uploadArea"
-                             class="image-upload-area d-flex flex-column align-items-center justify-content-center"
-                             onclick="document.getElementById('imageInput').click()">
-                            <button type="button" class="btn btn-light border shadow-sm mb-2 admin-edit-btn">
-                                <i class="ph-bold ph-image"></i>
-                                <span class="btn1-text">Choose Image</span>
-                            </button>
-                            <p class="mb-1 drag-drop-text">Drag & Drop the Image here</p>
-                            <p class="text-muted small image-format">PNG / JPG / Webp</p>
+        <!-- Left Card - Form -->
+        <div class="col-lg-4 form-section">
+            <div class="card shadow-sm admin-announcement-card">
+                <div class="card-body">
+                    <h5 class="card-title mb-4 announcement-post-text">Announcement Post</h5>
+
+                    <!-- Form Wrapper -->
+                    <form id="announcementForm">
+
+                        <!-- Image Upload -->
+                        <div class="mb-4">
+                            <div id="uploadArea"
+                                 class="image-upload-area d-flex flex-column align-items-center justify-content-center"
+                                 onclick="document.getElementById('imageInput').click()">
+                                <button type="button" class="btn btn-light border shadow-sm mb-2 admin-edit-btn">
+                                    <i class="ph-bold ph-image"></i>
+                                    <span class="btn1-text">Choose Image</span>
+                                </button>
+                                <p class="mb-1 drag-drop-text">Drag & Drop the Image here</p>
+                                <p class="text-muted small image-format">PNG / JPG / Webp</p>
+                            </div>
+
+                            <!-- Hidden File Input -->
+                            <input type="file" id="imageInput" class="d-none" accept="image/*">
                         </div>
-                        <!-- Hidden File Input -->
-                        <input type="file" id="imageInput" class="d-none" accept="image/*">
-                    </div>
 
-                    <div class="divider"></div>
+                        <div class="divider"></div>
 
-                    <!-- Announcement Title -->
-                    <div class="mb-3">
-                        <input type="text" class="form-control custom-input" id="announcementTitle" placeholder="Announcement Title">
-                    </div>
+                        <!-- Announcement Title -->
+                        <div class="mb-3">
+                            <input type="text" class="form-control custom-input" id="announcementTitle" placeholder="Announcement Title">
+                        </div>
 
-                    <!-- Date & Time -->
-                    <div class="mb-3">
-                        <input type="datetime-local" class="form-control custom-input" id="scheduledDateTime" placeholder="Date & Time">
-                    </div>
+                        <!-- Date & Time -->
+                        <div class="mb-3">
+                            <input type="datetime-local" class="form-control custom-input" id="scheduledDateTime" placeholder="Date & Time">
+                        </div>
 
-                    <div class="divider"></div>
+                        <div class="divider"></div>
 
-                    <!-- Details -->
-                    <div class="mb-3">
-                        <textarea class="form-control custom-input" id="announcementDetails" rows="4" placeholder="Put the details here..."></textarea>
-                    </div>
+                        <!-- Details -->
+                        <div class="mb-3">
+                            <textarea class="form-control custom-input" id="announcementDetails" rows="4" placeholder="Put the details here..."></textarea>
+                        </div>
 
-                    <!-- Submit Button -->
-                    <div class="text-center mt-4">
-                        <button type="submit" class="btn add-announcement-btn">
-                            <span class="btn2-text">Submit</span>
-                        </button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
+                        <!-- Submit Button -->
+                        <div class="text-center mt-4">
+                            <button type="submit" class="btn add-announcement-btn">
+                                <span class="btn2-text">Submit</span>
+                            </button>
+                        </div>
 
-    <!-- Right Card - Preview -->
-    <div class="col-lg-5 preview-section">
-        <div class="sticky-top" style="top: 80px;">
-            <h5 class="mb-3 preview-text">POST PREVIEW</h5>
-            <div class="preview-card">
-                <img id="previewImage" src="/img/CARD-BG.png" alt="preview">
-                <div class="preview-content">
-                    <h4 id="previewTitle" class="preview-title">ANNOUNCEMENT TITLE</h4>
-                    <p id="previewDateTime"><strong>MM/DD/YY</strong> • <span class="text-muted">--:--</span></p>
-                    <p id="previewContent">Your announcement details will appear here...</p>
+                    </form>
+
                 </div>
             </div>
         </div>
-    </div>
+
+        <!-- Right Card - Preview -->
+        <div class="col-lg-5 preview-section">
+            <div class="sticky-top" style="top: 80px;">
+                <h5 class="mb-3 preview-text">POST PREVIEW</h5>
+                <div class="preview-card">
+                    <img id="previewImage" src="/img/CARD-BG.png" alt="preview">
+                    <div class="preview-content">
+                        <h4 id="previewTitle" class="preview-title">ANNOUNCEMENT TITLE</h4>
+                        <p id="previewDateTime"><strong>MM/DD/YY</strong> • <span class="text-muted">--:--</span></p>
+                        <p id="previewContent">Your announcement details will appear here...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div><!-- end row -->
+
+</div><!-- end wrapper -->
+
+<!-- Loading text -->
+<div id="loadingContainer" class="text-center mt-5">
+    <p>Loading announcement...</p>
 </div>
 
 <script src="/js/announcement_edit.js"></script>
+

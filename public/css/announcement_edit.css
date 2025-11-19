@@ -166,4 +166,23 @@ main.container-fluid {
   padding: 1.5rem;  
 }
 
+.down-btn {
+  border: none;
+  background: none;
+}
 
+.expandable-content {
+  max-height: 24px; /* Height of approx 1 line */
+  overflow: hidden;
+  transition: max-height 0.4s ease-in-out;
+  position: relative;
+}
+
+tr.row-expanded .expandable-content {
+  max-height: 1000px; /* Arbitrary large height */
+  overflow: visible;
+}
+
+.toggle-cell:hover i {
+    color: #0055A5; /* Or your theme color */
+}

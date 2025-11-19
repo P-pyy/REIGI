@@ -73,6 +73,9 @@ async function loadAnnouncement(editId) {
   document.getElementById("previewTitle").textContent = data.title || "ANNOUNCEMENT TITLE";
   document.getElementById("previewContent").textContent = data.details || "Your announcement details will appear here...";
   document.getElementById("previewImage").src = data.image_url || "img/CARD-BG.png";
+  document.getElementById("loadingContainer").style.display = "none";
+  document.getElementById("announcementWrapper").style.display = "block";
+
 
 
   if (data.scheduled_datetime) {
@@ -151,10 +154,17 @@ function setupSubmitHandler() {
 export function initAnnouncementEdit(editId = null) {
   setupPreview();
   setupSubmitHandler();
-  if (editId) loadAnnouncement(editId);
+
+  if (editId) {
+    loadAnnouncement(editId);
+  } 
   else {
+    document.getElementById("announcementWrapper").style.display = "block";
+    document.getElementById("loadingContainer").style.display = "none";
+
     const btnText = document.querySelector(".btn2-text");
     if (btnText) btnText.textContent = "Add Announcement";
   }
 }
+
 
