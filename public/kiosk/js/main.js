@@ -218,13 +218,29 @@ recognition.onresult = (event) => {
 
     attachFAQClickHandlers(data);
 
-     faqAliases = kioskData.map(faq => {
-    const acronyms = faq.question_title.match(/\b[A-Z]{2,}\b/) || [];
+    faqAliases = kioskData.map(faq => {
+    // Extract acronym inside parentheses: (TOR)
+    const parenthesisAcronym = faq.question_title.match(/\(([A-Z]{2,})\)/);
+
+    // Extract any standalone uppercase acronyms
+    const standaloneAcronyms = faq.question_title.match(/\b[A-Z]{2,}\b/g) || [];
+
+    const acronyms = [
+      ...(parenthesisAcronym ? [parenthesisAcronym[1]] : []),
+      ...standaloneAcronyms
+    ];
+
     const words = faq.question_title.replace(/[()]/g, "").toLowerCase().split(/\s+/);
-    const keywords = [faq.question_title.toLowerCase(), ...words, ...acronyms.map(a => a.toLowerCase())];
+
+    const keywords = [
+      faq.question_title.toLowerCase(), 
+      ...words, 
+      ...acronyms.map(a => a.toLowerCase())
+    ];
+
     return { faq, keywords };
   });
-  }
+}
 
   function attachFAQClickHandlers(data) {
     document.querySelectorAll(".faq-option").forEach(option => {
