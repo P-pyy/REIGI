@@ -391,35 +391,37 @@ recognition.onresult = (event) => {
 
 
   finishBtn.addEventListener("click", async (e) => {
-    e.preventDefault();
-    if (finishBtn.disabled) return;
-    finishBtn.disabled = true;
+  e.preventDefault();
+  if (finishBtn.disabled) return;
+  finishBtn.disabled = true;
 
-    const fullName = `${firstNameInput.value.trim()} ${lastNameInput.value.trim()}`;
-    if (!fullName.trim()) {
-      alert("Please enter your complete name.");
-      finishBtn.disabled = false;
-      return;
-    }
+  const fullName = `${firstNameInput.value.trim()} ${lastNameInput.value.trim()}`;
+  if (!fullName.trim()) {
+    alert("Please enter your complete name.");
+    finishBtn.disabled = false;
+    return;
+  }
 
-    try {
-      const response = await fetch("/api/queue", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ full_name: fullName }),
-      });
-      const result = await response.json();
-      if (!response.ok) throw new Error(result.error || "Request failed");
+  try {
+    // Save queue number to server
+    const response = await fetch("/api/queue", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ full_name: fullName }),
+    });
+    const result = await response.json();
+    if (!response.ok) throw new Error(result.error || "Request failed");
 
-      const queueNumber = result.data[0].queue_no.toString();
-      numberPreview.textContent = queueNumber;
+    const queueNumber = result.data[0].queue_no.toString();
+    numberPreview.textContent = queueNumber;
 
-      formOverlay.classList.remove("is-visible");
-      overlayNumber.classList.add("is-visible");
+    formOverlay.classList.remove("is-visible");
+    overlayNumber.classList.add("is-visible");
 
-      firstNameInput.value = lastNameInput.value = "";
+    firstNameInput.value = lastNameInput.value = "";
 
-      const printContent = `
+    // Prepare ticket content
+    const printContent = `
 ===============================
    University of Rizal System
          Queue Ticket
@@ -433,16 +435,20 @@ recognition.onresult = (event) => {
 
 -------------------------------
     Printed via REIGI Kiosk
-      `;
-    
-      const encoded = encodeURIComponent(printContent);
-          window.open(`rawbt:printText:${encoded}`, "_blank");
-    } catch (err) {
-      console.error("❌ Error saving queue:", err.message);
-      alert("Something went wrong while saving your queue. Please try again.");
-      finishBtn.disabled = false;
-    }
-  });
+    `;
+
+    const encodedContent = encodeURIComponent(printContent);
+
+    // Android intent for RawBT
+    window.location.href = `intent://printText/${encodedContent}#Intent;scheme=rawbt;package=com.elysium.thermoprinter;end`;
+
+  } catch (err) {
+    console.error("❌ Error saving queue:", err.message);
+    alert("Something went wrong while saving your queue. Please try again.");
+    finishBtn.disabled = false;
+  }
+});
+
 
   const finishBtnNum = document.getElementById("finish-btn-num");
   finishBtnNum.addEventListener("click", () => {
