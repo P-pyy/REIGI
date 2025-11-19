@@ -17,6 +17,8 @@ body {
 
 .kiosk-body {
   height: 100vh !important;
+  display: flex;
+  justify-content: center;
 }
 
 .preload * {
@@ -46,7 +48,7 @@ body {
 .form-control {
   border-radius: 20px !important;
   padding: 1rem;
-  font-size: 1.3rem;
+  font-size: 1.8rem;
 }
 
 .ph-microphone {
@@ -63,6 +65,13 @@ body {
   height: 70vh;
 }
 
+.container-2 {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 80vh;
+}
+
 .voice-btn {
   display: flex;
   background-color: #0055A5;
@@ -72,7 +81,7 @@ body {
   border-radius: 20px;
   justify-content: center;
   align-items: center;
-  width: 250px !important;
+  width: 350px !important;
   cursor: pointer;
   transition: background-color 0.3s ease;
 }
@@ -176,12 +185,12 @@ body {
   display: flex;
   background-color: #0055A5;
   color: #fcfcfc;
-  padding: 1rem;
+  padding: .7rem;
   border: none;
-  border-radius: 20px ;
+  border-radius: 20px;
   justify-content: center;
   align-items: center;
-  width: 200px !important;
+  width: 250px !important;
   cursor: pointer;
   transition: all 0.3s ease;
 }
@@ -194,18 +203,18 @@ body {
   display: flex;
   gap: .5rem;
   background-color: #871919; 
-  padding: .5rem;
+  padding: 1rem;
 }
 
 .speak-btn.active i {
   color: #fcfcfc;
+  font-size: 2rem !important;
 }
 
 .faq-option-container {
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 100%;
   gap: 1rem;
 }
 
@@ -217,7 +226,7 @@ body {
   align-items: center;
   gap: 1.2rem;
   background: rgba(239, 240, 248, 1);
-  width: 350px;
+  width: 320px;
   height: 130px;
   padding: 1.5rem;
   border-radius: 20px;
@@ -268,7 +277,7 @@ body {
 
   display: flex;
   flex-direction: column;
-  width: 1700px;
+  /* width: 1700px; */
   background-color: #fcfcfc;
   border-radius: 20px;
   z-index: 10000;
@@ -313,7 +322,7 @@ body {
   width: 100%;
   justify-content: space-between;
   align-items: center;
-  padding: .5rem;
+  padding: 1rem;
 }
 
 
@@ -354,7 +363,7 @@ body {
 }
 
 .ph-user-sound {
-  font-size: .8rem;
+  font-size: 2rem !important;
   padding: .5rem;
   color: #fcfcfc;
   border-radius: 8px;
@@ -373,7 +382,7 @@ a {
   border: none;
   padding: .7rem;
   border-radius: 20px ;
-  font-size: 1.8rem;
+  font-size: 3rem !important;
 }
 
 .container-content {
@@ -491,7 +500,7 @@ a {
 .title-preview {
   color: rgba(0, 85, 165, 1);
   font-weight: 600;
-  font-size: 3rem;
+  font-size: 3.5rem;
   padding: .5rem;
 }
 
@@ -503,13 +512,14 @@ a {
 
 .message-name {
   text-align: center;
+  font-size: 1.8rem;
 }
 
 .faq-preview {
   background-color: #F3F4F8;
   border-radius: 8px;
-  width: 700px;
-  font-size: 1.5rem;
+  width: 1200px;
+  font-size: 1.8rem;
 }
 
 .faq-preview-2 {
@@ -526,7 +536,7 @@ a {
 }
 
 .directions {
-  font-size: 1.4rem;
+  font-size: 1.8rem;
   font-weight: 600;
 }
 
@@ -574,7 +584,7 @@ a {
 
 .checkbox-content {
   margin-bottom: 0 !important;
-  font-size: 1.5rem;
+  font-size: 1.8rem;
 }
 
 .checkbox-wrapper-4 {
@@ -594,9 +604,10 @@ a {
   cursor: pointer;
   padding: 6px 8px;
   border-radius: 6px;
-  overflow: hidden;
+  /* overflow: hidden; */
   transition: all 0.2s ease;
-  display: inline-block;
+  display: flex;
+  align-items: flex-start;
 }
 .checkbox-wrapper-4 .cbx:not(:last-child) {
   margin-right: 6px;
@@ -605,24 +616,25 @@ a {
   background: rgba(0,119,255,0.06);
 }
 .checkbox-wrapper-4 .cbx span {
-  float: left;
+  /* float: left; */
   vertical-align: middle;
   transform: translate3d(0, 0, 0);
 }
 .checkbox-wrapper-4 .cbx span:first-child {
   position: relative;
-  width: 18px;
-  height: 18px;
+  width: 24px;
+  height: 24px;
   border-radius: 4px;
   transform: scale(1);
   border: 1px solid #cccfdb;
   transition: all 0.2s ease;
   box-shadow: 0 1px 1px rgba(0,16,75,0.05);
+  flex-shrink: 0;
 }
 .checkbox-wrapper-4 .cbx span:first-child svg {
   position: absolute;
-  top: 3px;
-  left: 2px;
+  top: 6px;
+  left: 5px;
   fill: none;
   stroke: #fff;
   stroke-width: 2;
@@ -635,8 +647,8 @@ a {
   transform: translate3d(0, 0, 0);
 }
 .checkbox-wrapper-4 .cbx span:last-child {
-  padding-left: 8px;
-  line-height: 18px;
+  padding-left: 12px;
+  line-height: 24px;
 }
 .checkbox-wrapper-4 .cbx:hover span:first-child {
   border-color: #07f;
@@ -660,7 +672,7 @@ a {
   pointer-events: none;
   user-select: none;
 }
-@media screen and (max-width: 640px) {
+/* @media screen and (max-width: 640px) {
   .checkbox-wrapper-4 .cbx {
     width: 100%;
     display: inline-block;
@@ -685,14 +697,14 @@ a {
   50% {
     transform: scale(0.9);
   }
-}
+} */
 
 .faq-option-name{
-  font-size: 1.3rem;
+  font-size: 1.6rem;
 }
 
 .faq-name {
-  font-size: 1.5rem;
+  font-size: 2rem;
 }
 
 .form-control::placeholder {
@@ -700,7 +712,7 @@ a {
 }
 
 .voice-btn-text, .speak-btn-text, .finish-btn-text{
-  font-size: 1.2rem;
+  font-size: 1.5rem;
 }
 
 .preview-image {
