@@ -79,7 +79,7 @@ html, body {
 }
 
 .search-container {
-  display: flex;
+  display: none;
   justify-content: center;
 }
 
@@ -128,7 +128,7 @@ html, body {
 
 .spacing {
   gap: 2rem; /* Adjust the gap value as needed */
-}
+/* } */
 
 .faq-wrapper {
   padding: 5rem;

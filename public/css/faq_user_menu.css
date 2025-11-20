@@ -71,7 +71,7 @@ html, body {
 }
 
 .search-container {
-  display: flex;
+  display: none;
   justify-content: center;
 }
 

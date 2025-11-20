@@ -19,6 +19,7 @@ body {
   height: 100vh !important;
   display: flex;
   justify-content: center;
+  margin-top: -130px;
 }
 
 .preload * {
