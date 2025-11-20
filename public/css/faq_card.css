@@ -14,7 +14,7 @@ a {
   display: flex;
   flex-direction: column;
   max-width: 800px;
-  margin: 3rem auto;
+  margin: 6rem auto;
   background: #fff;
   border-radius: 16px;
   box-shadow: 0 4px 12px rgba(0,0,0,0.1);
@@ -94,7 +94,7 @@ a {
 .faq-preview {
   background-color: #F3F4F8;
   border-radius: 8px;
-  width: 400px;
+  width: 750px;
 }
 
 .faq-preview-card {

@@ -625,7 +625,7 @@ body {
 
 #faq-editor-section {
   margin-top: -50px !important;
-  margin-left: -120px;
+  margin-left: -50px;
   display: flex;
 }
 
@@ -774,4 +774,56 @@ tr.row-expanded .expandable-content {
 
 .toggle-cell:hover i {
     color: #0055A5; /* Or your theme color */
+}
+
+/* ! PREVIEW CARD OVERFLOW FIXES */
+
+/* 1. Ensure the containers themselves don't exceed the card width */
+.faq-preview, 
+.faq-preview-card, 
+.another-container {
+    max-width: 100%;
+    box-sizing: border-box; /* Includes padding in width calculation */
+}
+
+/* 2. Fix the text wrapping for specific elements */
+.faq-item, 
+.faq-name, 
+.steps-preview-container li,
+.steps-preview-container ol {
+    /* This forces long text to wrap to the next line */
+    white-space: normal; 
+    overflow-wrap: break-word; 
+    word-wrap: break-word; 
+    word-break: break-word; 
+
+    /* Ensures element doesn't grow wider than its parent */
+    max-width: 100%; 
+}
+
+/* 3. Specific fix for the steps list to ensure padding doesn't push it out */
+.steps-preview-container ol {
+    padding-left: 20px; /* Standard indentation */
+    margin: 0;
+}
+
+/* 4. Fix for the Title Container to handle centering + wrapping */
+.title-container {
+    width: 100%;
+    text-align: center;
+}
+
+.post-card {
+  width: 430px !important;
+  height: fit-content !important;
+}
+
+.preview-card {
+  width: 450px !important;
+  height: fit-content !important;
+}
+
+.tester {
+  display: flex;
+  /* flex-direction: column; */
 }
