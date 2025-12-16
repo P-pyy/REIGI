@@ -9,7 +9,6 @@
 body {
   margin: 0;
   font-family: 'Montserrat', sans-serif;
-  /* background-color: #f9fafb; */
   background-image: url("/img/admin-bg.webp");
   display: flex;
   justify-content: center;
