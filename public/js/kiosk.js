@@ -431,7 +431,12 @@ function showQueueUI(windowName) {
 
       tr.innerHTML = `
         <td>${row.queue_no}</td>
-        <td>${row.full_name}</td>
+        <td>
+          <div style="max-width: 120px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis;
+          data-bs-toggle="tooltip" data-bs-placement="top" title="${row.full_name}">
+            ${row.full_name}
+          </div>
+        </td>
         <td>${new Date(row.created_at).toLocaleString()}</td>
         <td>${actionContent}</td>
       `;

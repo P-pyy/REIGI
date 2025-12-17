@@ -19,7 +19,7 @@ body {
   max-width: calc(100% - 278px);
   min-height: 100vh;
   transition: margin-left 0.3s ease, width 0.3s ease;
-  padding: 12rem 4rem 8rem 8rem;
+  padding: 12rem 3rem 8rem 3rem;
 }
 
 .main-content.adjusted {
@@ -28,7 +28,6 @@ body {
 }
 
 .faq-wrapper {
-  margin-left: 3rem;
   max-width: 1200px;
   padding: 0 20px;
   width: 100%;
@@ -252,7 +251,7 @@ body {
   border-radius: 12px;
   justify-content: space-between;
   padding: .5rem;
-  width: 500px;
+  width: 550px;
 }
 
 .set {
@@ -282,12 +281,11 @@ body {
 }
 
 .table-container {
-  width: 520px;
+  width: 550px;
 }
 
 .tables {
   display: flex;
-  justify-content: center;
   gap: 1rem;
 }
 
@@ -919,9 +917,9 @@ tr, th, td {
 }
 
 .popup-content {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
+  display: block;
+  /* flex-direction: column;
+  justify-content: center; */
   padding: 1rem;
   align-items: center;
   text-align: center;
@@ -1086,4 +1084,8 @@ tr, th, td {
 
 .faq-table .table-title th:nth-child(4) { /* FAQ Post Title */
   width: 120px !important;
+}
+
+.text {
+  overflow-wrap: break-word;
 }
