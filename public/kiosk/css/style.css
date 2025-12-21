@@ -63,7 +63,8 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 70vh;
+  height: 85vh;
+  margin-left: 17.5rem;
 }
 
 .container-2 {
