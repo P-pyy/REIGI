@@ -9,11 +9,11 @@ body {
     flex-direction: column;
 }
 
-.title-container {
+.title-container1 {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 3rem;
+    padding: 1rem;
 }
 
 .title-text {
@@ -23,10 +23,10 @@ body {
 }
 
 .h1-text {
-    font-size: 2.5rem;
-    font-weight: 400;
-    color: #191919;
-    margin: 0;
+    font-size: 3rem;
+    font-weight: 500;
+    /* color: #191919; */
+    color: #fcfcfc;
 }
 
 .h1-title-text {
@@ -51,36 +51,48 @@ body {
 
 .date-text, .time-text, .AM-PM-text {
     font-size: 1.5rem;
+    font-weight: 500;
     color: #191919;
-    letter-spacing: .2rem;
+    letter-spacing: .1rem;
 }
 
 .container-content {
     display: flex;
     justify-content: center;
     align-items: center;
+    background-color: #0057b8;
+    overflow-y: hidden;
 }
 
 .window-1-container, .window-2-container {
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
     width: 50%;
-    height: 35vh;
-    gap: 2rem;
-    border: 1px solid #e3e3e3;
+    height: 100vh;
+    /* gap: 2rem; */
+    /* border: 1px solid #e3e3e3; */
 }
 
-.container-ticket-number-window {
+.container-content {
+    height: 450px;
+}
+
+/* .container-ticket-number-window {
     border-radius: 1rem;
-    background-color: #0057b8;
     padding: 1rem;
     width: fit-content;
+} */
+
+.border1 {
+    border-right: 1px solid #fcfcfc !important;
 }
 
 .number-text-window{
     color: #fcfcfc;
-    font-size: 5rem;
+    font-weight: 500;
+    font-size: 10rem;
 }
 
 .number-text {
@@ -92,8 +104,9 @@ body {
     border-radius: 1rem;
     background-color: #0057b8;
     color: #fcfcfc;
-    padding: 1rem;
-    font-size: 2.5rem;
+    padding: 1.5rem;
+    font-weight: 500;
+    font-size: 4rem;
     width: fit-content;
 }
 
@@ -110,7 +123,7 @@ body {
 }
 
 .waiting-text {
-    padding: 2rem;
+    padding: 1.5rem;
     font-size: 2rem;
     color: #191919;
 }

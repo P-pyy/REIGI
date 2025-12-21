@@ -12,14 +12,14 @@ body {
   overflow-x: hidden;
   /* display: flex; */
   justify-content: space-between;
-  padding: 10rem;
+  /* padding: 10rem; */
 }
 
 .kiosk-body {
   height: 100vh !important;
-  display: flex;
+  /* display: flex; */
   justify-content: center;
-  margin-top: -130px;
+  /* margin-top: -130px; */
 }
 
 .preload * {
