@@ -43,11 +43,10 @@ section{
 
 .info-hub {
     align-items: center;
-    justify-content: space-around;
-    padding: 12rem 7rem;
+    justify-content: space-between;
+    padding: 8rem 6rem;
     width: 100%;
-    box-sizing: border-box;
-    flex-wrap: wrap;
+    /* box-sizing: border-box; */
     display: flex;
     background-color: white;
 }
@@ -61,13 +60,13 @@ section{
 .info-text h2 {
     color: #3066B3;
     font-weight: 700;
-    font-size: 3rem;
+    font-size: clamp(1.5rem, 1.2rem + 1.5vw, 3rem);
     margin: 4 0 12px 0;
     line-height: 1.2;
 }
 
 .info-text p {
-    font-size: 1rem;
+    font-size: clamp(0.6rem, 0.6rem + 0.4vw, 1rem);
     margin: 0 0 20px 0;
 }
 
@@ -89,6 +88,10 @@ section{
     background: #A0BFF5;
     box-shadow: 5px 8px 12px #8FA7DE;
     color: white;
+}
+
+.container-text {
+    max-width: 450px;
 }
 
 .faq-image-container {
@@ -127,8 +130,8 @@ section{
 
 #faqVideo.fixed{
     /*position: fixed;*/
-    top: -90px;
-    right: 450px;
+    top: -40px;
+    right: 500px;
     /*width: 450px;*/
     cursor: pointer;
 }
@@ -141,7 +144,7 @@ section{
     width: 80vw;
     max-width: 600px;
     border-radius: 12px;
-    box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+    /* box-shadow: 0 8px 20px rgba(0,0,0,0.3); */
     cursor: default;
 }
 
@@ -167,7 +170,7 @@ section{
 }
 
 .updates-section h2 {
-    font-size: 2.2rem;
+    /* font-size: 2.2rem; */
     color: #222;
     padding: 3rem;
 
@@ -270,10 +273,10 @@ section{
 
 .see-announcement-btn{
     background: #d3e9ff;
-    padding: 12px 40px;
+    padding: 1rem;
     border-radius: 12px;
     text-decoration: none;
-    font-size: 1rem;
+    font-size: .9rem;
     color: #2e2e2e;
     font-weight: 600;
     border: none;
@@ -317,7 +320,7 @@ section{
 
 .calendar-card h2{
     font-weight: 700;
-    font-size: 2.2rem;
+    font-size: clamp(1.5rem, 1.5rem + 2vw, 2.2rem);
     /* margin-bottom: 0.25rem; */
     padding: 1rem;
     color: #222;

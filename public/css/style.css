@@ -17,9 +17,6 @@ main {
 
 /* ! navbar section */
 
-.navbar {
-    padding: 0.2rem;
-}
 
 .custom-navbar {
     background-color: #fcfcfc;
@@ -58,9 +55,6 @@ main {
     margin-right: 2rem;
 }
 
-.space-right{
-    margin-right: 5rem;
-}
 
 
 /* ! hover effects*/
@@ -229,3 +223,194 @@ footer p {
 }
 
 
+
+@media (max-width: 990px) {
+    .navbar-brand {
+        font-size: min(.8rem, 4vw);
+        margin-left: 1rem;
+    }
+
+    .space-right {
+        margin-right: 0rem !important;
+    }
+
+    .nav-item .nav-link {
+        margin-right: 1rem;
+        padding: 1rem;
+    }
+
+    .navbar-toggler {
+        margin-right: 1rem;
+    }
+
+    .navbar-toggler-icon {
+        font-size: min(1rem, 4vw);
+    }
+
+    .footer-col {
+        flex: 1 1 100%;
+    }
+
+    #navbarNav {
+        background-color: #fcfcfc;
+        border-radius: 8px;       
+        padding: 1rem;             
+        margin-top: 10px;          
+        box-shadow: 0 .5rem 1rem rgba(0, 0, 0, 0.2);
+    }
+
+    #navbarNav .nav-link {
+        margin-right: 0;        
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    #navbarNav .nav-link:last-child {
+        border-bottom: none;
+    }
+
+    .container-text {
+        max-width: 280px;   
+    }
+
+    #faqVideo {
+       max-width: 400px !important;
+       margin: 0 !important;
+    }
+
+    .info-hub {
+        padding: 10rem 3rem !important;
+    }
+
+    #faqVideo.fixed {
+        /* position: fixed; */
+        top: 0 !important; right: 0 !important; width: 500px !important;
+        cursor: pointer;
+    }
+    
+}
+
+@media (max-width: 650px) {
+
+    .info-hub {
+        flex-wrap: nowrap;
+        padding: 10rem 1.5rem 2rem 1.5rem !important;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .info-text {
+        flex: 1;
+        min-width: 220px;
+        color: #222;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+    }
+
+    .info-text h2 {
+        font-size: clamp(1.1rem, 1.5rem + 2vw, 3rem) !important;
+    }
+
+    .info-text p {
+        font-size: clamp(.9rem, 0.6rem + 0.4vw, 1rem) !important;
+        text-align: justify !important;
+    }
+
+    #faq-btn {
+        background: #A2CDF8;
+        border: none;
+        font-size: clamp(.9rem, 0.6rem + 0.4vw, 1rem) !important;;
+        border-radius: 10px;
+        padding: 12px 24px;
+        font-weight: 600;
+        cursor: pointer;
+        box-shadow: 3px 5px 10px #BFD0F5;
+    }       
+
+    #faqVideo.fixed {
+        /* position: fixed; */
+        top: 0 !important; right: 0 !important; width: 500px !important;
+        cursor: pointer;
+    }
+
+    #faqVideo {
+        max-width: 320px !important;
+        height: 28vh;
+        margin-left: -.6rem !important;
+        margin-top: 2.5rem !important;
+    }
+
+    .navbar-brand {
+        font-size: min(.8rem, 4vw);
+        margin-left: 1rem;
+    }
+
+    .space-right {
+        margin-right: 0rem !important;
+    }
+
+    .nav-item .nav-link {
+        margin-right: 1rem;
+        padding: 1rem;
+    }
+
+    .navbar-toggler {
+        margin-right: 1rem;
+    }
+
+    .navbar-toggler-icon {
+        font-size: min(1rem, 4vw);
+    }
+
+    .footer-col {
+        flex: 1 1 100%;
+    }
+
+    #navbarNav {
+        background-color: #fcfcfc;
+        border-radius: 8px;       
+        padding: 1rem;             
+        margin-top: 10px;          
+        box-shadow: 0 .5rem 1rem rgba(0, 0, 0, 0.2);
+    }
+
+    #navbarNav .nav-link {
+        margin-right: 0;        
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    #navbarNav .nav-link:last-child {
+        border-bottom: none;
+        font-size: .8rem;
+    }
+
+    .updates-section h2 {
+        font-size: clamp(1.2rem, 1.5rem + 2vw, 2.2rem);
+        color: #222;
+        padding: 1.5rem;
+    }
+
+    .see-more {
+        padding: 1.5rem !important;
+    }
+
+    .calendar-card {
+        background: #fcfcfc;
+        padding: 2rem;
+        width: 100%;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+        margin:0 !important;
+        margin-bottom: 100px;
+        align-items: center;
+        overflow: auto;
+    }
+
+    .calendar-card h2{
+        font-weight: 700;
+        padding: 1rem;
+        color: #222;
+    }
+}
