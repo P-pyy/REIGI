@@ -109,9 +109,9 @@ main {
     background-color: #f9f9f9;
     padding: 2rem;
     /* border-radius: 8px; */
-    box-shadow: 0 0 8px rgba(0,0,0,0.05);
-    height: 100vh;
-    margin-left: -80px;
+    /* box-shadow: 0 0 8px rgba(0,0,0,0.05); */
+    height: 75vh;
+    /* margin-left: -80px; */
 }
 
 .filter-search label,
@@ -139,7 +139,7 @@ main {
 .announcement-content {
     /* flex: 3 1 0; */
     margin: 0;
-    width: 75%;
+    width: 100%;
     padding: 3rem 2rem;
 }
 
