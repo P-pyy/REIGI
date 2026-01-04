@@ -2,6 +2,7 @@ import { supabaseClient } from '/js/supabase-client.js';
 
 document.addEventListener("DOMContentLoaded", () => {
 
+  // --- 1. Element Selectors ---
   const editorSection = document.getElementById("faq-editor-section");
   const faqGrid = document.getElementById("faq-grid");
   const enrollmentSection = document.getElementById("enrollment-section");
@@ -19,9 +20,10 @@ document.addEventListener("DOMContentLoaded", () => {
   const windowSelectSection = document.getElementById("container-window-select");
   const queueDashboardHeader = document.getElementById("queue-dashboard-header");
   const processingSection = document.getElementById("processing-section");
-  const moveToProcessingBtns = document.querySelectorAll(".move-to-processing-btn");
+  const finishedSection = document.getElementById("finished-section"); // Added selector
   const backdrop = document.getElementById("overlay-backdrop");
 
+  // Popups
   const deletePopup = document.getElementById("delete-popup");
   const deletePopupCloseBtn = deletePopup.querySelector(".x-container a");
   const deletePopupConfirmBtn = deletePopup.querySelector(".color-btn");
@@ -42,6 +44,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const confirmPopupConfirmBtn = confirmPopup.querySelector(".color-btn-yes");
   const confirmPopupName = confirmPopup.querySelector(".id.text");
   
+  // UI Controls
   const toggleBtn = document.querySelector(".toggle-btn");
   const sidebar = document.querySelector(".sidebar");
   const mainContent = document.querySelector(".main-content");
@@ -56,6 +59,44 @@ document.addEventListener("DOMContentLoaded", () => {
   const enrollmentTableBody = document.querySelector("#enrollment-section tbody");
   const savedWindow = localStorage.getItem("activeWindow");
   const logoutBtn = document.querySelector(".logout");
+
+  // --- NEW: Back Button Selectors ---
+  const backToMainFromWindowBtn = document.getElementById("back2");
+  const backToMainFromFaqListBtn = document.querySelector("#document-request-section .back-btn");
+  const backToFaqListFromEditorBtn = document.getElementById("back3");
+  const backToWindowSelectFromDashBtn = document.getElementById("back-to-window-select");
+
+  // --- NEW: Back Button Logic (Reverse Flow) ---
+
+  // 1. From Window Selection -> Back to Main Menu
+  backToMainFromWindowBtn?.addEventListener("click", (e) => {
+    e.preventDefault();
+    // Hide Window Select
+    windowSelectSection.classList.add("d-none");
+    // Show Main Menu
+    faqGrid.classList.remove("d-none");
+  });
+
+  // 2. From FAQ List -> Back to Main Menu
+  backToMainFromFaqListBtn?.addEventListener("click", (e) => {
+    e.preventDefault();
+    // Hide FAQ List
+    documentRequestSection.classList.add("d-none");
+    // Show Main Menu
+    faqGrid.classList.remove("d-none");
+  });
+
+  // 3. From FAQ Editor -> Back to FAQ List
+  backToFaqListFromEditorBtn?.addEventListener("click", (e) => {
+    e.preventDefault();
+    // Hide Editor
+    editorSection.classList.add("d-none");
+    // Show FAQ List
+    documentRequestSection.classList.remove("d-none");
+    // Ensure the back button on the FAQ list is visible again
+    const faqListBackContainer = backToMainFromFaqListBtn?.closest(".back-container");
+    if (faqListBackContainer) faqListBackContainer.classList.remove("d-none");
+  });
 
   faqGrid?.classList.add("d-none");
   editorSection?.classList.add("d-none");
@@ -163,27 +204,38 @@ async function updateActiveWindow() {
     else window.location.href = "/admin/login";
   });
 
+// --- UPDATED: Card Button Navigation (Forward Flow) ---
   document.querySelectorAll(".card-button").forEach((button) => {
     button.addEventListener("click", () => {
-      if (button.id === "proceed-button") return;
+      if (button.id === "proceed-button") return; // Skip the proceed button inside window select
+
       const targetId = button.getAttribute("data-target");
       
+      // Hide everything first
       faqGrid.classList.add("d-none");
       enrollmentSection.classList.add("d-none");
       documentRequestSection.classList.add("d-none");
       windowSelectSection.classList.add("d-none");
       queueDashboardHeader.classList.add("d-none");
       processingSection.classList.add("d-none");
+      editorSection.classList.add("d-none"); // Ensure editor is closed
 
+      // Show the target
       const targetEl = document.getElementById(targetId);
       if (targetEl) {
         targetEl.classList.remove("d-none");
+
+        // --- NEW LOGIC: Show the specific back button for this section ---
+        // We look for a .back-container inside the target element and reveal it
+        const localBackBtnContainer = targetEl.querySelector(".back-container");
+        if (localBackBtnContainer) {
+          localBackBtnContainer.classList.remove("d-none");
+        }
       }
 
       window.scrollTo({ top: 0, behavior: "smooth" });
     });
   });
-
 
 async function cleanupStaleWindows() {
   const fifteenSecondsAgo = new Date(Date.now() - 15000).toISOString();
@@ -682,17 +734,20 @@ function showQueueUI(windowName) {
     confirmPopup.classList.remove("is-visible");
   });
  
-    addButtons.forEach((btn) => {
+  addButtons.forEach((btn) => {
       btn.addEventListener("click", () => {
         editorSection?.classList.remove("d-none");
-
         faqGrid?.classList.add("d-none");
         enrollmentSection?.classList.add("d-none");
         documentRequestSection?.classList.add("d-none");
 
+        // --- NEW: Show the back button for the editor ---
+        const editorBackContainer = backToFaqListFromEditorBtn?.closest(".back-container");
+        if (editorBackContainer) editorBackContainer.classList.remove("d-none");
+
         window.scrollTo({ top: editorSection.offsetTop, behavior: "smooth" });
       });
-    });
+  });
 
     const addRequirementIcon = requirementInput?.nextElementSibling;
     addRequirementIcon?.addEventListener("click", () => {
@@ -949,12 +1004,22 @@ function showQueueUI(windowName) {
           } else if (previewImage) {
             previewImage.src = "";
             previewImage.style.display = "none";
-  }
+          }
           editorSection?.classList.remove("d-none");
           faqGrid?.classList.add("d-none");
           documentRequestSection?.classList.add("d-none");
           editorSection.dataset.editingId = id;
           submitBtn.textContent = "Update Record";
+
+          editorSection?.classList.remove("d-none");
+          faqGrid?.classList.add("d-none");
+          documentRequestSection?.classList.add("d-none");
+          
+          // --- NEW: Show the back button for the editor ---
+          const editorBackContainer = backToFaqListFromEditorBtn?.closest(".back-container");
+          if (editorBackContainer) editorBackContainer.classList.remove("d-none");
+
+          editorSection.dataset.editingId = id;
         });
       });
 

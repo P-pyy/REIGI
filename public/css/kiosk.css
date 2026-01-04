@@ -158,6 +158,7 @@ body {
 
 .nav-container {
   display: flex;
+  justify-content: space-around;
   width: 100%;
   justify-content: space-between;
   padding: 1rem 0 1.5rem 0;
@@ -165,7 +166,7 @@ body {
 
 .container-text {
   display: flex;
-  justify-content: center;
+  justify-content: space-around;
   align-items: center;
   padding: 1rem;
   width: 100%;
@@ -599,7 +600,7 @@ tr, th, td {
   border-radius: 12px;
   padding: 2rem;
   box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.25);
-
+  width: 450px;
 }
 
 .title-preview {
@@ -648,6 +649,7 @@ tr, th, td {
   gap: 2rem;
   padding: 2rem !important;
   border-radius: 12px !important;
+  width: 450px;
 }
 
 .btn-submit {
@@ -1038,6 +1040,8 @@ tr, th, td {
 
 #faq-editor-section {
   display: flex;
+  justify-content: center;
+  margin-top: 3rem;
 }
 
 .back-container {
@@ -1075,17 +1079,30 @@ tr, th, td {
 }
 
 .faq-table .table-title th:nth-child(2) { /* ID */
-  width: 50% !important; 
+  width: 30% !important; 
 }
 
 .faq-table .table-title th:nth-child(3) { /* Question Title */
-  width: 120px !important; 
+  width: 200px !important; 
 }
 
 .faq-table .table-title th:nth-child(4) { /* FAQ Post Title */
-  width: 120px !important;
+  width: 200px !important;
 }
 
 .text {
   overflow-wrap: break-word;
+}
+
+.back-container {
+  display: flex;
+}
+
+.container-table-w-back {
+  display: flex;
+  margin-top: 2rem;
+}
+
+.container-flexy {
+  display: flex;
 }

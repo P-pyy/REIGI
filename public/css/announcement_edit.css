@@ -22,7 +22,7 @@ html, body {
 }
 
 .edit-row {
-margin-left: 20px
+margin-left: -2rem
 }
 
 .admin-edit-btn{
@@ -72,7 +72,7 @@ margin-left: 20px
     color: #2C2C2C;
 }
 .form-section {
-  width: 470px !important;
+  width: 450px !important;
 }
 .admin-announcement-card {
   max-height: 620px;  
@@ -121,7 +121,7 @@ main.container-fluid {
 }
 
 .preview-card {
-  width: 490px !important;
+  width: 450px !important;
   border: 1px solid #ddd;
   border-radius: 12px;
   padding: 0;             
@@ -164,6 +164,7 @@ main.container-fluid {
 
 .preview-content {
   padding: 1.5rem;  
+
 }
 
 .down-btn {
@@ -185,4 +186,11 @@ tr.row-expanded .expandable-content {
 
 .toggle-cell:hover i {
     color: #0055A5; /* Or your theme color */
+}
+
+#announcementWrapper {
+  display: flex !important;
+  justify-content: center;
+  margin-top: -2rem;
+  margin-left: -6rem;
 }

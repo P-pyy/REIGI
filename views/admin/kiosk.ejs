@@ -50,11 +50,11 @@
 
       <div class="container-window-select d-none" id="container-window-select">
         <div class="nav-container">
-          <a href="/views/admin/kiosk.ejs">
-            <!-- <i class="ph ph-arrow-left"></i> -->
-          </a>
+          <div class="back-container d-none">
+              <a href="" class="back-btn" id="back2"><i class="ph ph-arrow-left"></i></a>
+          </div>
           <div class="container-text">
-            <p class="select-message">Select your window you want to operate:</p>
+              <p class="select-message">Select your window you want to operate:</p>
           </div>
         </div>
 
@@ -289,28 +289,34 @@
       
       <!-- Kiosk FAQ’s Section -->
       <div id="document-request-section" class="admin-drfaq-card d-none">
-        <div class="card shadow-sm fade-in">
-          <div class="card-body">
-            <div class="table-wrapper">
-              <table class="table align-middle faq-table">
-                <thead class="table-title">
-                  <tr>
-                    <th>ID</th>
-                    <th>Question Title</th>
-                    <th>Requirements</th>
-                    <th class="sts-process">Step-by-step Process</th>
-                    <th>Image</th>
-                    <th>Date</th>
-                    <th></th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <!-- rows dynamically injected -->
-                </tbody>
-              </table>
+        <div class="container-table-w-back">
+          <div class="back-container d-none">
+            <a href="" class="back-btn"><i class="ph ph-arrow-left"></i></a>
+          </div>
+          <div class="card shadow-sm fade-in">
+            <div class="card-body">
+              <div class="table-wrapper">
+                <table class="table align-middle faq-table">
+                  <thead class="table-title">
+                    <tr>
+                      <th>ID</th>
+                      <th>Question Title</th>
+                      <th>Requirements</th>
+                      <th class="sts-process">Step-by-step Process</th>
+                      <th>Image</th>
+                      <th>Date</th>
+                      <th></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <!-- rows dynamically injected -->
+                  </tbody>
+                </table>
+              </div>
             </div>
           </div>
         </div>
+        
         <div class="text-center mt-3">
           <button class="btn add-question-btn">
             <i class="ph-bold ph-plus"></i>
@@ -322,121 +328,124 @@
 <!-- Kiosk Editor Section (hidden by default) -->
 <div id="faq-editor-section" class="d-none">
   <div class="row g-4">
-    <!-- FAQ Post Form -->
-    <div class="col-md-6">
-      <div class="faq-form p-3 shadow-sm rounded bg-white h-100 font-weight-600">
-        <h5 class="mb-3 title-preview">FAQ Details</h5>
+    <div class="container-flexy">
+      <div class="back-container d-none">
+        <a href="" class="back-btn" id="back3"><i class="ph ph-arrow-left"></i></a>
+      </div>
+      <!-- FAQ Post Form -->
+      <div class="col-md-6">
+        <div class="faq-form p-3 shadow-sm rounded bg-white h-100 font-weight-600">
+          <h5 class="mb-3 title-preview">FAQ Details</h5>
 
-        <!-- Question Title -->
-        <input type="text" class="form-control" placeholder="Question Title">
+          <!-- Question Title -->
+          <input type="text" class="form-control" placeholder="Question Title">
 
-        <div class="requirements">
-          <span class="section-text">Requirements</span>
-          <div class="fill-up">
-          <!-- FAQ Post Title -->
-            <input id="requirementInput" type="text" class="form-control" placeholder="Insert a Requirement here">
-            <i class="ph-plus ph-plush"></i>
-          </div>
-        </div>
-
-        <div class="requirements">
-          <div class="fill">
-            <div class="fill-upper">
+          <div class="requirements">
+            <span class="section-text">Requirements</span>
+            <div class="fill-up">
             <!-- FAQ Post Title -->
-              <span>Added Requirement</span>
+              <input id="requirementInput" type="text" class="form-control" placeholder="Insert a Requirement here">
+              <i class="ph-plus ph-plush"></i>
             </div>
-            <i class="ph-minus ph-minos"></i>
           </div>
-        </div>
-        
 
-        <div class="requirements">
-          <span class="section-text">Step-by-step Process</span>
-          <div class="fill-up">
-          <!-- FAQ Post Title -->
-            <input id="stepProcessInput" type="text" class="form-control" placeholder="Insert a Step process here">
-            <i class="ph-plus ph-plush"></i>
-          </div>
-        </div>
-
-        <div class="requirements">
-          <div class="fill">
-            <div class="fill-upper">
-            <!-- FAQ Post Title -->
-              <span>Added Process</span>
-            </div>
+          <div class="requirements">
+            <div class="fill">
+              <div class="fill-upper">
+              <!-- FAQ Post Title -->
+                <span>Added Requirement</span>
+              </div>
               <i class="ph-minus ph-minos"></i>
-          </div>
-        </div>
-
-        <!-- Image Upload -->
-        <div class="mb-4 img-upload-container">
-          <div id="uploadArea"
-            class="image-upload-area text-center d-flex flex-column align-items-center justify-content-center"
-            onclick="document.getElementById('imageInput').click()">
-
-            <button type="button" class="btn btn-darkblue shadow-sm mb-2 d-flex align-items-center gap-2 admin-edit-btn">
-              <i class="ph-bold ph-image"></i>
-              <span class="btn1-text">Choose Image</span>
-            </button>
-
-            <p class="mb-1 drag-drop-text">Drag & Drop the image here</p>
-            <p class="text-muted small image-format">PNG / JPG / Webp</p>
+            </div>
           </div>
 
-          <!-- Hidden File Input -->
-         <input type="file" id="imageInput" class="d-none" accept="image/*">
+
+          <div class="requirements">
+            <span class="section-text">Step-by-step Process</span>
+            <div class="fill-up">
+            <!-- FAQ Post Title -->
+              <input id="stepProcessInput" type="text" class="form-control" placeholder="Insert a Step process here">
+              <i class="ph-plus ph-plush"></i>
+            </div>
+          </div>
+
+          <div class="requirements">
+            <div class="fill">
+              <div class="fill-upper">
+              <!-- FAQ Post Title -->
+                <span>Added Process</span>
+              </div>
+                <i class="ph-minus ph-minos"></i>
+            </div>
+          </div>
+
+          <!-- Image Upload -->
+          <div class="mb-4 img-upload-container">
+            <div id="uploadArea"
+              class="image-upload-area text-center d-flex flex-column align-items-center justify-content-center"
+              onclick="document.getElementById('imageInput').click()">
+
+              <button type="button" class="btn btn-darkblue shadow-sm mb-2 d-flex align-items-center gap-2 admin-edit-btn">
+                <i class="ph-bold ph-image"></i>
+                <span class="btn1-text">Choose Image</span>
+              </button>
+
+              <p class="mb-1 drag-drop-text">Drag & Drop the image here</p>
+              <p class="text-muted small image-format">PNG / JPG / Webp</p>
+            </div>
+
+            <!-- Hidden File Input -->
+           <input type="file" id="imageInput" class="d-none" accept="image/*">
+          </div>
+
+          <!-- Submit Button -->
+          <button class="btn-submit btn-primary w-100">Submit</button>
         </div>
-
-        <!-- Submit Button -->
-        <button class="btn-submit btn-primary w-100">Submit</button>
       </div>
-    </div>
+       <!-- Post Preview -->
+       <div class="col-md-6 preview-card">
+         <!-- Title Added -->
+         <h4 class="title-preview">Preview</h4>
 
+         <div class="faq-preview p-3">
+           <p class="directions">Requirements</p>
+           <ol class="mt-2 mb-0">
+             <li class="faq-item">
+               Requirement 1
+             </li>
+           </ol>
+         </div>
+       
+         <div class="faq-preview-card p-4 rounded ">
+           <p class="mb-1 directions">Check the boxes that you’ve completed to proceed:</p>
+           <p class="text-center mb-3 text-muted small"></p>
 
-    <!-- Post Preview -->
-    <div class="col-md-6 preview-card">
-      <!-- Title Added -->
-      <h4 class="title-preview">Preview</h4>
-
-      <div class="faq-preview p-3">
-        <p class="directions">Requirements</p>
-        <ol class="mt-2 mb-0">
-          <li class="faq-item">
-            Requirement 1
-          </li>
-        </ol>
-      </div>
-
-      <div class="faq-preview-card p-4 rounded ">
-        <p class="mb-1 directions">Check the boxes that you’ve completed to proceed:</p>
-        <p class="text-center mb-3 text-muted small"></p>
-
-        <!-- Scrollable Paragraph -->
-        <div class="preview-text checkbox-wrapper-4">
-            <input class="inp-cbx" id="step" type="checkbox"/>
-            <label class="cbx" for="step">
-              <span>
-                <svg width="12px" height="10px">
-                  <use xlink:href="#check-4"></use>
-                </svg>
-              </span>
-            </label>
-              <svg class="inline-svg">
-                <symbol id="check-4" viewbox="0 0 12 10">
-                  <polyline points="1.5 6 4.5 9 10.5 1"></polyline>
-                </symbol>
-              </svg>
-            <p class="checkbox-content">
-              Step process directions
-            </p>
-        </div>
-
-        <img class="preview-image mt-2" style="max-width:100%; display:none;" alt="FAQ Image Preview">
-      </div>
+           <!-- Scrollable Paragraph -->
+           <div class="preview-text checkbox-wrapper-4">
+               <input class="inp-cbx" id="step" type="checkbox"/>
+               <label class="cbx" for="step">
+                 <span>
+                   <svg width="12px" height="10px">
+                     <use xlink:href="#check-4"></use>
+                   </svg>
+                 </span>
+               </label>
+                 <svg class="inline-svg">
+                   <symbol id="check-4" viewbox="0 0 12 10">
+                     <polyline points="1.5 6 4.5 9 10.5 1"></polyline>
+                   </symbol>
+                 </svg>
+               <p class="checkbox-content">
+                 Step process directions
+               </p>
+           </div>
+         
+           <img class="preview-image mt-2" style="max-width:100%; display:none;" alt="FAQ Image Preview">
+         </div>
+       </div>
+     </div>
     </div>
   </div>
-</div>
 
     </div>
   </main>

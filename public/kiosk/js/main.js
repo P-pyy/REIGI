@@ -419,19 +419,21 @@ recognition.onresult = (event) => {
       firstNameInput.value = lastNameInput.value = "";
 
       const printContent = `
-===============================
-   University of Rizal System
-         Queue Ticket
-===============================
+[C]===============================
+[C]   University of Rizal System
+[C]   Queue Ticket
+[C]===============================
 
-    Name: ${fullName}
-    Queue No: ${queueNumber}
+[L]  Name: 
+[C][BIG]B]${fullName.toUpperCase()}
+[L]  Queue No: 
+[C][BIG]B]${queueNumber}
  
-    Please wait for your turn.
-           Thank you!
+[C]  Please wait for your turn.
+[C]  Thank you!
 
--------------------------------
-    Printed via REIGI Kiosk
+[C]-------------------------------
+[C]  Printed via REIGI Kiosk
       `;
     
       const encoded = encodeURIComponent(printContent);
