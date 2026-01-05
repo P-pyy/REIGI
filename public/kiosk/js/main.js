@@ -1,6 +1,8 @@
 import { supabaseClient } from '/js/supabase-client.js';
 
 document.addEventListener("DOMContentLoaded", async () => {
+  const searchInput = document.querySelector(".input-voice-container input");
+
   const faqOptionContainer = document.querySelector(".faq-option-container");
   const overlay = document.querySelector(".container-overlay");
   const backdrop = document.getElementById("overlay-backdrop");
@@ -451,6 +453,67 @@ recognition.onresult = (event) => {
   });
 
   loadFAQs();
+
+    searchInput.addEventListener("input", () => {
+    const query = searchInput.value.toLowerCase().trim();
+    faqOptionContainer.innerHTML = "";
+
+    if (!query) return;
+
+    const matches = kioskData.filter(faq =>
+      faq.question_title.toLowerCase().includes(query)
+    );
+
+    matches.forEach(faq => {
+      const option = document.createElement("div");
+      option.classList.add("faq-option");
+      option.innerHTML = `
+        <i class="ph ph-magnifying-glass"></i>
+        <span class="faq-option-name">${faq.question_title}</span>
+      `;
+      option.addEventListener("click", () => openFAQDetails(faq));
+      faqOptionContainer.appendChild(option);
+    });
+  });
+
+    searchInput.addEventListener("input", () => {
+  const query = searchInput.value.toLowerCase().trim();
+  faqOptionContainer.innerHTML = "";
+
+  // 🔁 If cleared, restore all FAQ buttons
+  if (!query) {
+    kioskData.forEach(faq => {
+      const option = document.createElement("div");
+      option.classList.add("faq-option");
+      option.innerHTML = `
+        <i class="ph ph-magnifying-glass"></i>
+        <span class="faq-option-name">${faq.question_title}</span>
+      `;
+      option.addEventListener("click", () => openFAQDetails(faq));
+      faqOptionContainer.appendChild(option);
+    });
+    return;
+  }
+
+  // 🔍 Filtered results
+  const matches = kioskData.filter(faq =>
+    faq.question_title.toLowerCase().includes(query)
+  );
+
+  matches.forEach(faq => {
+    const option = document.createElement("div");
+    option.classList.add("faq-option");
+    option.innerHTML = `
+      <i class="ph ph-magnifying-glass"></i>
+      <span class="faq-option-name">${faq.question_title}</span>
+    `;
+    option.addEventListener("click", () => openFAQDetails(faq));
+    faqOptionContainer.appendChild(option);
+  });
+});
+
+
+
 
   supabaseClient
     .channel("realtime-kiosk-app")
