@@ -60,7 +60,7 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: #0057b8;
+    background-image: linear-gradient(to bottom, #0057b8, #133e6f);
     overflow-y: hidden;
 }
 
@@ -101,12 +101,17 @@ body {
 }
 
 .container-ticket-number {
+    display: flex;
+    justify-content: center;
+    align-items: center;
     border-radius: 1rem;
     background-color: #0057b8;
+    background-image: linear-gradient(to bottom right, #0057b8, #1a3e66);
     color: #fcfcfc;
-    padding: 1.5rem;
+    padding: 1rem;
     font-weight: 500;
-    font-size: 4rem;
+    height: 110px;
+    font-size: 2.8rem;
     width: fit-content;
 }
 
@@ -132,5 +137,5 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 3rem;
+    gap: 2.8rem;
 }
