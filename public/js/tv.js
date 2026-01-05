@@ -68,9 +68,58 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   setInterval(loadTVData, 3000);
 
-  supabaseClient.channel("realtime-queue")
-    .on("postgres_changes", { event: "*", schema: "public", table: "queue" }, () => {
+    function announceQueue(queueNo, windowName) {
+    if (!('speechSynthesis' in window)) {
+      console.warn("Text-to-Speech not supported");
+      return;
+    }
+
+    const message = `Now serving number ${queueNo} at ${windowName}`;
+
+    const utterance = new SpeechSynthesisUtterance(message);
+
+    utterance.lang = "en-US";
+    utterance.rate = 0.9;
+    utterance.pitch = 1;
+    utterance.volume = 1;
+
+    speechSynthesis.cancel(); // stop previous speech
+    speechSynthesis.speak(utterance);
+  }
+
+  let lastAnnouncedId = null;
+
+supabaseClient
+  .channel("queue-tv")
+  .on(
+    "postgres_changes",
+    { event: "UPDATE", schema: "public", table: "queue" },
+    (payload) => {
+      const oldRow = payload.old;
+      const newRow = payload.new;
+
+      // Refresh TV display
       loadTVData();
-    })
-    .subscribe();
+
+      // Announce ONLY when moved to processing
+      if (
+        oldRow.status !== "processing" &&
+        newRow.status === "processing"
+      ) {
+        // prevent duplicate speech
+        if (lastAnnouncedId === newRow.id) return;
+
+        lastAnnouncedId = newRow.id;
+        announceQueue(newRow.queue_no, newRow.window_name);
+      }
+    }
+  )
+  .subscribe();
+
+
+//   supabaseClient.channel("realtime-queue")
+//     .on("postgres_changes", { event: "*", schema: "public", table: "queue" }, () => {
+//       loadTVData();
+//     })
+//     .subscribe();
 });
