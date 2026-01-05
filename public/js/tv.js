@@ -74,7 +74,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       return;
     }
 
-    const message = `Now serving number ${queueNo} at ${windowName}`;
+    const message = `Now calling queue number ${queueNo} Please proceed to ${windowName}`;
 
     const utterance = new SpeechSynthesisUtterance(message);
 
