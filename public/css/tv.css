@@ -20,6 +20,7 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
+    gap: .5rem;
 }
 
 .h1-text {
@@ -62,6 +63,7 @@ body {
     align-items: center;
     background-image: linear-gradient(to bottom, #0057b8, #133e6f);
     overflow-y: hidden;
+    height: 500px;
 }
 
 .window-1-container, .window-2-container {
@@ -75,9 +77,6 @@ body {
     /* border: 1px solid #e3e3e3; */
 }
 
-.container-content {
-    height: 470px;
-}
 
 /* .container-ticket-number-window {
     border-radius: 1rem;
@@ -119,6 +118,7 @@ body {
     display: flex;
     justify-content: space-evenly;
     align-items: center;
+    padding: 1rem;
 }
 
 .waiting-container {
@@ -138,4 +138,8 @@ body {
     align-items: center;
     justify-content: center;
     gap: 2.8rem;
+}
+
+.logo-container {
+    padding: .5rem;
 }

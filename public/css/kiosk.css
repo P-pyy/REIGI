@@ -2,6 +2,7 @@ body {
   font-family: 'Montserrat', sans-serif;
   background-color: #f5f7fa;
   margin: 0;
+  /* overflow: hidden !important; */
 }
 
 
@@ -19,7 +20,7 @@ body {
   max-width: calc(100% - 278px);
   min-height: 100vh;
   transition: margin-left 0.3s ease, width 0.3s ease;
-  padding: 12rem 3rem 8rem 3rem;
+  padding: 11rem 3rem 2rem 3rem;
 }
 
 .main-content.adjusted {
@@ -283,6 +284,11 @@ body {
 
 .table-container {
   width: 550px;
+  /* height: fit-content; */
+}
+
+.table-container-2 {
+  height: 240px;
 }
 
 .tables {
@@ -339,15 +345,37 @@ body {
 }
 
 .move-card-button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   background-color: #0055A5;
   border: none;
-  padding: .5rem;
+  padding: .7rem;
   border-radius: 12px;
   font-size: 14px;
   font-weight: 500;
   color: #fcfcfc;
   cursor: pointer;
-  width: 170px;
+  width: fit-content;
+  gap: .5rem;
+  transition: background-color 0.2s;
+}
+
+.call-card-button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #fcfcfc;
+  border: none;
+  padding: .7rem;
+  border: #0055A5 2px solid;
+  border-radius: 12px;
+  font-size: .9rem;
+  /* font-weight: 600; */
+  /* color: #fcfcfc; */
+  cursor: pointer;
+  width: fit-content;
+  gap: .5rem;
   transition: background-color 0.2s;
 }
 
@@ -377,9 +405,10 @@ body {
 
 /* --- This is your "You are here" indicator --- */
 .window-status-pill.active-user {
-  background-color: #0055A5;
-  color: #fff;
-  font-weight: bold;
+  color: #101010 !important;
+  border-radius: 20px !important;
+  padding: 4px 10px !important;
+  font-weight: 600 !important;
 }
 
 .admin-esfaq-card {
@@ -1105,4 +1134,24 @@ tr, th, td {
 
 .container-flexy {
   display: flex;
+}
+
+.ph-megaphone-simple {
+  font-size: 1.2rem !important;
+  font-weight: 600;
+}
+
+.table-group-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.table {
+  margin-bottom: 0 !important;
+}
+
+.container-groupu {
+  display: flex;
+  /* flex-direction: column; */
 }

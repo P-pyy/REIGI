@@ -65,6 +65,9 @@ document.addEventListener("DOMContentLoaded", () => {
   const backToMainFromFaqListBtn = document.querySelector("#document-request-section .back-btn");
   const backToFaqListFromEditorBtn = document.getElementById("back3");
   const backToWindowSelectFromDashBtn = document.getElementById("back-to-window-select");
+  const backToQueueFromFinishedBtn = document.getElementById("back4");
+
+  const prioritySection = document.querySelector(".priority-table");
 
   // --- NEW: Back Button Logic (Reverse Flow) ---
 
@@ -98,6 +101,24 @@ document.addEventListener("DOMContentLoaded", () => {
     if (faqListBackContainer) faqListBackContainer.classList.remove("d-none");
   });
 
+  // --- NEW: Back Button 4 (Finished Logs -> Queue Dashboard) ---
+  backToQueueFromFinishedBtn?.addEventListener("click", (e) => {
+    e.preventDefault();
+  
+    // 1. Hide Finished Logs Section
+    finishedSection.classList.add("d-none");
+    
+    // 2. Hide the Back Button Container
+    const finishedBackContainer = backToQueueFromFinishedBtn.closest(".back-container");
+    if (finishedBackContainer) finishedBackContainer.classList.add("d-none");
+  
+    // 3. Show Active Queue Dashboard Sections
+    queueDashboardHeader.classList.remove("d-none");
+    enrollmentSection.classList.remove("d-none");
+    processingSection.classList.remove("d-none");
+    prioritySection?.classList.remove("d-none");
+  });
+
   faqGrid?.classList.add("d-none");
   editorSection?.classList.add("d-none");
   documentRequestSection?.classList.add("d-none");
@@ -105,6 +126,7 @@ document.addEventListener("DOMContentLoaded", () => {
   processingSection?.classList.add("d-none");
   queueDashboardHeader?.classList.add("d-none");
   windowSelectSection?.classList.add("d-none");
+  prioritySection?.classList.add("d-none");
 
   let requirements = [];
   let steps = [];
@@ -135,6 +157,7 @@ document.addEventListener("DOMContentLoaded", () => {
     documentRequestSection.classList.add("d-none");
     queueDashboardHeader.classList.add("d-none");
     windowSelectSection.classList.add("d-none");
+    prioritySection?.classList.add("d-none");
 
     if (!savedWindow) {
     faqGrid?.classList.remove("d-none");
@@ -219,6 +242,7 @@ async function updateActiveWindow() {
       queueDashboardHeader.classList.add("d-none");
       processingSection.classList.add("d-none");
       editorSection.classList.add("d-none"); // Ensure editor is closed
+      prioritySection?.classList.add("d-none");
 
       // Show the target
       const targetEl = document.getElementById(targetId);
@@ -300,6 +324,7 @@ logoutBtn.addEventListener("click", async () => {
   queueDashboardHeader.classList.remove("d-none");
   enrollmentSection.classList.remove("d-none");
   processingSection.classList.remove("d-none");
+  prioritySection?.classList.remove("d-none");
   document.getElementById("back-to-window-select").classList.remove("d-none");
 
   if (windowNumberText) windowNumberText.textContent = selectedWindow;
@@ -407,6 +432,7 @@ function showQueueUI(windowName) {
   queueDashboardHeader.classList.remove("d-none");
   enrollmentSection.classList.remove("d-none");
   processingSection.classList.remove("d-none");
+  prioritySection?.classList.remove("d-none");
   document.getElementById("back-to-window-select").classList.remove("d-none");
 
   if (windowNumberText) windowNumberText.textContent = windowName;
@@ -452,6 +478,8 @@ function showQueueUI(windowName) {
     tables.forEach(tbody => {
         if (tbody) tbody.innerHTML = "";
     });
+
+    prioritySection?.classList.add("d-none");
 
     localStorage.removeItem("activeWindow");
     window.location.reload();
@@ -677,7 +705,21 @@ function showQueueUI(windowName) {
 
   const finishedLogsBtn = document.getElementById("finished-logs-btn");
   finishedLogsBtn?.addEventListener("click", async () => {
+    // 1. Load Data
     await loadFinishedData();
+
+    // 2. Hide Active Queue Sections
+    queueDashboardHeader.classList.add("d-none");
+    enrollmentSection.classList.add("d-none");
+    processingSection.classList.add("d-none");
+
+    // 3. Show Finished Logs Section
+    finishedSection.classList.remove("d-none");
+    prioritySection?.classList.add("d-none");
+
+    // 4. Show the Back Button (#back4)
+    const finishedBackContainer = backToQueueFromFinishedBtn?.closest(".back-container");
+    if (finishedBackContainer) finishedBackContainer.classList.remove("d-none");
   });
 
   function attachQueueDeleteHandlers() {
