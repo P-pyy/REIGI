@@ -289,6 +289,7 @@ body {
 
 .table-container-2 {
   height: 240px;
+  transition: transform 330ms ease-in-out;
 }
 
 .tables {
@@ -1153,5 +1154,6 @@ tr, th, td {
 
 .container-groupu {
   display: flex;
+  margin-top: 2rem;
   /* flex-direction: column; */
 }

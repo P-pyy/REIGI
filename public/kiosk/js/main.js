@@ -29,6 +29,11 @@ document.addEventListener("DOMContentLoaded", async () => {
   const lastNameInput = formOverlay.querySelector('input[placeholder="Last Name"]');
   const numberPreview = document.querySelector(".number-preview");
 
+  const priorityOverlay = document.querySelector(".container-3");
+  const yesBtn = document.getElementById("yes-btn");
+  const noBtn = document.getElementById("no-btn");
+  const backBtn3 = document.getElementById("back-btn-3");
+
   let kioskData = [];
 
   let recognition;
@@ -309,19 +314,65 @@ recognition.onresult = (event) => {
   });
 
   proceedBtn.addEventListener("click", () => {
-    overlay.classList.remove("is-visible");
-    formOverlay.classList.add("is-visible");
+    overlay.classList.remove("is-visible"); // Hide Requirements
+    priorityOverlay.classList.add("is-visible"); // Show Priority Check
+    
+    // Explicitly enable the buttons (since they are disabled in HTML)
+    yesBtn.disabled = false;
+    noBtn.disabled = false;
+    
     stopReading();
+  });
+
+  // Helper to move to Form
+  // const goToForm = () => {
+  //   priorityOverlay.classList.remove("is-visible");
+  //   formOverlay.classList.add("is-visible");
+  // };
+
+  // yesBtn.addEventListener("click", goToForm);
+  // noBtn.addEventListener("click", goToForm);
+
+  // Back button for Container 3 (returns to Requirements)
+  backBtn3.addEventListener("click", (e) => {
+    e.preventDefault();
+    priorityOverlay.classList.remove("is-visible");
+    overlay.classList.add("is-visible");
   });
 
   backBtn2.addEventListener("click", (e) => {
     e.preventDefault();
     formOverlay.classList.remove("is-visible");
+    
     firstNameInput.value = lastNameInput.value = "";
     validateFormInputs();
-    overlay.classList.add("is-visible");
+
+    // CHANGED: Now goes back to Priority Overlay instead of Requirements
+    priorityOverlay.classList.add("is-visible"); 
+    
     stopReading();
   });
+
+  const handlePrioritySelection = (e) => {
+    e.preventDefault(); // Stop any default button behavior
+    
+    // 1. Identify which button was clicked to store the state (Optional but recommended)
+    // isPriorityUser = (e.currentTarget.id === "yes-btn"); 
+
+    // 2. Perform the Transition
+    priorityOverlay.classList.remove("is-visible"); 
+    
+    // Force a tiny delay to ensure the browser registers the removal before adding the new class
+    requestAnimationFrame(() => {
+        formOverlay.classList.add("is-visible");
+    });
+
+    stopReading(); 
+  };
+
+  // Attach the listener ONCE
+  yesBtn.addEventListener("click", handlePrioritySelection);
+  noBtn.addEventListener("click", handlePrioritySelection);
 
   stepsContainer.addEventListener("change", (e) => {
     if (e.target.classList.contains("inp-cbx")) updateProceedButtonState();
