@@ -75,7 +75,6 @@ document.addEventListener("DOMContentLoaded", () => {
   // 1. From Window Selection -> Back to Main Menu
   backToMainFromWindowBtn?.addEventListener("click", (e) => {
     e.preventDefault();
-    // Hide Window Select
     windowSelectSection.classList.add("d-none");
     // Show Main Menu
     faqGrid.classList.remove("d-none");
