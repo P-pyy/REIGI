@@ -90,32 +90,41 @@ document.addEventListener("DOMContentLoaded", async () => {
   let lastAnnouncedId = null;
 
 supabaseClient
-  .channel("queue-tv")
-  .on(
-    "postgres_changes",
-    { event: "UPDATE", schema: "public", table: "queue" },
-    (payload) => {
-      const oldRow = payload.old;
-      const newRow = payload.new;
+    .channel("queue-tv") // Connect to the same channel name as Kiosk.js
+    // 1. Listen for Database Changes (Automatic First Call)
+    .on(
+      "postgres_changes",
+      { event: "UPDATE", schema: "public", table: "queue" },
+      (payload) => {
+        const oldRow = payload.old;
+        const newRow = payload.new;
 
-      // Refresh TV display
-      loadTVData();
+        loadTVData(); // Refresh screen numbers
 
-      // Announce ONLY when moved to processing
-      if (
-        oldRow.status !== "processing" &&
-        newRow.status === "processing"
-      ) {
-        // prevent duplicate speech
-        if (lastAnnouncedId === newRow.id) return;
-
-        lastAnnouncedId = newRow.id;
-        announceQueue(newRow.queue_no, newRow.window_name);
+        // Announce ONLY when moved to processing (First time)
+        if (oldRow.status !== "processing" && newRow.status === "processing") {
+          if (lastAnnouncedId === newRow.id) return;
+          lastAnnouncedId = newRow.id;
+          announceQueue(newRow.queue_no, newRow.window_name);
+        }
       }
-    }
-  )
-  .subscribe();
-
+    )
+    // 2. Listen for Manual "Repeat Call" from Admin (Broadcast)
+    .on(
+      "broadcast",
+      { event: "repeat-call" },
+      (payload) => {
+        console.log("📢 Repeat call received:", payload);
+        // Trigger the voice immediately using data sent from Admin
+        announceQueue(payload.payload.queueNo, payload.payload.windowName);
+      }
+    )
+    .subscribe((status) => {
+      // Optional: Log connection status
+      if (status === 'SUBSCRIBED') {
+        console.log('✅ Connected to queue-tv channel');
+      }
+    });
 
 //   supabaseClient.channel("realtime-queue")
 //     .on("postgres_changes", { event: "*", schema: "public", table: "queue" }, () => {

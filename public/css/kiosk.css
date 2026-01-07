@@ -282,10 +282,9 @@ body {
   margin-bottom: 0 !important;
 }
 
-.table-container {
+/* .table-container {
   width: 550px;
-  /* height: fit-content; */
-}
+} */
 
 .table-container-2 {
   height: 240px;
@@ -1146,6 +1145,7 @@ tr, th, td {
   display: flex;
   flex-direction: column;
   gap: 1rem;
+  width: 600px;
 }
 
 .table {
