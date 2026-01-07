@@ -17,6 +17,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const requirementsPreview = editorSection?.querySelector(".faq-preview ol");
   const stepsPreviewContainer = editorSection?.querySelector(".preview-text");
   const kioskTableBody = document.querySelector("#document-request-section tbody");
+  const priorityTableBody = document.getElementById("priority-table-body");
   const windowSelectSection = document.getElementById("container-window-select");
   const queueDashboardHeader = document.getElementById("queue-dashboard-header");
   const processingSection = document.getElementById("processing-section");
@@ -74,7 +75,6 @@ document.addEventListener("DOMContentLoaded", () => {
   // 1. From Window Selection -> Back to Main Menu
   backToMainFromWindowBtn?.addEventListener("click", (e) => {
     e.preventDefault();
-    // Hide Window Select
     windowSelectSection.classList.add("d-none");
     // Show Main Menu
     faqGrid.classList.remove("d-none");
@@ -439,6 +439,7 @@ function showQueueUI(windowName) {
 
   updateStatusPills(windowName);
 
+  loadPriorityQueueData();
   loadQueueData();
   loadProcessingData();
 }
@@ -491,6 +492,7 @@ function showQueueUI(windowName) {
       .from("queue")
       .select("*")
       .eq("status", "queue")
+      .eq("is_priority", false)
       .order("queue_no", { ascending: true });
 
     if (error) {
@@ -526,6 +528,52 @@ function showQueueUI(windowName) {
     attachQueueActionHandlers();
     attachQueueDeleteHandlers();
   }
+
+    async function loadPriorityQueueData() {
+    if (!priorityTableBody) return;
+
+    const { data, error } = await supabaseClient
+      .from("queue")
+      .select("*")
+      .eq("status", "queue")
+      .eq("is_priority", true)
+      .order("queue_no", { ascending: true });
+
+    if (error) {
+      console.error("Error loading priority queue:", error);
+      return;
+    }
+
+    priorityTableBody.innerHTML = "";
+
+    data.forEach((row, index) => {
+      const tr = document.createElement("tr");
+
+      let actionContent =
+        index === 0
+          ? `
+            <button class="btn btn-sm btn-primary move-card-button"
+              data-id="${row.id}"
+              data-name="${row.full_name}"
+              data-queue-no="${row.queue_no}">
+              Move to Processing
+            </button>
+          `
+          : `<span class="text-muted">Waiting</span>`;
+
+      tr.innerHTML = `
+        <td>${row.queue_no}</td>
+        <td>${row.full_name}</td>
+        <td>${new Date(row.created_at).toLocaleString()}</td>
+        <td>${actionContent}</td>
+      `;
+
+      priorityTableBody.appendChild(tr);
+    });
+
+    attachQueueActionHandlers(); // reuse existing logic
+  }
+
 
   const style = document.createElement('style');
   style.innerHTML = `...`; 
@@ -638,6 +686,7 @@ function showQueueUI(windowName) {
     delete processingPopup.dataset.currentId;
 
     await loadQueueData();
+    await loadPriorityQueueData();
     await loadProcessingData();
   });
 
@@ -759,6 +808,7 @@ function showQueueUI(windowName) {
     
     if (!error) {
       loadQueueData();
+      loadPriorityQueueData();
     }
   });
 
@@ -1080,6 +1130,7 @@ function showQueueUI(windowName) {
   supabaseClient.channel("realtime-queue")
     .on("postgres_changes", { event: "*", schema: "public", table: "queue" }, async (payload) => {
       console.log("Queue changed:", payload);
+      await loadPriorityQueueData();
       await loadQueueData();
       await loadProcessingData();
       await loadFinishedData();
@@ -1096,4 +1147,5 @@ function showQueueUI(windowName) {
   loadKioskData();
   loadQueueData();
   loadFinishedData();
+  
 });

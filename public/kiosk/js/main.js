@@ -40,6 +40,8 @@ document.addEventListener("DOMContentLoaded", async () => {
   let voiceMatched = false; 
   let transcriptBuffer = "";
   let faqAliases = [];
+  let isPriority = false;
+
 
 
   if ('webkitSpeechRecognition' in window) {
@@ -370,9 +372,23 @@ recognition.onresult = (event) => {
     stopReading(); 
   };
 
-  // Attach the listener ONCE
-  yesBtn.addEventListener("click", handlePrioritySelection);
-  noBtn.addEventListener("click", handlePrioritySelection);
+    yesBtn.addEventListener("click", (e) => {
+    e.preventDefault();
+    isPriority = true;
+    console.log("✅ Priority set to TRUE");
+
+    priorityOverlay.classList.remove("is-visible");
+    formOverlay.classList.add("is-visible");
+  });
+
+  noBtn.addEventListener("click", (e) => {
+    e.preventDefault();
+    isPriority = false;
+    console.log("❌ Priority set to FALSE");
+
+    priorityOverlay.classList.remove("is-visible");
+    formOverlay.classList.add("is-visible");
+  });
 
   stepsContainer.addEventListener("change", (e) => {
     if (e.target.classList.contains("inp-cbx")) updateProceedButtonState();
@@ -458,7 +474,11 @@ recognition.onresult = (event) => {
       const response = await fetch("/api/queue", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ full_name: fullName }),
+        body: JSON.stringify({
+        full_name: fullName,
+        is_priority: isPriority
+      }),
+
       });
       const result = await response.json();
       if (!response.ok) throw new Error(result.error || "Request failed");
