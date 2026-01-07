@@ -3,11 +3,13 @@ import { supabaseClient } from '/js/supabase-client.js';
 document.addEventListener("DOMContentLoaded", async () => {
   const window1Number = document.getElementById("window-1-number");
   const window2Number = document.getElementById("window-2-number");
-  const ticketsContainer = document.getElementById("tickets");
+  const normalTicketsContainer = document.getElementById("normal-tickets");
+  const priorityTicketsContainer = document.getElementById("priority-tickets");
   const dateText = document.querySelector(".date-text");
   const timeText = document.querySelector(".time-text");
   const amPmText = document.querySelector(".AM-PM-text");
-  const MAX_WAITING = 10; 
+  const MAX_NORMAL = 5;
+  const MAX_PRIORITY = 5;
 
   function updateDateTime() {
     const now = new Date();
@@ -45,23 +47,42 @@ document.addEventListener("DOMContentLoaded", async () => {
     window2Number.textContent = window2Ticket ? window2Ticket.queue_no : 0;
 
     const { data: waitingData, error: waitingError } = await supabaseClient
-      .from("queue")
-      .select("*")
-      .eq("status", "queue")
-      .order("queue_no", { ascending: true });
+    .from("queue")
+    .select("*")
+    .eq("status", "queue")
+    .order("queue_no", { ascending: true });
 
-    if (waitingError) return console.error(waitingError);
+  if (waitingError) return console.error(waitingError);
 
-    const limitedWaitingData = waitingData.slice(0, MAX_WAITING);
+  // Separate priority and normal
+  const priorityWaiting = waitingData.filter(t => t.is_priority === true);
+  const normalWaiting = waitingData.filter(t => t.is_priority === false);
 
-    ticketsContainer.innerHTML = "";
+  // Limit display
+  const limitedPriority = priorityWaiting.slice(0, MAX_PRIORITY);
+  const limitedNormal = normalWaiting.slice(0, MAX_NORMAL);
 
-    limitedWaitingData.forEach(ticket => {
-      const div = document.createElement("div");
-      div.className = "container-ticket-number";
-      div.textContent = ticket.queue_no;
-      ticketsContainer.appendChild(div);
-    });
+
+  // Clear UI
+  priorityTicketsContainer.innerHTML = "";
+  normalTicketsContainer.innerHTML = "";
+
+  // Render Priority FIRST
+  limitedPriority.forEach(ticket => {
+    const div = document.createElement("div");
+    div.className = "container-ticket-number priority";
+    div.textContent = ticket.queue_no;
+    priorityTicketsContainer.appendChild(div);
+  });
+
+  // Render Normal Waiting
+  limitedNormal.forEach(ticket => {
+    const div = document.createElement("div");
+    div.className = "container-ticket-number";
+    div.textContent = ticket.queue_no;
+    normalTicketsContainer.appendChild(div);
+  });
+
   }
 
   loadTVData();
@@ -125,10 +146,4 @@ supabaseClient
         console.log('✅ Connected to queue-tv channel');
       }
     });
-
-//   supabaseClient.channel("realtime-queue")
-//     .on("postgres_changes", { event: "*", schema: "public", table: "queue" }, () => {
-//       loadTVData();
-//     })
-//     .subscribe();
 });
