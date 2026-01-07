@@ -74,6 +74,14 @@ body {
   height: 80vh;
 }
 
+.container-3 {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 80vh;
+}
+
 .voice-btn {
   display: flex;
   background-color: #0055A5;
@@ -196,6 +204,7 @@ body {
   cursor: pointer;
   transition: all 0.3s ease;
 }
+
 
 .speak-btn:hover {
   background-color: #0b5ed7;
@@ -403,6 +412,7 @@ a {
   align-items: center;
   flex-grow: 1;       /* Makes this div grow to fill the space */
   overflow-y: auto; 
+  gap: 5rem;
 }
 
 .container-content-num {
@@ -419,7 +429,7 @@ a {
   padding: 2rem;
   display: flex;
   justify-content: center;
-  gap: 1rem;
+  gap: 3rem;
   
 }
 
@@ -504,6 +514,7 @@ a {
   font-weight: 600;
   font-size: 3.5rem;
   padding: .5rem;
+  text-align: center;
 }
 
 .title-preview-num {
@@ -554,6 +565,7 @@ a {
   width: 100%;
   justify-content: center;
   padding: 1rem;
+  gap: 1.5rem;
 }
 
 .img-upload-container {
@@ -725,4 +737,18 @@ a {
 
 .preview-image.loaded {
   opacity: 1; 
+}
+
+#yes-btn {
+  display: flex;
+  background-color: #fcfcfc;
+  border: #0055A5 3px solid;
+  color: #101010;
+  padding: .7rem;
+  border-radius: 20px;
+  justify-content: center;
+  align-items: center;
+  width: 250px !important;
+  cursor: pointer;
+  transition: all 0.3s ease;
 }
