@@ -70,6 +70,22 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const prioritySection = document.querySelector(".priority-table");
 
+  function announceQueue(queueNo, windowName) {
+    if (!('speechSynthesis' in window)) {
+      return console.warn("Browser does not support Text-to-Speech");
+    }
+
+    const message = `Now calling queue number ${queueNo}. Please proceed to ${windowName}.`;
+
+    const utterance = new SpeechSynthesisUtterance(message);
+    utterance.lang = "en-US"; 
+    utterance.rate = 0.9;
+    utterance.pitch = 1; 
+    
+    window.speechSynthesis.cancel(); // Stop any previous speech
+    window.speechSynthesis.speak(utterance);
+  }
+
   // --- NEW: Back Button Logic (Reverse Flow) ---
 
   // 1. From Window Selection -> Back to Main Menu
@@ -1051,6 +1067,52 @@ function showQueueUI(windowName) {
       }
     }
 
+// 1. Establish the channel connection (Must match the name in tv.js)
+  const channel = supabaseClient.channel("queue-tv"); 
+  channel.subscribe();
+
+  document.querySelectorAll(".call-card-button").forEach(btn => {
+    btn.addEventListener("click", async (e) => {
+      e.preventDefault();
+
+      if (!selectedWindow) {
+        alert("Please select a window first!");
+        return;
+      }
+
+      // Fetch the currently processing ticket
+      const { data, error } = await supabaseClient
+        .from("queue")
+        .select("*")
+        .eq("status", "processing")
+        .eq("window_name", selectedWindow)
+        .maybeSingle();
+
+      if (error) return console.error(error);
+
+      if (data) {
+        // Visual Feedback
+        const originalText = btn.innerHTML;
+        btn.innerHTML = `<i class="ph-megaphone-simple ph-bold"></i> Calling...`;
+        setTimeout(() => btn.innerHTML = originalText, 2000);
+
+        // 2. SEND BROADCAST SIGNAL TO TV
+        // This sends a message to tv.js to play the sound
+        await channel.send({
+          type: 'broadcast',
+          event: 'repeat-call',
+          payload: { 
+            queueNo: data.queue_no, 
+            windowName: selectedWindow 
+          }
+        });
+
+      } else {
+        alert(`No active ticket found processing in ${selectedWindow}.`);
+      }
+    });
+  });
+  
     async function loadKioskData() {
       const { data, error } = await supabaseClient.from("kiosk").select("*").order("created_at", { ascending: false });
       if (error) { console.error(error); return; }
