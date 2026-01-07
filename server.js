@@ -413,9 +413,42 @@ app.post('/api/increment-faq-view', async (req, res) => {
   }
 });
 
+// app.post("/api/queue", async (req, res) => {
+//   try {
+//     const { full_name } = req.body;
+
+//     if (!full_name) {
+//       return res.status(400).json({ error: "Full name is required" });
+//     }
+
+//     const { data: lastQueue, error: fetchError } = await supabase
+//       .from("queue")
+//       .select("queue_no")
+//       .order("queue_no", { ascending: false })
+//       .limit(1)
+//       .maybeSingle();
+
+//     if (fetchError) throw fetchError;
+
+//     const nextNumber = lastQueue ? lastQueue.queue_no + 1 : 1;
+
+//     const { data, error: insertError } = await supabase
+//       .from("queue")
+//       .insert([{ queue_no: nextNumber, full_name }])
+//       .select();
+
+//     if (insertError) throw insertError;
+
+//     res.status(200).json({ success: true, data });
+//   } catch (err) {
+//     console.error("❌ Queue API error:", err.message);
+//     res.status(500).json({ error: "Internal Server Error" });
+//   }
+// });
+
 app.post("/api/queue", async (req, res) => {
   try {
-    const { full_name } = req.body;
+    const { full_name, is_priority } = req.body;
 
     if (!full_name) {
       return res.status(400).json({ error: "Full name is required" });
@@ -434,7 +467,11 @@ app.post("/api/queue", async (req, res) => {
 
     const { data, error: insertError } = await supabase
       .from("queue")
-      .insert([{ queue_no: nextNumber, full_name }])
+      .insert([{
+        queue_no: nextNumber,
+        full_name,
+        is_priority: !!is_priority
+      }])
       .select();
 
     if (insertError) throw insertError;
@@ -445,6 +482,7 @@ app.post("/api/queue", async (req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 });
+
 
 app.post("/api/unlock-window", async (req, res) => {
   const { windowName, tabId } = req.body;
