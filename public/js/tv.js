@@ -8,7 +8,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   const dateText = document.querySelector(".date-text");
   const timeText = document.querySelector(".time-text");
   const amPmText = document.querySelector(".AM-PM-text");
-  const MAX_NORMAL = 5;
+  const MAX_NORMAL = 8;
   const MAX_PRIORITY = 5;
 
   function updateDateTime() {
