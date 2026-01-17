@@ -194,3 +194,23 @@ tr.row-expanded .expandable-content {
   margin-top: -2rem;
   margin-left: -6rem;
 }
+
+
+.back-container {
+  display: flex;
+  margin-top: 0 !important;
+}
+
+.ph-arrow-left {
+  color: rgba(0, 0, 0, 1);
+  border: none;
+  padding: .7rem;
+  border-radius: 20px ;
+  font-size: 1.8rem;
+}
+
+.container-forms {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}

@@ -210,6 +210,10 @@ footer .col-md-3.d-flex.align-items-start {
   opacity: 0.5;
 }
 
+.navbar-collapse {
+    margin-right: 5rem;
+}
+
 footer p {
     text-align: start;
     margin-top: 1rem;

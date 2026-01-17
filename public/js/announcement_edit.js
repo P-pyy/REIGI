@@ -75,7 +75,7 @@ async function loadAnnouncement(editId) {
   document.getElementById("previewImage").src = data.image_url || "img/CARD-BG.png";
   document.getElementById("loadingContainer").style.display = "none";
   document.getElementById("announcementWrapper").style.display = "block";
-
+  document.querySelector(".back-container").classList.remove("d-none");
 
 
   if (data.scheduled_datetime) {
@@ -151,15 +151,28 @@ function setupSubmitHandler() {
   });
 }
 
+function setupBackButton() {
+  const backBtn = document.getElementById("back2");
+  if (!backBtn) return;
+
+  backBtn.addEventListener("click", (e) => {
+    e.preventDefault(); // Stop the page from reloading
+    // Redirect to the main announcement list
+    window.location.href = "/admin/announcement"; 
+  });
+}
+
 export function initAnnouncementEdit(editId = null) {
   setupPreview();
   setupSubmitHandler();
+  setupBackButton();
 
   if (editId) {
     loadAnnouncement(editId);
   } 
   else {
     document.getElementById("announcementWrapper").style.display = "block";
+    document.querySelector(".back-container").classList.remove("d-none");
     document.getElementById("loadingContainer").style.display = "none";
 
     const btnText = document.querySelector(".btn2-text");

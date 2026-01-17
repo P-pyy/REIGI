@@ -2,9 +2,12 @@ import { supabaseClient } from '/js/supabase-client.js';
 
 document.addEventListener("DOMContentLoaded", async () => {
   const searchInput = document.querySelector(".input-voice-container input");
-
   const faqOptionContainer = document.querySelector(".faq-option-container");
-  const overlay = document.querySelector(".container-overlay");
+
+  const mainFaqContainer = document.querySelector(".search-container .faq-option-container");
+  const enrollmentFaqContainer = document.querySelector(".container-enrollment .faq-option-container");
+  
+  const overlay = document.querySelector(".container-overlay"); 
   const backdrop = document.getElementById("overlay-backdrop");
 
   const voiceBtn = document.querySelector(".voice-btn");
@@ -13,36 +16,409 @@ document.addEventListener("DOMContentLoaded", async () => {
   const voiceBackBtn = document.querySelector(".voice-back-btn");
   const voiceCancelBtn = document.querySelector(".voice-cancel-btn");
 
-  const proceedBtn = document.getElementById("proceed-btn");
+  // Priority & Form & Number Containers (Shared Steps)
+  const priorityOverlay = document.querySelector(".container-3");
   const formOverlay = document.querySelector(".container-overlay-form");
-  const backBtn1 = document.getElementById("back-btn-1");
-  const backBtn2 = document.getElementById("back-btn-2");
   const overlayNumber = document.querySelector(".container-overlay-number");
-
-  const faqName = document.querySelector(".faq-name");
-  const requirementsList = document.querySelector(".faq-preview ol");
-  const stepsContainer = document.querySelector(".preview-text");
-  const previewImage = document.querySelector(".preview-image");
-
+  
+  const yesBtn = document.getElementById("yes-btn");
+  const noBtn = document.getElementById("no-btn");
+  const backBtn3 = document.getElementById("back-btn-3");
   const finishBtn = document.getElementById("finish-btn");
+  const backBtn2 = document.getElementById("back-btn-2"); // Back button on Form
+  const finishBtnNum = document.getElementById("finish-btn-num"); // Finish button on Number
+
+  // Form Inputs
   const firstNameInput = formOverlay.querySelector('input[placeholder="First Name"]');
   const lastNameInput = formOverlay.querySelector('input[placeholder="Last Name"]');
   const numberPreview = document.querySelector(".number-preview");
 
-  const priorityOverlay = document.querySelector(".container-3");
-  const yesBtn = document.getElementById("yes-btn");
-  const noBtn = document.getElementById("no-btn");
-  const backBtn3 = document.getElementById("back-btn-3");
+  // Voice/Speech elements
+  const faqName = document.querySelector(".faq-name");
+  const requirementsList = document.querySelector(".faq-preview ol");
+  const stepsContainer = document.querySelector(".preview-text"); // Note: This might grab the first one found if not careful
+  const previewImage = document.querySelector(".preview-image");
+  const readBtn = document.querySelector(".speak-btn");
+
+  // ---------------------------------------------------------
+  // 2. MAIN MENU BUTTONS & OVERLAYS
+  // ---------------------------------------------------------
+  const requestBtn = document.querySelector(".request-btn"); 
+  const requestOverlay = document.querySelector(".container-request");
+  
+  const claimingBtn = document.querySelector(".claiming-btn");
+  const claimingOverlay = document.querySelector(".container-claiming");
+  
+  const enrollmentBtn = document.querySelector(".enrollment-btn");
+  const enrollmentOverlay = document.querySelector(".container-enrollment");
+
+  // Generic Container-2 (Used for dynamic Enrollment details)
+  const detailsOverlay = document.querySelector(".container-2");
+
+  // ---------------------------------------------------------
+  // 3. SPECIFIC SUB-ELEMENTS
+  // ---------------------------------------------------------
+  
+  // A. Request Overlay Internals
+  const backBtnRequest = requestOverlay.querySelector("#back-btn-1");
+  const requestProceedBtn = requestOverlay.querySelector("#proceed-btn"); 
+  const requestCheckboxContainer = requestOverlay.querySelector(".preview-text");
+
+  // B. Claiming Overlay Internals
+  const backBtnClaiming = claimingOverlay.querySelector("#back-btn-1");
+  const claimingProceedBtn = claimingOverlay.querySelector("#proceed-btn");
+  const claimingCheckboxContainer = claimingOverlay.querySelector(".preview-text");
+
+  // C. Enrollment & Details Internals
+  const backBtnEnrollment = enrollmentOverlay.querySelector("#back-btn-1");
+  // Note: Details overlay usually handles the dynamic FAQ steps
+  const detailsProceedBtn = detailsOverlay.querySelector("#proceed-btn");
+  const detailsCheckboxContainer = detailsOverlay.querySelector(".preview-text");
+  const backBtnDetails = detailsOverlay.querySelector("#back-btn-1");
+
 
   let kioskData = [];
-
   let recognition;
   let voiceMatched = false; 
   let transcriptBuffer = "";
   let faqAliases = [];
   let isPriority = false;
+  let isReading = false; // Moved here from bottom
+  let currentUtterance = null; // Moved here from bottom
 
+  // ---------------------------------------------------------
+  // 4. LOGIC FUNCTIONS
+  // ---------------------------------------------------------
 
+  // Logic: Only enable button if > 0 checkboxes are checked
+  function setupCheckboxValidation(container, button) {
+    if (!container || !button) return; 
+
+    // Disable by default initially
+    button.disabled = true;
+
+    container.addEventListener("change", () => {
+      const checked = container.querySelectorAll(".inp-cbx:checked");
+      button.disabled = !(checked.length > 0);
+    });
+  }
+
+  function resetFormState(container, proceedButton) {
+  if (!container || !proceedButton) return;
+
+  // 1. Uncheck all checkboxes
+  const checkboxes = container.querySelectorAll('.inp-cbx');
+  checkboxes.forEach(cb => cb.checked = false);
+
+  // 2. Disable the proceed button again
+  proceedButton.disabled = true;
+}
+
+  // Logic: Hide current overlay -> Show Priority Overlay
+  function setupProceedFlow(currentOverlay, proceedButton) {
+    if (!currentOverlay || !proceedButton) return;
+
+    proceedButton.addEventListener("click", (e) => {
+      e.preventDefault();
+      
+      // 1. Hide the current container
+      currentOverlay.classList.remove("is-visible");
+      
+      // 2. Show the Priority Check (Container-3)
+      priorityOverlay.classList.add("is-visible");
+      
+      // 3. Ensure backdrop is on
+      backdrop.classList.add("is-visible");
+      
+      stopReading();
+    });
+  }
+
+  // Logic: Stop Text-to-Speech
+  function stopReading() {
+    if (window.speechSynthesis.speaking) {
+      window.speechSynthesis.cancel();
+      isReading = false;
+      if(readBtn) {
+        readBtn.classList.remove("active");
+        readBtn.innerHTML = `<i class="ph ph-user-sound"></i> Read Aloud`;
+      }
+    }
+  }
+
+  function getMaleVoice() {
+    const synth = window.speechSynthesis;
+    const voices = synth.getVoices();
+    return (
+      voices.find(v => v.lang.startsWith("en") && /male|man|david|mark|michael/i.test(v.name)) ||
+      voices.find(v => v.lang.startsWith("en"))
+    );
+  }
+
+  function validateFormInputs() {
+    finishBtn.disabled = !(firstNameInput.value.trim() && lastNameInput.value.trim());
+  }
+
+  // ---------------------------------------------------------
+  // 5. APPLY LOGIC & EVENT LISTENERS
+  // ---------------------------------------------------------
+
+  // A. Apply Validation (At least 1 checkbox)
+  setupCheckboxValidation(requestCheckboxContainer, requestProceedBtn);
+  setupCheckboxValidation(claimingCheckboxContainer, claimingProceedBtn);
+  
+  // Note: Details container is dynamic, but we initialize it here just in case
+  if (detailsCheckboxContainer && detailsProceedBtn) {
+      setupCheckboxValidation(detailsCheckboxContainer, detailsProceedBtn);
+  }
+
+  // B. Apply Flow (Proceed -> Priority)
+  setupProceedFlow(requestOverlay, requestProceedBtn);
+  setupProceedFlow(claimingOverlay, claimingProceedBtn);
+  setupProceedFlow(detailsOverlay, detailsProceedBtn);
+
+  // C. Main Menu Button Clicks (Open Overlays)
+  if (requestBtn) {
+      requestBtn.addEventListener("click", () => {
+          requestOverlay.classList.add("is-visible");
+          backdrop.classList.add("is-visible");
+      });
+  }
+
+  if (claimingBtn) {
+      claimingBtn.addEventListener("click", () => {
+          claimingOverlay.classList.add("is-visible");
+          backdrop.classList.add("is-visible");
+      });
+  }
+
+  if (enrollmentBtn) {
+      enrollmentBtn.addEventListener("click", () => {
+          enrollmentOverlay.classList.add("is-visible");
+          backdrop.classList.add("is-visible");
+      });
+  }
+
+  // D. Back Button Clicks (Close Specific Overlays & Reset)
+  if (backBtnRequest) {
+      backBtnRequest.addEventListener("click", (e) => {
+          e.preventDefault();
+          resetFormState(requestCheckboxContainer, requestProceedBtn); // Reset logic
+          requestOverlay.classList.remove("is-visible");
+          backdrop.classList.remove("is-visible");
+          stopReading();
+      });
+  }
+
+  if (backBtnClaiming) {
+      backBtnClaiming.addEventListener("click", (e) => {
+          e.preventDefault();
+          resetFormState(claimingCheckboxContainer, claimingProceedBtn); // Reset logic
+          claimingOverlay.classList.remove("is-visible");
+          backdrop.classList.remove("is-visible");
+          stopReading();
+      });
+  }
+
+  if (backBtnEnrollment) {
+      backBtnEnrollment.addEventListener("click", (e) => {
+          e.preventDefault();
+          enrollmentOverlay.classList.remove("is-visible");
+          backdrop.classList.remove("is-visible");
+          stopReading();
+      });
+  }
+
+  if (backBtnDetails) {
+      backBtnDetails.addEventListener("click", (e) => {
+          e.preventDefault();
+          detailsOverlay.classList.remove("is-visible");
+          // If this was opened from Enrollment, we might want to keep backdrop?
+          // For simple logic, close all:
+          backdrop.classList.remove("is-visible");
+          stopReading();
+      });
+  }
+
+  // E. Form Back Button
+  if (backBtn2) {
+      backBtn2.addEventListener("click", (e) => {
+          e.preventDefault();
+          formOverlay.classList.remove("is-visible");
+          // Clear inputs
+          if(firstNameInput) firstNameInput.value = "";
+          if(lastNameInput) lastNameInput.value = "";
+          // Show priority again
+          priorityOverlay.classList.add("is-visible");
+      });
+  }
+
+  // F. Input Validation Listener
+  if (firstNameInput) firstNameInput.addEventListener("input", validateFormInputs);
+  if (lastNameInput) lastNameInput.addEventListener("input", validateFormInputs);
+
+  // ---------------------------------------------------------
+  // APPLY LOGIC & EVENT LISTENERS
+  // ---------------------------------------------------------
+
+  // A. Apply Validation (At least 1 checkbox)
+  setupCheckboxValidation(requestCheckboxContainer, requestProceedBtn);
+  setupCheckboxValidation(claimingCheckboxContainer, claimingProceedBtn);
+  setupCheckboxValidation(detailsCheckboxContainer, detailsProceedBtn);
+
+  // B. Apply Flow (Proceed -> Priority)
+  setupProceedFlow(requestOverlay, requestProceedBtn);
+  setupProceedFlow(claimingOverlay, claimingProceedBtn);
+  setupProceedFlow(detailsOverlay, detailsProceedBtn);
+
+  // C. Main Menu Button Clicks (Open Overlays)
+  requestBtn.addEventListener("click", () => {
+    requestOverlay.classList.add("is-visible");
+    backdrop.classList.add("is-visible");
+  });
+
+  claimingBtn.addEventListener("click", () => {
+    claimingOverlay.classList.add("is-visible");
+    backdrop.classList.add("is-visible");
+  });
+
+  enrollmentBtn.addEventListener("click", () => {
+    enrollmentOverlay.classList.add("is-visible");
+    backdrop.classList.add("is-visible");
+  });
+
+  // D. Back Button Clicks (Close Specific Overlays)
+  if(backBtnRequest) backBtnRequest.addEventListener("click", (e) => {
+    e.preventDefault();
+
+    resetFormState(requestCheckboxContainer, requestProceedBtn);
+
+    requestOverlay.classList.remove("is-visible");
+    backdrop.classList.remove("is-visible");
+    stopReading();
+  });
+
+  if(backBtnClaiming) backBtnClaiming.addEventListener("click", (e) => {
+    e.preventDefault();
+
+    resetFormState(claimingCheckboxContainer, claimingProceedBtn);
+
+    claimingOverlay.classList.remove("is-visible");
+    backdrop.classList.remove("is-visible");
+    stopReading();
+  });
+
+  if(backBtnEnrollment) backBtnEnrollment.addEventListener("click", (e) => {
+    e.preventDefault();
+    enrollmentOverlay.classList.remove("is-visible");
+    backdrop.classList.remove("is-visible");
+    stopReading();
+  });
+
+  if(backBtnDetails) backBtnDetails.addEventListener("click", (e) => {
+    e.preventDefault();
+    detailsOverlay.classList.remove("is-visible");
+    // If details was opened from Enrollment, maybe show Enrollment again? 
+    // For now, just close to backdrop.
+    backdrop.classList.remove("is-visible"); 
+    stopReading();
+  });
+
+  // E. Priority & Form Logic
+  const handlePriorityClick = (isPriorityUser) => {
+      isPriority = isPriorityUser; 
+      priorityOverlay.classList.remove("is-visible");
+      formOverlay.classList.add("is-visible");
+  };
+  
+  yesBtn.addEventListener("click", () => handlePriorityClick(true));
+  noBtn.addEventListener("click", () => handlePriorityClick(false));
+
+  backBtn3.addEventListener("click", (e) => {
+    e.preventDefault();
+    priorityOverlay.classList.remove("is-visible");
+    // Logic: Where to go back to? It's hard to track previous state simply.
+    // For now, close everything or go to home.
+    backdrop.classList.remove("is-visible");
+  });
+
+  backBtn2.addEventListener("click", (e) => {
+    e.preventDefault();
+    formOverlay.classList.remove("is-visible");
+    firstNameInput.value = lastNameInput.value = "";
+    priorityOverlay.classList.add("is-visible"); 
+  });
+
+  firstNameInput.addEventListener("input", validateFormInputs);
+  lastNameInput.addEventListener("input", validateFormInputs);
+
+  finishBtn.addEventListener("click", async (e) => {
+    e.preventDefault();
+    if (finishBtn.disabled) return;
+    finishBtn.disabled = true;
+
+    const fullName = `${firstNameInput.value.trim()} ${lastNameInput.value.trim()}`;
+    if (!fullName.trim()) {
+      alert("Please enter your complete name.");
+      finishBtn.disabled = false;
+      return;
+    }
+
+    try {
+      const response = await fetch("/api/queue", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+        full_name: fullName,
+        is_priority: isPriority
+      }),
+
+      });
+      const result = await response.json();
+      if (!response.ok) throw new Error(result.error || "Request failed");
+
+      const queueNumber = result.data[0].queue_no.toString();
+      numberPreview.textContent = queueNumber;
+
+      formOverlay.classList.remove("is-visible");
+      overlayNumber.classList.add("is-visible");
+
+      firstNameInput.value = lastNameInput.value = "";
+
+      const printContent = `
+    ===============================
+       University of Rizal System
+             Queue Ticket
+    ===============================
+        
+        Name: ${fullName}
+        Queue No: ${queueNumber}
+        
+               Thank you! 
+        Please wait for your turn.
+        
+    -------------------------------
+        Printed via REIGI Kiosk
+          `;
+    
+      const encoded = encodeURIComponent(printContent);
+      window.location.href = `rawbt:printText:${encoded}`;
+    } catch (err) {
+      console.error("❌ Error saving queue:", err.message);
+      alert("Something went wrong while saving your queue. Please try again.");
+      finishBtn.disabled = false;
+    }
+  });
+
+  finishBtnNum.addEventListener("click", () => {
+    overlayNumber.classList.remove("is-visible");
+    backdrop.classList.remove("is-visible");
+    window.location.reload();
+  });
+
+  // ---------------------------------------------------------
+  // 6. VOICE RECOGNITION SETUP
+  // ---------------------------------------------------------
 
   if ('webkitSpeechRecognition' in window) {
     recognition = new webkitSpeechRecognition();
@@ -88,7 +464,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       }
     };
 
-recognition.onresult = (event) => {
+  recognition.onresult = (event) => {
   let transcript = "";
   for (let i = event.resultIndex; i < event.results.length; i++) {
     transcript += event.results[i][0].transcript;
@@ -123,7 +499,7 @@ recognition.onresult = (event) => {
       openFAQDetails(matchedFAQ);
     }, 400);
   }
-};
+  };
 
     window.testVoiceInput = (testText) => {
       const transcript = testText.toLowerCase().trim();
@@ -178,243 +554,9 @@ recognition.onresult = (event) => {
   voiceCancelBtn.addEventListener("click", closeVoiceOverlay);
   voiceBackdrop.addEventListener("click", closeVoiceOverlay);
 
-  function updateProceedButtonState() {
-    const all = stepsContainer.querySelectorAll(".inp-cbx");
-    const checked = stepsContainer.querySelectorAll(".inp-cbx:checked");
-    proceedBtn.disabled = !(all.length && all.length === checked.length);
-  }
-
-  function validateFormInputs() {
-    finishBtn.disabled = !(firstNameInput.value.trim() && lastNameInput.value.trim());
-  }
-
-  firstNameInput.addEventListener("input", validateFormInputs);
-  lastNameInput.addEventListener("input", validateFormInputs);
-
-  async function loadFAQs() {
-    const { data, error } = await supabaseClient
-      .from("kiosk")
-      .select("*")
-      .order("created_at", { ascending: false });
-
-    if (error) {
-      console.error("❌ Error loading FAQs:", error);
-      return;
-    }
-
-    kioskData = data;
-    faqOptionContainer.innerHTML = "";
-
-    data.forEach(faq => {
-      const faqOption = document.createElement("div");
-      faqOption.classList.add("faq-option");
-      faqOption.dataset.id = faq.id;
-      faqOption.innerHTML = `<i class="ph ph-magnifying-glass"></i><span class="faq-option-name">${faq.question_title}</span>`;
-      faqOptionContainer.appendChild(faqOption);
-    });
-
-    attachFAQClickHandlers(data);
-
-    faqAliases = kioskData.map(faq => {
-        const rawTitle = faq.question_title;
-        const lowerTitle = rawTitle.toLowerCase();
-        const cleanWords = lowerTitle.replace(/[^a-z0-9\s]/g, "").split(/\s+/).filter(w => w.length > 0);
-        const existingAcronyms = rawTitle.match(/\b[A-Z]{2,}\b/) || [];
-        const generatedAcronym = cleanWords.map(word => word[0]).join(""); 
-        const keywords = [
-            lowerTitle,                    
-            ...cleanWords,                 
-            ...existingAcronyms.map(a => a.toLowerCase()), 
-            generatedAcronym              
-        ];
-
-        const uniqueKeywords = [...new Set(keywords)];
-
-        return { faq, keywords: uniqueKeywords };
-    });
-  }
-
-  function attachFAQClickHandlers(data) {
-    document.querySelectorAll(".faq-option").forEach(option => {
-      option.addEventListener("click", () => {
-        const selected = data.find(f => f.id == option.dataset.id);
-        if (selected) openFAQDetails(selected);
-      });
-    });
-  }
-
-  function openFAQDetails(selected) {
-    overlay.classList.add("is-visible");
-    backdrop.classList.add("is-visible");
-    faqName.textContent = selected.question_title;
-
-    requirementsList.innerHTML = "";
-    (JSON.parse(selected.requirements || "[]")).forEach(r => {
-      const li = document.createElement("li");
-      li.textContent = r;
-      requirementsList.appendChild(li);
-    });
-
-    stepsContainer.innerHTML = "";
-    (JSON.parse(selected.steps || "[]")).forEach((step, i) => {
-      const cbxId = `step-${selected.id}-${i}`;
-      stepsContainer.insertAdjacentHTML(
-        "beforeend",
-        `
-        <div class="checkbox-wrapper-4 mb-3">
-          <input class="inp-cbx" id="${cbxId}" type="checkbox"/>
-          <label class="cbx" for="${cbxId}">
-            <span><svg width="12px" height="10px"><use xlink:href="#check-4"></use></svg></span>
-          </label>
-          <svg class="inline-svg">
-            <symbol id="check-4" viewBox="0 0 12 10">
-              <polyline points="1.5 6 4.5 9 10.5 1"></polyline>
-            </symbol>
-          </svg>
-          <p class="checkbox-content">${step}</p>
-        </div>`
-      );
-    });
-
-    proceedBtn.disabled = true;
-    updateProceedButtonState();
-
-    previewImage.classList.remove("loaded"); 
-    previewImage.style.display = "none"; 
-    previewImage.src = ""; 
-
-    if (selected.image_url) {
-        const imgLoader = new Image();
-        const timestampedUrl = `${selected.image_url}?t=${Date.now()}`; 
-        
-        imgLoader.src = timestampedUrl;
-
-        imgLoader.onload = () => {
-            previewImage.src = timestampedUrl;
-            previewImage.style.display = "block";
-
-            requestAnimationFrame(() => {
-               previewImage.classList.add("loaded"); 
-            });
-        };
-
-        imgLoader.onerror = () => {
-            console.error("Failed to load image:", selected.image_url);
-            previewImage.style.display = "none";
-        };
-
-    } else {
-        previewImage.style.display = "none";
-    }
-  }
-
-  backBtn1.addEventListener("click", (e) => {
-    e.preventDefault();
-    overlay.classList.remove("is-visible");
-    backdrop.classList.remove("is-visible");
-    stopReading();
-  });
-
-  proceedBtn.addEventListener("click", () => {
-    overlay.classList.remove("is-visible"); // Hide Requirements
-    priorityOverlay.classList.add("is-visible"); // Show Priority Check
-    
-    // Explicitly enable the buttons (since they are disabled in HTML)
-    yesBtn.disabled = false;
-    noBtn.disabled = false;
-    
-    stopReading();
-  });
-
-  // Helper to move to Form
-  // const goToForm = () => {
-  //   priorityOverlay.classList.remove("is-visible");
-  //   formOverlay.classList.add("is-visible");
-  // };
-
-  // yesBtn.addEventListener("click", goToForm);
-  // noBtn.addEventListener("click", goToForm);
-
-  // Back button for Container 3 (returns to Requirements)
-  backBtn3.addEventListener("click", (e) => {
-    e.preventDefault();
-    priorityOverlay.classList.remove("is-visible");
-    overlay.classList.add("is-visible");
-  });
-
-  backBtn2.addEventListener("click", (e) => {
-    e.preventDefault();
-    formOverlay.classList.remove("is-visible");
-    
-    firstNameInput.value = lastNameInput.value = "";
-    validateFormInputs();
-
-    // CHANGED: Now goes back to Priority Overlay instead of Requirements
-    priorityOverlay.classList.add("is-visible"); 
-    
-    stopReading();
-  });
-
-  const handlePrioritySelection = (e) => {
-    e.preventDefault(); // Stop any default button behavior
-    
-    // 1. Identify which button was clicked to store the state (Optional but recommended)
-    // isPriorityUser = (e.currentTarget.id === "yes-btn"); 
-
-    // 2. Perform the Transition
-    priorityOverlay.classList.remove("is-visible"); 
-    
-    // Force a tiny delay to ensure the browser registers the removal before adding the new class
-    requestAnimationFrame(() => {
-        formOverlay.classList.add("is-visible");
-    });
-
-    stopReading(); 
-  };
-
-    yesBtn.addEventListener("click", (e) => {
-    e.preventDefault();
-    isPriority = true;
-    console.log("✅ Priority set to TRUE");
-
-    priorityOverlay.classList.remove("is-visible");
-    formOverlay.classList.add("is-visible");
-  });
-
-  noBtn.addEventListener("click", (e) => {
-    e.preventDefault();
-    isPriority = false;
-    console.log("❌ Priority set to FALSE");
-
-    priorityOverlay.classList.remove("is-visible");
-    formOverlay.classList.add("is-visible");
-  });
-
-  stepsContainer.addEventListener("change", (e) => {
-    if (e.target.classList.contains("inp-cbx")) updateProceedButtonState();
-  });
-
-  function stopReading() {
-    if (window.speechSynthesis.speaking) {
-      window.speechSynthesis.cancel();
-      isReading = false;
-      readBtn.classList.remove("active");
-      readBtn.innerHTML = `<i class="ph ph-user-sound"></i> Read Aloud`;
-    }
-  }
-
-  const readBtn = document.querySelector(".speak-btn");
-  let isReading = false;
-  let currentUtterance = null;
-
-  function getMaleVoice() {
-    const synth = window.speechSynthesis;
-    const voices = synth.getVoices();
-    return (
-      voices.find(v => v.lang.startsWith("en") && /male|man|david|mark|michael/i.test(v.name)) ||
-      voices.find(v => v.lang.startsWith("en"))
-    );
-  }
+  // ---------------------------------------------------------
+  // 7. READ ALOUD SETUP
+  // ---------------------------------------------------------
 
   if (readBtn) {
     readBtn.addEventListener("click", () => {
@@ -456,80 +598,180 @@ recognition.onresult = (event) => {
 
       synth.speak(currentUtterance);
     });
+
   }
 
-  finishBtn.addEventListener("click", async (e) => {
-    e.preventDefault();
-    if (finishBtn.disabled) return;
-    finishBtn.disabled = true;
+  // ---------------------------------------------------------
+  // 8. DATA LOADING
+  // ---------------------------------------------------------
+    
+   async function loadFAQs() {
+    const { data, error } = await supabaseClient
+      .from("kiosk")
+      .select("*")
+      .order("created_at", { ascending: false });
 
-    const fullName = `${firstNameInput.value.trim()} ${lastNameInput.value.trim()}`;
-    if (!fullName.trim()) {
-      alert("Please enter your complete name.");
-      finishBtn.disabled = false;
+    if (error) {
+      console.error("❌ Error loading FAQs:", error);
       return;
     }
 
-    try {
-      const response = await fetch("/api/queue", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-        full_name: fullName,
-        is_priority: isPriority
-      }),
+    kioskData = data;
 
-      });
-      const result = await response.json();
-      if (!response.ok) throw new Error(result.error || "Request failed");
+    // 1. Clear BOTH containers safely
+    if (mainFaqContainer) mainFaqContainer.innerHTML = "";
+    if (enrollmentFaqContainer) enrollmentFaqContainer.innerHTML = "";
 
-      const queueNumber = result.data[0].queue_no.toString();
-      numberPreview.textContent = queueNumber;
+    // 2. Loop through data and append to BOTH
+    data.forEach(faq => {
+      // -- Create for MAIN Screen --
+      if (mainFaqContainer) {
+        const option1 = document.createElement("div");
+        option1.classList.add("faq-option");
+        option1.dataset.id = faq.id;
+        option1.innerHTML = `<i class="ph ph-magnifying-glass"></i><span class="faq-option-name">${faq.question_title}</span>`;
+        mainFaqContainer.appendChild(option1);
+      }
 
-      formOverlay.classList.remove("is-visible");
-      overlayNumber.classList.add("is-visible");
+      // -- Create for ENROLLMENT Overlay --
+      if (enrollmentFaqContainer) {
+        const option2 = document.createElement("div");
+        option2.classList.add("faq-option");
+        option2.dataset.id = faq.id;
+        option2.innerHTML = `<i class="ph ph-magnifying-glass"></i><span class="faq-option-name">${faq.question_title}</span>`;
+        enrollmentFaqContainer.appendChild(option2);
+      }
+    });
 
-      firstNameInput.value = lastNameInput.value = "";
+    // 3. Re-attach handlers to all newly created buttons
+    attachFAQClickHandlers(data);
 
-      const printContent = `
-===============================
-   University of Rizal System
-         Queue Ticket
-===============================
+    faqAliases = kioskData.map(faq => {
+        const rawTitle = faq.question_title;
+        const lowerTitle = rawTitle.toLowerCase();
+        const cleanWords = lowerTitle.replace(/[^a-z0-9\s]/g, "").split(/\s+/).filter(w => w.length > 0);
+        const existingAcronyms = rawTitle.match(/\b[A-Z]{2,}\b/) || [];
+        const generatedAcronym = cleanWords.map(word => word[0]).join(""); 
+        const keywords = [
+            lowerTitle,                    
+            ...cleanWords,                 
+            ...existingAcronyms.map(a => a.toLowerCase()), 
+            generatedAcronym              
+        ];
 
-    Name: ${fullName}
-    Queue No: ${queueNumber}
+        const uniqueKeywords = [...new Set(keywords)];
 
-           Thank you! 
-    Please wait for your turn.
+        return { faq, keywords: uniqueKeywords };
+    });
+  }
 
--------------------------------
-    Printed via REIGI Kiosk
-      `;
+  function attachFAQClickHandlers(data) {
+    // This finds .faq-option in main container AND in enrollment container
+    const allOptions = document.querySelectorAll(".faq-option");
     
-      const encoded = encodeURIComponent(printContent);
-      window.location.href = `rawbt:printText:${encoded}`;
-    } catch (err) {
-      console.error("❌ Error saving queue:", err.message);
-      alert("Something went wrong while saving your queue. Please try again.");
-      finishBtn.disabled = false;
+    allOptions.forEach(option => {
+      option.addEventListener("click", () => {
+        const selected = data.find(f => f.id == option.dataset.id);
+        if (selected) openFAQDetails(selected);
+      });
+    });
+}
+
+  function openFAQDetails(selected) {
+    overlay.classList.add("is-visible");
+    backdrop.classList.add("is-visible");
+    faqName.textContent = selected.question_title;
+
+    detailsOverlay.classList.add("is-visible"); // Show the details overlay
+    backdrop.classList.add("is-visible");
+
+    requirementsList.innerHTML = "";
+    (JSON.parse(selected.requirements || "[]")).forEach(r => {
+      const li = document.createElement("li");
+      li.textContent = r;
+      requirementsList.appendChild(li);
+    });
+
+    stepsContainer.innerHTML = "";
+    (JSON.parse(selected.steps || "[]")).forEach((step, i) => {
+      const cbxId = `step-${selected.id}-${i}`;
+      stepsContainer.insertAdjacentHTML(
+        "beforeend",
+        `
+        <div class="checkbox-wrapper-4 mb-3">
+          <input class="inp-cbx" id="${cbxId}" type="checkbox"/>
+          <label class="cbx" for="${cbxId}">
+            <span><svg width="12px" height="10px"><use xlink:href="#check-4"></use></svg></span>
+          </label>
+          <svg class="inline-svg">
+            <symbol id="check-4" viewBox="0 0 12 10">
+              <polyline points="1.5 6 4.5 9 10.5 1"></polyline>
+            </symbol>
+          </svg>
+          <p class="checkbox-content">${step}</p>
+        </div>`
+      );
+    });
+    
+    const currentProceedBtn = detailsOverlay.querySelector("#proceed-btn");
+
+    detailsCheckboxContainer.onchange = () => {
+        const checked = detailsCheckboxContainer.querySelectorAll(".inp-cbx:checked");
+        currentProceedBtn.disabled = !(checked.length > 0);
+    };
+
+    const proceedBtnEl = overlay.querySelector("#proceed-btn");
+    if (proceedBtnEl) proceedBtnEl.disabled = true;
+    if (typeof updateProceedButtonState === "function") updateProceedButtonState();
+
+    previewImage.classList.remove("loaded"); 
+    previewImage.style.display = "none"; 
+    previewImage.src = ""; 
+
+    if (selected.image_url) {
+        const imgLoader = new Image();
+        const timestampedUrl = `${selected.image_url}?t=${Date.now()}`; 
+        
+        imgLoader.src = timestampedUrl;
+
+        imgLoader.onload = () => {
+            previewImage.src = timestampedUrl;
+            previewImage.style.display = "block";
+
+            requestAnimationFrame(() => {
+               previewImage.classList.add("loaded"); 
+            });
+        };
+
+        imgLoader.onerror = () => {
+            console.error("Failed to load image:", selected.image_url);
+            previewImage.style.display = "none";
+        };
+
+    } else {
+        previewImage.style.display = "none";
     }
-  });
 
-  const finishBtnNum = document.getElementById("finish-btn-num");
-  finishBtnNum.addEventListener("click", () => {
-    overlayNumber.classList.remove("is-visible");
-    backdrop.classList.remove("is-visible");
-    window.location.reload();
-  });
+    currentProceedBtn.onclick = (e) => {
+    e.preventDefault();
+    detailsOverlay.classList.remove("is-visible");
+    priorityOverlay.classList.add("is-visible");
+    backdrop.classList.add("is-visible");
+    stopReading();
+    };
+  }
 
-  loadFAQs();
-
-    searchInput.addEventListener("input", () => {
+  searchInput.addEventListener("input", () => {
     const query = searchInput.value.toLowerCase().trim();
-    faqOptionContainer.innerHTML = "";
+    
+    // Only clear the MAIN container, enrollment usually doesn't need search filtering
+    if (mainFaqContainer) mainFaqContainer.innerHTML = "";
 
-    if (!query) return;
+    if (!query) {
+      // Restore all if empty
+      loadFAQs(); 
+      return;
+    }
 
     const matches = kioskData.filter(faq =>
       faq.question_title.toLowerCase().includes(query)
@@ -543,48 +785,16 @@ recognition.onresult = (event) => {
         <span class="faq-option-name">${faq.question_title}</span>
       `;
       option.addEventListener("click", () => openFAQDetails(faq));
-      faqOptionContainer.appendChild(option);
+      
+      if (mainFaqContainer) mainFaqContainer.appendChild(option);
     });
   });
 
-    searchInput.addEventListener("input", () => {
+  searchInput.addEventListener("input", () => {
   const query = searchInput.value.toLowerCase().trim();
   faqOptionContainer.innerHTML = "";
 
-  // 🔁 If cleared, restore all FAQ buttons
-  if (!query) {
-    kioskData.forEach(faq => {
-      const option = document.createElement("div");
-      option.classList.add("faq-option");
-      option.innerHTML = `
-        <i class="ph ph-magnifying-glass"></i>
-        <span class="faq-option-name">${faq.question_title}</span>
-      `;
-      option.addEventListener("click", () => openFAQDetails(faq));
-      faqOptionContainer.appendChild(option);
-    });
-    return;
-  }
-
-  // 🔍 Filtered results
-  const matches = kioskData.filter(faq =>
-    faq.question_title.toLowerCase().includes(query)
-  );
-
-  matches.forEach(faq => {
-    const option = document.createElement("div");
-    option.classList.add("faq-option");
-    option.innerHTML = `
-      <i class="ph ph-magnifying-glass"></i>
-      <span class="faq-option-name">${faq.question_title}</span>
-    `;
-    option.addEventListener("click", () => openFAQDetails(faq));
-    faqOptionContainer.appendChild(option);
-  });
-});
-
-
-
+  loadFAQs();
 
   supabaseClient
     .channel("realtime-kiosk-app")
@@ -593,6 +803,57 @@ recognition.onresult = (event) => {
       await loadFAQs();
     })
     .subscribe();
+  });
+
+  // ==========================================
+  // FINAL PRIORITY BUTTON LOGIC FIX
+  // ==========================================
+  
+  // 1. Define the Transition Function
+  const runPriorityTransition = (isPriorityUser) => {
+      console.log("👉 Transition Triggered. Priority:", isPriorityUser);
+      isPriority = isPriorityUser;
+
+      // HIDE Priority Overlay
+      if (priorityOverlay) {
+          priorityOverlay.classList.remove("is-visible");
+      }
+
+      // SHOW Form Overlay (with slight delay for CSS handling)
+      if (formOverlay) {
+          setTimeout(() => {
+              formOverlay.classList.add("is-visible");
+          }, 10);
+      }
+
+      // ENSURE Backdrop is on
+      if (backdrop) {
+          backdrop.classList.add("is-visible");
+      }
+  };
+
+  // 2. Attach Listeners (using onclick to override any potential duplicates)
+  const safeYesBtn = document.getElementById("yes-btn");
+  const safeNoBtn = document.getElementById("no-btn");
+
+  if (safeYesBtn) {
+      safeYesBtn.onclick = (e) => {
+          e.preventDefault();
+          runPriorityTransition(true);
+      };
+      console.log("✅ YES button listener active.");
+  } else {
+      console.error("❌ YES button missing.");
+  }
+
+  if (safeNoBtn) {
+      safeNoBtn.onclick = (e) => {
+          e.preventDefault();
+          runPriorityTransition(false);
+      };
+      console.log("✅ NO button listener active.");
+  } else {
+      console.error("❌ NO button missing.");
+  }
+
 });
-
-

@@ -177,3 +177,8 @@ main {
   }
 }
 
+.back-container {
+  display: flex;
+  margin-top: 0 !important;
+}
+
