@@ -15,11 +15,424 @@
         <span class="voice-btn-text">Voice Search</span>
       </button>
     </div>
-    <!-- <div class="faq-option-container"></div> -->
   </div>
-</div>
+   <div class="faq-menu-option-container">
+        <button class="request-btn">
+          <i class="phosphor ph-hand-deposit">
+            <svg xmlns="http://www.w3.org/2000/svg" 
+            width="60" 
+            height="60" 
+            fill="#0055A5" 
+            viewBox="0 0 256 256">
+            <path d="M128,35.31V128a8,8,0,0,1-16,0V35.31L93.66,53.66A8,8,0,0,1,82.34,42.34l32-32a8,8,0,0,1,11.32,0l32,32a8,8,0,0,1-11.32,11.32Zm64,88.31V96a16,16,0,0,0-16-16H160a8,8,0,0,0,0,16h16v80.4A28,28,0,0,0,131.75,210l.24.38,22.26,34a8,8,0,0,0,13.39-8.76l-22.13-33.79A12,12,0,0,1,166.4,190c.07.13.15.26.23.38l10.68,16.31A8,8,0,0,0,192,202.31V144a74.84,74.84,0,0,1,24,54.69V240a8,8,0,0,0,16,0V198.65A90.89,90.89,0,0,0,192,123.62ZM80,80H64A16,16,0,0,0,48,96V200a8,8,0,0,0,16,0V96H80a8,8,0,0,0,0-16Z"></path>
+          </svg>
+          </i>
+          <span class="request-btn-text">Requesting <br> Documents</span>
+        </button>
+        <button class="enrollment-btn">
+          <i class="phosphor ph-hand-deposit">
+            <svg xmlns="http://www.w3.org/2000/svg"
+            width="60"
+            height="60"
+            fill="#0055A5"
+            viewBox="0 0 256 256">
+            <path d="M144,157.68a68,68,0,1,0-71.9,0c-20.65,6.76-39.23,19.39-54.17,37.17a8,8,0,0,0,12.25,10.3C50.25,181.19,77.91,168,108,168s57.75,13.19,77.87,37.15a8,8,0,0,0,12.25-10.3C183.18,177.07,164.6,164.44,144,157.68ZM56,100a52,52,0,1,1,52,52A52.06,52.06,0,0,1,56,100Zm197.66,33.66-32,32a8,8,0,0,1-11.32,0l-16-16a8,8,0,0,1,11.32-11.32L216,148.69l26.34-26.35a8,8,0,0,1,11.32,11.32Z"></path>
+          </svg>
+          </i>
+          <span class="request-btn-text">Enrollment</span>
+        </button>
+        <button class="claiming-btn">
+          <i class="phosphor ph-user-check">
+            <svg xmlns="http://www.w3.org/2000/svg" 
+            width="60" 
+            height="60" 
+            fill="#0055A5" 
+            stroke="#0055A5" 
+            viewBox="0 0 256 256">
+            <path d="M232,198.65V240a8,8,0,0,1-16,0V198.65A74.84,74.84,0,0,0,192,144v58.35a8,8,0,0,1-14.69,4.38l-10.68-16.31c-.08-.12-.16-.25-.23-.38a12,12,0,0,0-20.89,11.83l22.13,33.79a8,8,0,0,1-13.39,8.76l-22.26-34-.24-.38A28,28,0,0,1,176,176.4V64H160a8,8,0,0,1,0-16h16a16,16,0,0,1,16,16v59.62A90.89,90.89,0,0,1,232,198.65ZM88,56a8,8,0,0,0-8-8H64A16,16,0,0,0,48,64V200a8,8,0,0,0,16,0V64H80A8,8,0,0,0,88,56Zm69.66,42.34a8,8,0,0,0-11.32,0L128,116.69V16a8,8,0,0,0-16,0V116.69L93.66,98.34a8,8,0,0,0-11.32,11.32l32,32a8,8,0,0,0,11.32,0l32-32A8,8,0,0,0,157.66,98.34Z"></path>
+          </svg>
+          </i>
+          <span class="request-btn-text">Claiming <br> Documents</span>
+        </button>
+     </div>
+  </div>
 
-<div id="overlay-backdrop"></div>
+  <div id="overlay-backdrop"></div>
+
+  <div class="container-request container-overlay">
+    <div class="navigation-head-container">
+      <a href="" id="back-btn-1"><i class="ph ph-arrow-left"></i></a>
+      <button class="speak-btn"><i class="ph ph-user-sound"></i><span class="speak-btn-text">Read Aloud</span></button>
+    </div>
+
+    <div class="container-content">
+        <div class="title-container">
+          <h4 class="title-preview">Requesting Documents</h4>
+        </div>
+      <div class="process-container">
+        <div class="faq-preview-card p-4 rounded ">
+          <p class="mb-1 directions">Check the boxes of the file/s that you need to proceed:</p>
+           <div class="preview-text">
+              
+              <div class="checkbox-wrapper-4 mb-3">
+                  <input class="inp-cbx" id="req-cbx-1" type="checkbox"/>
+                  <label class="cbx" for="req-cbx-1">
+                    <span><svg width="12px" height="10px"><use xlink:href="#check-4"></use></svg></span>
+                  </label>
+                  <svg class="inline-svg"><symbol id="check-4" viewBox="0 0 12 10"><polyline points="1.5 6 4.5 9 10.5 1"></polyline></symbol></svg>
+                  <p class="checkbox-content">Transcript of Records</p>
+              </div>
+
+              <div class="checkbox-wrapper-4 mb-3">
+                  <input class="inp-cbx" id="req-cbx-2" type="checkbox"/>
+                  <label class="cbx" for="req-cbx-2">
+                    <span><svg width="12px" height="10px"><use xlink:href="#check-4"></use></svg></span>
+                  </label>
+                  <svg class="inline-svg"><use xlink:href="#check-4"></use></svg>
+                  <p class="checkbox-content">Certification of Good Moral Character</p>
+              </div>
+                
+              <div class="checkbox-wrapper-4 mb-3">
+                  <input class="inp-cbx" id="req-cbx-3" type="checkbox"/>
+                  <label class="cbx" for="req-cbx-3">
+                    <span><svg width="12px" height="10px"><use xlink:href="#check-4"></use></svg></span>
+                  </label>
+                  <svg class="inline-svg"><use xlink:href="#check-4"></use></svg>
+                  <p class="checkbox-content">Certification of Graduation/Candidacy</p>
+              </div>
+                
+              <div class="checkbox-wrapper-4 mb-3">
+                  <input class="inp-cbx" id="req-cbx-4" type="checkbox"/>
+                  <label class="cbx" for="req-cbx-4">
+                    <span><svg width="12px" height="10px"><use xlink:href="#check-4"></use></svg></span>
+                  </label>
+                  <svg class="inline-svg"><use xlink:href="#check-4"></use></svg>
+                  <p class="checkbox-content">Certification of Grades</p>
+              </div>
+
+              <div class="checkbox-wrapper-4 mb-3">
+                  <input class="inp-cbx" id="req-cbx-5" type="checkbox"/>
+                  <label class="cbx" for="req-cbx-5">
+                    <span><svg width="12px" height="10px"><use xlink:href="#check-4"></use></svg></span>
+                  </label>
+                  <svg class="inline-svg"><use xlink:href="#check-4"></use></svg>
+                  <p class="checkbox-content">Scholastic records</p>
+              </div>
+              
+              <div class="checkbox-wrapper-4 mb-3">
+                  <input class="inp-cbx" id="req-cbx-6" type="checkbox"/>
+                  <label class="cbx" for="req-cbx-6">
+                    <span><svg width="12px" height="10px"><use xlink:href="#check-4"></use></svg></span>
+                  </label>
+                  <svg class="inline-svg"><use xlink:href="#check-4"></use></svg>
+                  <p class="checkbox-content">Certification of Units Earned/Credit</p>
+              </div>
+
+              <div class="checkbox-wrapper-4 mb-3">
+                  <input class="inp-cbx" id="req-cbx-7" type="checkbox"/>
+                  <label class="cbx" for="req-cbx-7">
+                    <span><svg width="12px" height="10px"><use xlink:href="#check-4"></use></svg></span>
+                  </label>
+                  <svg class="inline-svg"><use xlink:href="#check-4"></use></svg>
+                  <p class="checkbox-content">Certificate of Enrollment</p>
+              </div>
+                
+              <div class="checkbox-wrapper-4 mb-3">
+                  <input class="inp-cbx" id="req-cbx-8" type="checkbox"/>
+                  <label class="cbx" for="req-cbx-8">
+                    <span><svg width="12px" height="10px"><use xlink:href="#check-4"></use></svg></span>
+                  </label>
+                  <svg class="inline-svg"><use xlink:href="#check-4"></use></svg>
+                  <p class="checkbox-content">Certification Authentication & Verification (CAV)</p>
+              </div>
+                
+              <div class="checkbox-wrapper-4 mb-3">
+                  <input class="inp-cbx" id="req-cbx-9" type="checkbox"/>
+                  <label class="cbx" for="req-cbx-9">
+                    <span><svg width="12px" height="10px"><use xlink:href="#check-4"></use></svg></span>
+                  </label>
+                  <svg class="inline-svg"><use xlink:href="#check-4"></use></svg>
+                  <p class="checkbox-content">Second Copy of Diploma</p>
+              </div>
+                
+              <div class="checkbox-wrapper-4 mb-3">
+                  <input class="inp-cbx" id="req-cbx-10" type="checkbox"/>
+                  <label class="cbx" for="req-cbx-10">
+                    <span><svg width="12px" height="10px"><use xlink:href="#check-4"></use></svg></span>
+                  </label>
+                  <svg class="inline-svg"><use xlink:href="#check-4"></use></svg>
+                  <p class="checkbox-content">Certification of Approved Curriculum</p>
+              </div>
+                
+              <div class="checkbox-wrapper-4 mb-3">
+                  <input class="inp-cbx" id="req-cbx-11" type="checkbox"/>
+                  <label class="cbx" for="req-cbx-11">
+                    <span><svg width="12px" height="10px"><use xlink:href="#check-4"></use></svg></span>
+                  </label>
+                  <svg class="inline-svg"><use xlink:href="#check-4"></use></svg>
+                  <p class="checkbox-content">C A R (Complete Academic Requirements)</p>
+              </div>
+
+              <div class="checkbox-wrapper-4 mb-3">
+                  <input class="inp-cbx" id="req-cbx-12" type="checkbox"/>
+                  <label class="cbx" for="req-cbx-12">
+                    <span><svg width="12px" height="10px"><use xlink:href="#check-4"></use></svg></span>
+                  </label>
+                  <svg class="inline-svg"><use xlink:href="#check-4"></use></svg>
+                  <p class="checkbox-content">Report of Rating</p>
+              </div>
+              
+              <div class="checkbox-wrapper-4 mb-3">
+                  <input class="inp-cbx" id="req-cbx-13" type="checkbox"/>
+                  <label class="cbx" for="req-cbx-13">
+                    <span><svg width="12px" height="10px"><use xlink:href="#check-4"></use></svg></span>
+                  </label>
+                  <svg class="inline-svg"><use xlink:href="#check-4"></use></svg>
+                  <p class="checkbox-content">Transfer Credential</p>
+              </div>
+
+              <div class="checkbox-wrapper-4 mb-3">
+                  <input class="inp-cbx" id="req-cbx-14" type="checkbox"/>
+                  <label class="cbx" for="req-cbx-14">
+                    <span><svg width="12px" height="10px"><use xlink:href="#check-4"></use></svg></span>
+                  </label>
+                  <svg class="inline-svg"><use xlink:href="#check-4"></use></svg>
+                  <p class="checkbox-content">Completion of Grades</p>
+              </div>
+
+              <div class="checkbox-wrapper-4 mb-3">
+                  <input class="inp-cbx" id="req-cbx-15" type="checkbox"/>
+                  <label class="cbx" for="req-cbx-15">
+                    <span><svg width="12px" height="10px"><use xlink:href="#check-4"></use></svg></span>
+                  </label>
+                  <svg class="inline-svg"><use xlink:href="#check-4"></use></svg>
+                  <p class="checkbox-content">Application for Graduation</p>
+              </div>
+
+              <div class="checkbox-wrapper-4 mb-3">
+                  <input class="inp-cbx" id="req-cbx-16" type="checkbox"/>
+                  <label class="cbx" for="req-cbx-16">
+                    <span><svg width="12px" height="10px"><use xlink:href="#check-4"></use></svg></span>
+                  </label>
+                  <svg class="inline-svg"><use xlink:href="#check-4"></use></svg>
+                  <p class="checkbox-content">Permanent record (SF 10/F137)</p>
+              </div>
+
+              <div class="checkbox-wrapper-4 mb-3">
+                  <input class="inp-cbx" id="req-cbx-17" type="checkbox"/>
+                  <label class="cbx" for="req-cbx-17">
+                    <span><svg width="12px" height="10px"><use xlink:href="#check-4"></use></svg></span>
+                  </label>
+                  <svg class="inline-svg"><use xlink:href="#check-4"></use></svg>
+                  <p class="checkbox-content">OTHERS</p>
+              </div>
+              
+            </div>
+        </div>
+      </div>
+    </div>
+    <div class="submit-container">
+      <button class="speak-btn" id="proceed-btn" disabled><span class="speak-btn-text">Proceed</span></button>
+    </div>
+  </div>
+
+    <!-- <div class="faq-option-container"></div> -->
+  <div class="container-enrollment container-overlay">
+    <div class="navigation-head-container">
+      <a href="" id="back-btn-1"><i class="ph ph-arrow-left"></i></a>
+      <button class="speak-btn"><i class="ph ph-user-sound"></i><span class="speak-btn-text">Read Aloud</span></button>
+    </div>
+    <div class="container-content">
+        <div class="title-container">
+          <h4 class="title-preview">Enrollment</h4>
+        </div>
+      <div class="process-container-1">
+          <p class="mb-1 directionz">Choose your inquiry:</p>
+
+      <div class="faq-option-container"></div>
+
+      </div>
+    </div>
+  </div>
+
+
+
+  <div class="container-claiming container-overlay">
+    <div class="navigation-head-container">
+      <a href="" id="back-btn-1"><i class="ph ph-arrow-left"></i></a>
+      <button class="speak-btn"><i class="ph ph-user-sound"></i><span class="speak-btn-text">Read Aloud</span></button>
+    </div>
+    <div class="container-content">
+        <div class="title-container">
+          <h4 class="title-preview">Claiming Documents</h4>
+        </div>
+      <div class="process-container">
+        <div class="faq-preview-card p-4 rounded ">
+          <p class="mb-1 directions">Check the boxes of the file/s that you need to proceed:</p>
+           <div class="preview-text">
+              
+              <div class="checkbox-wrapper-4 mb-3">
+                  <input class="inp-cbx" id="claim-cbx-1" type="checkbox"/>
+                  <label class="cbx" for="claim-cbx-1">
+                    <span><svg width="12px" height="10px"><use xlink:href="#check-4"></use></svg></span>
+                  </label>
+                  <svg class="inline-svg"><use xlink:href="#check-4"></use></svg>
+                  <p class="checkbox-content">Transcript of Records</p>
+              </div>
+
+              <div class="checkbox-wrapper-4 mb-3">
+                  <input class="inp-cbx" id="claim-cbx-2" type="checkbox"/>
+                  <label class="cbx" for="claim-cbx-2">
+                    <span><svg width="12px" height="10px"><use xlink:href="#check-4"></use></svg></span>
+                  </label>
+                  <svg class="inline-svg"><use xlink:href="#check-4"></use></svg>
+                  <p class="checkbox-content">Certification of Good Moral Character</p>
+              </div>
+                
+              <div class="checkbox-wrapper-4 mb-3">
+                  <input class="inp-cbx" id="claim-cbx-3" type="checkbox"/>
+                  <label class="cbx" for="claim-cbx-3">
+                    <span><svg width="12px" height="10px"><use xlink:href="#check-4"></use></svg></span>
+                  </label>
+                  <svg class="inline-svg"><use xlink:href="#check-4"></use></svg>
+                  <p class="checkbox-content">Certification of Graduation/Candidacy</p>
+              </div>
+                
+              <div class="checkbox-wrapper-4 mb-3">
+                  <input class="inp-cbx" id="claim-cbx-4" type="checkbox"/>
+                  <label class="cbx" for="claim-cbx-4">
+                    <span><svg width="12px" height="10px"><use xlink:href="#check-4"></use></svg></span>
+                  </label>
+                  <svg class="inline-svg"><use xlink:href="#check-4"></use></svg>
+                  <p class="checkbox-content">Certification of Grades</p>
+              </div>
+
+              <div class="checkbox-wrapper-4 mb-3">
+                  <input class="inp-cbx" id="claim-cbx-5" type="checkbox"/>
+                  <label class="cbx" for="claim-cbx-5">
+                    <span><svg width="12px" height="10px"><use xlink:href="#check-4"></use></svg></span>
+                  </label>
+                  <svg class="inline-svg"><use xlink:href="#check-4"></use></svg>
+                  <p class="checkbox-content">Scholastic records</p>
+              </div>
+              
+              <div class="checkbox-wrapper-4 mb-3">
+                  <input class="inp-cbx" id="claim-cbx-6" type="checkbox"/>
+                  <label class="cbx" for="claim-cbx-6">
+                    <span><svg width="12px" height="10px"><use xlink:href="#check-4"></use></svg></span>
+                  </label>
+                  <svg class="inline-svg"><use xlink:href="#check-4"></use></svg>
+                  <p class="checkbox-content">Certification of Units Earned/Credit</p>
+              </div>
+
+              <div class="checkbox-wrapper-4 mb-3">
+                  <input class="inp-cbx" id="claim-cbx-7" type="checkbox"/>
+                  <label class="cbx" for="claim-cbx-7">
+                    <span><svg width="12px" height="10px"><use xlink:href="#check-4"></use></svg></span>
+                  </label>
+                  <svg class="inline-svg"><use xlink:href="#check-4"></use></svg>
+                  <p class="checkbox-content">Certificate of Enrollment</p>
+              </div>
+                
+              <div class="checkbox-wrapper-4 mb-3">
+                  <input class="inp-cbx" id="claim-cbx-8" type="checkbox"/>
+                  <label class="cbx" for="claim-cbx-8">
+                    <span><svg width="12px" height="10px"><use xlink:href="#check-4"></use></svg></span>
+                  </label>
+                  <svg class="inline-svg"><use xlink:href="#check-4"></use></svg>
+                  <p class="checkbox-content">Certification Authentication & Verification (CAV)</p>
+              </div>
+                
+              <div class="checkbox-wrapper-4 mb-3">
+                  <input class="inp-cbx" id="claim-cbx-9" type="checkbox"/>
+                  <label class="cbx" for="claim-cbx-9">
+                    <span><svg width="12px" height="10px"><use xlink:href="#check-4"></use></svg></span>
+                  </label>
+                  <svg class="inline-svg"><use xlink:href="#check-4"></use></svg>
+                  <p class="checkbox-content">Second Copy of Diploma</p>
+              </div>
+                
+              <div class="checkbox-wrapper-4 mb-3">
+                  <input class="inp-cbx" id="claim-cbx-10" type="checkbox"/>
+                  <label class="cbx" for="claim-cbx-10">
+                    <span><svg width="12px" height="10px"><use xlink:href="#check-4"></use></svg></span>
+                  </label>
+                  <svg class="inline-svg"><use xlink:href="#check-4"></use></svg>
+                  <p class="checkbox-content">Certification of Approved Curriculum</p>
+              </div>
+                
+              <div class="checkbox-wrapper-4 mb-3">
+                  <input class="inp-cbx" id="claim-cbx-11" type="checkbox"/>
+                  <label class="cbx" for="claim-cbx-11">
+                    <span><svg width="12px" height="10px"><use xlink:href="#check-4"></use></svg></span>
+                  </label>
+                  <svg class="inline-svg"><use xlink:href="#check-4"></use></svg>
+                  <p class="checkbox-content">C A R (Complete Academic Requirements)</p>
+              </div>
+
+              <div class="checkbox-wrapper-4 mb-3">
+                  <input class="inp-cbx" id="claim-cbx-12" type="checkbox"/>
+                  <label class="cbx" for="claim-cbx-12">
+                    <span><svg width="12px" height="10px"><use xlink:href="#check-4"></use></svg></span>
+                  </label>
+                  <svg class="inline-svg"><use xlink:href="#check-4"></use></svg>
+                  <p class="checkbox-content">Report of Rating</p>
+              </div>
+              
+              <div class="checkbox-wrapper-4 mb-3">
+                  <input class="inp-cbx" id="claim-cbx-13" type="checkbox"/>
+                  <label class="cbx" for="claim-cbx-13">
+                    <span><svg width="12px" height="10px"><use xlink:href="#check-4"></use></svg></span>
+                  </label>
+                  <svg class="inline-svg"><use xlink:href="#check-4"></use></svg>
+                  <p class="checkbox-content">Transfer Credential</p>
+              </div>
+
+              <div class="checkbox-wrapper-4 mb-3">
+                  <input class="inp-cbx" id="claim-cbx-14" type="checkbox"/>
+                  <label class="cbx" for="claim-cbx-14">
+                    <span><svg width="12px" height="10px"><use xlink:href="#check-4"></use></svg></span>
+                  </label>
+                  <svg class="inline-svg"><use xlink:href="#check-4"></use></svg>
+                  <p class="checkbox-content">Completion of Grades</p>
+              </div>
+
+              <div class="checkbox-wrapper-4 mb-3">
+                  <input class="inp-cbx" id="claim-cbx-15" type="checkbox"/>
+                  <label class="cbx" for="claim-cbx-15">
+                    <span><svg width="12px" height="10px"><use xlink:href="#check-4"></use></svg></span>
+                  </label>
+                  <svg class="inline-svg"><use xlink:href="#check-4"></use></svg>
+                  <p class="checkbox-content">Application for Graduation</p>
+              </div>
+
+              <div class="checkbox-wrapper-4 mb-3">
+                  <input class="inp-cbx" id="claim-cbx-16" type="checkbox"/>
+                  <label class="cbx" for="claim-cbx-16">
+                    <span><svg width="12px" height="10px"><use xlink:href="#check-4"></use></svg></span>
+                  </label>
+                  <svg class="inline-svg"><use xlink:href="#check-4"></use></svg>
+                  <p class="checkbox-content">Permanent record (SF 10/F137)</p>
+              </div>
+
+              <div class="checkbox-wrapper-4 mb-3">
+                  <input class="inp-cbx" id="claim-cbx-17" type="checkbox"/>
+                  <label class="cbx" for="claim-cbx-17">
+                    <span><svg width="12px" height="10px"><use xlink:href="#check-4"></use></svg></span>
+                  </label>
+                  <svg class="inline-svg"><use xlink:href="#check-4"></use></svg>
+                  <p class="checkbox-content">OTHERS</p>
+              </div>
+              
+            </div>
+        </div>
+      </div>
+    </div>
+    <div class="submit-container">
+      <button class="speak-btn" id="proceed-btn" disabled><span class="speak-btn-text">Proceed</span></button>
+    </div>
+  </div>
+
 
   <div class="container-2 container-overlay">
     <div class="navigation-head-container">
@@ -49,9 +462,6 @@
           </div>
         </div>
       </div>
-      <div class="img-section-container">
-        <img class="preview-image mt-2" style="max-width:100%; display:none;" alt="FAQ Image Preview">
-      </div>
     </div>
     <div class="submit-container">
       <button class="speak-btn" id="proceed-btn" disabled><span class="speak-btn-text">Proceed</span></button>
@@ -69,8 +479,8 @@
           <p class="faq-name">PWD and Senior Citizens should show an ID.</p>
         </div>
         <div class="submit-container">
-            <button class="speak-btn" id="yes-btn" disabled><span class="finish-btn-text">Yes</span></button>
-            <button class="speak-btn" id="no-btn" disabled><span class="finish-btn-text">No</span></button>
+          <button class="speak-btn" id="yes-btn"><span class="finish-btn-text">Yes</span></button>
+          <button class="speak-btn" id="no-btn"><span class="finish-btn-text">No</span></button>
         </div>
     </div>
   </div>
