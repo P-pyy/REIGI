@@ -158,9 +158,23 @@ document.addEventListener("DOMContentLoaded", async () => {
     );
   }
 
+  // Helper: Collect all checked documents from a container
+  function getCheckedDocuments(container) {
+      if (!container) return [];
+      return [...container.querySelectorAll('.inp-cbx:checked')]
+          .map(cb => {
+              const p = cb.closest('.checkbox-wrapper-4')?.querySelector('.checkbox-content');
+              return p ? p.textContent.trim() : '';
+          })
+          .filter(Boolean);
+  }
+
+
   function validateFormInputs() {
     finishBtn.disabled = !(firstNameInput.value.trim() && lastNameInput.value.trim());
   }
+
+  
 
   // ---------------------------------------------------------
   // 5. APPLY LOGIC & EVENT LISTENERS
@@ -299,58 +313,151 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (finishBtn.disabled) return;
     finishBtn.disabled = true;
 
+    // 1. Full name validation
     const fullName = `${firstNameInput.value.trim()} ${lastNameInput.value.trim()}`;
     if (!fullName.trim()) {
-      alert("Please enter your complete name.");
-      finishBtn.disabled = false;
-      return;
+        alert("Please enter your complete name.");
+        finishBtn.disabled = false;
+        return;
     }
 
+    // 2. Collect all checked documents across overlays
+    function collectDocumentsFromContainer(container) {
+        if (!container) return [];
+        return [...container.querySelectorAll('.inp-cbx:checked')]
+            .map(cb => cb.closest('.checkbox-wrapper-4')?.querySelector('.checkbox-content')?.textContent.trim())
+            .filter(Boolean);
+    }
+
+    const allDocuments = [
+        ...collectDocumentsFromContainer(requestCheckboxContainer),
+        ...collectDocumentsFromContainer(enrollmentCheckboxContainer),
+        ...collectDocumentsFromContainer(claimingCheckboxContainer),
+        ...collectDocumentsFromContainer(detailsCheckboxContainer) // dynamic steps
+    ];
+
+    if (!allDocuments.length) {
+        alert("Please check at least one document before proceeding.");
+        finishBtn.disabled = false;
+        return;
+    }
+
+    const uniqueDocuments = [...new Set(allDocuments)]; // remove duplicates
+    const documentsText = uniqueDocuments.join(", ");
+
+    // 3. Submit to Supabase
     try {
-      const response = await fetch("/api/queue", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-        full_name: fullName,
-        is_priority: isPriority
-      }),
+        const { data, error } = await supabaseClient
+            .from("queue")
+            .insert([{
+                full_name: fullName,
+                is_priority: isPriority,
+                documents: documentsText
+            }])
+            .select(); // to get inserted row with queue_no
 
-      });
-      const result = await response.json();
-      if (!response.ok) throw new Error(result.error || "Request failed");
+        if (error) throw error;
 
-      const queueNumber = result.data[0].queue_no.toString();
-      numberPreview.textContent = queueNumber;
+        const queueNumber = data[0].queue_no.toString();
+        numberPreview.textContent = queueNumber;
 
-      formOverlay.classList.remove("is-visible");
-      overlayNumber.classList.add("is-visible");
+        // 4. Show number overlay
+        formOverlay.classList.remove("is-visible");
+        overlayNumber.classList.add("is-visible");
 
-      firstNameInput.value = lastNameInput.value = "";
-
-      const printContent = `
-    ===============================
-       University of Rizal System
-             Queue Ticket
-    ===============================
+        // 5. Reset inputs
+        firstNameInput.value = lastNameInput.value = "";
         
-        Name: ${fullName}
-        Queue No: ${queueNumber}
-        
-               Thank you! 
-        Please wait for your turn.
-        
-    -------------------------------
-        Printed via REIGI Kiosk
-          `;
-    
-      const encoded = encodeURIComponent(printContent);
-      window.location.href = `rawbt:printText:${encoded}`;
+        // Optional: print queue ticket
+const printContent = `
+===============================
+   University of Rizal System
+         Queue Ticket
+===============================
+
+Name: ${fullName}
+Queue No: ${queueNumber}
+
+Documents:
+${documentsText.split(", ").map(doc => " - " + doc).join("\n")}
+
+Please wait for your turn.
+      Thank you!
+
+-------------------------------
+Printed via REIGI Kiosk
+`;
+window.location.href = `rawbt:printText:${encodeURIComponent(printContent)}`;
+
+
     } catch (err) {
-      console.error("❌ Error saving queue:", err.message);
-      alert("Something went wrong while saving your queue. Please try again.");
-      finishBtn.disabled = false;
+        console.error("❌ Error saving queue:", err);
+        alert("Something went wrong while saving your queue. Please try again.");
+        finishBtn.disabled = false;
     }
-  });
+});
+
+
+
+
+  // finishBtn.addEventListener("click", async (e) => {
+  //   e.preventDefault();
+  //   if (finishBtn.disabled) return;
+  //   finishBtn.disabled = true;
+
+  //   const fullName = `${firstNameInput.value.trim()} ${lastNameInput.value.trim()}`;
+  //   if (!fullName.trim()) {
+  //     alert("Please enter your complete name.");
+  //     finishBtn.disabled = false;
+  //     return;
+  //   }
+
+  //   try {
+  //     const response = await fetch("/api/queue", {
+  //       method: "POST",
+  //       headers: { "Content-Type": "application/json" },
+  //       body: JSON.stringify({
+  //       full_name: fullName,
+  //       is_priority: isPriority,
+  //       documents: documentsText
+  //     }),
+
+  //     });
+  //     const result = await response.json();
+  //     if (!response.ok) throw new Error(result.error || "Request failed");
+
+  //     const queueNumber = result.data[0].queue_no.toString();
+  //     numberPreview.textContent = queueNumber;
+
+  //     formOverlay.classList.remove("is-visible");
+  //     overlayNumber.classList.add("is-visible");
+
+  //     firstNameInput.value = lastNameInput.value = "";
+
+  //     const printContent = `
+  //   ===============================
+  //      University of Rizal System
+  //            Queue Ticket
+  //   ===============================
+        
+  //       Name: ${fullName}
+  //       Queue No: ${queueNumber}
+        
+  //              Thank you! 
+  //       Please wait for your turn.
+        
+  //   -------------------------------
+  //       Printed via REIGI Kiosk
+  //         `;
+    
+  //     const encoded = encodeURIComponent(printContent);
+  //     window.location.href = `rawbt:printText:${encoded}`;
+  //   } catch (err) {
+  //     console.error("❌ Error saving queue:", err.message);
+  //     alert("Something went wrong while saving your queue. Please try again.");
+  //     finishBtn.disabled = false;
+  //   }
+  // });
 
   finishBtnNum.addEventListener("click", () => {
     overlayNumber.classList.remove("is-visible");
