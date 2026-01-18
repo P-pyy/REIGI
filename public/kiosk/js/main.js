@@ -308,67 +308,66 @@ document.addEventListener("DOMContentLoaded", async () => {
   firstNameInput.addEventListener("input", validateFormInputs);
   lastNameInput.addEventListener("input", validateFormInputs);
 
-  finishBtn.addEventListener("click", async (e) => {
-    e.preventDefault();
-    if (finishBtn.disabled) return;
-    finishBtn.disabled = true;
+function collectDocumentsFromContainer(container) {
+    if (!container) return [];
+    return [...container.querySelectorAll('.inp-cbx:checked')]
+        .map(cb => cb.closest('.checkbox-wrapper-4')?.querySelector('.checkbox-content')?.textContent.trim())
+        .filter(Boolean);
+}
 
-    // 1. Full name validation
-    const fullName = `${firstNameInput.value.trim()} ${lastNameInput.value.trim()}`;
-    if (!fullName.trim()) {
-        alert("Please enter your complete name.");
-        finishBtn.disabled = false;
-        return;
-    }
+finishBtn.addEventListener("click", async (e) => {
+  e.preventDefault();
+  if (finishBtn.disabled) return;
+  finishBtn.disabled = true;
 
-    // 2. Collect all checked documents across overlays
-    function collectDocumentsFromContainer(container) {
-        if (!container) return [];
-        return [...container.querySelectorAll('.inp-cbx:checked')]
-            .map(cb => cb.closest('.checkbox-wrapper-4')?.querySelector('.checkbox-content')?.textContent.trim())
-            .filter(Boolean);
-    }
+  const fullName = `${firstNameInput.value.trim()} ${lastNameInput.value.trim()}`;
+  if (!fullName.trim()) {
+    alert("Please enter your complete name.");
+    finishBtn.disabled = false;
+    return;
+  }
 
-    const allDocuments = [
-        ...collectDocumentsFromContainer(requestCheckboxContainer),
-        ...collectDocumentsFromContainer(enrollmentCheckboxContainer),
-        ...collectDocumentsFromContainer(claimingCheckboxContainer),
-        ...collectDocumentsFromContainer(detailsCheckboxContainer) // dynamic steps
-    ];
+  // Collect checked documents
+  const allDocuments = [
+    ...collectDocumentsFromContainer(requestCheckboxContainer),
+    ...collectDocumentsFromContainer(enrollmentCheckboxContainer),
+    ...collectDocumentsFromContainer(claimingCheckboxContainer),
+    ...collectDocumentsFromContainer(detailsCheckboxContainer)
+  ];
 
-    if (!allDocuments.length) {
-        alert("Please check at least one document before proceeding.");
-        finishBtn.disabled = false;
-        return;
-    }
+  if (!allDocuments.length) {
+    alert("Please check at least one document.");
+    finishBtn.disabled = false;
+    return;
+  }
 
-    const uniqueDocuments = [...new Set(allDocuments)]; // remove duplicates
-    const documentsText = uniqueDocuments.join(", ");
+  const uniqueDocuments = [...new Set(allDocuments)];
+  const documentsText = uniqueDocuments.join(", ");
 
-    // 3. Submit to Supabase
-    try {
-        const { data, error } = await supabaseClient
-            .from("queue")
-            .insert([{
-                full_name: fullName,
-                is_priority: isPriority,
-                documents: documentsText
-            }])
-            .select(); // to get inserted row with queue_no
+  try {
+    // Call your API instead of direct insert
+    const response = await fetch("/api/queue", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        full_name: fullName,
+        is_priority: isPriority,
+        documents: documentsText
+      })
+    });
 
-        if (error) throw error;
+    const result = await response.json();
+    if (!response.ok) throw new Error(result.error || "Failed to save queue");
 
-        const queueNumber = data[0].queue_no.toString();
-        numberPreview.textContent = queueNumber;
+    const queueNumber = result.data[0].queue_no;
 
-        // 4. Show number overlay
-        formOverlay.classList.remove("is-visible");
-        overlayNumber.classList.add("is-visible");
+    numberPreview.textContent = queueNumber;
+    formOverlay.classList.remove("is-visible");
+    overlayNumber.classList.add("is-visible");
 
-        // 5. Reset inputs
-        firstNameInput.value = lastNameInput.value = "";
-        
-        // Optional: print queue ticket
+    firstNameInput.value = lastNameInput.value = "";
+
+    // Optional: print queue ticket
 const printContent = `
 ===============================
    University of Rizal System
@@ -388,13 +387,11 @@ Please wait for your turn.
 Printed via REIGI Kiosk
 `;
 window.location.href = `rawbt:printText:${encodeURIComponent(printContent)}`;
-
-
-    } catch (err) {
-        console.error("❌ Error saving queue:", err);
-        alert("Something went wrong while saving your queue. Please try again.");
-        finishBtn.disabled = false;
-    }
+  } catch (err) {
+    console.error("❌ Error saving queue:", err);
+    alert("Something went wrong while saving your queue. Please try again.");
+    finishBtn.disabled = false;
+  }
 });
 
 
