@@ -61,18 +61,21 @@ document.addEventListener("DOMContentLoaded", async () => {
   
   // A. Request Overlay Internals
   const backBtnRequest = requestOverlay.querySelector("#back-btn-1");
-  const requestProceedBtn = requestOverlay.querySelector("#proceed-btn"); 
+  const requestProceedBtn = requestOverlay.querySelector(".proceed-btn");
   const requestCheckboxContainer = requestOverlay.querySelector(".preview-text");
+
+  const enrollmentCheckboxContainer = enrollmentOverlay.querySelector(".preview-text");
+  const enrollmentProceedBtn = enrollmentOverlay.querySelector(".proceed-btn");
 
   // B. Claiming Overlay Internals
   const backBtnClaiming = claimingOverlay.querySelector("#back-btn-1");
-  const claimingProceedBtn = claimingOverlay.querySelector("#proceed-btn");
+  const claimingProceedBtn = claimingOverlay.querySelector(".proceed-btn");
   const claimingCheckboxContainer = claimingOverlay.querySelector(".preview-text");
 
   // C. Enrollment & Details Internals
   const backBtnEnrollment = enrollmentOverlay.querySelector("#back-btn-1");
   // Note: Details overlay usually handles the dynamic FAQ steps
-  const detailsProceedBtn = detailsOverlay.querySelector("#proceed-btn");
+  const detailsProceedBtn = detailsOverlay.querySelector(".proceed-btn");
   const detailsCheckboxContainer = detailsOverlay.querySelector(".preview-text");
   const backBtnDetails = detailsOverlay.querySelector("#back-btn-1");
 
@@ -163,11 +166,16 @@ document.addEventListener("DOMContentLoaded", async () => {
   // 5. APPLY LOGIC & EVENT LISTENERS
   // ---------------------------------------------------------
 
-  // A. Apply Validation (At least 1 checkbox)
-  setupCheckboxValidation(requestCheckboxContainer, requestProceedBtn);
-  setupCheckboxValidation(claimingCheckboxContainer, claimingProceedBtn);
-  
-  // Note: Details container is dynamic, but we initialize it here just in case
+  // A. Apply Validation (At least 1 checkbox) - ENSURE ALL BUTTONS START DISABLED
+  if (requestCheckboxContainer && requestProceedBtn) {
+      setupCheckboxValidation(requestCheckboxContainer, requestProceedBtn);
+  }
+  if (enrollmentCheckboxContainer && enrollmentProceedBtn) {
+      setupCheckboxValidation(enrollmentCheckboxContainer, enrollmentProceedBtn);
+  }
+  if (claimingCheckboxContainer && claimingProceedBtn) {
+      setupCheckboxValidation(claimingCheckboxContainer, claimingProceedBtn);
+  }
   if (detailsCheckboxContainer && detailsProceedBtn) {
       setupCheckboxValidation(detailsCheckboxContainer, detailsProceedBtn);
   }
@@ -175,7 +183,10 @@ document.addEventListener("DOMContentLoaded", async () => {
   // B. Apply Flow (Proceed -> Priority)
   setupProceedFlow(requestOverlay, requestProceedBtn);
   setupProceedFlow(claimingOverlay, claimingProceedBtn);
-  setupProceedFlow(detailsOverlay, detailsProceedBtn);
+  setupProceedFlow(enrollmentOverlay, enrollmentProceedBtn);
+  if (detailsOverlay && detailsProceedBtn) {
+      setupProceedFlow(detailsOverlay, detailsProceedBtn);
+  }
 
   // C. Main Menu Button Clicks (Open Overlays)
   if (requestBtn) {
@@ -203,7 +214,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   if (backBtnRequest) {
       backBtnRequest.addEventListener("click", (e) => {
           e.preventDefault();
-          resetFormState(requestCheckboxContainer, requestProceedBtn); // Reset logic
+          resetFormState(requestCheckboxContainer, requestProceedBtn);
           requestOverlay.classList.remove("is-visible");
           backdrop.classList.remove("is-visible");
           stopReading();
@@ -213,7 +224,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   if (backBtnClaiming) {
       backBtnClaiming.addEventListener("click", (e) => {
           e.preventDefault();
-          resetFormState(claimingCheckboxContainer, claimingProceedBtn); // Reset logic
+          resetFormState(claimingCheckboxContainer, claimingProceedBtn);
           claimingOverlay.classList.remove("is-visible");
           backdrop.classList.remove("is-visible");
           stopReading();
@@ -223,6 +234,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   if (backBtnEnrollment) {
       backBtnEnrollment.addEventListener("click", (e) => {
           e.preventDefault();
+          resetFormState(enrollmentCheckboxContainer, enrollmentProceedBtn);
           enrollmentOverlay.classList.remove("is-visible");
           backdrop.classList.remove("is-visible");
           stopReading();
@@ -232,9 +244,8 @@ document.addEventListener("DOMContentLoaded", async () => {
   if (backBtnDetails) {
       backBtnDetails.addEventListener("click", (e) => {
           e.preventDefault();
+          resetFormState(detailsCheckboxContainer, detailsProceedBtn);
           detailsOverlay.classList.remove("is-visible");
-          // If this was opened from Enrollment, we might want to keep backdrop?
-          // For simple logic, close all:
           backdrop.classList.remove("is-visible");
           stopReading();
       });
@@ -245,10 +256,8 @@ document.addEventListener("DOMContentLoaded", async () => {
       backBtn2.addEventListener("click", (e) => {
           e.preventDefault();
           formOverlay.classList.remove("is-visible");
-          // Clear inputs
           if(firstNameInput) firstNameInput.value = "";
           if(lastNameInput) lastNameInput.value = "";
-          // Show priority again
           priorityOverlay.classList.add("is-visible");
       });
   }
@@ -256,73 +265,6 @@ document.addEventListener("DOMContentLoaded", async () => {
   // F. Input Validation Listener
   if (firstNameInput) firstNameInput.addEventListener("input", validateFormInputs);
   if (lastNameInput) lastNameInput.addEventListener("input", validateFormInputs);
-
-  // ---------------------------------------------------------
-  // APPLY LOGIC & EVENT LISTENERS
-  // ---------------------------------------------------------
-
-  // A. Apply Validation (At least 1 checkbox)
-  setupCheckboxValidation(requestCheckboxContainer, requestProceedBtn);
-  setupCheckboxValidation(claimingCheckboxContainer, claimingProceedBtn);
-  setupCheckboxValidation(detailsCheckboxContainer, detailsProceedBtn);
-
-  // B. Apply Flow (Proceed -> Priority)
-  setupProceedFlow(requestOverlay, requestProceedBtn);
-  setupProceedFlow(claimingOverlay, claimingProceedBtn);
-  setupProceedFlow(detailsOverlay, detailsProceedBtn);
-
-  // C. Main Menu Button Clicks (Open Overlays)
-  requestBtn.addEventListener("click", () => {
-    requestOverlay.classList.add("is-visible");
-    backdrop.classList.add("is-visible");
-  });
-
-  claimingBtn.addEventListener("click", () => {
-    claimingOverlay.classList.add("is-visible");
-    backdrop.classList.add("is-visible");
-  });
-
-  enrollmentBtn.addEventListener("click", () => {
-    enrollmentOverlay.classList.add("is-visible");
-    backdrop.classList.add("is-visible");
-  });
-
-  // D. Back Button Clicks (Close Specific Overlays)
-  if(backBtnRequest) backBtnRequest.addEventListener("click", (e) => {
-    e.preventDefault();
-
-    resetFormState(requestCheckboxContainer, requestProceedBtn);
-
-    requestOverlay.classList.remove("is-visible");
-    backdrop.classList.remove("is-visible");
-    stopReading();
-  });
-
-  if(backBtnClaiming) backBtnClaiming.addEventListener("click", (e) => {
-    e.preventDefault();
-
-    resetFormState(claimingCheckboxContainer, claimingProceedBtn);
-
-    claimingOverlay.classList.remove("is-visible");
-    backdrop.classList.remove("is-visible");
-    stopReading();
-  });
-
-  if(backBtnEnrollment) backBtnEnrollment.addEventListener("click", (e) => {
-    e.preventDefault();
-    enrollmentOverlay.classList.remove("is-visible");
-    backdrop.classList.remove("is-visible");
-    stopReading();
-  });
-
-  if(backBtnDetails) backBtnDetails.addEventListener("click", (e) => {
-    e.preventDefault();
-    detailsOverlay.classList.remove("is-visible");
-    // If details was opened from Enrollment, maybe show Enrollment again? 
-    // For now, just close to backdrop.
-    backdrop.classList.remove("is-visible"); 
-    stopReading();
-  });
 
   // E. Priority & Form Logic
   const handlePriorityClick = (isPriorityUser) => {
@@ -685,81 +627,81 @@ document.addEventListener("DOMContentLoaded", async () => {
     detailsOverlay.classList.add("is-visible"); // Show the details overlay
     backdrop.classList.add("is-visible");
 
+    // --- Requirements List ---
     requirementsList.innerHTML = "";
     (JSON.parse(selected.requirements || "[]")).forEach(r => {
-      const li = document.createElement("li");
-      li.textContent = r;
-      requirementsList.appendChild(li);
+        const li = document.createElement("li");
+        li.textContent = r;
+        requirementsList.appendChild(li);
     });
 
+    // --- Steps with Checkboxes ---
     stepsContainer.innerHTML = "";
     (JSON.parse(selected.steps || "[]")).forEach((step, i) => {
-      const cbxId = `step-${selected.id}-${i}`;
-      stepsContainer.insertAdjacentHTML(
-        "beforeend",
-        `
-        <div class="checkbox-wrapper-4 mb-3">
-          <input class="inp-cbx" id="${cbxId}" type="checkbox"/>
-          <label class="cbx" for="${cbxId}">
-            <span><svg width="12px" height="10px"><use xlink:href="#check-4"></use></svg></span>
-          </label>
-          <svg class="inline-svg">
-            <symbol id="check-4" viewBox="0 0 12 10">
-              <polyline points="1.5 6 4.5 9 10.5 1"></polyline>
-            </symbol>
-          </svg>
-          <p class="checkbox-content">${step}</p>
-        </div>`
-      );
+        const cbxId = `step-${selected.id}-${i}`;
+        stepsContainer.insertAdjacentHTML(
+            "beforeend",
+            `
+            <div class="checkbox-wrapper-4 mb-3">
+              <input class="inp-cbx" id="${cbxId}" type="checkbox"/>
+              <label class="cbx" for="${cbxId}">
+                <span><svg width="12px" height="10px"><use xlink:href="#check-4"></use></svg></span>
+              </label>
+              <svg class="inline-svg">
+                <symbol id="check-4" viewBox="0 0 12 10">
+                  <polyline points="1.5 6 4.5 9 10.5 1"></polyline>
+                </symbol>
+              </svg>
+              <p class="checkbox-content">${step}</p>
+            </div>`
+        );
     });
-    
-    const currentProceedBtn = detailsOverlay.querySelector("#proceed-btn");
 
-    detailsCheckboxContainer.onchange = () => {
-        const checked = detailsCheckboxContainer.querySelectorAll(".inp-cbx:checked");
-        currentProceedBtn.disabled = !(checked.length > 0);
-    };
+    // --- Proceed Button Logic ---
+    const currentProceedBtn = detailsOverlay.querySelector(".proceed-btn");
 
-    const proceedBtnEl = overlay.querySelector("#proceed-btn");
-    if (proceedBtnEl) proceedBtnEl.disabled = true;
-    if (typeof updateProceedButtonState === "function") updateProceedButtonState();
+    // Disable button by default
+    currentProceedBtn.disabled = true;
 
-    previewImage.classList.remove("loaded"); 
-    previewImage.style.display = "none"; 
-    previewImage.src = ""; 
+    // Event delegation: enable button when any checkbox is checked
+    detailsCheckboxContainer.addEventListener("change", (e) => {
+        if (e.target.classList.contains("inp-cbx")) {
+            const checked = detailsCheckboxContainer.querySelectorAll(".inp-cbx:checked");
+            currentProceedBtn.disabled = !(checked.length > 0);
+        }
+    });
+
+    // --- Image Preview ---
+    previewImage.classList.remove("loaded");
+    previewImage.style.display = "none";
+    previewImage.src = "";
 
     if (selected.image_url) {
         const imgLoader = new Image();
-        const timestampedUrl = `${selected.image_url}?t=${Date.now()}`; 
-        
+        const timestampedUrl = `${selected.image_url}?t=${Date.now()}`;
         imgLoader.src = timestampedUrl;
 
         imgLoader.onload = () => {
             previewImage.src = timestampedUrl;
             previewImage.style.display = "block";
-
-            requestAnimationFrame(() => {
-               previewImage.classList.add("loaded"); 
-            });
+            requestAnimationFrame(() => previewImage.classList.add("loaded"));
         };
 
         imgLoader.onerror = () => {
             console.error("Failed to load image:", selected.image_url);
             previewImage.style.display = "none";
         };
-
-    } else {
-        previewImage.style.display = "none";
     }
 
+    // --- Proceed Button Click ---
     currentProceedBtn.onclick = (e) => {
-    e.preventDefault();
-    detailsOverlay.classList.remove("is-visible");
-    priorityOverlay.classList.add("is-visible");
-    backdrop.classList.add("is-visible");
-    stopReading();
+        e.preventDefault();
+        detailsOverlay.classList.remove("is-visible");
+        priorityOverlay.classList.add("is-visible");
+        backdrop.classList.add("is-visible");
+        stopReading();
     };
-  }
+}
 
   searchInput.addEventListener("input", () => {
     const query = searchInput.value.toLowerCase().trim();
