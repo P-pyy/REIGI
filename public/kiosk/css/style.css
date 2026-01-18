@@ -63,7 +63,9 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 85vh;
+  height: 80vh;
+  flex-direction: column;
+  gap: 5rem;
   /* margin-left: 17.5rem; */
 }
 
@@ -80,6 +82,15 @@ body {
   justify-content: center;
   align-items: center;
   height: 80vh;
+}
+
+.container-request, .container-claiming {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 80vh;
+  flex-direction: column;
+  gap: 3rem;
 }
 
 .voice-btn {
@@ -233,7 +244,7 @@ body {
 
 .faq-option {
   display: flex;
-  justify-content: center;
+  justify-content: left;
   align-items: center;
   gap: 1.2rem;
   background: rgba(239, 240, 248, 1);
@@ -288,7 +299,7 @@ body {
 
   display: flex;
   flex-direction: column;
-  /* width: 1700px; */
+  width: 1700px;
   background-color: #fcfcfc;
   border-radius: 20px;
   z-index: 10000;
@@ -430,7 +441,14 @@ a {
   display: flex;
   justify-content: center;
   gap: 3rem;
-  
+}
+
+.process-container-1 {
+  padding: 2rem;
+  display: flex;
+  justify-content: center;
+  gap: 3rem;
+  flex-direction: column;
 }
 
 .faq-wrapper {
@@ -544,13 +562,23 @@ a {
 }
 
 .faq-preview-card {
+  width: 60%;
   background-color: #F3F4F8;
   border-radius: 8px;
+  gap: 2.2rem;
+  display: flex;
+  flex-direction: column;
 }
 
 .directions {
   font-size: 1.8rem;
   font-weight: 600;
+}
+
+.directionz {
+  font-size: 1.8rem;
+  font-weight: 600;
+  text-align: center;
 }
 
 .preview-text {
@@ -751,4 +779,122 @@ a {
   width: 250px !important;
   cursor: pointer;
   transition: all 0.3s ease;
+}
+
+
+/* Logo */
+.sidebar .logo {
+  text-align: left;
+  margin-bottom: 40%;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  overflow: hidden; 
+}
+
+.sidebar .logo img {
+  width: 60px;
+  margin-top: 15px;
+  margin-left: 30px;
+}
+
+.logo-text {
+  font-size: 1.2rem;
+  margin-top: 0px;
+  /* margin-left: -8px; */
+  color: #0055A5;
+  line-height: 1.3;
+  font-weight: 600;
+  white-space: nowrap; 
+  overflow: hidden; 
+  text-overflow: ellipsis; 
+  margin-bottom: 0px;
+}
+
+.logo-text .campus {
+  font-size: 1rem;
+  font-style: italic;
+  color: #0055A5;
+  font-weight: lighter;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.logo {
+  display: flex;
+  /* justify-content: center;
+  align-items: center; */
+  gap: .5rem;
+  padding: 2rem;
+}
+
+.logo-img {
+  width: 60px !important;
+  height: 60px !important;
+} 
+
+/* btns */
+
+.faq-menu-option-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 2.5rem;
+}
+
+.request-btn, .enrollment-btn, .claiming-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2rem;
+
+  width: 500px;
+  height: 350px;
+
+  background-color: #EFF0F8;
+  border-radius: 1rem;
+  border: none;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
+}
+
+.request-btn-text {
+  font-size: 1.7rem;
+  /* font-weight: 600; */
+  text-align: left;
+}
+
+.container-enrollment .faq-option-container {
+  display: flex;       /* Ensures flexbox is active */
+  flex-wrap: wrap;     /* LOGIC: This allows items to drop to a new row */
+  gap: 2rem;           /* Adds space between items */
+  justify-content: flex-start; /* Aligns items to the start (left) */
+  width: 100%;
+  padding-bottom: 2rem;
+}
+
+.container-enrollment .faq-option {
+  /* LOGIC: (100% width - (2 gaps * 2rem size)) divided by 3 items */
+  width: calc((100% - 4rem) / 3); 
+  
+  height: 130px; 
+  flex-grow: 0; 
+  flex-shrink: 0;
+}
+
+.container-overlay-form.is-visible {
+    visibility: visible !important;
+    opacity: 1 !important;
+    transform: translate(-50%, -50%) translateY(0) !important;
+}
+
+.container-3 {
+    z-index: 10005 !important; /* Forces it above everything else */
+    position: fixed;
+}
+
+#yes-btn, #no-btn {
+    pointer-events: auto !important; /* Forces clickability */
+    cursor: pointer;
+    z-index: 10006 !important;
 }
