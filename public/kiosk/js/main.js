@@ -1,6 +1,8 @@
 import { supabaseClient } from '/js/supabase-client.js';
 
 document.addEventListener("DOMContentLoaded", async () => {
+  let activeFlow = null; // "request" | "claiming" | "enrollment" | "details"
+
   const searchInput = document.querySelector(".input-voice-container input");
   const faqOptionContainer = document.querySelector(".faq-option-container");
 
@@ -35,8 +37,9 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   // Voice/Speech elements
   const faqName = document.querySelector(".faq-name");
-  const requirementsList = document.querySelector(".faq-preview ol");
-  const stepsContainer = document.querySelector(".preview-text"); // Note: This might grab the first one found if not careful
+  const detailsOverlay = document.querySelector(".container-2");
+  const requirementsList = detailsOverlay.querySelector(".faq-preview ol");
+  const stepsContainer = detailsOverlay.querySelector(".preview-text"); // Scoped to details overlay
   const previewImage = document.querySelector(".preview-image");
   const readBtn = document.querySelector(".speak-btn");
 
@@ -51,9 +54,6 @@ document.addEventListener("DOMContentLoaded", async () => {
   
   const enrollmentBtn = document.querySelector(".enrollment-btn");
   const enrollmentOverlay = document.querySelector(".container-enrollment");
-
-  // Generic Container-2 (Used for dynamic Enrollment details)
-  const detailsOverlay = document.querySelector(".container-2");
 
   // ---------------------------------------------------------
   // 3. SPECIFIC SUB-ELEMENTS
@@ -79,7 +79,6 @@ document.addEventListener("DOMContentLoaded", async () => {
   const detailsCheckboxContainer = detailsOverlay.querySelector(".preview-text");
   const backBtnDetails = detailsOverlay.querySelector("#back-btn-1");
 
-
   let kioskData = [];
   let recognition;
   let voiceMatched = false; 
@@ -94,17 +93,25 @@ document.addEventListener("DOMContentLoaded", async () => {
   // ---------------------------------------------------------
 
   // Logic: Only enable button if > 0 checkboxes are checked
-  function setupCheckboxValidation(container, button) {
-    if (!container || !button) return; 
+  function setupCheckboxValidation(container, button, requireAll = false) {
+  if (!container || !button) return;
 
-    // Disable by default initially
-    button.disabled = true;
+  // Disable button by default
+  button.disabled = true;
 
-    container.addEventListener("change", () => {
-      const checked = container.querySelectorAll(".inp-cbx:checked");
+  container.addEventListener("change", () => {
+    const checkboxes = container.querySelectorAll(".inp-cbx");
+    const checked = container.querySelectorAll(".inp-cbx:checked");
+
+    if (requireAll) {
+      // Enable only if ALL checkboxes are checked
+      button.disabled = checkboxes.length === 0 || checked.length !== checkboxes.length;
+    } else {
+      // Enable if at least one is checked
       button.disabled = !(checked.length > 0);
-    });
-  }
+    }
+  });
+}
 
   function resetFormState(container, proceedButton) {
   if (!container || !proceedButton) return;
@@ -184,15 +191,12 @@ document.addEventListener("DOMContentLoaded", async () => {
   if (requestCheckboxContainer && requestProceedBtn) {
       setupCheckboxValidation(requestCheckboxContainer, requestProceedBtn);
   }
-  if (enrollmentCheckboxContainer && enrollmentProceedBtn) {
-      setupCheckboxValidation(enrollmentCheckboxContainer, enrollmentProceedBtn);
-  }
   if (claimingCheckboxContainer && claimingProceedBtn) {
       setupCheckboxValidation(claimingCheckboxContainer, claimingProceedBtn);
   }
-  if (detailsCheckboxContainer && detailsProceedBtn) {
-      setupCheckboxValidation(detailsCheckboxContainer, detailsProceedBtn);
-  }
+  // if (detailsCheckboxContainer && detailsProceedBtn) {
+  //     setupCheckboxValidation(detailsCheckboxContainer, detailsProceedBtn);
+  // }
 
   // B. Apply Flow (Proceed -> Priority)
   setupProceedFlow(requestOverlay, requestProceedBtn);
@@ -203,26 +207,47 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   // C. Main Menu Button Clicks (Open Overlays)
-  if (requestBtn) {
-      requestBtn.addEventListener("click", () => {
-          requestOverlay.classList.add("is-visible");
-          backdrop.classList.add("is-visible");
-      });
-  }
 
-  if (claimingBtn) {
-      claimingBtn.addEventListener("click", () => {
-          claimingOverlay.classList.add("is-visible");
-          backdrop.classList.add("is-visible");
-      });
-  }
+requestBtn.addEventListener("click", () => {
+  activeFlow = "request";
+  requestOverlay.classList.add("is-visible");
+  backdrop.classList.add("is-visible");
+});
 
-  if (enrollmentBtn) {
-      enrollmentBtn.addEventListener("click", () => {
-          enrollmentOverlay.classList.add("is-visible");
-          backdrop.classList.add("is-visible");
-      });
-  }
+claimingBtn.addEventListener("click", () => {
+  activeFlow = "claiming";
+  claimingOverlay.classList.add("is-visible");
+  backdrop.classList.add("is-visible");
+});
+
+enrollmentBtn.addEventListener("click", async () => {
+  activeFlow = "enrollment";
+  enrollmentOverlay.classList.add("is-visible");
+  backdrop.classList.add("is-visible");
+  await loadEnrollmentFAQs();
+});
+
+
+  // if (requestBtn) {
+  //     requestBtn.addEventListener("click", () => {
+  //         requestOverlay.classList.add("is-visible");
+  //         backdrop.classList.add("is-visible");
+  //     });
+  // }
+
+  // if (claimingBtn) {
+  //     claimingBtn.addEventListener("click", () => {
+  //         claimingOverlay.classList.add("is-visible");
+  //         backdrop.classList.add("is-visible");
+  //     });
+  // }
+
+  // if (enrollmentBtn) {
+  //     enrollmentBtn.addEventListener("click", () => {
+  //         enrollmentOverlay.classList.add("is-visible");
+  //         backdrop.classList.add("is-visible");
+  //     });
+  // }
 
   // D. Back Button Clicks (Close Specific Overlays & Reset)
   if (backBtnRequest) {
@@ -256,14 +281,28 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   if (backBtnDetails) {
-      backBtnDetails.addEventListener("click", (e) => {
-          e.preventDefault();
-          resetFormState(detailsCheckboxContainer, detailsProceedBtn);
-          detailsOverlay.classList.remove("is-visible");
-          backdrop.classList.remove("is-visible");
-          stopReading();
-      });
-  }
+  backBtnDetails.addEventListener("click", (e) => {
+    e.preventDefault();
+
+    resetFormState(detailsCheckboxContainer, detailsProceedBtn);
+
+    // 🔥 HARD CLOSE EVERYTHING FIRST
+    detailsOverlay.classList.remove("is-visible");
+    requestOverlay.classList.remove("is-visible");
+    claimingOverlay.classList.remove("is-visible");
+    priorityOverlay.classList.remove("is-visible");
+    formOverlay.classList.remove("is-visible");
+    overlayNumber.classList.remove("is-visible");
+
+    // ✅ GO BACK ONLY TO ENROLLMENT
+    enrollmentOverlay.classList.add("is-visible");
+
+    backdrop.classList.add("is-visible");
+    stopReading();
+  });
+}
+
+
 
   // E. Form Back Button
   if (backBtn2) {
@@ -280,15 +319,15 @@ document.addEventListener("DOMContentLoaded", async () => {
   if (firstNameInput) firstNameInput.addEventListener("input", validateFormInputs);
   if (lastNameInput) lastNameInput.addEventListener("input", validateFormInputs);
 
-  // E. Priority & Form Logic
-  const handlePriorityClick = (isPriorityUser) => {
-      isPriority = isPriorityUser; 
-      priorityOverlay.classList.remove("is-visible");
-      formOverlay.classList.add("is-visible");
-  };
+  // // E. Priority & Form Logic
+  // const handlePriorityClick = (isPriorityUser) => {
+  //     isPriority = isPriorityUser; 
+  //     priorityOverlay.classList.remove("is-visible");
+  //     formOverlay.classList.add("is-visible");
+  // };
   
-  yesBtn.addEventListener("click", () => handlePriorityClick(true));
-  noBtn.addEventListener("click", () => handlePriorityClick(false));
+  // yesBtn.addEventListener("click", () => handlePriorityClick(true));
+  // noBtn.addEventListener("click", () => handlePriorityClick(false));
 
   backBtn3.addEventListener("click", (e) => {
     e.preventDefault();
@@ -298,15 +337,15 @@ document.addEventListener("DOMContentLoaded", async () => {
     backdrop.classList.remove("is-visible");
   });
 
-  backBtn2.addEventListener("click", (e) => {
-    e.preventDefault();
-    formOverlay.classList.remove("is-visible");
-    firstNameInput.value = lastNameInput.value = "";
-    priorityOverlay.classList.add("is-visible"); 
-  });
+  // backBtn2.addEventListener("click", (e) => {
+  //   e.preventDefault();
+  //   formOverlay.classList.remove("is-visible");
+  //   firstNameInput.value = lastNameInput.value = "";
+  //   priorityOverlay.classList.add("is-visible"); 
+  // });
 
-  firstNameInput.addEventListener("input", validateFormInputs);
-  lastNameInput.addEventListener("input", validateFormInputs);
+  // firstNameInput.addEventListener("input", validateFormInputs);
+  // lastNameInput.addEventListener("input", validateFormInputs);
 
 function collectDocumentsFromContainer(container) {
     if (!container) return [];
@@ -362,6 +401,13 @@ finishBtn.addEventListener("click", async (e) => {
     const queueNumber = result.data[0].queue_no;
 
     numberPreview.textContent = queueNumber;
+
+    // Reset all overlays after successful transaction
+    resetFormState(requestCheckboxContainer, requestProceedBtn);
+    resetFormState(claimingCheckboxContainer, claimingProceedBtn);
+    resetFormState(enrollmentCheckboxContainer, enrollmentProceedBtn);
+    resetFormState(detailsCheckboxContainer, detailsProceedBtn); // if details container exists
+
     formOverlay.classList.remove("is-visible");
     overlayNumber.classList.add("is-visible");
 
@@ -394,67 +440,6 @@ window.location.href = `rawbt:printText:${encodeURIComponent(printContent)}`;
   }
 });
 
-
-
-
-  // finishBtn.addEventListener("click", async (e) => {
-  //   e.preventDefault();
-  //   if (finishBtn.disabled) return;
-  //   finishBtn.disabled = true;
-
-  //   const fullName = `${firstNameInput.value.trim()} ${lastNameInput.value.trim()}`;
-  //   if (!fullName.trim()) {
-  //     alert("Please enter your complete name.");
-  //     finishBtn.disabled = false;
-  //     return;
-  //   }
-
-  //   try {
-  //     const response = await fetch("/api/queue", {
-  //       method: "POST",
-  //       headers: { "Content-Type": "application/json" },
-  //       body: JSON.stringify({
-  //       full_name: fullName,
-  //       is_priority: isPriority,
-  //       documents: documentsText
-  //     }),
-
-  //     });
-  //     const result = await response.json();
-  //     if (!response.ok) throw new Error(result.error || "Request failed");
-
-  //     const queueNumber = result.data[0].queue_no.toString();
-  //     numberPreview.textContent = queueNumber;
-
-  //     formOverlay.classList.remove("is-visible");
-  //     overlayNumber.classList.add("is-visible");
-
-  //     firstNameInput.value = lastNameInput.value = "";
-
-  //     const printContent = `
-  //   ===============================
-  //      University of Rizal System
-  //            Queue Ticket
-  //   ===============================
-        
-  //       Name: ${fullName}
-  //       Queue No: ${queueNumber}
-        
-  //              Thank you! 
-  //       Please wait for your turn.
-        
-  //   -------------------------------
-  //       Printed via REIGI Kiosk
-  //         `;
-    
-  //     const encoded = encodeURIComponent(printContent);
-  //     window.location.href = `rawbt:printText:${encoded}`;
-  //   } catch (err) {
-  //     console.error("❌ Error saving queue:", err.message);
-  //     alert("Something went wrong while saving your queue. Please try again.");
-  //     finishBtn.disabled = false;
-  //   }
-  // });
 
   finishBtnNum.addEventListener("click", () => {
     overlayNumber.classList.remove("is-visible");
@@ -647,6 +632,48 @@ window.location.href = `rawbt:printText:${encodeURIComponent(printContent)}`;
 
   }
 
+  async function loadEnrollmentFAQs() {
+  try {
+    const { data, error } = await supabaseClient
+      .from("kiosk")
+      .select("*")
+      .order("created_at", { ascending: false });
+
+    if (error) throw error;
+
+    // Clear the container first
+    if (enrollmentFaqContainer) enrollmentFaqContainer.innerHTML = "";
+
+    // Create buttons for each kiosk FAQ
+    data.forEach(faq => {
+      const btn = document.createElement("div");
+      btn.classList.add("faq-option");
+      btn.dataset.id = faq.id;
+      btn.innerHTML = `<i class="ph ph-magnifying-glass"></i><span class="faq-option-name">${faq.question_title}</span>`;
+
+      // When clicked, show details (optional)
+      btn.addEventListener("click", () => openFAQDetails(faq));
+
+      enrollmentFaqContainer.appendChild(btn);
+    });
+  } catch (err) {
+    console.error("❌ Error loading enrollment FAQs:", err.message);
+  }
+}
+
+// if (enrollmentBtn) {
+//   enrollmentBtn.addEventListener("click", async () => {
+//     // Show overlay
+//     enrollmentOverlay.classList.add("is-visible");
+//     backdrop.classList.add("is-visible");
+
+//     // Load the kiosk buttons inside enrollment overlay
+//     await loadEnrollmentFAQs();
+//   });
+// }
+
+
+
   // ---------------------------------------------------------
   // 8. DATA LOADING
   // ---------------------------------------------------------
@@ -724,6 +751,16 @@ window.location.href = `rawbt:printText:${encodeURIComponent(printContent)}`;
 }
 
   function openFAQDetails(selected) {
+    activeFlow = "details";
+
+    // Close ALL overlays first
+    requestOverlay.classList.remove("is-visible");
+    claimingOverlay.classList.remove("is-visible");
+    enrollmentOverlay.classList.remove("is-visible");
+    priorityOverlay.classList.remove("is-visible");
+    formOverlay.classList.remove("is-visible");
+    overlayNumber.classList.remove("is-visible");
+    
     overlay.classList.add("is-visible");
     backdrop.classList.add("is-visible");
     faqName.textContent = selected.question_title;
@@ -767,13 +804,36 @@ window.location.href = `rawbt:printText:${encodeURIComponent(printContent)}`;
     // Disable button by default
     currentProceedBtn.disabled = true;
 
-    // Event delegation: enable button when any checkbox is checked
-    detailsCheckboxContainer.addEventListener("change", (e) => {
-        if (e.target.classList.contains("inp-cbx")) {
-            const checked = detailsCheckboxContainer.querySelectorAll(".inp-cbx:checked");
-            currentProceedBtn.disabled = !(checked.length > 0);
-        }
+    // Determine if we require ALL checkboxes (from enrollment flow)
+    const requireAllSteps = activeFlow === "enrollment";
+
+    // Remove old listeners and set up fresh validation
+    const newDetailsCheckboxContainer = detailsCheckboxContainer.cloneNode(true);
+    detailsCheckboxContainer.parentNode.replaceChild(newDetailsCheckboxContainer, detailsCheckboxContainer);
+    
+    // Re-query after replacing
+    const updatedCheckboxContainer = detailsOverlay.querySelector(".preview-text");
+
+    updatedCheckboxContainer.addEventListener("change", () => {
+      const allCheckboxes = updatedCheckboxContainer.querySelectorAll(".inp-cbx");
+      const checkedCheckboxes = updatedCheckboxContainer.querySelectorAll(".inp-cbx:checked");
+
+      if (requireAllSteps) {
+        // For enrollment: require ALL checkboxes checked
+        currentProceedBtn.disabled = allCheckboxes.length === 0 || checkedCheckboxes.length !== allCheckboxes.length;
+      } else {
+        // For details: require at least ONE checkbox checked
+        currentProceedBtn.disabled = !(checkedCheckboxes.length > 0);
+      }
     });
+
+  //   detailsCheckboxContainer.onchange = (e) => {
+  //   if (e.target.classList.contains("inp-cbx")) {
+  //     const checked = detailsCheckboxContainer.querySelectorAll(".inp-cbx:checked");
+  //     detailsProceedBtn.disabled = !(checked.length > 0);
+  //   }
+  // };
+
 
     // --- Image Preview ---
     previewImage.classList.remove("loaded");
@@ -857,49 +917,76 @@ window.location.href = `rawbt:printText:${encodeURIComponent(printContent)}`;
   
   // 1. Define the Transition Function
   const runPriorityTransition = (isPriorityUser) => {
-      console.log("👉 Transition Triggered. Priority:", isPriorityUser);
-      isPriority = isPriorityUser;
+  isPriority = isPriorityUser;
 
-      // HIDE Priority Overlay
-      if (priorityOverlay) {
-          priorityOverlay.classList.remove("is-visible");
-      }
+  // HIDE EVERYTHING BELOW
+  priorityOverlay.classList.remove("is-visible");
+  requestOverlay.classList.remove("is-visible");
+  claimingOverlay.classList.remove("is-visible");
+  enrollmentOverlay.classList.remove("is-visible");
+  detailsOverlay.classList.remove("is-visible");
 
-      // SHOW Form Overlay (with slight delay for CSS handling)
-      if (formOverlay) {
-          setTimeout(() => {
-              formOverlay.classList.add("is-visible");
-          }, 10);
-      }
+  // SHOW FORM
+  formOverlay.classList.add("is-visible");
 
-      // ENSURE Backdrop is on
-      if (backdrop) {
-          backdrop.classList.add("is-visible");
-      }
-  };
+  // KEEP BACKDROP
+  backdrop.classList.add("is-visible");
+};
 
-  // 2. Attach Listeners (using onclick to override any potential duplicates)
-  const safeYesBtn = document.getElementById("yes-btn");
-  const safeNoBtn = document.getElementById("no-btn");
+yesBtn.onclick = (e) => {
+  e.preventDefault();
+  runPriorityTransition(true);
+};
 
-  if (safeYesBtn) {
-      safeYesBtn.onclick = (e) => {
-          e.preventDefault();
-          runPriorityTransition(true);
-      };
-      console.log("✅ YES button listener active.");
-  } else {
-      console.error("❌ YES button missing.");
-  }
-
-  if (safeNoBtn) {
-      safeNoBtn.onclick = (e) => {
-          e.preventDefault();
-          runPriorityTransition(false);
-      };
-      console.log("✅ NO button listener active.");
-  } else {
-      console.error("❌ NO button missing.");
-  }
-
+noBtn.onclick = (e) => {
+  e.preventDefault();
+  runPriorityTransition(false);
+};
 });
+//   const runPriorityTransition = (isPriorityUser) => {
+//       console.log("👉 Transition Triggered. Priority:", isPriorityUser);
+//       isPriority = isPriorityUser;
+
+//       // HIDE Priority Overlay
+//       if (priorityOverlay) {
+//           priorityOverlay.classList.remove("is-visible");
+//       }
+
+//       // SHOW Form Overlay (with slight delay for CSS handling)
+//       if (formOverlay) {
+//           setTimeout(() => {
+//               formOverlay.classList.add("is-visible");
+//           }, 10);
+//       }
+
+//       // ENSURE Backdrop is on
+//       if (backdrop) {
+//           backdrop.classList.add("is-visible");
+//       }
+//   };
+
+//   // 2. Attach Listeners (using onclick to override any potential duplicates)
+//   const safeYesBtn = document.getElementById("yes-btn");
+//   const safeNoBtn = document.getElementById("no-btn");
+
+//   if (safeYesBtn) {
+//       safeYesBtn.onclick = (e) => {
+//           e.preventDefault();
+//           runPriorityTransition(true);
+//       };
+//       console.log("✅ YES button listener active.");
+//   } else {
+//       console.error("❌ YES button missing.");
+//   }
+
+//   if (safeNoBtn) {
+//       safeNoBtn.onclick = (e) => {
+//           e.preventDefault();
+//           runPriorityTransition(false);
+//       };
+//       console.log("✅ NO button listener active.");
+//   } else {
+//       console.error("❌ NO button missing.");
+//   }
+
+// });
