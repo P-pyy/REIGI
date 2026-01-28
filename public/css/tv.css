@@ -2,6 +2,7 @@ body {
   font-family: 'Montserrat', sans-serif;
   background-color: #fcfcfc;
   margin: 0;
+  overflow-y: hidden;
 }
 
 .main-container {
@@ -114,7 +115,7 @@ body {
     width: fit-content;
 }
 
-.waiting-text-container {
+.waiting-text-container, .priority-text-container {
     display: flex;
     justify-content: space-evenly;
     align-items: center;
@@ -126,12 +127,11 @@ body {
     display: flex;
     align-items: center;
     flex-direction: column;
-    width: 50%;
-    /* width: 50%; */
-    /* background-color: #fcfcfc; */
+    width: 100%; /* Default to full width */
+    transition: width 0.3s ease; /* Smooth animation when shrinking */
 }
 
-.waiting-text {
+.waiting-text, .priority-text {
     padding: 1.2rem;
     font-size: 1.7rem;
     color: #191919;
@@ -149,24 +149,18 @@ body {
 }
 
 .priority-container {
-    display: flex;
+    display: none; /* Hidden by default */
     flex-direction: column;
     align-items: center;
-    /* width: 20vw !important; */
-    /* background-color: #fcfcfc; */
     border-left: #0057b8 1px solid;
-    /* height: max-content; */
-    width: 50%;
+    width: 0; /* logic safety */
 }
 
 .group-container {
     display: flex;
-    /* align-items: center; */
     justify-content: center;
     width: 100%;
-    /* background-color: #0057b8 !important; */
     height: 35vh;
-
 }
 
 .group1-container {
@@ -180,4 +174,21 @@ body {
 
 .main1-container {
     display: flex;
+}
+
+/* DEFAULT STATE (Single Lane) */
+.priority-container {
+    display: none; /* Must be hidden by default */
+}
+.waiting-container {
+    width: 100%; /* Must be full width by default */
+}
+
+/* DUAL MODE (Triggered by JS) */
+.group-container.dual-mode .priority-container {
+    display: flex !important;
+    width: 50% !important;
+}
+.group-container.dual-mode .waiting-container {
+    width: 50% !important;
 }

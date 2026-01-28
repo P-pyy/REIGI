@@ -440,7 +440,7 @@ a {
   padding: 2rem;
   display: flex;
   justify-content: center;
-  gap: 3rem;
+  gap: 1rem;
 }
 
 .process-container-1 {
@@ -549,7 +549,7 @@ a {
 .faq-preview {
   background-color: #F3F4F8;
   border-radius: 8px;
-  width: 1200px;
+  width: 800px;
   font-size: 1.8rem;
 }
 
@@ -897,4 +897,34 @@ a {
     pointer-events: auto !important; /* Forces clickability */
     cursor: pointer;
     z-index: 10006 !important;
+}
+
+.head-div {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  /* padding: 2rem; */
+}
+
+.select-all-btn {
+  display: flex;
+  background-color: #CDE4FF;
+  color: #000;
+  padding: .7rem;
+  border: none;
+  gap: 1rem;
+  border-radius: 20px;
+  justify-content: center;
+  align-items: center;
+  width: auto !important;
+  min-width: 250px;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+/* Ensure the text span behaves */
+.select-all-btn .speak-btn-text {
+  pointer-events: none; /* Prevents clicking the text specifically */
 }

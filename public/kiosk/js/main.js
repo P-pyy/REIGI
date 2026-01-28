@@ -41,7 +41,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   const requirementsList = detailsOverlay.querySelector(".faq-preview ol");
   const stepsContainer = detailsOverlay.querySelector(".preview-text"); // Scoped to details overlay
   const previewImage = document.querySelector(".preview-image");
-  const readBtn = document.querySelector(".speak-btn");
+  const readButtons = document.querySelectorAll(".speak-btn i.ph-user-sound, .speak-btn:has(.ph-user-sound)");
 
   // ---------------------------------------------------------
   // 2. MAIN MENU BUTTONS & OVERLAYS
@@ -78,6 +78,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   const detailsProceedBtn = detailsOverlay.querySelector(".proceed-btn");
   const detailsCheckboxContainer = detailsOverlay.querySelector(".preview-text");
   const backBtnDetails = detailsOverlay.querySelector("#back-btn-1");
+  const selectAllBtn = detailsOverlay.querySelector(".select-all-btn");
 
   let kioskData = [];
   let recognition;
@@ -91,6 +92,71 @@ document.addEventListener("DOMContentLoaded", async () => {
   // ---------------------------------------------------------
   // 4. LOGIC FUNCTIONS
   // ---------------------------------------------------------
+
+  function toggleReadAloud(button) {
+    const synth = window.speechSynthesis;
+
+    if (isReading) {
+        synth.cancel();
+        isReading = false;
+        button.classList.remove("active");
+        button.innerHTML = `<i class="ph ph-user-sound"></i> Read Aloud`;
+        return;
+    }
+
+    synth.cancel();
+
+    // Determine what text to read based on the active overlay
+    // This logic needs to be dynamic based on which button was clicked
+    let text = "";
+    
+    // Find the parent container of the clicked button
+    const container = button.closest('.container-overlay');
+    
+    if (container) {
+        // Try to find title and steps within this specific container
+        const title = container.querySelector('.title-preview')?.textContent || 
+                      container.querySelector('.faq-name')?.textContent || "Information";
+        
+        text += `Process for ${title.trim()}. `;
+
+        // Add requirements if present
+        const reqList = container.querySelector(".faq-preview ol");
+        if (reqList) {
+             const reqs = [...reqList.querySelectorAll("li")].map(li => li.textContent.trim());
+             text += reqs.length ? `Here are the requirements: ${reqs.join(", ")}. ` : "";
+        }
+
+        // Add steps/checkboxes if present
+        const stepContainer = container.querySelector(".preview-text");
+        if (stepContainer) {
+             const steps = [...stepContainer.querySelectorAll(".checkbox-content")].map(p => p.textContent.trim());
+             text += steps.length ? `Follow these steps: ${steps.join(". ")}.` : "";
+        }
+    }
+
+    if (!text) text = "No content found to read.";
+
+    currentUtterance = new SpeechSynthesisUtterance(text);
+    currentUtterance.rate = 1;
+    currentUtterance.pitch = 1;
+    currentUtterance.lang = "en-US";
+    currentUtterance.voice = getMaleVoice();
+
+    currentUtterance.onstart = () => {
+        isReading = true;
+        button.classList.add("active");
+        button.innerHTML = `<i class="ph ph-speaker-slash"></i> Stop Reading`;
+    };
+
+    currentUtterance.onend = () => {
+        isReading = false;
+        button.classList.remove("active");
+        button.innerHTML = `<i class="ph ph-user-sound"></i> Read Aloud`;
+    };
+
+    synth.speak(currentUtterance);
+  }
 
   // Logic: Only enable button if > 0 checkboxes are checked
   function setupCheckboxValidation(container, button, requireAll = false) {
@@ -114,15 +180,25 @@ document.addEventListener("DOMContentLoaded", async () => {
 }
 
   function resetFormState(container, proceedButton) {
-  if (!container || !proceedButton) return;
+    if (!container || !proceedButton) return;
 
-  // 1. Uncheck all checkboxes
-  const checkboxes = container.querySelectorAll('.inp-cbx');
-  checkboxes.forEach(cb => cb.checked = false);
+    // 1. Uncheck all checkboxes
+    const checkboxes = container.querySelectorAll('.inp-cbx');
+    checkboxes.forEach(cb => cb.checked = false);
 
-  // 2. Disable the proceed button again
-  proceedButton.disabled = true;
-}
+    // 2. Disable the proceed button again
+    proceedButton.disabled = true;
+
+    // 3. Reset "Select All" button text (if it exists nearby)
+    // We traverse up to the card, then look for the button
+    const card = container.closest('.faq-preview-card');
+    if (card) {
+        const selectAllText = card.querySelector('.select-all-btn .speak-btn-text');
+        if (selectAllText) {
+            selectAllText.textContent = "Select All";
+        }
+    }
+  }
 
   // Logic: Hide current overlay -> Show Priority Overlay
   function setupProceedFlow(currentOverlay, proceedButton) {
@@ -147,14 +223,16 @@ document.addEventListener("DOMContentLoaded", async () => {
   // Logic: Stop Text-to-Speech
   function stopReading() {
     if (window.speechSynthesis.speaking) {
-      window.speechSynthesis.cancel();
-      isReading = false;
-      if(readBtn) {
-        readBtn.classList.remove("active");
-        readBtn.innerHTML = `<i class="ph ph-user-sound"></i> Read Aloud`;
-      }
+        window.speechSynthesis.cancel();
+        isReading = false;
+        
+        // Reset ALL read buttons visual state
+        document.querySelectorAll(".navigation-head-container .speak-btn").forEach(btn => {
+            btn.classList.remove("active");
+            btn.innerHTML = `<i class="ph ph-user-sound"></i> Read Aloud`;
+        });
     }
-  }
+}
 
   function getMaleVoice() {
     const synth = window.speechSynthesis;
@@ -220,12 +298,14 @@ claimingBtn.addEventListener("click", () => {
   backdrop.classList.add("is-visible");
 });
 
-enrollmentBtn.addEventListener("click", async () => {
-  activeFlow = "enrollment";
-  enrollmentOverlay.classList.add("is-visible");
-  backdrop.classList.add("is-visible");
-  await loadEnrollmentFAQs();
-});
+if (enrollmentBtn) {
+      enrollmentBtn.addEventListener("click", async () => {
+          activeFlow = "enrollment"; // <--- Set this flag!
+          enrollmentOverlay.classList.add("is-visible");
+          backdrop.classList.add("is-visible");
+          await loadFAQs(); // Or loadEnrollmentFAQs if you have a specific one
+      });
+  }
 
 
   // if (requestBtn) {
@@ -273,7 +353,7 @@ enrollmentBtn.addEventListener("click", async () => {
   if (backBtnEnrollment) {
       backBtnEnrollment.addEventListener("click", (e) => {
           e.preventDefault();
-          resetFormState(enrollmentCheckboxContainer, enrollmentProceedBtn);
+          
           enrollmentOverlay.classList.remove("is-visible");
           backdrop.classList.remove("is-visible");
           stopReading();
@@ -281,26 +361,28 @@ enrollmentBtn.addEventListener("click", async () => {
   }
 
   if (backBtnDetails) {
-  backBtnDetails.addEventListener("click", (e) => {
-    e.preventDefault();
+      backBtnDetails.addEventListener("click", (e) => {
+          e.preventDefault();
+          
+          resetFormState(detailsCheckboxContainer, detailsProceedBtn);
 
-    resetFormState(detailsCheckboxContainer, detailsProceedBtn);
+          // 1. Always close Details
+          detailsOverlay.classList.remove("is-visible");
 
-    // 🔥 HARD CLOSE EVERYTHING FIRST
-    detailsOverlay.classList.remove("is-visible");
-    requestOverlay.classList.remove("is-visible");
-    claimingOverlay.classList.remove("is-visible");
-    priorityOverlay.classList.remove("is-visible");
-    formOverlay.classList.remove("is-visible");
-    overlayNumber.classList.remove("is-visible");
-
-    // ✅ GO BACK ONLY TO ENROLLMENT
-    enrollmentOverlay.classList.add("is-visible");
-
-    backdrop.classList.add("is-visible");
-    stopReading();
-  });
-}
+          // 2. Where to go?
+          if (activeFlow === "enrollment") {
+              // If we came from Enrollment, show Enrollment Menu again
+              enrollmentOverlay.classList.add("is-visible");
+              // Keep backdrop visible
+          } else {
+              // If we came from Search ("request" or "search"), go Home
+              requestOverlay.classList.remove("is-visible"); // Ensure request is closed
+              backdrop.classList.remove("is-visible");
+          }
+          
+          stopReading();
+      });
+  }
 
 
 
@@ -589,48 +671,14 @@ window.location.href = `rawbt:printText:${encodeURIComponent(printContent)}`;
   // 7. READ ALOUD SETUP
   // ---------------------------------------------------------
 
-  if (readBtn) {
-    readBtn.addEventListener("click", () => {
-      const synth = window.speechSynthesis;
+  const allReadButtons = document.querySelectorAll(".navigation-head-container .speak-btn");
 
-      if (isReading) {
-        synth.cancel();
-        isReading = false;
-        readBtn.classList.remove("active");
-        readBtn.innerHTML = `<i class="ph ph-user-sound"></i> Read Aloud`;
-        return;
-      }
-
-      synth.cancel();
-
-      let text = `Process for ${faqName.textContent.trim()}. `;
-      const reqs = [...requirementsList.querySelectorAll("li")].map(li => li.textContent.trim());
-      text += reqs.length ? `Here are the requirements: ${reqs.join(", ")}. ` : "No requirements listed. ";
-      const steps = [...stepsContainer.querySelectorAll(".checkbox-content")].map(p => p.textContent.trim());
-      text += steps.length ? `Now, follow these steps: ${steps.join(". ")}.` : "No steps available.";
-
-      currentUtterance = new SpeechSynthesisUtterance(text);
-      currentUtterance.rate = 1;
-      currentUtterance.pitch = 1;
-      currentUtterance.lang = "en-US";
-      currentUtterance.voice = getMaleVoice();
-
-      currentUtterance.onstart = () => {
-        isReading = true;
-        readBtn.classList.add("active");
-        readBtn.innerHTML = `<i class="ph ph-speaker-slash"></i> Stop Reading`;
-      };
-
-      currentUtterance.onend = () => {
-        isReading = false;
-        readBtn.classList.remove("active");
-        readBtn.innerHTML = `<i class="ph ph-user-sound"></i> Read Aloud`;
-      };
-
-      synth.speak(currentUtterance);
-    });
-
-  }
+  allReadButtons.forEach(btn => {
+      btn.addEventListener("click", (e) => {
+          e.preventDefault();
+          toggleReadAloud(btn);
+      });
+  });
 
   async function loadEnrollmentFAQs() {
   try {
@@ -652,7 +700,10 @@ window.location.href = `rawbt:printText:${encodeURIComponent(printContent)}`;
       btn.innerHTML = `<i class="ph ph-magnifying-glass"></i><span class="faq-option-name">${faq.question_title}</span>`;
 
       // When clicked, show details (optional)
-      btn.addEventListener("click", () => openFAQDetails(faq));
+      btn.addEventListener("click", () => {
+          activeFlow = "enrollment"; // <--- ADD THIS: Remember we came from enrollment
+          openFAQDetails(faq);
+      });
 
       enrollmentFaqContainer.appendChild(btn);
     });
@@ -748,12 +799,12 @@ window.location.href = `rawbt:printText:${encodeURIComponent(printContent)}`;
         if (selected) openFAQDetails(selected);
       });
     });
-}
+  }
 
   function openFAQDetails(selected) {
-    activeFlow = "details";
+    // activeFlow = "details";
 
-    // Close ALL overlays first
+    // 1. Close ALL other overlays first
     requestOverlay.classList.remove("is-visible");
     claimingOverlay.classList.remove("is-visible");
     enrollmentOverlay.classList.remove("is-visible");
@@ -761,14 +812,14 @@ window.location.href = `rawbt:printText:${encodeURIComponent(printContent)}`;
     formOverlay.classList.remove("is-visible");
     overlayNumber.classList.remove("is-visible");
     
-    overlay.classList.add("is-visible");
+    // 2. Show the specific overlay
+    // overlay.classList.add("is-visible"); // Generic container
     backdrop.classList.add("is-visible");
     faqName.textContent = selected.question_title;
 
-    detailsOverlay.classList.add("is-visible"); // Show the details overlay
-    backdrop.classList.add("is-visible");
+    detailsOverlay.classList.add("is-visible"); // The Details/Steps container
 
-    // --- Requirements List ---
+    // 3. Populate Requirements
     requirementsList.innerHTML = "";
     (JSON.parse(selected.requirements || "[]")).forEach(r => {
         const li = document.createElement("li");
@@ -776,7 +827,7 @@ window.location.href = `rawbt:printText:${encodeURIComponent(printContent)}`;
         requirementsList.appendChild(li);
     });
 
-    // --- Steps with Checkboxes ---
+    // 4. Populate Checkboxes
     stepsContainer.innerHTML = "";
     (JSON.parse(selected.steps || "[]")).forEach((step, i) => {
         const cbxId = `step-${selected.id}-${i}`;
@@ -798,44 +849,52 @@ window.location.href = `rawbt:printText:${encodeURIComponent(printContent)}`;
         );
     });
 
-    // --- Proceed Button Logic ---
+    // 5. Setup "Proceed" Button Logic
     const currentProceedBtn = detailsOverlay.querySelector(".proceed-btn");
+    currentProceedBtn.disabled = true; // Start disabled
 
-    // Disable button by default
-    currentProceedBtn.disabled = true;
+    // 6. Setup "Select All" Button Logic
+    const localSelectAllBtn = detailsOverlay.querySelector(".select-all-btn");
 
-    // Determine if we require ALL checkboxes (from enrollment flow)
-    const requireAllSteps = activeFlow === "enrollment";
+    if (localSelectAllBtn) {
+        // Clone button to remove old event listeners (Clean slate)
+        const newSelectAllBtn = localSelectAllBtn.cloneNode(true);
+        localSelectAllBtn.parentNode.replaceChild(newSelectAllBtn, localSelectAllBtn);
 
-    // Remove old listeners and set up fresh validation
-    const newDetailsCheckboxContainer = detailsCheckboxContainer.cloneNode(true);
-    detailsCheckboxContainer.parentNode.replaceChild(newDetailsCheckboxContainer, detailsCheckboxContainer);
-    
-    // Re-query after replacing
-    const updatedCheckboxContainer = detailsOverlay.querySelector(".preview-text");
+        // Add Click Listener
+        newSelectAllBtn.addEventListener("click", (e) => {
+            e.preventDefault();
 
-    updatedCheckboxContainer.addEventListener("change", () => {
-      const allCheckboxes = updatedCheckboxContainer.querySelectorAll(".inp-cbx");
-      const checkedCheckboxes = updatedCheckboxContainer.querySelectorAll(".inp-cbx:checked");
+            const allCheckboxes = stepsContainer.querySelectorAll(".inp-cbx");
+            
+            // Logic: If ANY box is unchecked, we Select All. 
+            // Only if ALL are currently checked do we Unselect All.
+            const isAllChecked = Array.from(allCheckboxes).every(cb => cb.checked);
+            const targetState = !isAllChecked;
 
-      if (requireAllSteps) {
-        // For enrollment: require ALL checkboxes checked
-        currentProceedBtn.disabled = allCheckboxes.length === 0 || checkedCheckboxes.length !== allCheckboxes.length;
-      } else {
-        // For details: require at least ONE checkbox checked
-        currentProceedBtn.disabled = !(checkedCheckboxes.length > 0);
-      }
-    });
+            // Apply state
+            allCheckboxes.forEach(cb => {
+                cb.checked = targetState;
+            });
 
-  //   detailsCheckboxContainer.onchange = (e) => {
-  //   if (e.target.classList.contains("inp-cbx")) {
-  //     const checked = detailsCheckboxContainer.querySelectorAll(".inp-cbx:checked");
-  //     detailsProceedBtn.disabled = !(checked.length > 0);
-  //   }
-  // };
+            // Update Button Text
+            const btnText = newSelectAllBtn.querySelector(".speak-btn-text");
+            if(btnText) btnText.textContent = targetState ? "Unselect All" : "Select All";
 
+            // CRITICAL: Manually trigger the 'change' event so the validation logic runs
+            stepsContainer.dispatchEvent(new Event('change'));
+        });
+    }
 
-    // --- Image Preview ---
+    // 7. Validation Listener (Enables/Disables Proceed)
+    // We remove old listeners by cloning or simply overwriting 'onchange'
+    stepsContainer.onchange = () => {
+        const checked = stepsContainer.querySelectorAll(".inp-cbx:checked");
+        // Logic: Enable if at least 1 is checked
+        currentProceedBtn.disabled = !(checked.length > 0);
+    };
+
+    // 8. Handle Image Loading
     previewImage.classList.remove("loaded");
     previewImage.style.display = "none";
     previewImage.src = "";
@@ -844,28 +903,33 @@ window.location.href = `rawbt:printText:${encodeURIComponent(printContent)}`;
         const imgLoader = new Image();
         const timestampedUrl = `${selected.image_url}?t=${Date.now()}`;
         imgLoader.src = timestampedUrl;
-
         imgLoader.onload = () => {
             previewImage.src = timestampedUrl;
             previewImage.style.display = "block";
             requestAnimationFrame(() => previewImage.classList.add("loaded"));
         };
-
         imgLoader.onerror = () => {
-            console.error("Failed to load image:", selected.image_url);
             previewImage.style.display = "none";
         };
+    } else {
+        previewImage.style.display = "none";
     }
 
-    // --- Proceed Button Click ---
+    // 9. Proceed Button Click -> Go to Priority
+    // Override onclick to ensure it targets the correct overlay
     currentProceedBtn.onclick = (e) => {
         e.preventDefault();
+        
+        // Reset the form state visually (optional, but good for cleanup)
+        // resetFormState(stepsContainer, currentProceedBtn); 
+        // Note: Don't reset here if you want to keep data, but reset if you want clean slate on back.
+
         detailsOverlay.classList.remove("is-visible");
         priorityOverlay.classList.add("is-visible");
         backdrop.classList.add("is-visible");
         stopReading();
     };
-}
+  }
 
   searchInput.addEventListener("input", () => {
     const query = searchInput.value.toLowerCase().trim();
@@ -890,7 +954,10 @@ window.location.href = `rawbt:printText:${encodeURIComponent(printContent)}`;
         <i class="ph ph-magnifying-glass"></i>
         <span class="faq-option-name">${faq.question_title}</span>
       `;
-      option.addEventListener("click", () => openFAQDetails(faq));
+      option.addEventListener("click", () => {
+          activeFlow = "search"; // <--- ADD THIS: Remember we came from search
+          openFAQDetails(faq);
+      });
       
       if (mainFaqContainer) mainFaqContainer.appendChild(option);
     });
