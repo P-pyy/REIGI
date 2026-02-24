@@ -1157,3 +1157,11 @@ tr, th, td {
   margin-top: 2rem;
   /* flex-direction: column; */
 }
+
+.voice-subtitle mark {
+    background-color: #ffeb3b; /* High-visibility yellow */
+    color: #191919;
+    padding: 0 0.2rem;
+    border-radius: 4px;
+    font-weight: bold;
+}
