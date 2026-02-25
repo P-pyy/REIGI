@@ -565,7 +565,6 @@ ${
 }
 
 ===============================
-// Huge queue number, visually centered
 \x1B\x21\xF0${padding}${queueStr}\x1B\x21\x00
 ===============================
    Please wait for your turn.
