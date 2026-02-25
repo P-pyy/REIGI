@@ -514,6 +514,33 @@ finishBtn.addEventListener("click", async (e) => {
 const documentLabel = documentLabelMap[activeFlow] || "Documents";
 
     // Optional: print queue ticket
+// const printContent = `
+// ===============================
+//    University of Rizal System
+//          Queue Ticket
+// ===============================
+
+
+// Name: ${fullName}
+// Queue No: ${queueNumber}
+
+
+// ${documentLabel}:
+// ${
+// activeFlow === "enrollment"
+// ? ` - ${selectedEnrollmentForm}`
+// : documentsText
+//     ? documentsText.split(", ").map(doc => " - " + doc).join("\n")
+//     : ""
+// }
+
+
+//     Please wait for your turn.
+//           Thank you!
+
+// -------------------------------
+//     Printed via REIGI Kiosk
+// `;
 const printContent = `
 ===============================
    University of Rizal System
@@ -522,23 +549,16 @@ const printContent = `
 
 
 Name: ${fullName}
-
---------------------------------
-         QUEUE NUMBER
---------------------------------
-
-        ${queueNumber}
-
---------------------------------
+\x1B\x21\x30Queue No: ${queueNumber}\x1B\x21\x00
 
 
 ${documentLabel}:
 ${
-activeFlow === "enrollment"
-? ` - ${selectedEnrollmentForm}`
-: documentsText
-    ? documentsText.split(", ").map(doc => " - " + doc).join("\n")
-    : ""
+  activeFlow === "enrollment"
+    ? ` - ${selectedEnrollmentForm}`
+    : documentsText
+        ? documentsText.split(", ").map(doc => " - " + doc).join("\n")
+        : ""
 }
 
 
