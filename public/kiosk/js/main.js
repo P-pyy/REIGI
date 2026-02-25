@@ -522,7 +522,14 @@ const printContent = `
 
 
 Name: ${fullName}
-Queue No: ${queueNumber}
+
+--------------------------------
+         QUEUE NUMBER
+--------------------------------
+
+        ${queueNumber}
+
+--------------------------------
 
 
 ${documentLabel}:
