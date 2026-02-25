@@ -566,11 +566,13 @@ ${
           Thank you!
 
 ===============================
-// Centered and extra large queue number
-\x1B\x61\x01          // ESC a 1 -> center alignment
+\x1B\x61\x01                // Center alignment
+\n\n                        // Add some space above
 \x1B\x21\xF0${queueNumber}\x1B\x21\x00
-\x1B\x61\x00          // Reset alignment to left
+\n\n                        // Add some space below
+\x1B\x61\x00                // Reset alignment
 ===============================
+    Printed via REIGI Kiosk
 `;
 // const printContent = `
 window.location.href = `rawbt:printText:${encodeURIComponent(printContent)}`;
