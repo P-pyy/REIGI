@@ -541,6 +541,11 @@ const documentLabel = documentLabelMap[activeFlow] || "Documents";
 // -------------------------------
 //     Printed via REIGI Kiosk
 // `;
+// Manually center the queue number
+const totalChars = 32; // typical 58mm printer characters per line
+const queueStr = `${queueNumber}`;
+const padding = " ".repeat(Math.floor((totalChars - queueStr.length) / 2));
+
 const printContent = `
 ===============================
    University of Rizal System
@@ -560,11 +565,36 @@ ${
 }
 
 ===============================
-\x1B\x61\x01\x1B\x21\xF0${queueNumber}\x1B\x21\x00\x1B\x61\x00
+// Huge queue number, visually centered
+\x1B\x21\xF0${padding}${queueStr}\x1B\x21\x00
 ===============================
    Please wait for your turn.
           Thank you!
 `;
+// const printContent = `
+// ===============================
+//    University of Rizal System
+//          Queue Ticket
+// ===============================
+
+
+// Name: ${fullName}
+
+// ${documentLabel}:
+// ${
+//   activeFlow === "enrollment"
+//     ? ` - ${selectedEnrollmentForm}`
+//     : documentsText
+//         ? documentsText.split(", ").map(doc => " - " + doc).join("\n")
+//         : ""
+// }
+
+// ===============================
+// \x1B\x61\x01\x1B\x21\xF0${queueNumber}\x1B\x21\x00\x1B\x61\x00
+// ===============================
+//    Please wait for your turn.
+//           Thank you!
+// `;
 // const printContent = `
 window.location.href = `rawbt:printText:${encodeURIComponent(printContent)}`;
   } catch (err) {
