@@ -105,6 +105,22 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   let lastAnnouncedId = null;
 
+  function announceQueue(queueNo, windowName) {
+  if (!queueNo || !windowName) return;
+
+  const message = `Queue number ${queueNo}, please proceed to ${windowName}`;
+
+  const speech = new SpeechSynthesisUtterance(message);
+  speech.lang = "en-US";
+  speech.rate = 0.9;   // speed (optional)
+  speech.pitch = 1;    // pitch (optional)
+
+  window.speechSynthesis.cancel(); // stop previous voice
+  window.speechSynthesis.speak(speech);
+
+  console.log("🔊 Announcing:", message);
+}
+
 supabaseClient
     .channel("queue-tv") // Connect to the same channel name as Kiosk.js
     // 1. Listen for Database Changes (Automatic First Call)
