@@ -550,6 +550,8 @@ const printContent = `
 
 Name: ${fullName}
 
+
+
 ${documentLabel}:
 ${
   activeFlow === "enrollment"
@@ -564,13 +566,10 @@ ${
           Thank you!
 
 ===============================
-\x1B\x61\x01                
-\n\n                        // Add some space above
+\x1B\x61\x01          
 \x1B\x21\xF0${queueNumber}\x1B\x21\x00
-\n\n                        // Add some space below
-\x1B\x61\x00                
+\x1B\x61\x00         
 ===============================
-    Printed via REIGI Kiosk
 `;
 // const printContent = `
 window.location.href = `rawbt:printText:${encodeURIComponent(printContent)}`;
