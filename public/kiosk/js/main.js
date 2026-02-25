@@ -448,22 +448,30 @@ finishBtn.addEventListener("click", async (e) => {
     return;
   }
 
-  // Collect checked documents
-  const allDocuments = [
-    ...collectDocumentsFromContainer(requestCheckboxContainer),
-    ...collectDocumentsFromContainer(enrollmentCheckboxContainer),
-    ...collectDocumentsFromContainer(claimingCheckboxContainer),
-    ...collectDocumentsFromContainer(detailsCheckboxContainer)
-  ];
+  let documentsText = "";
+  let uniqueDocuments = [];
 
-  if (!allDocuments.length) {
+  // Only collect documents for Requesting and Claiming
+  if (activeFlow === "request") {
+    uniqueDocuments = collectDocumentsFromContainer(requestCheckboxContainer);
+  }
+
+  else if (activeFlow === "claiming") {
+    uniqueDocuments = collectDocumentsFromContainer(claimingCheckboxContainer);
+  }
+
+  else if (activeFlow === "search") {
+    uniqueDocuments = collectDocumentsFromContainer(detailsCheckboxContainer);
+  }
+
+  // Validate only if NOT enrollment
+  if (activeFlow !== "enrollment" && uniqueDocuments.length === 0) {
     alert("Please check at least one document.");
     finishBtn.disabled = false;
     return;
   }
 
-  const uniqueDocuments = [...new Set(allDocuments)];
-  const documentsText = uniqueDocuments.join(", ");
+  documentsText = uniqueDocuments.join(", ");
 
   try {
     // Call your API instead of direct insert
@@ -514,38 +522,23 @@ const printContent = `
          Queue Ticket
 ===============================
 
-Transaction: ${transactionType}
 
 Name: ${fullName}
 Queue No: ${queueNumber}
+Transaction: ${transactionType}
 
+${activeFlow !== "enrollment" ? `
 Documents:
 ${documentsText.split(", ").map(doc => " - " + doc).join("\n")}
+` : ""}
 
-Please wait for your turn.
-      Thank you!
+    Please wait for your turn.
+          Thank you!
 
 -------------------------------
-Printed via REIGI Kiosk
+    Printed via REIGI Kiosk
 `;
 // const printContent = `
-// ===============================
-//    University of Rizal System
-//          Queue Ticket
-// ===============================
-
-// Name: ${fullName}
-// Queue No: ${queueNumber}
-
-// Documents:
-// ${documentsText.split(", ").map(doc => " - " + doc).join("\n")}
-
-// Please wait for your turn.
-//       Thank you!
-
-// -------------------------------
-// Printed via REIGI Kiosk
-// `;
 window.location.href = `rawbt:printText:${encodeURIComponent(printContent)}`;
   } catch (err) {
     console.error("❌ Error saving queue:", err);
