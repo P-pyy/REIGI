@@ -542,10 +542,6 @@ const documentLabel = documentLabelMap[activeFlow] || "Documents";
 //     Printed via REIGI Kiosk
 // `;
 // Manually center the queue number
-const totalChars = 32; // typical 58mm printer characters per line
-const queueStr = `${queueNumber}`;
-const padding = " ".repeat(Math.floor((totalChars - queueStr.length) / 2));
-
 const printContent = `
 ===============================
    University of Rizal System
@@ -565,7 +561,9 @@ ${
 }
 
 ===============================
-\x1B\x21\xF0${padding}${queueStr}\x1B\x21\x00
+\x1B\x61\x01          
+\x1B\x21\xF0${queueNumber}\x1B\x21\x00
+\x1B\x61\x00          
 ===============================
    Please wait for your turn.
           Thank you!
