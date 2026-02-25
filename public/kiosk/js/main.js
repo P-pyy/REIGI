@@ -549,7 +549,7 @@ const printContent = `
 
 
 Name: ${fullName}
-\x1B\x21\x30Queue No: ${queueNumber}\x1B\x21\x00
+
 
 
 ${documentLabel}:
@@ -565,8 +565,9 @@ ${
     Please wait for your turn.
           Thank you!
 
--------------------------------
-    Printed via REIGI Kiosk
+===============================
+\x1B\x21\x30${queueNumber}\x1B\x21\x00
+===============================
 `;
 // const printContent = `
 window.location.href = `rawbt:printText:${encodeURIComponent(printContent)}`;
