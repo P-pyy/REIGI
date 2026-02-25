@@ -495,12 +495,26 @@ finishBtn.addEventListener("click", async (e) => {
 
     firstNameInput.value = lastNameInput.value = "";
 
+    let transactionType = "General Inquiry";
+
+    if (activeFlow === "request") {
+      transactionType = "Requesting Documents";
+    } else if (activeFlow === "claiming") {
+      transactionType = "Claiming Documents";
+    } else if (activeFlow === "enrollment") {
+      transactionType = "Enrollment";
+    } else if (activeFlow === "search") {
+      transactionType = "Information / Inquiry";
+    }
+
     // Optional: print queue ticket
 const printContent = `
 ===============================
    University of Rizal System
          Queue Ticket
 ===============================
+
+Transaction: ${transactionType}
 
 Name: ${fullName}
 Queue No: ${queueNumber}
@@ -514,6 +528,24 @@ Please wait for your turn.
 -------------------------------
 Printed via REIGI Kiosk
 `;
+// const printContent = `
+// ===============================
+//    University of Rizal System
+//          Queue Ticket
+// ===============================
+
+// Name: ${fullName}
+// Queue No: ${queueNumber}
+
+// Documents:
+// ${documentsText.split(", ").map(doc => " - " + doc).join("\n")}
+
+// Please wait for your turn.
+//       Thank you!
+
+// -------------------------------
+// Printed via REIGI Kiosk
+// `;
 window.location.href = `rawbt:printText:${encodeURIComponent(printContent)}`;
   } catch (err) {
     console.error("❌ Error saving queue:", err);
