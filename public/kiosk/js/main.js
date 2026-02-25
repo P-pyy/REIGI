@@ -561,9 +561,10 @@ ${
 }
 
 ===============================
-\x1B\x61\x01          
+\x1B\x61\x01   
+         Your Queue Number is:
 \x1B\x21\xF0${queueNumber}\x1B\x21\x00
-\x1B\x61\x00          
+\x1B\x61\x00         
 ===============================
    Please wait for your turn.
           Thank you!
