@@ -232,7 +232,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             btn.innerHTML = `<i class="ph ph-user-sound"></i> Read Aloud`;
         });
     }
-}
+  }
 
   function getMaleVoice() {
     const synth = window.speechSynthesis;
@@ -529,6 +529,196 @@ window.location.href = `rawbt:printText:${encodeURIComponent(printContent)}`;
     window.location.reload();
   });
 
+  let voiceDebounceTimer = null; // NEW: Timer for debouncing
+
+  // Helper to show "Not Found" or "Silence" UI
+  function showRetryUI(titleMessage) {
+      const voiceTitleEl = document.querySelector(".voice-title");
+      voiceTitleEl.innerHTML = `${titleMessage} <a href="#" class="voice-retry" style="color: #ffeb3b; text-decoration: underline; cursor: pointer; margin-left: 10px;">Retry</a>`;
+      
+      setTimeout(() => {
+          const retryButton = document.querySelector(".voice-retry");
+          if (retryButton) {
+              retryButton.addEventListener("click", (e) => {
+                  e.preventDefault();
+                  voiceMatched = false;
+                  transcriptBuffer = ""; // Reset buffer
+                  clearTimeout(voiceDebounceTimer); // Clear any hanging timers
+                  document.querySelector(".voice-title").textContent = "Listening...";
+                  document.querySelector(".voice-subtitle").textContent = "Speak the process name...";
+                  try {
+                      recognition.start();
+                  } catch (err) {
+                      console.warn("Voice recognition already started", err);
+                  }
+              });
+          }
+      }, 50);
+  }
+
+  // ---------------------------------------------------------
+  // 6. VOICE RECOGNITION SETUP
+  // ---------------------------------------------------------
+
+  if ('webkitSpeechRecognition' in window) {
+    recognition = new webkitSpeechRecognition();
+    recognition.continuous = false;
+    recognition.interimResults = true;
+    recognition.lang = "en-US";
+
+    recognition.onstart = () => {
+      console.log("🎤 Voice recognition started");
+      document.querySelector(".voice-title").textContent = "Listening...";
+      document.querySelector(".voice-subtitle").textContent = "Speak the process name...";
+    };
+
+    recognition.onerror = (event) => {
+      console.error("❌ Voice recognition error:", event.error);
+      document.querySelector(".voice-title").textContent = "Error listening";
+      document.querySelector(".voice-subtitle").textContent = "Please try again.";
+    };
+
+    // NEW LOGIC: Evaluation Engine (Hierarchical Search)
+    function evaluateVoiceCommand(transcript) {
+        if (!transcript || voiceMatched) return;
+
+        let matchedFAQ = null;
+        let matchedExecute = null;
+        let matchedText = "";
+
+        // ==========================================
+        // TIER 1: ENROLLMENT FAQs ONLY
+        // ==========================================
+        // Filter the existing aliases to only those inside the enrollment container
+        const enrollmentOptions = Array.from(enrollmentFaqContainer.querySelectorAll('.faq-option'));
+        const enrollmentIds = enrollmentOptions.map(opt => opt.dataset.id);
+
+        for (let item of faqAliases) {
+            // Check if this FAQ belongs to the Enrollment list
+            if (enrollmentIds.includes(item.faq.id.toString())) {
+                for (let kw of item.keywords) {
+                    if (transcript === kw || transcript.includes(` ${kw} `) || transcript.startsWith(`${kw} `) || transcript.endsWith(` ${kw}`)) {
+                        matchedFAQ = item.faq;
+                        matchedText = item.faq.question_title;
+                        matchedExecute = () => openFAQDetails(item.faq);
+                        break;
+                    }
+                }
+            }
+            if (matchedExecute) break;
+        }
+
+        // ==========================================
+        // TIER 2: REQUEST & CLAIMING CHECKBOXES
+        // ==========================================
+        if (!matchedExecute) {
+            const checkboxes = document.querySelectorAll('.container-request .checkbox-content, .container-claiming .checkbox-content');
+            for (let cb of checkboxes) {
+                const cbText = cb.textContent.toLowerCase().trim();
+                
+                if (transcript.includes(cbText) || (transcript.length > 3 && cbText.includes(transcript))) {
+                    const parentBtn = cb.closest('.container-request') ? requestBtn : claimingBtn;
+                    matchedText = cbText;
+                    matchedExecute = () => {
+                        parentBtn.click(); // Open Request or Claiming container
+                        cb.innerHTML = cb.innerHTML.replace(new RegExp(`(${transcript})`, 'gi'), `<mark>$1</mark>`);
+                    };
+                    break;
+                }
+            }
+        }
+
+        // ==========================================
+        // FINAL EXECUTION OR REJECTION
+        // ==========================================
+        if (matchedExecute) {
+            voiceMatched = true;
+            recognition.stop();
+            document.querySelector(".voice-title").textContent = "Recognized!";
+            
+            // Highlight safely
+            try {
+                const safeRegex = matchedText.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&');
+                const safeHighlight = transcript.replace(new RegExp(`(${safeRegex})`, 'gi'), `<mark>$1</mark>`);
+                document.querySelector(".voice-subtitle").innerHTML = safeHighlight || `<mark>${transcript}</mark>`;
+            } catch(e) {
+                document.querySelector(".voice-subtitle").innerHTML = `<mark>${transcript}</mark>`;
+            }
+
+            // Execute the matched routing
+            setTimeout(() => {
+                closeVoiceOverlay();
+                matchedExecute();
+            }, 1200);
+
+        } else {
+            // ASAP REJECTION: Trigger immediately when eval fails all tiers
+            voiceMatched = true; 
+            recognition.stop();
+            showRetryUI("Couldn't find it.");
+            document.querySelector(".voice-subtitle").innerHTML = `No match for: "<span style="color: #ff5252">${transcript}</span>"`;
+        }
+    }
+
+    recognition.onend = () => {
+      console.log("🎤 Voice recognition ended");
+      clearTimeout(voiceDebounceTimer); // Stop the debounce
+
+      if (!voiceMatched) {
+        if (transcriptBuffer.trim() === "") {
+            // User opened it but stayed totally silent
+            showRetryUI("Didn't hear you :(");
+            document.querySelector(".voice-subtitle").textContent = "Please try again.";
+        } else {
+            // NATIVE CUTOFF: If the microphone auto-stops before the 2 sec debounce finishes,
+            // evaluate the text immediately (ASAP).
+            evaluateVoiceCommand(transcriptBuffer);
+        }
+      }
+    };
+
+    recognition.onresult = (event) => {
+      // Clear the debounce timer every time the user speaks a new syllable
+      clearTimeout(voiceDebounceTimer); 
+
+      let transcript = "";
+      for (let i = event.resultIndex; i < event.results.length; i++) {
+        transcript += event.results[i][0].transcript;
+      }
+      
+      transcriptBuffer = transcript.toLowerCase().trim();
+      document.querySelector(".voice-subtitle").textContent = transcriptBuffer;
+
+      // START DEBOUNCE: If 2 seconds pass with no new words, run the evaluation
+      voiceDebounceTimer = setTimeout(() => {
+          evaluateVoiceCommand(transcriptBuffer);
+      }, 500);
+    };
+  }  
+
+  voiceBtn.addEventListener("click", () => {
+    voiceOverlay.classList.add("is-visible");
+    voiceBackdrop.classList.add("is-visible");
+    document.querySelector(".voice-title").textContent = "Listening...";
+    document.querySelector(".voice-subtitle").textContent = "Speak the process name...";
+    try {
+      recognition.start();
+    } catch (err) {
+      console.warn("Voice recognition already started", err);
+    }
+  });
+
+  function closeVoiceOverlay() {
+    if (recognition) recognition.stop();
+    clearTimeout(voiceDebounceTimer); // Safety cleanup
+    voiceMatched = false;
+    transcriptBuffer = "";
+    document.querySelector(".voice-title").textContent = "Listening...";
+    document.querySelector(".voice-subtitle").textContent = "Speak the process name...";
+    voiceOverlay.classList.remove("is-visible");
+    voiceBackdrop.classList.remove("is-visible");
+  }
+
   // ---------------------------------------------------------
   // 6. VOICE RECOGNITION SETUP
   // ---------------------------------------------------------
@@ -578,68 +768,122 @@ window.location.href = `rawbt:printText:${encodeURIComponent(printContent)}`;
     };
 
   recognition.onresult = (event) => {
-  let transcript = "";
-  for (let i = event.resultIndex; i < event.results.length; i++) {
-    transcript += event.results[i][0].transcript;
-  }
-  transcript = transcript.toLowerCase().trim();
-  document.querySelector(".voice-subtitle").textContent = transcript;
+      let transcript = "";
+      let isFinal = false; // <-- CRITICAL FIX: Track if the sentence is finished
 
-  let matchedFAQ = null;
-  for (let item of faqAliases) {
-    for (let kw of item.keywords) {
-      if (transcript === kw || transcript.includes(` ${kw} `) || transcript.startsWith(`${kw} `) || transcript.endsWith(` ${kw}`)) {
-        matchedFAQ = item.faq;
-        break;
+      for (let i = event.resultIndex; i < event.results.length; i++) {
+          transcript += event.results[i][0].transcript;
+          if (event.results[i].isFinal) {
+              isFinal = true;
+          }
       }
-      if (transcript.includes(kw)) {
-        matchedFAQ = item.faq;
-        break;
+      
+      transcript = transcript.toLowerCase().trim();
+      
+      // Keep updating the UI live so the user sees you are listening
+      document.querySelector(".voice-subtitle").textContent = transcript;
+
+      // CRITICAL FIX: Do NOT run the search until the user stops speaking!
+      if (!isFinal) return; 
+
+      let matchedExecute = null;
+      let matchedText = "";
+
+      // ==========================================
+      // SEARCH TIER 1: CUSTOM ALIASES
+      // ==========================================
+      const customAliases = {
+          "request": requestBtn,
+          "get a document": requestBtn,
+          "tor": requestBtn, 
+          
+          "claiming": claimingBtn,
+          "claim": claimingBtn,
+          "pick up": claimingBtn, 
+          
+          "enrollment": enrollmentBtn,
+          "enroll": enrollmentBtn
+      };
+
+      for (const [alias, btnEl] of Object.entries(customAliases)) {
+          if (transcript.includes(alias)) {
+              matchedExecute = () => btnEl.click();
+              matchedText = alias;
+              break;
+          }
       }
-    }
-    if (matchedFAQ) break;
-  }
 
-  if (matchedFAQ && !voiceMatched) {
-    voiceMatched = true;
-    recognition.stop();
+      // ==========================================
+      // SEARCH TIER 2: CHECKBOX LABELS (Request/Claiming)
+      // ==========================================
+      if (!matchedExecute) {
+          const checkboxes = document.querySelectorAll('.container-request .checkbox-content, .container-claiming .checkbox-content');
+          for (let cb of checkboxes) {
+              const cbText = cb.textContent.toLowerCase().trim();
+              
+              if (transcript.includes(cbText) || (transcript.length > 3 && cbText.includes(transcript))) {
+                  const parentBtn = cb.closest('.container-request') ? requestBtn : claimingBtn;
+                  matchedExecute = () => {
+                      parentBtn.click(); // Open the right container
+                      // Highlight the specific checkbox label in the UI
+                      cb.innerHTML = cb.innerHTML.replace(new RegExp(`(${transcript})`, 'gi'), `<mark>$1</mark>`);
+                  };
+                  matchedText = cbText;
+                  break;
+              }
+          }
+      }
 
-    document.querySelector(".voice-title").textContent = "Recognized!";
-    document.querySelector(".voice-subtitle").textContent = matchedFAQ.question_title;
+      // ==========================================
+      // SEARCH TIER 3: KIOSK FAQs
+      // ==========================================
+      if (!matchedExecute) {
+          for (let item of faqAliases) {
+            for (let kw of item.keywords) {
+              if (transcript === kw || transcript.includes(` ${kw} `) || transcript.startsWith(`${kw} `) || transcript.endsWith(` ${kw}`)) {
+                matchedExecute = () => openFAQDetails(item.faq);
+                matchedText = item.faq.question_title;
+                break;
+              }
+            }
+            if (matchedExecute) break;
+          }
+      }
 
-    setTimeout(() => {
-      closeVoiceOverlay();
-      openFAQDetails(matchedFAQ);
-    }, 400);
-  }
-  };
+      // ==========================================
+      // FINAL EXECUTION OR REJECTION
+      // ==========================================
+      if (matchedExecute && !voiceMatched) {
+          voiceMatched = true;
+          recognition.stop();
 
-    window.testVoiceInput = (testText) => {
-      const transcript = testText.toLowerCase().trim();
-      console.log("🎙️ [Test] Transcript:", transcript);
+          document.querySelector(".voice-title").textContent = "Recognized!";
+          
+          // Highlight the keyword in the subtitle safely
+          try {
+              // Escape special characters so regex doesn't break on words like (SF-10)
+              const safeRegex = matchedText.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&');
+              const safeHighlight = transcript.replace(new RegExp(`(${safeRegex})`, 'gi'), `<mark>$1</mark>`);
+              document.querySelector(".voice-subtitle").innerHTML = safeHighlight || `<mark>${transcript}</mark>`;
+          } catch(e) {
+              document.querySelector(".voice-subtitle").innerHTML = `<mark>${transcript}</mark>`;
+          }
 
-      const matched = kioskData.find(faq =>
-        transcript.includes(faq.question_title.toLowerCase()) ||
-        faq.question_title.toLowerCase().includes(transcript)
-      );
+          // Execute routing
+          setTimeout(() => {
+              closeVoiceOverlay();
+              matchedExecute(); 
+          }, 1200);
 
-      if (matched) {
-        console.log("✅ [Test] Matched FAQ:", matched.question_title);
-        document.querySelector(".voice-title").textContent = "Recognized!";
-        document.querySelector(".voice-subtitle").textContent = matched.question_title;
-
-        setTimeout(() => {
-          document.querySelector(".voice-search-overlay").classList.remove("is-visible");
-          document.getElementById("voice-overlay-backdrop").classList.remove("is-visible");
-          openFAQDetails(matched);
-        }, 1000);
-      } else {
-        console.log("❌ [Test] No match found for:", transcript);
-        document.querySelector(".voice-title").textContent = "No match found";
-        document.querySelector(".voice-subtitle").textContent = transcript;
+      } else if (!matchedExecute && !voiceMatched) {
+          // Explicit "Couldn't find it" fallback
+          voiceMatched = true; // Prevents onend from showing "Didn't hear you"
+          recognition.stop();
+          showRetryUI("Couldn't find it.");
+          document.querySelector(".voice-subtitle").textContent = `No match for: "${transcript}"`;
       }
     };
-  }
+  }  
 
   voiceBtn.addEventListener("click", () => {
     voiceOverlay.classList.add("is-visible");
@@ -984,31 +1228,33 @@ window.location.href = `rawbt:printText:${encodeURIComponent(printContent)}`;
   
   // 1. Define the Transition Function
   const runPriorityTransition = (isPriorityUser) => {
-  isPriority = isPriorityUser;
+    isPriority = isPriorityUser;
 
-  // HIDE EVERYTHING BELOW
-  priorityOverlay.classList.remove("is-visible");
-  requestOverlay.classList.remove("is-visible");
-  claimingOverlay.classList.remove("is-visible");
-  enrollmentOverlay.classList.remove("is-visible");
-  detailsOverlay.classList.remove("is-visible");
+    // HIDE EVERYTHING BELOW
+    priorityOverlay.classList.remove("is-visible");
+    requestOverlay.classList.remove("is-visible");
+    claimingOverlay.classList.remove("is-visible");
+    enrollmentOverlay.classList.remove("is-visible");
+    detailsOverlay.classList.remove("is-visible");
 
-  // SHOW FORM
-  formOverlay.classList.add("is-visible");
+    // SHOW FORM
+    formOverlay.classList.add("is-visible");
 
-  // KEEP BACKDROP
-  backdrop.classList.add("is-visible");
-};
+    // KEEP BACKDROP
+    backdrop.classList.add("is-visible");
+  };
 
-yesBtn.onclick = (e) => {
-  e.preventDefault();
-  runPriorityTransition(true);
-};
+  yesBtn.onclick = (e) => {
+    e.preventDefault();
+    runPriorityTransition(true);
+  };
 
-noBtn.onclick = (e) => {
-  e.preventDefault();
-  runPriorityTransition(false);
-};
+  noBtn.onclick = (e) => {
+    e.preventDefault();
+    runPriorityTransition(false);
+  };
+  
+
 });
 //   const runPriorityTransition = (isPriorityUser) => {
 //       console.log("👉 Transition Triggered. Priority:", isPriorityUser);
