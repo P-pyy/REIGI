@@ -566,7 +566,10 @@ ${
           Thank you!
 
 ===============================
-\x1B\x21\x30${queueNumber}\x1B\x21\x00
+// Centered and extra large queue number
+\x1B\x61\x01          // ESC a 1 -> center alignment
+\x1B\x21\xF0${queueNumber}\x1B\x21\x00
+\x1B\x61\x00          // Reset alignment to left
 ===============================
 `;
 // const printContent = `
