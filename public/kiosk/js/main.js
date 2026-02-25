@@ -88,6 +88,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   let isPriority = false;
   let isReading = false; // Moved here from bottom
   let currentUtterance = null; // Moved here from bottom
+  let selectedEnrollmentForm = "";
 
   // ---------------------------------------------------------
   // 4. LOGIC FUNCTIONS
@@ -503,17 +504,14 @@ finishBtn.addEventListener("click", async (e) => {
 
     firstNameInput.value = lastNameInput.value = "";
 
-    let transactionType = "General Inquiry";
+    const documentLabelMap = {
+  request: "Requesting Documents",
+  claiming: "Claiming Documents",
+  enrollment: "Enrollment",
+  search: "Information / Inquiry"
+};
 
-    if (activeFlow === "request") {
-      transactionType = "Requesting Documents";
-    } else if (activeFlow === "claiming") {
-      transactionType = "Claiming Documents";
-    } else if (activeFlow === "enrollment") {
-      transactionType = "Enrollment";
-    } else if (activeFlow === "search") {
-      transactionType = "Information / Inquiry";
-    }
+const documentLabel = documentLabelMap[activeFlow] || "Documents";
 
     // Optional: print queue ticket
 const printContent = `
@@ -525,12 +523,17 @@ const printContent = `
 
 Name: ${fullName}
 Queue No: ${queueNumber}
-Transaction: ${transactionType}
 
-${activeFlow !== "enrollment" ? `
-Documents:
-${documentsText.split(", ").map(doc => " - " + doc).join("\n")}
-` : ""}
+
+${documentLabel}:
+${
+activeFlow === "enrollment"
+? ` - ${selectedEnrollmentForm}`
+: documentsText
+    ? documentsText.split(", ").map(doc => " - " + doc).join("\n")
+    : ""
+}
+
 
     Please wait for your turn.
           Thank you!
@@ -1153,6 +1156,10 @@ window.location.href = `rawbt:printText:${encodeURIComponent(printContent)}`;
             // CRITICAL: Manually trigger the 'change' event so the validation logic runs
             stepsContainer.dispatchEvent(new Event('change'));
         });
+
+         if (activeFlow === "enrollment") {
+        selectedEnrollmentForm = selected.question_title;
+    }
     }
 
     // 7. Validation Listener (Enables/Disables Proceed)
