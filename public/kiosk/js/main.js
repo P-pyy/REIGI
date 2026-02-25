@@ -88,7 +88,6 @@ document.addEventListener("DOMContentLoaded", async () => {
   let isPriority = false;
   let isReading = false; // Moved here from bottom
   let currentUtterance = null; // Moved here from bottom
-  let selectedEnrollmentForm = "";
 
   // ---------------------------------------------------------
   // 4. LOGIC FUNCTIONS
@@ -449,30 +448,22 @@ finishBtn.addEventListener("click", async (e) => {
     return;
   }
 
-  let documentsText = "";
-  let uniqueDocuments = [];
+  // Collect checked documents
+  const allDocuments = [
+    ...collectDocumentsFromContainer(requestCheckboxContainer),
+    ...collectDocumentsFromContainer(enrollmentCheckboxContainer),
+    ...collectDocumentsFromContainer(claimingCheckboxContainer),
+    ...collectDocumentsFromContainer(detailsCheckboxContainer)
+  ];
 
-  // Only collect documents for Requesting and Claiming
-  if (activeFlow === "request") {
-    uniqueDocuments = collectDocumentsFromContainer(requestCheckboxContainer);
-  }
-
-  else if (activeFlow === "claiming") {
-    uniqueDocuments = collectDocumentsFromContainer(claimingCheckboxContainer);
-  }
-
-  else if (activeFlow === "search") {
-    uniqueDocuments = collectDocumentsFromContainer(detailsCheckboxContainer);
-  }
-
-  // Validate only if NOT enrollment
-  if (activeFlow !== "enrollment" && uniqueDocuments.length === 0) {
+  if (!allDocuments.length) {
     alert("Please check at least one document.");
     finishBtn.disabled = false;
     return;
   }
 
-  documentsText = uniqueDocuments.join(", ");
+  const uniqueDocuments = [...new Set(allDocuments)];
+  const documentsText = uniqueDocuments.join(", ");
 
   try {
     // Call your API instead of direct insert
@@ -504,96 +495,25 @@ finishBtn.addEventListener("click", async (e) => {
 
     firstNameInput.value = lastNameInput.value = "";
 
-    const documentLabelMap = {
-  request: "Requesting Documents",
-  claiming: "Claiming Documents",
-  enrollment: "Enrollment",
-  search: "Information / Inquiry"
-};
-
-const documentLabel = documentLabelMap[activeFlow] || "Documents";
-
     // Optional: print queue ticket
-// const printContent = `
-// ===============================
-//    University of Rizal System
-//          Queue Ticket
-// ===============================
-
-
-// Name: ${fullName}
-// Queue No: ${queueNumber}
-
-
-// ${documentLabel}:
-// ${
-// activeFlow === "enrollment"
-// ? ` - ${selectedEnrollmentForm}`
-// : documentsText
-//     ? documentsText.split(", ").map(doc => " - " + doc).join("\n")
-//     : ""
-// }
-
-
-//     Please wait for your turn.
-//           Thank you!
-
-// -------------------------------
-//     Printed via REIGI Kiosk
-// `;
-// Manually center the queue number
 const printContent = `
 ===============================
    University of Rizal System
          Queue Ticket
 ===============================
 
-
 Name: ${fullName}
+Queue No: ${queueNumber}
 
-${documentLabel}:
-${
-  activeFlow === "enrollment"
-    ? ` - ${selectedEnrollmentForm}`
-    : documentsText
-        ? documentsText.split(", ").map(doc => " - " + doc).join("\n")
-        : ""
-}
+Documents:
+${documentsText.split(", ").map(doc => " - " + doc).join("\n")}
 
-===============================
-\x1B\x61\x01   
-Your Queue Number is:
-\x1B\x21\xF0${queueNumber}\x1B\x21\x00
-\x1B\x61\x00         
-===============================
-   Please wait for your turn.
-          Thank you!
+Please wait for your turn.
+      Thank you!
+
+-------------------------------
+Printed via REIGI Kiosk
 `;
-// const printContent = `
-// ===============================
-//    University of Rizal System
-//          Queue Ticket
-// ===============================
-
-
-// Name: ${fullName}
-
-// ${documentLabel}:
-// ${
-//   activeFlow === "enrollment"
-//     ? ` - ${selectedEnrollmentForm}`
-//     : documentsText
-//         ? documentsText.split(", ").map(doc => " - " + doc).join("\n")
-//         : ""
-// }
-
-// ===============================
-// \x1B\x61\x01\x1B\x21\xF0${queueNumber}\x1B\x21\x00\x1B\x61\x00
-// ===============================
-//    Please wait for your turn.
-//           Thank you!
-// `;
-// const printContent = `
 window.location.href = `rawbt:printText:${encodeURIComponent(printContent)}`;
   } catch (err) {
     console.error("❌ Error saving queue:", err);
@@ -637,6 +557,167 @@ window.location.href = `rawbt:printText:${encodeURIComponent(printContent)}`;
   }
 
   // ---------------------------------------------------------
+  // SHARED SEARCH LOGIC ENGINE (Voice & Text)
+  // ---------------------------------------------------------
+  function processHierarchicalSearch(queryText, isVoice = false) {
+      if (!queryText) return;
+      const transcript = queryText.toLowerCase().trim();
+
+      if (isVoice && voiceMatched) return; // Prevent double-execution for voice
+
+      let matchedFAQ = null;
+      let matchedExecute = null;
+      let matchedText = "";
+
+      // ==========================================
+      // TIER 1: CUSTOM ALIASES (Main Menu Routing)
+      // ==========================================
+      // If the user searches for broad terms, open the main menu directly
+      const customAliases = {
+          "requesting": requestBtn,
+          "request": requestBtn,
+          "get a document": requestBtn,
+          "tor": requestBtn, 
+          
+          "claiming": claimingBtn,
+          "claim": claimingBtn,
+          "pick up": claimingBtn, 
+          
+          "enrollment": enrollmentBtn,
+          "enroll": enrollmentBtn
+      };
+
+      for (const [alias, btnEl] of Object.entries(customAliases)) {
+          if (transcript.includes(alias)) {
+              matchedExecute = () => btnEl.click();
+              matchedText = alias;
+              break;
+          }
+      }
+
+      // ==========================================
+      // TIER 2: ENROLLMENT FAQs ONLY (WITH HIGHLIGHT LOGIC)
+      // ==========================================
+      if (!matchedExecute) {
+          const enrollmentOptions = Array.from(enrollmentFaqContainer.querySelectorAll('.faq-option'));
+          const enrollmentIds = enrollmentOptions.map(opt => opt.dataset.id);
+
+          for (let item of faqAliases) {
+              if (enrollmentIds.includes(item.faq.id.toString())) {
+                  for (let kw of item.keywords) {
+                      if (transcript === kw || transcript.includes(` ${kw} `) || transcript.startsWith(`${kw} `) || transcript.endsWith(` ${kw}`)) {
+                          matchedFAQ = item.faq;
+                          matchedText = item.faq.question_title;
+                          
+                          matchedExecute = () => {
+                              // Open Enrollment Menu First
+                              enrollmentBtn.click();
+                              
+                              // Find and highlight DOM element
+                              const targetDOMElement = enrollmentOptions.find(opt => opt.dataset.id == item.faq.id);
+                              if (targetDOMElement) {
+                                  setTimeout(() => {
+                                      targetDOMElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                                      targetDOMElement.classList.add("search-highlight-target");
+                                      
+                                      setTimeout(() => {
+                                          targetDOMElement.classList.remove("search-highlight-target");
+                                          openFAQDetails(item.faq);
+                                      }, 2000); 
+                                  }, 100);
+                              } else {
+                                  openFAQDetails(item.faq);
+                              }
+                          };
+                          break;
+                      }
+                  }
+              }
+              if (matchedExecute) break;
+          }
+      }
+
+      // ==========================================
+      // TIER 3: REQUEST & CLAIMING CHECKBOXES
+      // ==========================================
+      if (!matchedExecute) {
+          const checkboxes = document.querySelectorAll('.container-request .checkbox-content, .container-claiming .checkbox-content');
+          for (let cb of checkboxes) {
+              const cbText = cb.textContent.toLowerCase().trim();
+              
+              if (transcript.includes(cbText) || (transcript.length > 3 && cbText.includes(transcript))) {
+                  const parentBtn = cb.closest('.container-request') ? requestBtn : claimingBtn;
+                  matchedText = cbText;
+                  
+                  matchedExecute = () => {
+                      parentBtn.click(); // Open Request or Claiming container
+                      
+                      setTimeout(() => {
+                          const wrapper = cb.closest('.checkbox-wrapper-4');
+                          wrapper.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                          wrapper.classList.add("search-highlight-target");
+                          
+                          // Auto-check the box
+                          const inputCbx = wrapper.querySelector('.inp-cbx');
+                          if(inputCbx) inputCbx.checked = true;
+                          
+                          // Trigger validation
+                          const container = cb.closest('.preview-text');
+                          if (container) container.dispatchEvent(new Event('change')); 
+                          
+                          setTimeout(() => {
+                              wrapper.classList.remove("search-highlight-target");
+                          }, 2000);
+                      }, 100);
+                  };
+                  break;
+              }
+          }
+      }
+
+      // ==========================================
+      // FINAL EXECUTION OR REJECTION
+      // ==========================================
+      if (matchedExecute) {
+          if (isVoice) {
+              voiceMatched = true;
+              if (recognition) recognition.stop();
+              document.querySelector(".voice-title").textContent = "Routing...";
+              
+              try {
+                  const safeRegex = matchedText.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&');
+                  const safeHighlight = transcript.replace(new RegExp(`(${safeRegex})`, 'gi'), `<mark>$1</mark>`);
+                  document.querySelector(".voice-subtitle").innerHTML = safeHighlight || `<mark>${transcript}</mark>`;
+              } catch(e) {
+                  document.querySelector(".voice-subtitle").innerHTML = `<mark>${transcript}</mark>`;
+              }
+
+              setTimeout(() => {
+                  closeVoiceOverlay();
+                  matchedExecute();
+              }, 1200);
+          } else {
+              // TEXT SEARCH EXECUTION
+              matchedExecute();
+              searchInput.value = ""; // Clear the search bar
+          }
+
+      } else {
+          // ASAP REJECTION
+          if (isVoice) {
+              voiceMatched = true; 
+              if (recognition) recognition.stop();
+              showRetryUI("Couldn't find it.");
+              document.querySelector(".voice-subtitle").innerHTML = `No match for: "<span style="color: #ff5252">${transcript}</span>"`;
+          } else {
+              // TEXT SEARCH ALERT
+              alert(`Couldn't find any exact matches for "${transcript}". Please try checking your spelling or use different keywords.`);
+              searchInput.value = "";
+          }
+      }
+  }
+
+  // ---------------------------------------------------------
   // 6. VOICE RECOGNITION SETUP
   // ---------------------------------------------------------
 
@@ -659,106 +740,24 @@ window.location.href = `rawbt:printText:${encodeURIComponent(printContent)}`;
     };
 
     // NEW LOGIC: Evaluation Engine (Hierarchical Search)
-    function evaluateVoiceCommand(transcript) {
-        if (!transcript || voiceMatched) return;
-
-        let matchedFAQ = null;
-        let matchedExecute = null;
-        let matchedText = "";
-
-        // ==========================================
-        // TIER 1: ENROLLMENT FAQs ONLY
-        // ==========================================
-        // Filter the existing aliases to only those inside the enrollment container
-        const enrollmentOptions = Array.from(enrollmentFaqContainer.querySelectorAll('.faq-option'));
-        const enrollmentIds = enrollmentOptions.map(opt => opt.dataset.id);
-
-        for (let item of faqAliases) {
-            // Check if this FAQ belongs to the Enrollment list
-            if (enrollmentIds.includes(item.faq.id.toString())) {
-                for (let kw of item.keywords) {
-                    if (transcript === kw || transcript.includes(` ${kw} `) || transcript.startsWith(`${kw} `) || transcript.endsWith(` ${kw}`)) {
-                        matchedFAQ = item.faq;
-                        matchedText = item.faq.question_title;
-                        matchedExecute = () => openFAQDetails(item.faq);
-                        break;
-                    }
-                }
-            }
-            if (matchedExecute) break;
-        }
-
-        // ==========================================
-        // TIER 2: REQUEST & CLAIMING CHECKBOXES
-        // ==========================================
-        if (!matchedExecute) {
-            const checkboxes = document.querySelectorAll('.container-request .checkbox-content, .container-claiming .checkbox-content');
-            for (let cb of checkboxes) {
-                const cbText = cb.textContent.toLowerCase().trim();
-                
-                if (transcript.includes(cbText) || (transcript.length > 3 && cbText.includes(transcript))) {
-                    const parentBtn = cb.closest('.container-request') ? requestBtn : claimingBtn;
-                    matchedText = cbText;
-                    matchedExecute = () => {
-                        parentBtn.click(); // Open Request or Claiming container
-                        cb.innerHTML = cb.innerHTML.replace(new RegExp(`(${transcript})`, 'gi'), `<mark>$1</mark>`);
-                    };
-                    break;
-                }
-            }
-        }
-
-        // ==========================================
-        // FINAL EXECUTION OR REJECTION
-        // ==========================================
-        if (matchedExecute) {
-            voiceMatched = true;
-            recognition.stop();
-            document.querySelector(".voice-title").textContent = "Recognized!";
-            
-            // Highlight safely
-            try {
-                const safeRegex = matchedText.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&');
-                const safeHighlight = transcript.replace(new RegExp(`(${safeRegex})`, 'gi'), `<mark>$1</mark>`);
-                document.querySelector(".voice-subtitle").innerHTML = safeHighlight || `<mark>${transcript}</mark>`;
-            } catch(e) {
-                document.querySelector(".voice-subtitle").innerHTML = `<mark>${transcript}</mark>`;
-            }
-
-            // Execute the matched routing
-            setTimeout(() => {
-                closeVoiceOverlay();
-                matchedExecute();
-            }, 1200);
-
-        } else {
-            // ASAP REJECTION: Trigger immediately when eval fails all tiers
-            voiceMatched = true; 
-            recognition.stop();
-            showRetryUI("Couldn't find it.");
-            document.querySelector(".voice-subtitle").innerHTML = `No match for: "<span style="color: #ff5252">${transcript}</span>"`;
-        }
-    }
+   
 
     recognition.onend = () => {
       console.log("🎤 Voice recognition ended");
-      clearTimeout(voiceDebounceTimer); // Stop the debounce
+      clearTimeout(voiceDebounceTimer); 
 
       if (!voiceMatched) {
         if (transcriptBuffer.trim() === "") {
-            // User opened it but stayed totally silent
             showRetryUI("Didn't hear you :(");
             document.querySelector(".voice-subtitle").textContent = "Please try again.";
         } else {
-            // NATIVE CUTOFF: If the microphone auto-stops before the 2 sec debounce finishes,
-            // evaluate the text immediately (ASAP).
-            evaluateVoiceCommand(transcriptBuffer);
+            // NATIVE CUTOFF: instantly run shared engine
+            processHierarchicalSearch(transcriptBuffer, true);
         }
       }
     };
 
     recognition.onresult = (event) => {
-      // Clear the debounce timer every time the user speaks a new syllable
       clearTimeout(voiceDebounceTimer); 
 
       let transcript = "";
@@ -769,9 +768,9 @@ window.location.href = `rawbt:printText:${encodeURIComponent(printContent)}`;
       transcriptBuffer = transcript.toLowerCase().trim();
       document.querySelector(".voice-subtitle").textContent = transcriptBuffer;
 
-      // START DEBOUNCE: If 2 seconds pass with no new words, run the evaluation
+      // DEBOUNCE LOGIC FOR VOICE ONLY
       voiceDebounceTimer = setTimeout(() => {
-          evaluateVoiceCommand(transcriptBuffer);
+          executeMasterSearch(transcriptBuffer, true); 
       }, 500);
     };
   }  
@@ -1208,10 +1207,6 @@ window.location.href = `rawbt:printText:${encodeURIComponent(printContent)}`;
             // CRITICAL: Manually trigger the 'change' event so the validation logic runs
             stepsContainer.dispatchEvent(new Event('change'));
         });
-
-         if (activeFlow === "enrollment") {
-        selectedEnrollmentForm = selected.question_title;
-    }
     }
 
     // 7. Validation Listener (Enables/Disables Proceed)
@@ -1259,44 +1254,263 @@ window.location.href = `rawbt:printText:${encodeURIComponent(printContent)}`;
     };
   }
 
+  
+  // ---------------------------------------------------------
+  // MASTER ROUTING & HIGHLIGHT ENGINE (Unified for Voice & Text)
+  // ---------------------------------------------------------
+  function executeMasterSearch(queryText, isVoice = false) {
+      if (!queryText) return;
+      const transcript = queryText.toLowerCase().trim();
+
+      if (isVoice && voiceMatched) return;
+
+      let matchedExecute = null;
+      let matchedText = "";
+
+      // ==========================================
+      // TIER 1: CUSTOM ALIASES (Main Menu Routing with Highlight)
+      // ==========================================
+      const customAliases = {
+          "requesting": requestBtn,
+          "request": requestBtn,
+          "transcript of records": requestBtn,
+          
+          "claiming": claimingBtn,
+          "claim": claimingBtn,
+          
+          "enrollment": enrollmentBtn,
+          "enroll": enrollmentBtn
+      };
+
+      for (const [alias, btnEl] of Object.entries(customAliases)) {
+          // Strict match or partial match
+          if (transcript === alias || transcript.includes(alias)) {
+              matchedText = alias;
+              matchedExecute = () => {
+                  // Scroll to the main menu button
+                  setTimeout(() => {
+                      btnEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                      
+                      // Highlight the big button for 10 seconds
+                      btnEl.classList.add("search-highlight-target");
+                      
+                      setTimeout(() => {
+                          btnEl.classList.remove("search-highlight-target");
+                          // AFTER 10 seconds, finally open the container
+                          btnEl.click(); 
+                      }, 2000); // 10 seconds
+                  }, 100);
+              };
+              break;
+          }
+      }
+
+      // ==========================================
+      // TIER 2: ENROLLMENT MENU (Search Database FAQs)
+      // ==========================================
+      if (!matchedExecute) {
+          const enrollmentOptions = Array.from(enrollmentFaqContainer.querySelectorAll('.faq-option'));
+          
+          for (let opt of enrollmentOptions) {
+              const optText = opt.querySelector('.faq-option-name').textContent.toLowerCase().trim();
+              
+              if (optText.includes(transcript) || transcript.includes(optText)) {
+                  matchedText = optText;
+                  matchedExecute = () => {
+                      enrollmentBtn.click(); // Open Enrollment Container immediately
+                      
+                      setTimeout(() => {
+                          opt.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                          opt.classList.add("search-highlight-target");
+                          
+                          // Remove highlight after 10 seconds (DO NOT click it automatically)
+                          setTimeout(() => {
+                              opt.classList.remove("search-highlight-target");
+                          }, 2000); // 10 seconds
+                      }, 100);
+                  };
+                  break;
+              }
+          }
+      }
+
+      // ==========================================
+      // TIER 3: REQUEST MENU CHECKBOXES
+      // ==========================================
+      if (!matchedExecute) {
+          const reqCheckboxes = requestCheckboxContainer.querySelectorAll('.checkbox-content');
+          for (let cb of reqCheckboxes) {
+              const cbText = cb.textContent.toLowerCase().trim();
+              
+              if (cbText.includes(transcript) || (transcript.length > 3 && transcript.includes(cbText))) {
+                  matchedText = cbText;
+                  matchedExecute = () => {
+                      requestBtn.click(); // Open Request Container immediately
+                      
+                      setTimeout(() => {
+                          const wrapper = cb.closest('.checkbox-wrapper-4');
+                          wrapper.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                          wrapper.classList.add("search-highlight-target");
+                          
+                          const inputCbx = wrapper.querySelector('.inp-cbx');
+                          if(inputCbx) inputCbx.checked = true;
+                          requestCheckboxContainer.dispatchEvent(new Event('change')); 
+                          
+                          setTimeout(() => {
+                              wrapper.classList.remove("search-highlight-target");
+                          }, 2000); // 10 seconds
+                      }, 100);
+                  };
+                  break;
+              }
+          }
+      }
+
+      // ==========================================
+      // TIER 4: CLAIMING MENU CHECKBOXES
+      // ==========================================
+      if (!matchedExecute) {
+          const claimCheckboxes = claimingCheckboxContainer.querySelectorAll('.checkbox-content');
+          for (let cb of claimCheckboxes) {
+              const cbText = cb.textContent.toLowerCase().trim();
+              
+              if (cbText.includes(transcript) || (transcript.length > 3 && transcript.includes(cbText))) {
+                  matchedText = cbText;
+                  matchedExecute = () => {
+                      claimingBtn.click(); // Open Claiming Container immediately
+                      
+                      setTimeout(() => {
+                          const wrapper = cb.closest('.checkbox-wrapper-4');
+                          wrapper.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                          wrapper.classList.add("search-highlight-target");
+                          
+                          const inputCbx = wrapper.querySelector('.inp-cbx');
+                          if(inputCbx) inputCbx.checked = true;
+                          claimingCheckboxContainer.dispatchEvent(new Event('change')); 
+                          
+                          setTimeout(() => {
+                              wrapper.classList.remove("search-highlight-target");
+                          }, 2000); // 10 seconds
+                      }, 100);
+                  };
+                  break;
+              }
+          }
+      }
+
+      // ==========================================
+      // FINAL EXECUTION OR REJECTION
+      // ==========================================
+      if (matchedExecute) {
+          if (isVoice) {
+              voiceMatched = true;
+              if (recognition) recognition.stop();
+              document.querySelector(".voice-title").textContent = "Routing...";
+              
+              try {
+                  const safeRegex = matchedText.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&');
+                  const safeHighlight = transcript.replace(new RegExp(`(${safeRegex})`, 'gi'), `<mark>$1</mark>`);
+                  document.querySelector(".voice-subtitle").innerHTML = safeHighlight || `<mark>${transcript}</mark>`;
+              } catch(e) {
+                  document.querySelector(".voice-subtitle").innerHTML = `<mark>${transcript}</mark>`;
+              }
+
+              // Close the voice popup and execute the highlight logic
+              setTimeout(() => {
+                  closeVoiceOverlay();
+                  matchedExecute();
+              }, 1200);
+          } else {
+              // TEXT SEARCH EXECUTION
+              matchedExecute();
+              searchInput.value = ""; // Clear input immediately
+              document.querySelector(".search-container .faq-option-container").innerHTML = ""; // Clear dropdown
+          }
+      } else {
+          // REJECTION (Nothing found in any tier)
+          if (isVoice) {
+              voiceMatched = true; 
+              if (recognition) recognition.stop();
+              showRetryUI("Couldn't find it.");
+              document.querySelector(".voice-subtitle").innerHTML = `No match for: "<span style="color: #ff5252">${transcript}</span>"`;
+          } else {
+              alert(`Couldn't find any exact matches for "${transcript}". Please try checking your spelling or use different keywords.`);
+              searchInput.value = "";
+          }
+      }
+  }
+
+  // ---------------------------------------------------------
+  // LIVE TEXT SEARCH UI (Typing in Search Bar -> Generates Dropdown)
+  // ---------------------------------------------------------
   searchInput.addEventListener("input", () => {
-    const query = searchInput.value.toLowerCase().trim();
-    
-    // Only clear the MAIN container, enrollment usually doesn't need search filtering
-    if (mainFaqContainer) mainFaqContainer.innerHTML = "";
-
-    if (!query) {
-      // Restore all if empty
-      loadFAQs(); 
-      return;
-    }
-
-    const matches = kioskData.filter(faq =>
-      faq.question_title.toLowerCase().includes(query)
-    );
-
-    matches.forEach(faq => {
-      const option = document.createElement("div");
-      option.classList.add("faq-option");
-      option.innerHTML = `
-        <i class="ph ph-magnifying-glass"></i>
-        <span class="faq-option-name">${faq.question_title}</span>
-      `;
-      option.addEventListener("click", () => {
-          activeFlow = "search"; // <--- ADD THIS: Remember we came from search
-          openFAQDetails(faq);
-      });
+      const query = searchInput.value.toLowerCase().trim();
       
-      if (mainFaqContainer) mainFaqContainer.appendChild(option);
-    });
+      if (mainFaqContainer) mainFaqContainer.innerHTML = "";
+
+      if (!query) {
+          loadFAQs(); 
+          return;
+      }
+
+      // 1. Generate Custom Aliases for Request/Claim
+      const customAliases = [
+          { keyword: "request", title: "Requesting Documents", icon: "ph-hand-deposit" },
+          { keyword: "tor", title: "Requesting Documents (TOR)", icon: "ph-hand-deposit" },
+          { keyword: "claim", title: "Claiming Documents", icon: "ph-user-check" },
+          { keyword: "pick up", title: "Claiming Documents", icon: "ph-user-check" }
+      ];
+
+      let addedCustoms = [];
+      customAliases.forEach(aliasObj => {
+          if ((aliasObj.keyword.includes(query) || query.includes(aliasObj.keyword)) && !addedCustoms.includes(aliasObj.title)) {
+              addedCustoms.push(aliasObj.title);
+              
+              const option = document.createElement("div");
+              option.classList.add("faq-option");
+              option.innerHTML = `<i class="ph ${aliasObj.icon}"></i><span class="faq-option-name">${aliasObj.title}</span>`;
+              
+              option.addEventListener("click", () => {
+                  executeMasterSearch(aliasObj.keyword, false); 
+              });
+              
+              if (mainFaqContainer) mainFaqContainer.appendChild(option);
+          }
+      });
+
+      // 2. Generate Database FAQs for Enrollment
+      const matches = kioskData.filter(faq =>
+          faq.question_title.toLowerCase().includes(query)
+      );
+
+      matches.forEach(faq => {
+          const option = document.createElement("div");
+          option.classList.add("faq-option");
+          option.innerHTML = `<i class="ph ph-magnifying-glass"></i><span class="faq-option-name">${faq.question_title}</span>`;
+          
+          option.addEventListener("click", () => {
+              executeMasterSearch(faq.question_title, false); 
+          });
+          
+          if (mainFaqContainer) mainFaqContainer.appendChild(option);
+      });
   });
 
-  searchInput.addEventListener("input", () => {
-  const query = searchInput.value.toLowerCase().trim();
-  faqOptionContainer.innerHTML = "";
+  // ---------------------------------------------------------
+  // TEXT INPUT SEARCH 'ENTER' KEY (Triggers engine directly)
+  // ---------------------------------------------------------
+  searchInput.addEventListener("keypress", (e) => {
+      if (e.key === "Enter") {
+          e.preventDefault(); 
+          const query = searchInput.value.toLowerCase().trim();
+          if (!query) return; 
+          executeMasterSearch(query, false);
+      }
+  });
 
-  loadFAQs();
-
+  // ---------------------------------------------------------
+  // GLOBAL REALTIME DATABASE LISTENER
+  // ---------------------------------------------------------
   supabaseClient
     .channel("realtime-kiosk-app")
     .on("postgres_changes", { event: "*", schema: "public", table: "kiosk" }, async () => {
@@ -1304,27 +1518,18 @@ window.location.href = `rawbt:printText:${encodeURIComponent(printContent)}`;
       await loadFAQs();
     })
     .subscribe();
-  });
 
   // ==========================================
   // FINAL PRIORITY BUTTON LOGIC FIX
   // ==========================================
-  
-  // 1. Define the Transition Function
   const runPriorityTransition = (isPriorityUser) => {
     isPriority = isPriorityUser;
-
-    // HIDE EVERYTHING BELOW
     priorityOverlay.classList.remove("is-visible");
     requestOverlay.classList.remove("is-visible");
     claimingOverlay.classList.remove("is-visible");
     enrollmentOverlay.classList.remove("is-visible");
     detailsOverlay.classList.remove("is-visible");
-
-    // SHOW FORM
     formOverlay.classList.add("is-visible");
-
-    // KEEP BACKDROP
     backdrop.classList.add("is-visible");
   };
 
@@ -1337,7 +1542,8 @@ window.location.href = `rawbt:printText:${encodeURIComponent(printContent)}`;
     e.preventDefault();
     runPriorityTransition(false);
   };
-  
+
+
 
 });
 //   const runPriorityTransition = (isPriorityUser) => {
