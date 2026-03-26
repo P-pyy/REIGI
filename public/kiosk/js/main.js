@@ -1,5 +1,30 @@
 import { supabaseClient } from '/js/supabase-client.js';
 
+let deferredPrompt = null;
+
+window.addEventListener("beforeinstallprompt", (e) => {
+  e.preventDefault(); // Suppress for ALL visitors
+
+  deferredPrompt = e; // Save it secretly
+
+  // Only trigger if secret URL parameter is present
+  const params = new URLSearchParams(window.location.search);
+  if (params.get("install") === "urs-kiosk-2024") {
+    setTimeout(() => {
+      if (deferredPrompt) {
+        deferredPrompt.prompt();
+        deferredPrompt.userChoice.then((choice) => {
+          console.log("Install choice:", choice.outcome);
+          deferredPrompt = null;
+        });
+
+        // Clean URL after triggering so it's not visible in browser bar
+        window.history.replaceState({}, "", window.location.pathname);
+      }
+    }, 1000);
+  }
+});
+
 document.addEventListener("DOMContentLoaded", async () => {
   let activeFlow = null; // "request" | "claiming" | "enrollment" | "details"
 
@@ -260,7 +285,40 @@ document.addEventListener("DOMContentLoaded", async () => {
     finishBtn.disabled = !(firstNameInput.value.trim() && lastNameInput.value.trim());
   }
 
-  
+  function sanitizeNameInput(input) {
+  // Allow only letters (including accented/Filipino chars like ñ, é), spaces, hyphens, apostrophes
+  input.addEventListener("input", () => {
+    // Strip anything that's not a letter, space, hyphen, or apostrophe
+    const cleaned = input.value
+      .replace(/[^a-zA-ZÀ-ÖØ-öø-ÿñÑ\s'\-]/g, "")  // strip invalid chars
+      .replace(/\s{2,}/g, " ")                        // collapse double spaces
+      .slice(0, 32);                                  // enforce max length
+
+    // Only update if something actually changed (prevents cursor jump)
+    if (input.value !== cleaned) {
+      const pos = input.selectionStart - (input.value.length - cleaned.length);
+      input.value = cleaned;
+      input.setSelectionRange(pos, pos);
+    }
+  });
+
+  // Block paste of invalid content
+  input.addEventListener("paste", (e) => {
+    e.preventDefault();
+    const pasted = (e.clipboardData || window.clipboardData)
+      .getData("text")
+      .replace(/[^a-zA-ZÀ-ÖØ-öø-ÿñÑ\s'\-]/g, "")
+      .replace(/\s{2,}/g, " ")
+      .slice(0, 32);
+    
+    // Insert at cursor position
+    const start = input.selectionStart;
+    const end = input.selectionEnd;
+    const current = input.value;
+    input.value = (current.slice(0, start) + pasted + current.slice(end)).slice(0, 32);
+    validateFormInputs();
+  });
+}
 
   // ---------------------------------------------------------
   // 5. APPLY LOGIC & EVENT LISTENERS
@@ -401,7 +459,8 @@ if (enrollmentBtn) {
   // F. Input Validation Listener
   if (firstNameInput) firstNameInput.addEventListener("input", validateFormInputs);
   if (lastNameInput) lastNameInput.addEventListener("input", validateFormInputs);
-
+    if (firstNameInput) sanitizeNameInput(firstNameInput);
+    if (lastNameInput) sanitizeNameInput(lastNameInput);
   // // E. Priority & Form Logic
   // const handlePriorityClick = (isPriorityUser) => {
   //     isPriority = isPriorityUser; 
@@ -442,12 +501,16 @@ finishBtn.addEventListener("click", async (e) => {
   if (finishBtn.disabled) return;
   finishBtn.disabled = true;
 
-  const fullName = `${firstNameInput.value.trim()} ${lastNameInput.value.trim()}`;
-  if (!fullName.trim()) {
-    alert("Please enter your complete name.");
-    finishBtn.disabled = false;
-    return;
-  }
+  // Strip any remaining dangerous characters before sending to DB
+    const sanitize = (str) => str
+      .replace(/[<>"'`&;\/\\]/g, "")   // strip XSS/injection chars
+      .replace(/javascript:/gi, "")     // strip js: protocol
+      .trim()
+      .slice(0, 32);
+
+    const firstName = sanitize(firstNameInput.value);
+    const lastName  = sanitize(lastNameInput.value);
+    const fullName  = `${firstName} ${lastName}`.trim();
 
   let documentsText = "";
   let uniqueDocuments = [];
