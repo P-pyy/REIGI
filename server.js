@@ -82,6 +82,48 @@ app.get('/admin/login_reset_password', (req, res, next) => {
   });
 });
 
+app.get('/admin/login-super-admin', (req, res, next) => {
+  res.render('admin/login-super-admin', {}, (err, htmlContent) => {
+    if (err) {
+      console.error("EJS Rendering Error for /admin/login-super-admin:", err.message);
+      return next(err);
+    }
+
+    res.render('layout_admin', {
+      pageTitle: 'Super Admin Login',
+      content: htmlContent
+    });
+  });
+});
+
+app.get('/admin/create-super-admin', (req, res, next) => {
+  res.render('admin/create-super-admin', {}, (err, htmlContent) => {
+    if (err) {
+      console.error("EJS Rendering Error for /admin/create-super-admin:", err.message);
+      return next(err);
+    }
+
+    res.render('layout_admin', {
+      pageTitle: 'Create Super Admin',
+      content: htmlContent
+    });
+  });
+});
+
+app.get('/admin/create-window-admin', (req, res, next) => {
+  res.render('admin/create-window-admin', {}, (err, htmlContent) => {
+    if (err) {
+      console.error("EJS Rendering Error for /admin/create-window-admin:", err.message);
+      return next(err);
+    }
+
+    res.render('layout_admin', {
+      pageTitle: 'Create Window Admin',
+      content: htmlContent
+    });
+  });
+});
+
 app.use('/admin', requireAdminLogin);
 
 app.get('/admin/dashboard', (req, res, next) => {
