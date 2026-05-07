@@ -7,13 +7,14 @@ const supabase = createClient(
 
 async function requireAdminLogin(req, res, next) {
   try {
-    const token = req.cookies["access_token"]; 
+    const token = req.cookies["access_token"];
 
     if (!token) {
       console.log("🔒 No access token found, redirecting to login");
       return res.redirect("/admin/login");
     }
 
+    // Get user from Supabase Auth
     const { data: { user }, error } = await supabase.auth.getUser(token);
 
     if (error || !user) {
@@ -21,12 +22,27 @@ async function requireAdminLogin(req, res, next) {
       return res.redirect("/admin/login");
     }
 
-    if (user.user_metadata?.role !== "admin") {
-      console.log(" Not an admin, redirecting to login");
+    // 🔥 GET ROLE FROM YOUR TABLE
+    const { data: account, error: accError } = await supabase
+      .from("campus_accounts")
+      .select("role")
+      .eq("user_id", user.id)
+      .single();
+
+    if (accError || !account) {
+      console.log("❌ No account found, redirecting to login");
+      return res.redirect("/admin/login");
+    }
+
+    // ✅ ROLE CHECK (FIXED)
+    if (!["admin", "super_admin"].includes(account.role)) {
+      console.log("❌ Not authorized, redirecting to login");
       return res.redirect("/admin/login");
     }
 
     req.user = user;
+    req.role = account.role; // optional but useful
+
     next();
 
   } catch (err) {
