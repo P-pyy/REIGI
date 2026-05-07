@@ -35,7 +35,7 @@ html, body {
 /* ! Parrallax */
 
 .parallax {
-  /*background-image: url("/img/try.webp");*/
+  /* background-image: url("/img/try.webp"); */
   min-height: 500px; 
   background-attachment: fixed;
   background-position: center;
@@ -50,7 +50,7 @@ html, body {
   justify-content: center;
   text-align:center;
   padding: 6.5rem 0 4rem 0;
-  background-image: url('../images/bg-faq.webp'); 
+  background-image: url('../img/try.webp'); 
 }
 
 .faq-in-container {

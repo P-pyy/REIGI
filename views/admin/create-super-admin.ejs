@@ -1,0 +1,92 @@
+<link rel="stylesheet" href="/css/login.css" />
+  <main class="login-container" role="main" aria-label="Reset Password Form">
+    <div class="login-div">
+      <div class="logo-container">
+            <img src="/img/URS LOGO.png" alt="URS logo" onerror="this.style.display='none'" />
+            <div class="logo-text">
+              <span>University of</span>
+              <span>Rizal System</span>
+            </div>
+      </div>
+    </div>
+    
+
+    <form id="super-admin-createForm" autocomplete="off">
+      <h2 class="form-title">Create Campus Account</h2>
+
+      <div class="input-div">
+        <div class="cb-wrap" id="cb1">
+          <div class="cb-input-row">
+            <input id="cb1-input" class="cb-input" type="text" placeholder="Select Campus" role="combobox" aria-expanded="false" aria-haspopup="listbox" required/>
+            <button type="button" class="cb-arrow" aria-label="Toggle dropdown">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+            </button>
+          </div>
+          <div id="cb1-list" class="cb-dropdown" role="listbox"></div>
+        </div>
+
+        <input id="email" type="email" placeholder="Email" required minlength="8" />
+        <div class="error-message" id="new-password-error" hidden>Min 8 characters required.</div>
+
+        <!-- Password Row 1 -->
+        <div class="password-row">
+          <input id="password" type="password" placeholder="Password" required minlength="8" />
+          <button type="button" class="show-pass" tabindex="-1" aria-label="Toggle password visibility">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 256 256">
+              <path d="M247.31,124.76c-.35-.79-8.82-19.58-27.65-38.41C194.57,61.26,162.88,48,128,48S61.43,61.26,36.34,86.35C17.51,105.18,9,124,8.69,124.76a8,8,0,0,0,0,6.5c.35.79,8.82,19.57,27.65,38.4C61.43,194.74,93.12,208,128,208s66.57-13.26,91.66-38.34c18.83-18.83,27.3-37.61,27.65-38.4A8,8,0,0,0,247.31,124.76ZM128,192c-30.78,0-57.67-11.19-79.93-33.25A133.47,133.47,0,0,1,25,128,133.33,133.33,0,0,1,48.07,97.25C70.33,75.19,97.22,64,128,64s57.67,11.19,79.93,33.25A133.46,133.46,0,0,1,231.05,128C223.84,141.46,192.43,192,128,192Zm0-112a48,48,0,1,0,48,48A48.05,48.05,0,0,0,128,80Zm0,80a32,32,0,1,1,32-32A32,32,0,0,1,128,160Z"></path>
+            </svg>
+          </button>
+        </div>
+
+        <!-- Password Row 2 -->
+        <div class="password-row">
+          <input id="reenter-password" type="password" placeholder="Re-enter Password" required minlength="8" />
+          <button type="button" class="show-pass" tabindex="-1" aria-label="Toggle password visibility">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 256 256">
+              <path d="M247.31,124.76c-.35-.79-8.82-19.58-27.65-38.41C194.57,61.26,162.88,48,128,48S61.43,61.26,36.34,86.35C17.51,105.18,9,124,8.69,124.76a8,8,0,0,0,0,6.5c.35.79,8.82,19.57,27.65,38.4C61.43,194.74,93.12,208,128,208s66.57-13.26,91.66-38.34c18.83-18.83,27.3-37.61,27.65-38.4A8,8,0,0,0,247.31,124.76ZM128,192c-30.78,0-57.67-11.19-79.93-33.25A133.47,133.47,0,0,1,25,128,133.33,133.33,0,0,1,48.07,97.25C70.33,75.19,97.22,64,128,64s57.67,11.19,79.93,33.25A133.46,133.46,0,0,1,231.05,128C223.84,141.46,192.43,192,128,192Zm0-112a48,48,0,1,0,48,48A48.05,48.05,0,0,0,128,80Zm0,80a32,32,0,1,1,32-32A32,32,0,0,1,128,160Z"></path>
+            </svg>
+          </button>
+        </div>
+        
+        <div class="error-message" id="reenter-password-error" hidden>Passwords do not match.</div>
+
+        <!-- ✅ Extras div same as login.html -->
+        <div class="extras">
+          <p class="notice-text">
+            *IMPORTANT: STRICTLY 1 ACCOUNT per campus only! <br> Once created, you can’t create another account <br> for the same campus.
+          </p>
+          <!-- <label class="show-pass">
+            <input type="checkbox" id="showPassword"> Show Password
+          </label>
+          <a href="/admin/login_enter_email" class="create-account" role="link">Create Account here</a> -->
+        </div>
+      </div>
+
+      <button type="submit">Create Account</button>
+    </form>
+
+    <div class="alert-message-submit-container" hidden>
+      <div class="div-exit-container">
+        <a href="#" id="close-btn-alert" aria-label="Close modal">
+          <!-- Added width/height, and changed fill="#000" to fill="none" -->
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 256 256">
+            <rect width="256" height="256" fill="none"/>
+            <line x1="200" y1="56" x2="56" y2="200" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"/>
+            <line x1="200" y1="200" x2="56" y2="56" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"/>
+          </svg>
+        </a>
+      </div>
+      <p id="alertMessage" class="alert-message">
+        Are you sure you want to create this account? <br> <span class="undone-bold">This action cannot be undone.</span>
+      </p>
+      <button type="submit" class="proceed-btn-alert">Proceed</button>
+    </div>
+
+    <div id="overlay-backdrop"></div>
+
+    <!-- ✅ Status message -->
+    <p id="resetStatus" class="status-message"></p>
+  </main>
+  
+  <script type="module" src="/js/login.js"></script>
+

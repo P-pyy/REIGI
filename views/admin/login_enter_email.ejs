@@ -1,28 +1,34 @@
 <link rel="stylesheet" href="/css/login.css" />
-<main class="login-container" aria-label="University of Rizal System Email Verification Form">
-    <div class="logo-container">
+<main class="reset-container" aria-label="University of Rizal System Email Verification Form" id="reset-container">
+    <div class="login-div">
+      <div class="logo-container">
         <img src="/img/URS LOGO.png" alt="URS logo" onerror="this.style.display='none'" />
         <div class="logo-text">
           <span>University of</span>
-          <span><strong>Rizal System</strong></span>
-          <span class="campus">Antipolo campus</span>
+          <span>Rizal System</span>
         </div>
       </div>
+    </div>
 
-    <h1>Enter your Email</h1>
+    
 
     <form id="resetForm" aria-describedby="email-desc">
-  <input type="email" id="email" name="email" placeholder="Enter Email" required aria-required="true" aria-describedby="email-desc" />
+      <h1 class="form-title">Enter your Email</h1>
 
-  <a href="/admin/login" class="back-link" aria-label="Go Back to Log In">
-    <svg aria-hidden="true" viewBox="0 0 24 24" focusable="false">
-      <path d="M15 18l-6-6 6-6"></path>
-    </svg>
-    Go Back to Log In
-  </a>
+      <div class="input-reset-div">
+        <input type="email" id="email" name="email" placeholder="Enter Email" required aria-required="true" aria-describedby="email-desc" />
 
-  <button type="submit" class="submit-btn" aria-label="Submit Email">Submit</button>
-</form>
+        <a href="/admin/login" class="back-link" aria-label="Go Back to Log In">
+          <svg aria-hidden="true" viewBox="0 0 24 24" focusable="false"><path d="M15 18l-6-6 6-6"></path>
+          </svg>
+         Go Back to Log In
+        </a>
+
+        <button type="submit" class="submit-btn" aria-label="Submit Email">Submit</button>
+      </div>
+
+
+    </form>
 
 <!-- 🔹 Message area -->
 <p id="message"></p>
