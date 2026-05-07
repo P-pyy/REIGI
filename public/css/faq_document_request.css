@@ -1,0 +1,124 @@
+/* faq document request */
+
+html, body {
+    font-family: 'Montserrat', sans-serif;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    background-color: #ffffff;
+    scroll-behavior: smooth;
+}
+
+/* ! Scrollbar */
+
+/* Chrome, Edge, Safari */
+::-webkit-scrollbar {
+    width: 12px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 20px; 
+    margin: 2px;
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: #3066B3; 
+    border-radius: 20px !important;
+    border: 3px solid #f1f1f1; 
+    background-clip: padding-box;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background-color: #3378d3; 
+}
+
+/* ! Parrallax */
+
+.parallax {
+  background-image: url("/img/try.webp");
+  min-height: 500px; 
+  background-attachment: fixed;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.enrollment-banner {
+  width: 100%;              /* full width */
+  background-color: #FCFCFC;
+  padding: 5rem 1rem;       /* tall spacing */
+  margin-top: 1rem;         /* spacing from top */
+  box-sizing: border-box;   /* include padding in width */
+  border-radius: 0;         /* no rounded corners */
+}
+
+.text-muted {
+  font-size: 20px !important;
+  font-weight: 600 !important;
+  color: #2C2C2C !important;
+}
+
+
+.enrollment-process-text {
+  font-size: 64px !important;
+  font-weight: 600;
+  color: #0055A5;
+}
+
+.admin-breadcrumb {
+  font-size: 14px;
+  color: #6c757d;
+}
+
+/* Remove focus outline & glow for input */
+.search-bar .form-control:focus {
+  outline: none !important;          /* remove default outline */
+  box-shadow: none !important; /* remove Bootstrap blue glow */
+  border-color: #EBEFEC !important;  /* keep your border color */
+}
+
+/* Remove focus outline & glow for the icon wrapper */
+.search-bar .input-group-text:focus {
+  outline: none !important;          /* remove default outline */
+  box-shadow: none !important;
+  border-color: #EBEFEC !important;  /* same as input */
+}
+
+.search-bar-text {
+  padding-left: 0.2rem !important;
+  padding-right: 0.2rem !important;
+}
+
+.faq-title {
+  font-size: 20px;
+  font-weight: 600 !important;
+  color: #2C2C2C !important;
+}
+
+.faq-list {
+  list-style: decimal;
+  padding-left: 1.5rem; /* indentation */
+}
+
+.faq-list li {
+  margin-bottom: 0.75rem;
+  font-size: 16px;
+}
+
+.faq-list li a {
+  text-decoration: none;
+  color: #2C2C2C;        /* link color same as your theme */
+  font-weight: 500;
+}
+
+.faq-list li a {
+  text-decoration: underline; 
+}
+
+
+
+
+
+
+

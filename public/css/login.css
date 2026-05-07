@@ -1,0 +1,621 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap');
+
+
+/* Reset & base */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: 'Montserrat', sans-serif;
+  background-image: url("/img/admin-bg.webp");
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  padding: 1rem;
+}
+
+/* ! Scrollbar */
+
+/* Chrome, Edge, Safari */
+::-webkit-scrollbar {
+    width: 12px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 20px; 
+    margin: 2px;
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: #3066B3; 
+    border-radius: 20px !important;
+    border: 3px solid #f1f1f1; 
+    background-clip: padding-box;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background-color: #3378d3; 
+}
+
+/* Main container */
+.login-container {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+  padding: 2.5rem 2rem;
+  width: 100%;
+  max-width: 430px;
+  display: flex;
+  flex-direction: column;
+
+  min-height: 640px;
+  min-width: 516px;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 1rem;
+
+  position: relative; 
+  overflow: hidden;
+}
+
+#reset-container, .reset-container {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+  padding: 2.5rem 2rem;
+  width: 100%;
+  height: 482px !important;
+  max-width: 516px;
+  display: flex;
+  flex-direction: column;
+}
+
+
+
+
+/* Logo section */
+.logo-container {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+   /* margin-bottom: 2.5rem;  */
+  user-select: none;
+  justify-content: center;
+}
+
+.logo-container img {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  object-fit: contain;
+  
+}
+
+.logo-text {
+  display: flex;
+  flex-direction: column;
+  font-weight: 600;
+  color: #111;
+  line-height: 1.2;
+}
+
+.logo-text .campus {
+  font-weight: 400;
+  font-style: montserrat;
+  font-size: 0.75rem;
+  color: #6b7280;
+  margin-top: 2px;
+}
+
+/* Headings */
+ /* h1, h2 {
+  text-align: center;
+  color: #111;
+  font-weight: 500;
+  font-size: 1.75rem;
+  margin-bottom: 1.5rem;
+}  */
+
+.welcome-h1 {
+  text-align: center;
+  color: #111;
+  font-weight: 700;
+}
+
+/* Form layout */
+form {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 2rem;
+}
+
+/* Inputs */
+input[type="text"],
+input[type="email"],
+input[type="password"] {
+  padding: 0.75rem 1rem;
+  font-size: 1rem;
+  font-weight: 400;
+  color: #111;
+  background-color: #f9fafb;
+  border: 1.8px solid #e5e7eb;
+  border-radius: 0.5rem;
+  transition: border-color 0.25s ease;
+}
+
+input:focus {
+  border-color: #2563eb;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.3);
+}
+
+input::placeholder {
+  color: #9ca3af;
+}
+
+/* Buttons */
+button {
+  padding: 0.85rem 1rem;
+  font-size: 1.1rem;
+  font-weight: 500;
+  background-color: #0055A5;
+  color: white;
+  border: none;
+  border-radius: 0.75rem;
+  cursor: pointer;
+  transition: background-color 0.25s ease;
+}
+
+button:hover {
+  background-color: #1d4ed8;
+}
+
+button:focus-visible {
+  outline: 3px solid #93c5fd;
+  outline-offset: 2px;
+}
+
+/* Labels and extras */
+label {
+  font-size: 0.95rem;
+  color: #374151;
+}
+
+.extras {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.9rem;
+}
+
+.forgot-password, .create-account {
+  color: #111;
+  /* font-weight: 600; */
+  cursor: pointer;
+  user-select: none;
+}
+
+.forgot-password:hover {
+  text-decoration: underline;
+  color: #2563eb;
+}
+
+/* Error messages */
+.error-message {
+  color: #dc2626;
+  font-size: 0.875rem;
+}
+
+#resendBtn {
+    font-size: 0.875rem; /* text-sm */
+    color: #374151;       /* text-gray-700 */
+    background: none;
+    border: none;
+    padding: 0;
+    align-self: flex-start;
+    cursor: pointer;
+    border-radius: 0.375rem;
+  }
+  
+  #resendBtn:hover {
+    color: #1d4ed8;       /* hover:text-blue-700 */
+  }
+  
+  #resendBtn:focus {
+    outline: 2px solid #2563eb; /* focus:ring-2 focus:ring-blue-600 */
+    outline-offset: 2px;
+  }
+  
+
+
+/* Move only the Enter Code textbox  (Forgot Password page) */
+main[aria-label="Forgot Password Form"] #code {
+  margin-top: -55px; 
+}
+
+/* Move only the Resend Code button  (Forgot Password page) */
+main[aria-label="Forgot Password Form"] #resendBtn {
+  margin-top: 5px; 
+}
+
+/* Move the Submit button (Forgot Password page) */
+main[aria-label="Forgot Password Form"] form button[type="submit"] {
+  margin-top: 9.5px; 
+}
+
+/*Enter your Email */
+
+/* Back link */
+.back-link {
+  font-size: 0.9rem;
+  color: #374151; /* gray-700 */
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  text-decoration: none;
+  transition: color 0.2s ease;
+  user-select: none;
+  margin-top: -10px;
+}
+
+.back-link svg {
+  width: 16px;
+  height: 16px;
+  stroke-width: 2.3;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  fill: none;
+}
+
+.back-link:hover {
+  color: #2563eb;
+  text-decoration: underline;
+}
+
+/* Ensure button spacing matches layout */
+main[aria-label="University of Rizal System Email Verification Form"] form button.submit-btn {
+  margin-top: 5px;
+}
+
+/* Only for Enter Email page (margin between h1 and textbox)*/
+/* main[aria-label="University of Rizal System Email Verification Form"] h1 {
+  margin-bottom: -2.9rem !important;
+} */
+
+/* success/error messages */
+#message {
+  margin-top: 15px;
+  font-weight: 600;
+  text-align: center;
+}
+
+#message.success {
+  color: #2e7d32; /* green */
+}
+
+#message.error {
+  color: #c62828; /* red */
+}
+
+.form-title, h1, h2 {
+  font-size: 1.75rem;
+  font-weight: 500 !important;
+  color: #111;
+  text-align: center;
+  /* margin-bottom: 1.5rem; */
+}
+
+.login-div {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem;
+}
+
+.form-title-div {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.logo-text > span {
+  color: #0055A5 !important;
+}
+
+.input-div {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.input-reset-div {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  padding: 0 2rem 0 2rem;
+}
+
+.show-pass {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: .9rem !important;
+}
+
+/* Anchor for the absolute dropdown */
+.cb-wrap {
+  position: relative;
+}
+
+/* 1. Make the wrapper look exactly like your global text inputs */
+.cb-input-row {
+  display: flex;
+  align-items: center;
+  background-color: #f9fafb;
+  border: 1.8px solid #e5e7eb;
+  border-radius: 0.5rem;
+  transition: border-color 0.25s ease, box-shadow 0.25s ease;
+  padding-right: 0.5rem; /* Space for the button */
+  width: 100%;
+}
+
+/* 2. Apply your global input focus styles to the wrapper instead */
+.cb-wrap.open .cb-input-row,
+.cb-input-row:focus-within {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.3);
+}
+
+/* 3. Strip all default styling from the actual input so it blends into the wrapper */
+input.cb-input {
+  flex: 1; /* Takes up all available left space */
+  border: none !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  outline: none !important;
+  padding: 0.75rem 1rem;
+  margin: 0;
+}
+
+/* 4. Reset global button styles for the arrow so it looks like an icon */
+button.cb-arrow {
+  background: transparent;
+  border: none;
+  color: #6b7280;
+  padding: 0.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: transform 0.2s ease, color 0.2s ease;
+}
+
+/* Override your global button hover background */
+button.cb-arrow:hover {
+  background: transparent;
+  color: #111; 
+}
+
+/* 5. Rotate the SVG inside the button when open */
+.cb-wrap.open .cb-arrow svg {
+  transform: rotate(180deg);
+  transition: transform 0.2s ease;
+}
+
+/* 6. The Dropdown Container Menu */
+.cb-dropdown {
+  position: absolute;
+  top: calc(100% + 6px); /* Distance below input */
+  left: 0; 
+  right: 0;        
+  display: none;        
+  max-height: 220px;
+  overflow-y: auto;       
+  z-index: 100;
+  
+  /* Missing UI structure added here */
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.5rem;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+  padding: 0.5rem 0;
+}
+
+/* Reveal when wrapper gets .open */
+.cb-wrap.open .cb-dropdown {
+  display: block;
+}
+
+/* 7. Individual Option Rows */
+.cb-option {
+  padding: 0.6rem 1rem;
+  cursor: pointer;
+  font-size: 0.95rem;
+  color: #374151;
+  transition: background-color 0.15s ease;
+}
+
+.cb-option:hover {
+  background-color: #f3f4f6;
+  color: #111;
+}
+
+/* Empty state styling */
+.cb-option.empty {
+  cursor: default;
+  color: #9ca3af;
+  font-style: italic;
+}
+.cb-option.empty:hover {
+  background-color: transparent;
+}
+
+.input-div-window-admin {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  /* padding: 1rem; */
+  gap: 1rem;
+}
+
+#loginForm, #resetPasswordForm {
+  height: 362px;
+}
+
+.notice-text {
+  font-size: 0.9rem;
+  color: #cd1e1e;
+  font-weight: 600;
+  text-align: center;
+}
+
+.alert-message-submit-container {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 90%;
+  max-width: 420px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  z-index: 10000; /* Strictly higher than the 9999 backdrop */
+  
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 1rem;
+  gap: 1.5rem;
+  text-align: center;
+}
+
+/* Force hiding when the hidden attribute is present */
+.alert-message-submit-container[hidden] {
+  display: none !important;
+}
+
+.div-exit-container {
+  display: flex;
+  width: 100%;
+  justify-content: flex-start; /* Pushes the X anchor strictly to the right edge */
+}
+
+.div-exit-container a {
+  color: #6b7280; /* Subtle gray default */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  cursor: pointer;
+  transition: color 0.2s ease, transform 0.2s ease;
+}
+
+.div-exit-container a:hover {
+  color: #cd1e1e; /* Red hover for close button */
+  transform: scale(1.1); /* Slight pop effect on hover */
+}
+
+.alert-message {
+  font-size: 1.1rem;
+  /* font-weight: 600; */
+  color: #111;
+  line-height: 1.5;
+  text-align: center;
+  margin: 0; 
+}
+
+.alert-message-submit-container button[type="submit"] {
+  width: 50%; /* Makes the proceed button stretch nicely across the bottom */
+  margin-top: 0.5rem; /* Tiny bit of extra space above the button */
+}
+
+.undone-bold {
+  font-weight: 600;
+  color: #cd1e1e;
+}
+
+/* .proceed-btn-alert {
+  background-color: #cd1e1e;
+  color: white;
+} */
+
+#overlay-backdrop {
+  visibility: hidden;
+  opacity: 0;
+
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 9999; 
+
+  transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
+}
+
+/* This class will be added by JS to show it */
+#overlay-backdrop.is-visible {
+  visibility: visible; 
+  opacity: 1;
+}
+
+#close-btn-alert {
+  background: transparent;
+  border: none;
+  color: #111;
+  font-size: 1.5rem;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+/* Password Row Wrapper */
+.password-row {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+/* Ensure typed text doesn't hide underneath the eye button */
+.password-row input {
+  width: 100%;
+  padding-right: 2.5rem; 
+}
+
+/* Float the button inside the input */
+.password-row .show-pass {
+  position: absolute;
+  right: 0.5rem;
+  background: transparent;
+  border: none;
+  padding: 0.25rem;
+  color: #9ca3af; /* Matches your placeholder gray */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.password-row .show-pass:hover {
+  color: #111; /* Turns dark when hovered */
+  background: transparent;
+}
+
+
+/* .div-exit {
+  display: flex;
+  justify-content: flex-end;
+  width: 100%;
+} */

@@ -1,0 +1,499 @@
+<div class="container-fluid d-flex p-0 min-vh-100">
+
+  <!-- Sidebar Include -->
+  <%- include('../partials/admin/sidebar') %>
+
+  <!-- css link -->
+  <link rel="stylesheet" href="/css/kiosk.css">
+
+  <!-- HEADER -->
+  <header class="main-header d-flex justify-content-between align-items-center px-4">
+    <h1 class="mb-0">Kiosk Settings</h1>
+    <button class="back-arrow-btn d-none" id="back-to-window-select" style="margin-right: 2rem;">
+      <i class="ph ph-sign-out"></i>
+    </button>
+  </header>
+
+  <!-- Main Content -->
+  <main class="main-content admin-faq">
+    <div class="faq-wrapper container">
+
+      <!-- FAQ GRID -->
+      <div class="faq-grid" id="faq-grid">
+
+        <!-- FAQ Card 1 -->
+        <div class="faq-cards">
+          <div>
+            <div class="faq-header">
+              <i class="ph-bold ph-clock phosphor-icon"></i>
+              <div class="faq-title">Queue Management</div>
+            </div>
+          </div>
+          <div class="card-footer">
+            <button class="card-button card-button-2 pad" data-target="container-window-select">Proceed</button>
+          </div>
+        </div>
+
+        <!-- FAQ Card 2 -->
+        <div class="faq-cards">
+          <div>
+            <div class="faq-header">
+              <i class="ph-bold ph-question phosphor-icon"></i>
+              <div class="faq-title">Kiosk FAQ’s</div>
+            </div>
+          </div>
+          <div class="card-footer">
+            <button class="card-button card-button-2 pad" data-target="document-request-section">Proceed</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="container-window-select d-none" id="container-window-select">
+        <div class="nav-container">
+          <div class="back-container d-none">
+              <a href="" class="back-btn" id="back2"><i class="ph ph-arrow-left"></i></a>
+          </div>
+          <div class="container-text">
+              <p class="select-message">Select your window you want to operate:</p>
+          </div>
+        </div>
+
+          <div class="window-options-container">
+            <button class="window-container">
+              <div class="window-content">
+                <i class="ph ph-user"></i>
+                <h4 class="window-title">Window 1</h4>
+              </div>
+            </button>
+            <button class="window-container">
+              <div class="window-content">
+                <i class="ph ph-user"></i>
+                <h4 class="window-title">Window 2</h4>
+              </div>
+            </button>
+          </div>
+
+          <div class="button-container">
+              <button class="card-button card-button-2 pad no-modal" data-target="enrollment-section" id="proceed-button">Proceed</button>
+          </div>
+
+           <!-- Window Confirmation Modal -->
+          <div class="window-confirmation-modal d-none" id="window-confirmation-modal">
+            <div class="window-confirmation-backdrop"></div>
+
+            <div class="window-confirmation-content">
+              <button class="confirmation-close-btn" id="confirmation-close-btn">
+                <i class="ph ph-x"></i>
+              </button>
+              <h3 class="confirmation-title">
+                Are you sure you're <span id="confirmation-window-text">Window 1</span>?
+              </h3>
+              <button class="confirmation-btn" id="confirmation-btn">Confirm</button>
+            </div>
+          </div>
+
+          <!-- Exit Confirmation Modal -->
+          <div class="window-confirmation-modal d-none" id="exit-confirmation-modal">
+            <div class="window-confirmation-backdrop"></div>
+
+            <div class="window-confirmation-content">
+              <button class="confirmation-close-btn" id="exit-close-btn">
+                <i class="ph ph-x"></i>
+              </button>
+              <h3 class="confirmation-title">
+                Do you want to exit as <span id="exit-window-text" style="font-weight: 700;">Window 1</span>?
+              </h3>
+              <p style="color: #666; font-size: 0.95rem; margin: 0.5rem 0 1.5rem 0;">You'll need to choose your window again after.</p>
+              <button class="confirmation-btn" id="exit-logout-btn" style="background-color: #c41e1e;">Log Out</button>
+            </div>
+          </div>
+      </div>
+      
+      <div id="overlay-backdrop"></div>
+
+    <div class="container-grouper">
+      <div class="nav-container d-none" id="queue-dashboard-header">
+        <div style="display: flex; justify-content: space-between; align-items: center; width: 100%; gap: 2rem;">
+          <div class="activenav-container">
+            <div class="active-container">
+              <span class="active-text">Active Windows:</span>
+            </div>
+            <div class="indicator-container">
+              <div id="status-window-1" class="window-status-pill">
+                <span class="status-light offline"></span>
+                Window 1
+              </div>
+              <div id="status-window-2" class="window-status-pill">
+                <span class="status-light offline"></span>
+                Window 2
+              </div>
+            </div>
+          </div>
+        </div>
+        <button class="card-button card-button-2 no-margin" data-target="finished-section" id="finished-logs-btn"><i class="ph ph-scroll"></i>Finished Logs</button>
+      </div>
+
+      <div class="delete-popup-container" id="delete-popup">
+        <div class="x-container">
+          <a href=""><i class="ph ph-x"></i></a>
+        </div>
+        <div class="popup-content">
+          <h5 class="popup-text">Delete Ticket "<span class="id text">ID</span>"?</h5>
+          <p class="message-text">This action cannot be undone.</p>
+        </div>
+        <div class="button-container">
+          <button class="popup-btn-delete color-btn">Delete</button>
+        </div>
+      </div>
+
+      
+      <div class="logout-popup-container" id="logout-popup">
+        <div class="x-container">
+          <a href=""><i class="ph ph-x"></i></a>
+        </div>
+        <div class="popup-content">
+          <h5 class="popup-text">Do you want to exit as "<span class="id text">Window 1</span>"?</h5>
+          <p class="message-text">You'll need to choose your window again after.</p>
+        </div>
+        <div class="button-container">
+          <button class="popup-btn-delete color-btn">Logout</button>
+        </div>
+      </div>
+
+      <div class="processing-popup-container" id="processing-popup">
+        <div class="x-container">
+          <a href=""><i class="ph ph-x"></i></a>
+        </div>
+        <div class="popup-content">
+          <h5 class="popup-text">Confirm to move</h5>
+          <h5 class="popup-text">Ticket "<span class="id text">ID</span>" to the Processing table ?</h5>
+          <p class="message-text">This action cannot be undone.</p>
+        </div>
+        <div class="button-container">
+          <button class="popup-btn-delete color-btn-yes">Move to Processing</button>
+        </div>
+      </div>
+
+      <div class="confirm-popup-container" id="confirm-popup">
+        <div class="x-container">
+          <a href=""><i class="ph ph-x"></i></a>
+        </div>
+        <div class="popup-content">
+          <h5 class="popup-text">Confirm to finish processing</h5>
+          <h5 class="popup-text">Ticket "<span class="id text">ID</span>"?</h5>
+          <p class="message-text">This action cannot be undone.</p>
+        </div>
+        <div class="button-container">
+          <button class="popup-btn-delete color-btn-yes">Confirm</button>
+        </div>
+      </div>
+
+
+    <div class="tables">
+        <!-- Queue Management Section -->
+         <div class="table-group-container">
+          <div class="priority-table container-que table-container-2 card shadow-sm ">
+            <div class="table-name">
+                <h2 class="title-table">Priority Lane</h2>
+                <div class="operating-name">
+                  
+                  <p class="ttext d-none">You are:</p>
+                  <span class="window-number d-none">WINDOW 1</span>
+                </div>
+              </div>
+            <div class="table-wrapper">
+                  <table class="table align-middle faq-table">
+                    <thead class="table-title">
+                      <tr>
+                        <th>No.</th>
+                        <th>Name</th>
+                        <th>Date & Time</th>
+                        <th>Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody id="priority-table-body">
+                      <!-- rows dynamically injected -->
+                       <!-- <tr>
+                          <td>1</td>
+                          <td>J. Dela Cruz</td>
+                          <td>MM/DD/YY 00:00</td>
+                          <td>
+                            <div class="action-container">
+                              <button class="move-card-button">Move to Processing</button>
+                            </div>
+                          </td>
+                        </tr> -->
+                    </tbody>
+                  </table>
+                </div>
+          </div>
+            <div id="enrollment-section" class="d-none container-que table-container card shadow-sm">
+              <div class="table-name">
+                <h2 class="title-table">Queue</h2>
+                <div class="operating-name">
+                  <p class="ttext d-none">You are:</p>
+                  <span class="window-number d-none">WINDOW 1</span>
+                </div>
+              </div>
+              <div>
+                <div class="table-wrapper">
+                  <table class="table align-middle faq-table">
+                    <thead class="table-title">
+                      <tr>
+                        <th>No.</th>
+                        <th>Name</th>
+                        <th>Date & Time</th>
+                        <th>Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <!-- rows dynamically injected -->
+                       <tr>
+                          <td>1</td>
+                          <td>J. Dela Cruz</td>
+                          <td>MM/DD/YY 00:00</td>
+                          <td>
+                            <div class="action-container">
+                              <button class="move-card-button">Move to Processing</button>
+                            </div>
+                          </td>
+                        </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+          </div>
+
+         </div>
+        
+      <div class="delete-popup-container">
+        <div class="x-container">
+          <a href=""><i class="ph ph-x"></i></a>
+        </div>
+        
+      </div>
+
+        <div id="processing-section" class="card shadow-sm d-none container-que table-container">
+          <div class="table-name">
+            <h2 class="title-table">Process</h2>
+            <button class="call-card-button"><i class="ph-megaphone-simple ph-bold"></i>Repeat Call</button>
+          </div>
+          <div>
+            <div class="table-wrapper">
+              <table class="table align-middle faq-table">
+                <thead class="table-title">
+                  <tr>
+                    <th>No.</th>
+                    <th>Name</th>
+                    <th>Date & Time</th>
+                    <th>Window Operator</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+    </div>
+
+    <!-- Finished Logs Section -->
+     <div class="container-groupu">
+        <div class="back-container d-none">
+          <a href="" class="back-btn" id="back4"><i class="ph ph-arrow-left"></i></a>
+        </div>
+        <div id="finished-section" class="card shadow-sm d-none container-que table-container  widthy">
+      <div class="table-name">
+        <h2 class="title-table">Finished Logs</h2>
+      </div>
+      <div>
+        <div class="table-wrapper">
+          <table class="table align-middle faq-table">
+            <thead class="table-title">
+              <tr>
+                <th>No.</th>
+                <th>Name</th>
+                <th>Date & Time</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- rows dynamically injected -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+     </div>
+    
+  </div>
+
+      
+
+      
+      <!-- Kiosk FAQ’s Section -->
+      <div id="document-request-section" class="admin-drfaq-card d-none">
+        <div class="container-table-w-back">
+          <div class="back-container d-none">
+            <a href="" class="back-btn"><i class="ph ph-arrow-left"></i></a>
+          </div>
+          <div class="card shadow-sm">
+            <div class="card-body">
+              <div class="table-wrapper">
+                <table class="table align-middle faq-table">
+                  <thead class="table-title">
+                    <tr>
+                      <th>ID</th>
+                      <th>Question Title</th>
+                      <th>Requirements</th>
+                      <th class="sts-process">Step-by-step Process</th>
+                      <th>Image</th>
+                      <th>Date</th>
+                      <th></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <!-- rows dynamically injected -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="text-center mt-3">
+          <button class="btn add-question-btn">
+            <i class="ph-bold ph-plus"></i>
+            <span class="btn-text">Add a FAQ</span>
+          </button>
+        </div>
+      </div>
+
+<!-- Kiosk Editor Section (hidden by default) -->
+<div id="faq-editor-section" class="d-none">
+  <div class="row g-4">
+    <div class="container-flexy">
+      <div class="back-container d-none">
+        <a href="" class="back-btn" id="back3"><i class="ph ph-arrow-left"></i></a>
+      </div>
+      <!-- FAQ Post Form -->
+      <div class="col-md-6">
+        <div class="faq-form p-3 shadow-sm rounded bg-white h-100 font-weight-600">
+          <h5 class="mb-3 title-preview">FAQ Details</h5>
+
+          <!-- Question Title -->
+          <input type="text" class="form-control" placeholder="Question Title">
+
+          <div class="requirements">
+            <span class="section-text">Requirements</span>
+            <div class="fill-up">
+            <!-- FAQ Post Title -->
+              <input id="requirementInput" type="text" class="form-control" placeholder="Insert a Requirement here">
+              <i class="ph-plus ph-plush"></i>
+            </div>
+          </div>
+
+          <div class="requirements">
+            <div class="fill">
+              <div class="fill-upper">
+              <!-- FAQ Post Title -->
+                <span>Added Requirement</span>
+              </div>
+              <i class="ph-minus ph-minos"></i>
+            </div>
+          </div>
+
+
+          <div class="requirements">
+            <span class="section-text">Step-by-step Process</span>
+            <div class="fill-up">
+            <!-- FAQ Post Title -->
+              <input id="stepProcessInput" type="text" class="form-control" placeholder="Insert a Step process here">
+              <i class="ph-plus ph-plush"></i>
+            </div>
+          </div>
+
+          <div class="requirements">
+            <div class="fill">
+              <div class="fill-upper">
+              <!-- FAQ Post Title -->
+                <span>Added Process</span>
+              </div>
+                <i class="ph-minus ph-minos"></i>
+            </div>
+          </div>
+
+          <!-- Image Upload -->
+          <div class="mb-4 img-upload-container">
+            <div id="uploadArea"
+              class="image-upload-area text-center d-flex flex-column align-items-center justify-content-center"
+              onclick="document.getElementById('imageInput').click()">
+
+              <button type="button" class="btn btn-darkblue shadow-sm mb-2 d-flex align-items-center gap-2 admin-edit-btn">
+                <i class="ph-bold ph-image"></i>
+                <span class="btn1-text">Choose Image</span>
+              </button>
+
+              <p class="mb-1 drag-drop-text">Drag & Drop the image here</p>
+              <p class="text-muted small image-format">PNG / JPG / Webp</p>
+            </div>
+
+            <!-- Hidden File Input -->
+           <input type="file" id="imageInput" class="d-none" accept="image/*">
+          </div>
+
+          <!-- Submit Button -->
+          <button class="btn-submit btn-primary w-100">Submit</button>
+        </div>
+      </div>
+       <!-- Post Preview -->
+       <div class="col-md-6 preview-card">
+         <!-- Title Added -->
+         <h4 class="title-preview">Preview</h4>
+
+         <div class="faq-preview p-3">
+           <p class="directions">Requirements</p>
+           <ol class="mt-2 mb-0">
+             <li class="faq-item">
+               Requirement 1
+             </li>
+           </ol>
+         </div>
+       
+         <div class="faq-preview-card p-4 rounded ">
+           <p class="mb-1 directions">Check the boxes that you’ve completed to proceed:</p>
+           <p class="text-center mb-3 text-muted small"></p>
+
+           <!-- Scrollable Paragraph -->
+           <div class="preview-text checkbox-wrapper-4">
+               <input class="inp-cbx" id="step" type="checkbox"/>
+               <label class="cbx" for="step">
+                 <span>
+                   <svg width="12px" height="10px">
+                     <use xlink:href="#check-4"></use>
+                   </svg>
+                 </span>
+               </label>
+                 <svg class="inline-svg">
+                   <symbol id="check-4" viewbox="0 0 12 10">
+                     <polyline points="1.5 6 4.5 9 10.5 1"></polyline>
+                   </symbol>
+                 </svg>
+               <p class="checkbox-content">
+                 Step process directions
+               </p>
+           </div>
+         
+           <img class="preview-image mt-2" style="max-width:100%; display:none;" alt="FAQ Image Preview">
+         </div>
+       </div>
+     </div>
+    </div>
+  </div>
+
+    </div>
+  </main>
+</div>
+
+<script type="module" src="/js/kiosk.js"></script>

@@ -1,0 +1,327 @@
+document.addEventListener("DOMContentLoaded", () => {
+  const toggleBtn = document.querySelector(".toggle-btn");
+  const sidebar = document.querySelector(".sidebar");
+  const mainContent = document.querySelector(".main-content");
+  const mainHeader = document.querySelector(".main-header");
+  const rowSumCards = document.querySelector(".row-sum-cards");
+  const chartContainer = document.querySelector(".chart-container");
+  const faqCard = document.querySelector(".faq-card");
+
+  if (toggleBtn && sidebar) {
+    toggleBtn.addEventListener("click", () => {
+      sidebar.classList.toggle("small-sidebar");
+      mainContent?.classList.toggle("adjusted");
+      mainHeader?.classList.toggle("adjusted");
+      rowSumCards?.classList.toggle("adjusted");
+      chartContainer?.classList.toggle("adjusted");
+      faqCard?.classList.toggle("adjusted");
+      window.dispatchEvent(new Event("resize"));
+    });
+  }
+
+  const logoutBtn = document.querySelector(".logout");
+  if (logoutBtn) {
+    logoutBtn.addEventListener("click", async () => {
+      console.log("Logout clicked ✅");
+      const { error } = await supabaseClient.auth.signOut();
+      if (error) console.error("Logout error:", error.message);
+      else window.location.href = "/admin/login";
+    });
+  }
+
+});
+
+const swapLinks = document.querySelectorAll(".swap-link");
+const forms = document.querySelectorAll(".form-section");
+const backBtns = document.querySelectorAll(".back-btn");
+const closeBtns = document.querySelectorAll(".close-btn");
+const sectionsToHide = [
+  document.getElementById("security-settings"),
+  document.getElementById("account-history"),
+];
+
+swapLinks.forEach((link) => {
+  link.addEventListener("click", (e) => {
+    e.preventDefault();
+    const targetId = link.dataset.target;
+
+    sectionsToHide.forEach((sec) => (sec.style.display = "none"));
+
+    forms.forEach((f) => (f.style.display = "none"));
+    document.getElementById(targetId).style.display = "flex";
+  });
+});
+
+backBtns.forEach((btn) => {
+  btn.addEventListener("click", () => {
+    forms.forEach((f) => (f.style.display = "none"));
+    sectionsToHide.forEach((sec) => (sec.style.display = "block"));
+  });
+});
+
+closeBtns.forEach((btn) => {
+  btn.addEventListener("click", () => {
+    forms.forEach((f) => (f.style.display = "none"));
+    sectionsToHide.forEach((sec) => (sec.style.display = "block"));
+  });
+});
+
+import { supabaseClient } from '/js/supabase-client.js';
+
+(async () => {
+  const { data: { session } } = await supabaseClient.auth.getSession();
+  if (!session) {
+    window.location.href = "login.html"; 
+  } else {
+    supabaseClient.auth.setSession(session.access_token);
+  }
+})();
+
+async function getUserLocation() {
+  if ("geolocation" in navigator) {
+    return new Promise((resolve) => {
+      navigator.geolocation.getCurrentPosition(
+        async (position) => {
+          const { latitude, longitude } = position.coords;
+
+          try {
+            const res = await fetch(
+              `https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json`
+            );
+            const data = await res.json();
+            const city = data.address.city || data.address.town || data.address.village || "Unknown City";
+            const country = data.address.country || "Unknown Country";
+            resolve(`${city}, ${country}`);
+          } catch (err) {
+            console.error("Reverse geocoding failed:", err);
+            resolve("Unknown");
+          }
+        },
+        (err) => {
+          console.warn("Geolocation permission denied or error:", err);
+          resolve("Unknown");
+        },
+        { enableHighAccuracy: true, timeout: 5000, maximumAge: 0 }
+      );
+    });
+  } else {
+    console.warn("Geolocation is not available in this browser");
+    return "Unknown";
+  }
+}
+
+function showMessage(form, message, type = "danger") {
+  let msgDiv = form.querySelector(".form-message");
+  if (!msgDiv) {
+    msgDiv = document.createElement("div");
+    msgDiv.className = "form-message mt-3";
+    form.appendChild(msgDiv);
+  }
+  msgDiv.innerHTML = `<div class="alert alert-${type}" role="alert">${message}</div>`;
+}
+
+const changePasswordForm = document.getElementById("changePasswordForm");
+
+if (changePasswordForm) {
+  changePasswordForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const currentPassword = changePasswordForm.currentPassword.value.trim();
+    const newPassword = changePasswordForm.newPassword.value.trim();
+    const reenterNewPassword =
+      changePasswordForm.reenterNewPassword.value.trim();
+
+    if (newPassword !== reenterNewPassword) {
+      showMessage(changePasswordForm, "❌ New passwords do not match", "danger");
+      return;
+    }
+
+    const { data: sessionData, error: sessionError } =
+      await supabaseClient.auth.getSession();
+
+    if (sessionError || !sessionData.session) {
+      showMessage(
+        changePasswordForm,
+        " Please log in again to change your password.",
+        "danger"
+      );
+      return;
+    }
+
+    const userEmail = sessionData.session.user.email;
+
+    const { error: signInError } = await supabaseClient.auth.signInWithPassword({
+      email: userEmail,
+      password: currentPassword,
+    });
+
+    if (signInError) {
+      showMessage(changePasswordForm, "❌ Current password is incorrect", "danger");
+      return;
+    }
+
+    const { error: updateError } = await supabaseClient.auth.updateUser({
+      password: newPassword,
+    });
+
+    if (updateError) {
+      showMessage(changePasswordForm, "❌ " + updateError.message, "danger");
+    } else {
+      showMessage(
+        changePasswordForm,
+        " Password updated successfully!",
+        "success"
+      );
+      changePasswordForm.reset();
+    }
+  });
+}
+
+const changeEmailForm = document.getElementById("changeEmailForm");
+
+if (changeEmailForm) {
+  changeEmailForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const currentEmail = changeEmailForm.currentEmail.value.trim();
+    const newEmail = changeEmailForm.newEmail.value.trim();
+
+    const { data: sessionData, error: sessionError } =
+      await supabaseClient.auth.getSession();
+
+    if (sessionError || !sessionData.session) {
+      showMessage(
+        changeEmailForm,
+        " Please log in again to change your email.",
+        "danger"
+      );
+      return;
+    }
+
+    const loggedInEmail = sessionData.session.user.email;
+
+    if (currentEmail !== loggedInEmail) {
+      showMessage(
+        changeEmailForm,
+        " The current email does not match your logged-in email.",
+        "danger"
+      );
+      return;
+    }
+
+    const { data: updatedUser, error: updateError } =
+      await supabaseClient.auth.updateUser(
+        { email: newEmail },
+        {
+          emailRedirectTo: "https://reigi.vercel.app/admin/login.html"
+        }
+      );
+
+    console.log("Update result:", updatedUser, updateError);
+
+    if (updateError) {
+      showMessage(changeEmailForm, "❌ " + updateError.message, "danger");
+    } else {
+      const { data: refreshedUser, error: refreshError } =
+        await supabaseClient.auth.getUser();
+
+      console.log("Refreshed user after update:", refreshedUser, refreshError);
+
+      let message = "";
+      if (refreshedUser?.user?.new_email) {
+        message = ` Email change is pending confirmation.<br>
+          Current active email: <b>${refreshedUser.user.email}</b><br>
+          New email (unconfirmed): <b>${refreshedUser.user.new_email}</b><br>
+           Please check your inbox and confirm the new email.`;
+      } else {
+        message = ` Email updated successfully!<br>
+          Active email is now: <b>${refreshedUser?.user?.email}</b>`;
+      }
+
+      showMessage(changeEmailForm, message, "success");
+
+      setTimeout(async () => {
+        await supabaseClient.auth.signOut();
+        window.location.href = "login.html";
+      }, 3000);
+    }
+  });
+}
+
+const alertEmail = document.getElementById("alertEmail");
+const currentDevice = document.getElementById("currentDevice");
+const loginHistoryList = document.getElementById("loginHistoryList");
+
+async function loadUserAlertsAndHistory() {
+  const { data: sessionData, error: sessionError } = await supabaseClient.auth.getSession();
+  if (sessionError || !sessionData.session) {
+    console.error("No active session:", sessionError);
+    return;
+  }
+
+  const user = sessionData.session.user;
+
+  if (alertEmail) alertEmail.textContent = user.email;
+
+  try {
+    const parser = new UAParser();
+    const result = parser.getResult();
+    const friendlyDevice = `${result.os.name || "Unknown OS"} ${result.os.version || ""} - ${result.browser.name || "Unknown Browser"} ${result.browser.version || ""}`;
+
+    const userLocation = await getUserLocation();
+
+  } catch (err) {
+    console.error("Error inserting login history:", err);
+  }
+
+  const { data: history, error } = await supabaseClient
+    .from("login_history")
+    .select("*")
+    .order("login_time", { ascending: false });
+
+  if (error) {
+    console.error("Error fetching login history:", error);
+    return;
+  }
+
+  if (history.length > 0) {
+    const latest = history[0];
+    const date = new Date(latest.login_time).toLocaleString();
+
+    currentDevice.innerHTML = `
+      <h5>${latest.device || "Unknown Device"}</h5>
+      <p class="mb-0">${latest.location || "Unknown Location"}</p>
+      <p class="text-success fw-bold">This Device</p>
+      <small class="text-muted">${date}</small>
+    `;
+  } else {
+    currentDevice.innerHTML = "<p class='text-muted'>No current session found.</p>";
+  }
+
+  loginHistoryList.innerHTML = "";
+  if (history.length === 0) {
+    loginHistoryList.innerHTML = "<p class='text-muted'>No login history available.</p>";
+    return;
+  }
+
+  history.forEach((item, index) => {
+    if (index === 0) return; 
+
+    const deviceItem = document.createElement("div");
+    deviceItem.className = "device-item";
+    const date = new Date(item.login_time).toLocaleString();
+
+    deviceItem.innerHTML = `
+      <div>
+        <h6>${item.device || "Unknown Device"}</h6>
+        <small>${item.location || "Unknown Location"}</small><br />
+        <small class="text-muted">${date}</small>
+      </div>
+      <i class="bi bi-chevron-right"></i>
+    `;
+
+    loginHistoryList.appendChild(deviceItem);
+  });
+}
+
+loadUserAlertsAndHistory();

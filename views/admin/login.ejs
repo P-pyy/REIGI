@@ -1,0 +1,46 @@
+<link rel="stylesheet" href="/css/login.css" />
+  <main class="login-container" role="main" aria-label="Admin Login">
+
+    <div class="login-div">
+      <div class="logo-container">
+        <img src="/img/URS LOGO.png" alt="URS logo" onerror="this.style.display='none'" />
+        <div class="logo-text">
+          <span>University of</span>
+          <span>Rizal System</span>
+        </div>
+      </div>
+    </div>
+
+
+    <form id="loginForm">
+      <h1 class="welcome-h1">Welcome, Window Admin</h1>
+
+      <div class="input-div-window-admin">
+        <div class="cb-wrap" id="cb1">
+          <div class="cb-input-row">
+            <input id="cb1-input" class="cb-input" type="text" placeholder="Select Campus" role="combobox" aria-expanded="false" aria-haspopup="listbox" required/>
+            <button type="button" class="cb-arrow" aria-label="Toggle dropdown">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+            </button>
+          </div>
+          <div id="cb1-list" class="cb-dropdown" role="listbox"></div>
+        </div>
+
+        <input id="email" name="email" type="email" placeholder="Email" required />
+        <input id="password" name="password" type="password" placeholder="Password" required />
+
+        <div class="extras">
+          <label><input type="checkbox" id="showPassword" /> Show Password</label>
+          <a href="/admin/login_enter_email" class="forgot-password" role="link">Forgot Password?</a>
+        </div>
+      </div>
+
+      <button type="submit">Sign In</button>
+    </form>
+  </main>
+
+  <!-- scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/ua-parser-js@1.0.35/src/ua-parser.min.js"></script>
+  <script type="module" src="/js/login.js"></script>
+
+

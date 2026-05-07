@@ -1,0 +1,194 @@
+body {
+  font-family: 'Montserrat', sans-serif;
+  background-color: #fcfcfc;
+  margin: 0;
+  overflow-y: hidden;
+}
+
+.main-container {
+    display: flex;
+    flex-direction: column;
+}
+
+.title-container1 {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+}
+
+.title-text {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: .5rem;
+}
+
+.h1-text {
+    font-size: 3rem;
+    font-weight: 500;
+    /* color: #191919; */
+    color: #fcfcfc;
+}
+
+.h1-title-text {
+    font-size: 3rem;
+    font-weight: 600;
+    color: #0057b8;
+    margin: 0;
+}
+
+.date-text-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+}
+
+.time-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.date-text, .time-text, .AM-PM-text {
+    font-size: 1.5rem;
+    font-weight: 500;
+    color: #191919;
+    letter-spacing: .1rem;
+}
+
+.container-content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-image: linear-gradient(to bottom, #0057b8, #133e6f);
+    overflow-y: hidden;
+    height: 500px;
+}
+
+.window-1-container, .window-2-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 50%;
+    height: 100vh;
+    /* gap: 2rem; */
+    /* border: 1px solid #e3e3e3; */
+}
+
+
+/* .container-ticket-number-window {
+    border-radius: 1rem;
+    padding: 1rem;
+    width: fit-content;
+} */
+
+.border1 {
+    border-right: 1px solid #fcfcfc !important;
+}
+
+.number-text-window{
+    color: #fcfcfc;
+    font-weight: 500;
+    font-size: 10rem;
+}
+
+.number-text {
+    color: #fcfcfc;
+    font-size: 2.2rem;
+}
+
+.container-ticket-number {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 1rem;
+    background-color: #0057b8;
+    background-image: linear-gradient(to bottom right, #0057b8, #1a3e66);
+    color: #fcfcfc;
+    padding: 1rem;
+    font-weight: 500;
+    height: 110px;
+    font-size: 2.8rem;
+    width: fit-content;
+}
+
+.waiting-text-container, .priority-text-container {
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    padding: 1rem;
+    width: 100%;
+}
+
+.waiting-container {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    width: 100%; /* Default to full width */
+    transition: width 0.3s ease; /* Smooth animation when shrinking */
+}
+
+.waiting-text, .priority-text {
+    padding: 1.2rem;
+    font-size: 1.7rem;
+    color: #191919;
+}
+
+.tickets-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 2.8rem;
+}
+
+.logo-container {
+    padding: .5rem;
+}
+
+.priority-container {
+    display: none; /* Hidden by default */
+    flex-direction: column;
+    align-items: center;
+    border-left: #0057b8 1px solid;
+    width: 0; /* logic safety */
+}
+
+.group-container {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    height: 35vh;
+}
+
+.group1-container {
+    display: flex;
+    /* align-items: center; */
+    justify-content: center;
+    flex-direction: column;
+    /* background-color: #0057b8 !important; */
+    /* height: 65vh; */
+}
+
+.main1-container {
+    display: flex;
+}
+
+/* DEFAULT STATE (Single Lane) */
+.priority-container {
+    display: none; /* Must be hidden by default */
+}
+.waiting-container {
+    width: 100%; /* Must be full width by default */
+}
+
+/* DUAL MODE (Triggered by JS) */
+.group-container.dual-mode .priority-container {
+    display: flex !important;
+    width: 50% !important;
+}
+.group-container.dual-mode .waiting-container {
+    width: 50% !important;
+}

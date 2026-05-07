@@ -1,0 +1,829 @@
+body {
+  font-family: 'Montserrat', sans-serif;
+  background-color: #f5f7fa;
+  margin: 0;
+}
+
+
+.main-header h1 {
+  font-size: 35px;
+  margin-left: 80px;
+  padding-left: 50px;
+  font-weight: 600;
+  color: #0057b8;
+  margin: 0;
+}
+
+.main-content {
+  display: flex;
+  max-width: calc(100% - 278px);
+  min-height: 100vh;
+  transition: margin-left 0.3s ease, width 0.3s ease;
+  padding: 14rem 4rem 8rem 8rem;
+}
+
+.main-content.adjusted {
+  margin-left: 180px !important;
+  width: calc(100% - 2rem);
+}
+
+.faq-wrapper {
+  margin-left: 3rem;
+  max-width: 1200px;
+  padding: 0 20px;
+  width: 100%;
+}
+
+.faq-grid {
+  display: flex;
+  gap: 1rem;
+}
+
+.faq-cards {
+  background-color: #fcfcfc;
+  border-radius: 12px;
+  width: 290px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  padding: 30px 20px;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  gap: 5.5rem;
+}
+
+.faq-card:hover {
+  transform: translateY(-5px);
+  background: #0055A5;
+  color: #fcfcfc;
+}
+
+.faq-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.faq-title {
+  font-size: 24px;
+  margin-left: 20px;
+  margin-top: 80px;
+  font-weight: 600;
+  color: #2C2C2C;
+}
+
+.phosphor-icon {
+  font-size: 2.5rem;
+  margin-right: 10px;
+  height: 40px;
+  width: 40px;
+  margin-top: 60px;
+  color: #0055A5;
+}
+
+.faq-desc {
+  font-size: 14px;
+  color: #2C2C2C;
+  margin-top: 10px;
+  line-height: 1.5;
+}
+
+.card-footer {
+  display: flex;
+  justify-content: center;
+  /* margin-top: 30px; */
+}
+
+.card-button {
+  background-color: #CDE4FF;
+  border: none;
+  margin-bottom: 50px;
+  height: 45px;
+  width: 160px;
+  padding: 10px 20px;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #000;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.card-button:hover {  
+  background: #0055A5;
+  color: #fcfcfc;
+}
+
+/* Table ui styles */
+/* admin_faq_enrollment_process   */
+
+.admin-esfaq-card {
+  max-width: 1800px; 
+}
+.admin-drfaq-card {
+  display: flex;
+  flex-direction: column;
+  margin: 0 auto;
+  width: 95%;         
+  max-width: 1800px; 
+}
+#graduation-clearance-section {
+  padding-top: 20px !important;
+}
+.admin-gcfaq-card {
+  margin: 0 auto;
+  width: 95%;         
+  max-width: 1800px; 
+}
+
+.table-title th {
+  font-size: 16px;   
+  font-weight: 600;     
+  color: #2C2C2C;        
+  vertical-align: top;
+
+  position: sticky;
+  top: 0;           
+  z-index: 10;     
+}
+.faq-table td {
+  font-size: 14px;     
+  font-weight: 400;      
+  color: #2C2C2C;
+  vertical-align: middle;
+}
+
+.faq-table th{
+  border: none !important;
+  background-color: transparent; 
+  text-align: left;
+  background-color: #fcfcfc;
+}
+
+.faq-table td {
+  border: none !important;
+  background-color: transparent; 
+  text-align: left;
+}
+
+.faq-table tbody tr:nth-child(odd) {
+  background-color: inherit;
+}
+
+.faq-table tbody tr:nth-child(even) {
+  background-color: #F2F6FC;
+}
+
+.edit-link {
+  text-decoration: none !important; 
+  color: #0055A5 !important;
+  font-size: 14px !important;
+  font-weight: 400 !important;
+}
+
+.edit-link:hover {
+  text-decoration: none !important;  
+}
+
+.trash-icon {
+  text-decoration: none !important; 
+}
+
+.trash-icon:hover {
+  text-decoration: none !important;
+  color: #dc3545; 
+}
+
+.btn-text {
+  font-size: 14px;    
+  font-weight: 500;  
+  color: #2C2C2C;    
+}
+
+.ph-plus {
+  vertical-align: middle;  
+  /* margin-right: 8px;     */
+}
+
+
+.add-question-btn{
+  background-color: #CDE4FF; 
+  border-radius: 8px;
+  padding: 10px;
+}
+
+.table-wrapper {
+  overflow-y: auto;
+  max-height: 420px;    
+  overflow-y: auto;       
+  overflow-x: hidden;     
+  padding-right: 10px;    
+}
+
+.tbody::-webkit-scrollbar {
+  width: 8px; 
+}
+
+.tbody::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.tbody::-webkit-scrollbar-thumb {
+  background: #1565c0; 
+  border-radius: 10px;
+}
+
+.tbody::-webkit-scrollbar-thumb:hover {
+  background: #0d47a1;  
+}
+
+.fade-in { animation: fadeIn 0.2s ease-in-out; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+
+    #loading-overlay {
+      position: fixed; top:0; left:0; width:100%; height:100%;
+      background: rgba(255,255,255,0.8);
+      display: flex; align-items: center; justify-content: center;
+      z-index: 9999; opacity:0; pointer-events:none; transition: opacity 0.3s ease;
+    }
+    #loading-overlay.show { opacity:1; pointer-events: all; }
+
+/* edit text in table */
+
+.edit-faq {
+  text-decoration: none;  /* remove underline */
+  cursor: pointer;        /* show pointer on hover */
+}
+
+.edit-faq:hover {
+  text-decoration: underline; /* optional: underline only on hover */
+}
+
+
+
+
+/* .requirements{} */
+
+.faq-form {
+  background-color: #fcfcfc;
+}
+
+.fill-up {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+}
+
+.fill {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+}
+
+.fill-upper {
+  display: flex;
+  justify-content: space-between; 
+  align-items: flex-start;         
+  width: 100%;
+  gap: 1rem;
+  padding: .7rem;
+  border-radius: 8px;
+  background-color: #CDE4FF;
+
+  flex-wrap: wrap;                 
+  word-break: break-word;          
+}
+
+.ph-plush {
+  background-color: #0055A5;
+  font-size: .8rem;
+  padding: .5rem;
+  color: #fcfcfc;
+  border-radius: 8px;
+}
+
+.ph-minos{
+  background-color: #a5001b;
+  font-size: .8rem;
+  padding: .5rem;
+  color: #fcfcfc;
+  border-radius: 8px;
+  flex-shrink: 0; 
+  margin-left: auto; 
+}
+
+
+.preview-card {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1rem;
+
+}
+
+.title-preview {
+  color: #000;
+  font-weight: 600;
+  font-size: 1.5rem;
+}
+
+.faq-preview {
+  background-color: #F3F4F8;
+  border-radius: 8px;
+}
+
+.faq-preview-card {
+  background-color: #F3F4F8;
+  border-radius: 8px;
+}
+
+.directions {
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.preview-text {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.img-upload-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* border: 2px rgba(0, 85, 165, 1) dashed; */
+  background-image: url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='none' rx='8' ry='8' stroke='%230055A5' stroke-width='2' stroke-dasharray='10, 10' stroke-dashoffset='0' stroke-linecap='square'/%3e%3c/svg%3e");
+  border-radius: 8px;
+  padding: 4rem;
+  margin: 2rem 0 0 0;
+}
+
+.faq-form {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 1rem;
+  padding: 2rem !important;
+  border-radius: 12px !important;
+}
+
+.btn-submit {
+  padding: 1rem;
+  background: rgba(0, 85, 165, 1);
+  color: #fcfcfc;
+  border-radius: 8px;
+  border: none;
+}
+
+.checkbox-content {
+  margin-bottom: 0 !important;
+}
+
+.checkbox-wrapper-4 * {
+  box-sizing: border-box;
+}
+.checkbox-wrapper-4 .cbx {
+  -webkit-user-select: none;
+  user-select: none;
+  cursor: pointer;
+  padding: 6px 8px;
+  border-radius: 6px;
+  overflow: hidden;
+  transition: all 0.2s ease;
+  display: inline-block;
+}
+.checkbox-wrapper-4 .cbx:not(:last-child) {
+  margin-right: 6px;
+}
+.checkbox-wrapper-4 .cbx:hover {
+  background: rgba(0,119,255,0.06);
+}
+.checkbox-wrapper-4 .cbx span {
+  float: left;
+  vertical-align: middle;
+  transform: translate3d(0, 0, 0);
+}
+.checkbox-wrapper-4 .cbx span:first-child {
+  position: relative;
+  width: 18px;
+  height: 18px;
+  border-radius: 4px;
+  transform: scale(1);
+  border: 1px solid #cccfdb;
+  transition: all 0.2s ease;
+  box-shadow: 0 1px 1px rgba(0,16,75,0.05);
+}
+.checkbox-wrapper-4 .cbx span:first-child svg {
+  position: absolute;
+  top: 3px;
+  left: 2px;
+  fill: none;
+  stroke: #fff;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 16px;
+  stroke-dashoffset: 16px;
+  transition: all 0.3s ease;
+  transition-delay: 0.1s;
+  transform: translate3d(0, 0, 0);
+}
+.checkbox-wrapper-4 .cbx span:last-child {
+  padding-left: 8px;
+  line-height: 18px;
+}
+.checkbox-wrapper-4 .cbx:hover span:first-child {
+  border-color: #07f;
+}
+.checkbox-wrapper-4 .inp-cbx {
+  position: absolute;
+  visibility: hidden;
+}
+.checkbox-wrapper-4 .inp-cbx:checked + .cbx span:first-child {
+  background: #07f;
+  border-color: #07f;
+  animation: wave-4 0.4s ease;
+}
+.checkbox-wrapper-4 .inp-cbx:checked + .cbx span:first-child svg {
+  stroke-dashoffset: 0;
+}
+.checkbox-wrapper-4 .inline-svg {
+  position: absolute;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+  user-select: none;
+}
+@media screen and (max-width: 640px) {
+  .checkbox-wrapper-4 .cbx {
+    width: 100%;
+    display: inline-block;
+  }
+}
+@-moz-keyframes wave-4 {
+  50% {
+    transform: scale(0.9);
+  }
+}
+@-webkit-keyframes wave-4 {
+  50% {
+    transform: scale(0.9);
+  }
+}
+@-o-keyframes wave-4 {
+  50% {
+    transform: scale(0.9);
+  }
+}
+@keyframes wave-4 {
+  50% {
+    transform: scale(0.9);
+  }
+}
+
+/* Highlight selected window */
+.window-container.active-window {
+  border: 2px solid #1976d2;
+  background-color: #e3f2fd;
+  transition: all 0.2s ease;
+}
+
+/* Highlight active window status in header */
+.window-status-pill.active-status {
+  background-color: #1976d2;
+  color: #fff;
+  border-radius: 20px;
+  padding: 4px 10px;
+}
+
+/* Online/Offline light indicators */
+.status-light {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  margin-right: 6px;
+}
+.status-light.offline {
+  background-color: #ccc;
+}
+.status-light.online {
+  background-color: #4caf50;
+}
+
+/* Duplicate modal rules removed - using modern rules below */
+
+#confirmation-window-text {
+  color: #0055A5;
+  font-weight: 700;
+}
+
+.confirmation-btn {
+  background-color: #0055A5;
+  color: #fff;
+  border: none;
+  padding: 0.8rem 2rem;
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  min-width: 200px;
+}
+
+.confirmation-btn:hover {
+  background-color: #0b5ed7;
+}
+
+/* Confirmation Modal Container */
+.window-confirmation-modal {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999; /* Make sure it's above everything */
+}
+
+.window-confirmation-modal.d-none {
+  display: none !important;
+}
+
+/* Backdrop */
+.window-confirmation-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1;
+}
+
+/* Modal Content */
+.window-confirmation-content {
+  position: relative;
+  z-index: 2;
+  background: #fff;
+  padding: 2rem;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 680px;
+  text-align: center;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  flex-wrap: wrap;
+}
+
+/* Close Button */
+.confirmation-close-btn {
+  position: static;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 6px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Confirm Button */
+.confirmation-btn {
+  margin-top: 20px;
+  background: #007bff;
+  color: white;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.confirmation-btn:hover {
+  background: #0056b3;
+}
+
+/* Back Arrow Button */
+.back-arrow-btn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 1.8rem;
+  color: #000;
+  padding: 0.5rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.back-arrow-btn:hover {
+  color: #0055A5;
+  transform: scale(1.1);
+}
+
+#faq-editor-section {
+  margin-top: -50px !important;
+  margin-left: -50px;
+  display: flex;
+}
+
+.container-faq-preview {
+  display: flex;
+  flex-direction: column;
+}
+
+.faq-category-title {
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.faq-preview-question {
+  background-color: #fcfcfc;
+  border-radius: 12px;
+  box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.25);
+}
+
+.th-text {
+  display: inline-block;
+}
+
+.faq-table {
+  width: 100%; 
+  table-layout: fixed;
+  border: none !important;
+  background-color: transparent; 
+  text-align: left;
+}
+
+.faq-table .table-title th:nth-child(1) { /* ID */
+  width: 40px; 
+}
+
+.faq-table .table-title th:nth-child(2) { /* ID */
+  width: 40px; 
+}
+
+.faq-table .table-title th:nth-child(3) { /* Question Title */
+  width: 120px; 
+}
+
+.faq-table .table-title th:nth-child(4) { /* FAQ Post Title */
+  width: 120px;
+}
+
+.faq-table .table-title th:nth-child(5) { /* Question Details */
+  width: 40%;
+}
+
+.faq-table .table-title th:nth-child(6) { /* Image */
+  width: 45%;
+}
+
+.faq-table .table-title th:nth-child(7) { /* Date & Time */
+  width: 70px;
+}
+
+.faq-table .table-title th:nth-child(8) { /* Action */
+  width: 100px; 
+}
+
+.faq-table .table-title th:nth-child(9) { /* Action */
+  width: 80px; 
+}
+
+
+.ph-arrow-left {
+  color: rgba(0, 0, 0, 1);
+  border: none;
+  padding: .7rem;
+  border-radius: 20px ;
+  font-size: 1.8rem;
+}
+
+#enrollment-section, #document-request-section, #graduation-clearance-section{
+  display: flex;
+  margin-left: -145px;
+  margin-top: -50px;
+}
+
+.back-container {
+  top: -50px;
+}
+
+.container-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.text-center{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 1.5rem;
+}
+
+.title-container {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+}
+
+.title-preview {
+  color: rgba(0, 85, 165, 1);
+  font-weight: 600;
+  font-size: 1.5rem;
+}
+
+.another-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  background-color: #fcfcfc;
+  border-radius: 12px;
+  padding: 2rem;
+  box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.25);
+  height: 100%;
+}
+
+/* .ph-caret-down {
+  color: rgba(0, 0, 0, 1);
+  border: none;
+  padding: .7rem;
+  border-radius: 20px ;
+  font-size: 1rem;
+} */
+
+.down-btn {
+  border: none;
+  background: none;
+}
+
+.expandable-content {
+  max-height: 24px; /* Height of approx 1 line */
+  overflow: hidden;
+  transition: max-height 0.4s ease-in-out;
+  position: relative;
+}
+
+tr.row-expanded .expandable-content {
+  max-height: 1000px; /* Arbitrary large height */
+  overflow: visible;
+}
+
+.toggle-cell:hover i {
+    color: #0055A5; /* Or your theme color */
+}
+
+/* ! PREVIEW CARD OVERFLOW FIXES */
+
+/* 1. Ensure the containers themselves don't exceed the card width */
+.faq-preview, 
+.faq-preview-card, 
+.another-container {
+    max-width: 100%;
+    box-sizing: border-box; /* Includes padding in width calculation */
+}
+
+/* 2. Fix the text wrapping for specific elements */
+.faq-item, 
+.faq-name, 
+.steps-preview-container li,
+.steps-preview-container ol {
+    /* This forces long text to wrap to the next line */
+    white-space: normal; 
+    overflow-wrap: break-word; 
+    word-wrap: break-word; 
+    word-break: break-word; 
+
+    /* Ensures element doesn't grow wider than its parent */
+    max-width: 100%; 
+}
+
+/* 3. Specific fix for the steps list to ensure padding doesn't push it out */
+.steps-preview-container ol {
+    padding-left: 20px; /* Standard indentation */
+    margin: 0;
+}
+
+/* 4. Fix for the Title Container to handle centering + wrapping */
+.title-container {
+    width: 100%;
+    text-align: center;
+}
+
+.post-card {
+  width: 430px !important;
+  height: fit-content !important;
+}
+
+.preview-card {
+  width: 450px !important;
+  height: fit-content !important;
+}
+
+.tester {
+  display: flex;
+  /* flex-direction: column; */
+}
