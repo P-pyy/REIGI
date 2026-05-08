@@ -126,14 +126,34 @@ app.get('/admin/create-window-admin', (req, res, next) => {
 
 app.use('/admin', requireAdminLogin);
 
-app.get('/admin/dashboard', (req, res, next) => {
+app.use((req, res, next) => {
+  res.locals.role = req.role;
+  next();
+});
+
+// ==========================================
+// ROLE MIDDLEWARE
+// ==========================================
+function requireSuperAdmin(req, res, next) {
+
+  if (
+    req.role !== "super_admin" &&
+    req.role !== "admin"
+  ) {
+    return res.redirect("/admin/kiosk");
+  }
+
+  next();
+} 
+
+app.get('/admin/dashboard', requireSuperAdmin, (req, res, next) => {
   res.render('admin/dashboard', {}, (err, htmlContent) => {
     if (err) return next(err);
     res.render('layout_admin', { pageTitle: 'Admin Dashboard', content: htmlContent });
   });
 });
 
-app.get('/admin/faqs', (req, res, next) => {
+app.get('/admin/faqs', requireSuperAdmin, (req, res, next) => {
   res.render('admin/faqs', {}, (err, htmlContent) => {
     if (err) return next(err);
     res.render('layout_admin', { pageTitle: 'Admin FAQs', content: htmlContent });
@@ -147,14 +167,14 @@ app.get('/admin/kiosk', (req, res, next) => {
   });
 });
 
-app.get('/admin/announcement', (req, res, next) => {
+app.get('/admin/announcement', requireSuperAdmin, (req, res, next) => {
   res.render('admin/announcement', {}, (err, htmlContent) => {
     if (err) return next(err);
     res.render('layout_admin', { pageTitle: 'Admin Announcement', content: htmlContent });
   });
 });
 
-app.get('/admin/announcement_edit', (req, res, next) => {
+app.get('/admin/announcement_edit', requireSuperAdmin, (req, res, next) => {
   const isAjax = req.xhr || req.headers.accept.indexOf('json') > -1;
   if (isAjax) {
     res.render('admin/announcement_edit', { layout: false });
@@ -166,21 +186,21 @@ app.get('/admin/announcement_edit', (req, res, next) => {
   }
 });
 
-app.get('/admin/site_media', (req, res, next) => {
+app.get('/admin/site_media', requireSuperAdmin, (req, res, next) => {
   res.render('admin/site_media', {}, (err, htmlContent) => {
     if (err) return next(err);
     res.render('layout_admin', { pageTitle: 'Admin Site Media', content: htmlContent });
   });
 });
 
-app.get('/admin/site_media_video', (req, res, next) => {
+app.get('/admin/site_media_video', requireSuperAdmin, (req, res, next) => {
   res.render('admin/site_media_video', {}, (err, htmlContent) => {
     if (err) return next(err);
     res.render('layout_admin', { pageTitle: 'Admin Site Media (Video)', content: htmlContent });
   });
 });
 
-app.get('/admin/site_media_calendar', (req, res, next) => {
+app.get('/admin/site_media_calendar', requireSuperAdmin, (req, res, next) => {
   res.render('admin/site_media_calendar', {}, (err, htmlContent) => {
     if (err) return next(err);
     res.render('layout_admin', { pageTitle: 'Admin Site Media (Calendar)', content: htmlContent });
