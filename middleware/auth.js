@@ -22,7 +22,7 @@ async function requireAdminLogin(req, res, next) {
       return res.redirect("/admin/login");
     }
 
-    // 🔥 GET ROLE FROM YOUR TABLE
+    // GET ROLE FROM TABLE
     const { data: account, error: accError } = await supabase
       .from("campus_accounts")
       .select("role")
@@ -34,14 +34,14 @@ async function requireAdminLogin(req, res, next) {
       return res.redirect("/admin/login");
     }
 
-    // ✅ ROLE CHECK (FIXED)
-    if (!["admin", "super_admin"].includes(account.role)) {
+    // ROLE CHECK
+    if (!["admin", "super_admin", "window_admin"].includes(account.role)) {
       console.log("❌ Not authorized, redirecting to login");
       return res.redirect("/admin/login");
     }
 
     req.user = user;
-    req.role = account.role; // optional but useful
+    req.role = account.role; 
 
     next();
 
