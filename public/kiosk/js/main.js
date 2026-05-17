@@ -25,6 +25,30 @@ window.addEventListener("beforeinstallprompt", (e) => {
   }
 });
 
+// ==========================================
+// PURE CSS-CLASS CHECKBOX TOGGLE ENGINE
+// ==========================================
+document.addEventListener('click', (e) => {
+  const wrapperBtn = e.target.closest('.checkbox-wrapper-4');
+  
+  if (wrapperBtn) {
+    e.preventDefault(); 
+    
+    wrapperBtn.classList.toggle('checked');
+    
+    const overlay = wrapperBtn.closest('.container-overlay');
+    
+    if (overlay) {
+        const proceedBtn = overlay.querySelector('.proceed-btn');
+        
+        if (proceedBtn) {
+            const checkedCount = overlay.querySelectorAll('.checkbox-wrapper-4.checked').length;
+            proceedBtn.disabled = (checkedCount === 0);
+        }
+    }
+  }
+});
+
 document.addEventListener("DOMContentLoaded", async () => {
   let activeFlow = null; // "request" | "claiming" | "enrollment" | "details"
 
@@ -87,7 +111,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   // A. Request Overlay Internals
   const backBtnRequest = requestOverlay.querySelector("#back-btn-1");
   const requestProceedBtn = requestOverlay.querySelector(".proceed-btn");
-  const requestCheckboxContainer = requestOverlay.querySelector(".preview-text");
+  const requestCheckboxContainer = requestOverlay.querySelector(".preview-text-2"); // <-- Updated
 
   const enrollmentCheckboxContainer = enrollmentOverlay.querySelector(".preview-text");
   const enrollmentProceedBtn = enrollmentOverlay.querySelector(".proceed-btn");
@@ -95,7 +119,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   // B. Claiming Overlay Internals
   const backBtnClaiming = claimingOverlay.querySelector("#back-btn-1");
   const claimingProceedBtn = claimingOverlay.querySelector(".proceed-btn");
-  const claimingCheckboxContainer = claimingOverlay.querySelector(".preview-text");
+  const claimingCheckboxContainer = claimingOverlay.querySelector(".preview-text-2"); // <-- Updated
 
   // C. Enrollment & Details Internals
   const backBtnEnrollment = enrollmentOverlay.querySelector("#back-btn-1");
@@ -184,39 +208,32 @@ document.addEventListener("DOMContentLoaded", async () => {
     synth.speak(currentUtterance);
   }
 
-  // Logic: Only enable button if > 0 checkboxes are checked
   function setupCheckboxValidation(container, button, requireAll = false) {
-  if (!container || !button) return;
-
-  // Disable button by default
-  button.disabled = true;
-
-  container.addEventListener("change", () => {
-    const checkboxes = container.querySelectorAll(".inp-cbx");
-    const checked = container.querySelectorAll(".inp-cbx:checked");
-
-    if (requireAll) {
-      // Enable only if ALL checkboxes are checked
-      button.disabled = checkboxes.length === 0 || checked.length !== checkboxes.length;
-    } else {
-      // Enable if at least one is checked
-      button.disabled = !(checked.length > 0);
-    }
-  });
-}
+    if (!container || !button) return;
+    button.disabled = true;
+  
+    container.addEventListener("change", () => {
+      const checkboxes = container.querySelectorAll(".checkbox-wrapper-4");
+      // Look for the .checked class instead of input:checked
+      const checked = container.querySelectorAll(".checkbox-wrapper-4.checked");
+  
+      if (requireAll) {
+        button.disabled = checkboxes.length === 0 || checked.length !== checkboxes.length;
+      } else {
+        button.disabled = !(checked.length > 0);
+      }
+    });
+  }
 
   function resetFormState(container, proceedButton) {
     if (!container || !proceedButton) return;
 
-    // 1. Uncheck all checkboxes
-    const checkboxes = container.querySelectorAll('.inp-cbx');
-    checkboxes.forEach(cb => cb.checked = false);
+    // Strip the .checked class from all buttons
+    const checkboxes = container.querySelectorAll('.checkbox-wrapper-4');
+    checkboxes.forEach(cb => cb.classList.remove('checked'));
 
-    // 2. Disable the proceed button again
     proceedButton.disabled = true;
 
-    // 3. Reset "Select All" button text (if it exists nearby)
-    // We traverse up to the card, then look for the button
     const card = container.closest('.faq-preview-card');
     if (card) {
         const selectAllText = card.querySelector('.select-all-btn .speak-btn-text');
@@ -452,6 +469,7 @@ if (enrollmentBtn) {
           formOverlay.classList.remove("is-visible");
           if(firstNameInput) firstNameInput.value = "";
           if(lastNameInput) lastNameInput.value = "";
+          if(finishBtn) finishBtn.disabled = true;
           priorityOverlay.classList.add("is-visible");
       });
   }
@@ -491,8 +509,10 @@ if (enrollmentBtn) {
 
 function collectDocumentsFromContainer(container) {
     if (!container) return [];
-    return [...container.querySelectorAll('.inp-cbx:checked')]
-        .map(cb => cb.closest('.checkbox-wrapper-4')?.querySelector('.checkbox-content')?.textContent.trim())
+    
+    // Look for the .checked class instead of input:checked
+    return [...container.querySelectorAll('.checkbox-wrapper-4.checked')]
+        .map(btn => btn.querySelector('.checkbox-content')?.textContent.trim())
         .filter(Boolean);
 }
 
@@ -567,11 +587,33 @@ finishBtn.addEventListener("click", async (e) => {
 
     firstNameInput.value = lastNameInput.value = "";
 
+    // ==========================================
+    // AUTO-CLOSE INACTIVITY TIMER (15 SECONDS)
+    // ==========================================
+    let idleTimer;
+
+    const resetIdleTimer = () => {
+      clearTimeout(idleTimer);
+      idleTimer = setTimeout(() => {
+        // If the number screen is still open after 15s of no touches, reload the kiosk
+        if (overlayNumber.classList.contains("is-visible")) {
+          overlayNumber.classList.remove("is-visible");
+          backdrop.classList.remove("is-visible");
+          window.location.reload();
+        }
+      }, 15000);
+    };
+
+    resetIdleTimer();
+
+    document.addEventListener("click", resetIdleTimer);
+    document.addEventListener("touchstart", resetIdleTimer);
+
     const documentLabelMap = {
-  request: "Requesting Documents",
-  claiming: "Claiming Documents",
-  enrollment: "Enrollment",
-  search: "Information / Inquiry"
+    request: "Requesting Documents",
+    claiming: "Claiming Documents",
+    enrollment: "Enrollment",
+    search: "Information / Inquiry"
 };
 
 const documentLabel = documentLabelMap[activeFlow] || "Documents";
@@ -802,7 +844,7 @@ window.location.href = `rawbt:printText:${encodeURIComponent(printContent)}`;
                           
                           // Auto-check the box
                           const inputCbx = wrapper.querySelector('.inp-cbx');
-                          if(inputCbx) inputCbx.checked = true;
+                          wrapper.classList.add('checked');
                           
                           // Trigger validation
                           const container = cb.closest('.preview-text');
@@ -1382,18 +1424,10 @@ window.location.href = `rawbt:printText:${encodeURIComponent(printContent)}`;
         stepsContainer.insertAdjacentHTML(
             "beforeend",
             `
-            <div class="checkbox-wrapper-4 mb-3">
-              <input class="inp-cbx" id="${cbxId}" type="checkbox"/>
-              <label class="cbx" for="${cbxId}">
-                <span><svg width="12px" height="10px"><use xlink:href="#check-4"></use></svg></span>
-              </label>
-              <svg class="inline-svg">
-                <symbol id="check-4" viewBox="0 0 12 10">
-                  <polyline points="1.5 6 4.5 9 10.5 1"></polyline>
-                </symbol>
-              </svg>
-              <p class="checkbox-content">${step}</p>
-            </div>`
+            <button type="button" class="checkbox-wrapper-4 checkbox-tweak mb-3">
+              <span class="checkbox-content">${step}</span>
+            </button>
+            `
         );
     });
 
@@ -1413,38 +1447,41 @@ window.location.href = `rawbt:printText:${encodeURIComponent(printContent)}`;
         newSelectAllBtn.addEventListener("click", (e) => {
             e.preventDefault();
 
-            const allCheckboxes = stepsContainer.querySelectorAll(".inp-cbx");
-            
-            // Logic: If ANY box is unchecked, we Select All. 
-            // Only if ALL are currently checked do we Unselect All.
-            const isAllChecked = Array.from(allCheckboxes).every(cb => cb.checked);
+            const allCheckboxes = stepsContainer.querySelectorAll(".checkbox-wrapper-4");
+      
+            // Check if they all have the class
+            const isAllChecked = Array.from(allCheckboxes).every(cb => cb.classList.contains('checked'));
             const targetState = !isAllChecked;
 
-            // Apply state
+            // Add or remove the class based on targetState
             allCheckboxes.forEach(cb => {
-                cb.checked = targetState;
+            if (targetState) {
+                cb.classList.add('checked');
+            } else {
+                cb.classList.remove('checked');
+            }
             });
 
             // Update Button Text
             const btnText = newSelectAllBtn.querySelector(".speak-btn-text");
             if(btnText) btnText.textContent = targetState ? "Unselect All" : "Select All";
 
-            // CRITICAL: Manually trigger the 'change' event so the validation logic runs
-            stepsContainer.dispatchEvent(new Event('change'));
+            // Directly lock/unlock the proceed button based on the Select All state
+            currentProceedBtn.disabled = !targetState;
         });
 
-         if (activeFlow === "enrollment") {
-        selectedEnrollmentForm = selected.question_title;
-    }
+        if (activeFlow === "enrollment") {
+            selectedEnrollmentForm = selected.question_title;
+        }
     }
 
     // 7. Validation Listener (Enables/Disables Proceed)
     // We remove old listeners by cloning or simply overwriting 'onchange'
-    stepsContainer.onchange = () => {
-        const checked = stepsContainer.querySelectorAll(".inp-cbx:checked");
-        // Logic: Enable if at least 1 is checked
-        currentProceedBtn.disabled = !(checked.length > 0);
-    };
+    // stepsContainer.onchange = () => {
+    //     const checked = stepsContainer.querySelectorAll(".inp-cbx:checked");
+    //     // Logic: Enable if at least 1 is checked
+    //     currentProceedBtn.disabled = !(checked.length > 0);
+    // };
 
     // 8. Handle Image Loading
     previewImage.classList.remove("loaded");
@@ -1581,7 +1618,7 @@ window.location.href = `rawbt:printText:${encodeURIComponent(printContent)}`;
                           wrapper.classList.add("search-highlight-target");
                           
                           const inputCbx = wrapper.querySelector('.inp-cbx');
-                          if(inputCbx) inputCbx.checked = true;
+                          wrapper.classList.add('checked');
                           requestCheckboxContainer.dispatchEvent(new Event('change')); 
                           
                           setTimeout(() => {
@@ -1613,7 +1650,7 @@ window.location.href = `rawbt:printText:${encodeURIComponent(printContent)}`;
                           wrapper.classList.add("search-highlight-target");
                           
                           const inputCbx = wrapper.querySelector('.inp-cbx');
-                          if(inputCbx) inputCbx.checked = true;
+                          wrapper.classList.add('checked');
                           claimingCheckboxContainer.dispatchEvent(new Event('change')); 
                           
                           setTimeout(() => {
@@ -1753,22 +1790,27 @@ window.location.href = `rawbt:printText:${encodeURIComponent(printContent)}`;
   // ==========================================
   
   // 1. Define the Transition Function
-  const runPriorityTransition = (isPriorityUser) => {
-    isPriority = isPriorityUser;
+    const runPriorityTransition = (isPriorityUser) => {
+        isPriority = isPriorityUser;
 
-    // HIDE EVERYTHING BELOW
-    priorityOverlay.classList.remove("is-visible");
-    requestOverlay.classList.remove("is-visible");
-    claimingOverlay.classList.remove("is-visible");
-    enrollmentOverlay.classList.remove("is-visible");
-    detailsOverlay.classList.remove("is-visible");
+        // HIDE EVERYTHING BELOW
+        priorityOverlay.classList.remove("is-visible");
+        requestOverlay.classList.remove("is-visible");
+        claimingOverlay.classList.remove("is-visible");
+        enrollmentOverlay.classList.remove("is-visible");
+        detailsOverlay.classList.remove("is-visible");
 
-    // SHOW FORM
-    formOverlay.classList.add("is-visible");
+        // CLEAN SLATE: Reset inputs & lock the finish button
+        if (firstNameInput) firstNameInput.value = "";
+        if (lastNameInput) lastNameInput.value = "";
+        if (finishBtn) finishBtn.disabled = true; 
 
-    // KEEP BACKDROP
-    backdrop.classList.add("is-visible");
-  };
+        // SHOW FORM
+        formOverlay.classList.add("is-visible");
+
+        // KEEP BACKDROP
+        backdrop.classList.add("is-visible");
+    };
 
   yesBtn.onclick = (e) => {
     e.preventDefault();
