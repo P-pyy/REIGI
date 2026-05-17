@@ -119,7 +119,7 @@ body {
     display: flex;
     justify-content: space-evenly;
     align-items: center;
-    padding: 1rem;
+    padding: .5rem;
     width: 100%;
 }
 
@@ -146,6 +146,22 @@ body {
 
 .logo-container {
     padding: .5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: .5rem;
+}
+
+.logo-text {
+  font-size: 15px;
+  /* margin-top: .8rem; */
+  margin-bottom: 0px !important;
+  color: #0055A5;
+  line-height: 1.3;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .priority-container {
@@ -190,5 +206,60 @@ body {
     width: 50% !important;
 }
 .group-container.dual-mode .waiting-container {
-    width: 50% !important;
+    width: 50% ;
+}
+
+@media screen and (max-width: 768px) {
+    .kiosk-body {
+        overflow-y: auto;
+    }
+
+    .title-container1 {
+        gap: 2.5rem !important;
+    }
+
+    .logo-text {
+        visibility: hidden;
+    }
+
+    .date-text-container {
+        visibility: hidden;
+    }
+
+    .container-content {
+        flex-direction: column;
+        gap: 1rem;
+        height: 100vh !important;
+    }
+
+    .window-1-container, .window-2-container {
+        width: 100%;
+        height: fit-content;
+        padding: 3rem;
+    }
+
+    .border1 {
+        border-right: none !important;
+        border-bottom: 1px solid #fcfcfc !important;
+    }
+
+    .group-container {
+        flex-direction: column;
+        height: 100% !important;
+    }
+
+    .group-container.dual-mode .priority-container {
+        display: flex !important;
+        width: 100% !important;
+        justify-content: center !important;
+        align-items: center !important;
+    }
+
+    .group-container.dual-mode .waiting-container {
+        width: 100% !important;
+    }
+
+    .tickets-container .container-ticket-number:nth-child(n+4) {
+        display: none !important;
+    }
 }

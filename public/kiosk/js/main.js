@@ -34,18 +34,15 @@ document.addEventListener('click', (e) => {
   if (wrapperBtn) {
     e.preventDefault(); 
     
-    // 1. Toggle the visual pill state
     wrapperBtn.classList.toggle('checked');
     
-    // 2. Safely locate the Proceed button for the specific overlay you are in
     const overlay = wrapperBtn.closest('.container-overlay');
+    
     if (overlay) {
         const proceedBtn = overlay.querySelector('.proceed-btn');
-        const container = overlay.querySelector('.preview-text');
         
-        // 3. Immediately evaluate how many pills are checked and update the button lock!
-        if (proceedBtn && container) {
-            const checkedCount = container.querySelectorAll('.checkbox-wrapper-4.checked').length;
+        if (proceedBtn) {
+            const checkedCount = overlay.querySelectorAll('.checkbox-wrapper-4.checked').length;
             proceedBtn.disabled = (checkedCount === 0);
         }
     }
@@ -114,7 +111,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   // A. Request Overlay Internals
   const backBtnRequest = requestOverlay.querySelector("#back-btn-1");
   const requestProceedBtn = requestOverlay.querySelector(".proceed-btn");
-  const requestCheckboxContainer = requestOverlay.querySelector(".preview-text");
+  const requestCheckboxContainer = requestOverlay.querySelector(".preview-text-2"); // <-- Updated
 
   const enrollmentCheckboxContainer = enrollmentOverlay.querySelector(".preview-text");
   const enrollmentProceedBtn = enrollmentOverlay.querySelector(".proceed-btn");
@@ -122,7 +119,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   // B. Claiming Overlay Internals
   const backBtnClaiming = claimingOverlay.querySelector("#back-btn-1");
   const claimingProceedBtn = claimingOverlay.querySelector(".proceed-btn");
-  const claimingCheckboxContainer = claimingOverlay.querySelector(".preview-text");
+  const claimingCheckboxContainer = claimingOverlay.querySelector(".preview-text-2"); // <-- Updated
 
   // C. Enrollment & Details Internals
   const backBtnEnrollment = enrollmentOverlay.querySelector("#back-btn-1");
@@ -472,6 +469,7 @@ if (enrollmentBtn) {
           formOverlay.classList.remove("is-visible");
           if(firstNameInput) firstNameInput.value = "";
           if(lastNameInput) lastNameInput.value = "";
+          if(finishBtn) finishBtn.disabled = true;
           priorityOverlay.classList.add("is-visible");
       });
   }
@@ -589,11 +587,33 @@ finishBtn.addEventListener("click", async (e) => {
 
     firstNameInput.value = lastNameInput.value = "";
 
+    // ==========================================
+    // AUTO-CLOSE INACTIVITY TIMER (15 SECONDS)
+    // ==========================================
+    let idleTimer;
+
+    const resetIdleTimer = () => {
+      clearTimeout(idleTimer);
+      idleTimer = setTimeout(() => {
+        // If the number screen is still open after 15s of no touches, reload the kiosk
+        if (overlayNumber.classList.contains("is-visible")) {
+          overlayNumber.classList.remove("is-visible");
+          backdrop.classList.remove("is-visible");
+          window.location.reload();
+        }
+      }, 15000);
+    };
+
+    resetIdleTimer();
+
+    document.addEventListener("click", resetIdleTimer);
+    document.addEventListener("touchstart", resetIdleTimer);
+
     const documentLabelMap = {
-  request: "Requesting Documents",
-  claiming: "Claiming Documents",
-  enrollment: "Enrollment",
-  search: "Information / Inquiry"
+    request: "Requesting Documents",
+    claiming: "Claiming Documents",
+    enrollment: "Enrollment",
+    search: "Information / Inquiry"
 };
 
 const documentLabel = documentLabelMap[activeFlow] || "Documents";
@@ -1404,7 +1424,7 @@ window.location.href = `rawbt:printText:${encodeURIComponent(printContent)}`;
         stepsContainer.insertAdjacentHTML(
             "beforeend",
             `
-            <button type="button" class="checkbox-wrapper-4 mb-3">
+            <button type="button" class="checkbox-wrapper-4 checkbox-tweak mb-3">
               <span class="checkbox-content">${step}</span>
             </button>
             `
@@ -1770,22 +1790,27 @@ window.location.href = `rawbt:printText:${encodeURIComponent(printContent)}`;
   // ==========================================
   
   // 1. Define the Transition Function
-  const runPriorityTransition = (isPriorityUser) => {
-    isPriority = isPriorityUser;
+    const runPriorityTransition = (isPriorityUser) => {
+        isPriority = isPriorityUser;
 
-    // HIDE EVERYTHING BELOW
-    priorityOverlay.classList.remove("is-visible");
-    requestOverlay.classList.remove("is-visible");
-    claimingOverlay.classList.remove("is-visible");
-    enrollmentOverlay.classList.remove("is-visible");
-    detailsOverlay.classList.remove("is-visible");
+        // HIDE EVERYTHING BELOW
+        priorityOverlay.classList.remove("is-visible");
+        requestOverlay.classList.remove("is-visible");
+        claimingOverlay.classList.remove("is-visible");
+        enrollmentOverlay.classList.remove("is-visible");
+        detailsOverlay.classList.remove("is-visible");
 
-    // SHOW FORM
-    formOverlay.classList.add("is-visible");
+        // CLEAN SLATE: Reset inputs & lock the finish button
+        if (firstNameInput) firstNameInput.value = "";
+        if (lastNameInput) lastNameInput.value = "";
+        if (finishBtn) finishBtn.disabled = true; 
 
-    // KEEP BACKDROP
-    backdrop.classList.add("is-visible");
-  };
+        // SHOW FORM
+        formOverlay.classList.add("is-visible");
+
+        // KEEP BACKDROP
+        backdrop.classList.add("is-visible");
+    };
 
   yesBtn.onclick = (e) => {
     e.preventDefault();

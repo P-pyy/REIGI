@@ -164,9 +164,12 @@ if (loginForm) {
     button.textContent = "Signing in...";
 
     try {
+      // 1. Fetch ALL three inputs
       const email = document.getElementById("email").value;
       const password = document.getElementById("password").value;
+      const campus = document.getElementById("cb1-input").value; // <-- Added Campus Fetch
 
+      // 2. Authenticate
       const { data, error } = await supabaseClient.auth.signInWithPassword({
         email,
         password,
@@ -187,16 +190,18 @@ if (loginForm) {
 
         const userLocation = await getUserLocation();
 
+        // 3. Save to History (Now includes the Campus)
         await supabaseClient.from("login_history").insert([
           {
             user_id: user.id,
             device: friendlyDevice,
             location: userLocation,
+            campus: campus // <-- Logs the selected campus to your database
           },
         ]);
       }
 
-      alert(" Login successful!");
+      // alert(" Login successful!"); // Optional: You can remove this for a smoother UX
 
       const { data: sessionData } = await supabaseClient.auth.getSession();
       const accessToken = sessionData?.session?.access_token;
@@ -218,7 +223,7 @@ if (loginForm) {
     }
   });
 
-
+  // Checkbox show password logic
   document.getElementById("showPassword").addEventListener("change", function () {
     const passwordInput = document.getElementById("password");
     passwordInput.type = this.checked ? "text" : "password";
