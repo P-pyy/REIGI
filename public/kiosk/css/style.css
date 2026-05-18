@@ -645,7 +645,7 @@ a {
   gap: 1.5rem;
 
   /* margin-top: auto; */
-  position: sticky;
+  /* position: sticky; */
   bottom: 0;
   background-color: #fcfcfc; 
   z-index: 100;
