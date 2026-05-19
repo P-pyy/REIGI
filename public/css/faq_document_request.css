@@ -97,12 +97,14 @@ html, body {
 }
 
 .faq-list {
-  list-style: decimal;
-  padding-left: 1.5rem; /* indentation */
+  list-style: none; 
+  padding-left: 0; 
+  counter-reset: faq-counter;
 }
 
 .faq-list li {
-  margin-bottom: 0.75rem;
+  counter-increment: faq-counter;
+  margin-bottom: 1rem; 
   font-size: 16px;
 }
 
@@ -114,6 +116,30 @@ html, body {
 
 .faq-list li a {
   text-decoration: underline; 
+}
+
+.ph-arrow-up-right {
+pointer-events: visible;
+}
+
+.faq-inquiry {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  justify-content: left;
+  /* border: solid 1px; */
+  box-shadow: 0 0 8px rgba(0,0,0,0.05);
+  border-radius: 1rem;
+  background-color: #fcfcfc;
+  padding: .8rem;
+}
+
+.faq-inquiry::before {
+  content: counter(faq-counter) ".";
+  font-weight: 600;
+  color: #0055A5; 
+  /* font-size: 1.1rem; */
+  min-width: 25px; 
 }
 
 

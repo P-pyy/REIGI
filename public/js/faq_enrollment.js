@@ -17,8 +17,10 @@ import { supabaseClient } from '/js/supabase-client.js';
       data.forEach(faq => {
         const li = document.createElement("li");
         li.innerHTML = `
-          <a href="#" onclick="openFAQ(${faq.id})">${faq.post_title}</a>
-          <i class="ph ph-arrow-up-right" style="color: #0055A5;"></i>
+          <div class="faq-inquiry">
+            <a href="#" onclick="openFAQ(${faq.id})">${faq.post_title}
+            <i class="ph ph-arrow-up-right" style="color: #0055A5;"></i></a>
+          </div>
         `;
         list.appendChild(li);
       });

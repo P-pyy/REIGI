@@ -13,7 +13,7 @@ a {
 .content-card {
   display: flex;
   flex-direction: column;
-  max-width: 800px;
+  max-width: 1000px;
   margin: 6rem auto;
   background: #fff;
   border-radius: 16px;

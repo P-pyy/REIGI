@@ -20,6 +20,8 @@ main {
 
 .custom-navbar {
     background-color: #fcfcfc;
+    position: fixed;
+    width: 99.3%;
 }
 
 .navbar-brand {
