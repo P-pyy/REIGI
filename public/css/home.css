@@ -44,7 +44,7 @@ section{
 .info-hub {
     align-items: center;
     justify-content: space-between;
-    padding: 8rem 6rem;
+    padding: 4rem 6rem;
     width: 100%;
     /* box-sizing: border-box; */
     display: flex;
@@ -298,28 +298,28 @@ section{
 .calendar-wrapper{
     display: flex;
     text-align: center;
-    /* width: 100%; */
+    width: 100%;
     /* max-width: 1200px; */
-    margin: 0 auto;
     background: #f0f2f5;
-    padding: 1rem;
+    padding: 3rem;
     box-sizing: border-box;
+    justify-content: center;
 }
 
 .calendar-card{
     background: #fcfcfc;
     padding: 2rem;
-    width: 100%;
+    width: 1100px;
     border-radius: 10px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
-    margin: 50px 10rem;
+    /* margin: 50px 10rem; */
     /* margin-bottom: 100px; */
     align-items: center;
     overflow: auto;
 }
 
 .calendar-card h2{
-    font-weight: 700;
+    font-weight: 600;
     font-size: clamp(1.5rem, 1.5rem + 2vw, 2.2rem);
     /* margin-bottom: 0.25rem; */
     padding: 1rem;
@@ -384,6 +384,7 @@ ul{
     align-items: center;
     padding: .5rem;
     cursor: pointer;
+    gap: .5rem;
 }
 
 .list-container {
@@ -397,6 +398,12 @@ ul{
     width: 100%;
     text-align: center;
     max-width: 65%;
+    width: 100%;
+    text-align: center;
+    max-width: 65%;
+    border-radius: 8px;
+    /* border: solid 1px; */
+    padding: .5rem;
 }
 
 .logo-text {
@@ -418,6 +425,22 @@ ul{
     align-items: center;
     justify-content: center;
     gap: .5rem;
+}
+
+.ph-caret-right {
+    color: #0055A5;
+    font-size: 1.2rem;
+    font-weight: 600;
+}
+
+#announcements-container {
+    height: 250px
+}
+
+#announcements-container > p{
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 /* try commit */
