@@ -616,25 +616,15 @@ finishBtn.addEventListener("click", async (e) => {
     search: "Information / Inquiry"
 };
 
-const now = new Date().toLocaleString();
-
-// ESC/POS commands
-const CENTER = "\x1B\x61\x01";
-const LEFT = "\x1B\x61\x00";
-
-// Font size (normal / double width for headers)
-const NORMAL = "\x1D\x21\x00";
-const BIG = "\x1D\x21\x11";
-const VERY_BIG = "\x1D\x21\x22";
-
-// Paper cut
-const CUT = "\x1D\x56\x00";
+const LINE = "================================================";
+const DASH = "------------------------------------------------";
 
 const printContent = `
-${CENTER}${BIG}
-UNIVERSITY OF RIZAL SYSTEM
-${NORMAL}
-===============================
+${CENTER}
+UNIVERSITY OF RIZAL
+SYSTEM
+
+${LINE}
 
 ${LEFT}
 Date: ${now}
@@ -643,28 +633,22 @@ Name:
 ${fullName}
 
 Documents:
-${
-  activeFlow === "enrollment"
-    ? selectedEnrollmentForm
-    : documentsText
-      ? documentsText.split(", ").join("\n")
-      : ""
-}
+${documentText}
 
--------------------------------
+${DASH}
 
-${CENTER}${BIG}
+${CENTER}
 QUEUE NUMBER
 
 ${VERY_BIG}
 ${queueNumber}
 ${NORMAL}
 
--------------------------------
+${DASH}
 
 ${CENTER}
 Please wait for your turn.
-       Thank you!
+Thank you!
 
 ${CUT}
 `;
