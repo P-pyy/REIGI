@@ -616,64 +616,45 @@ finishBtn.addEventListener("click", async (e) => {
     search: "Information / Inquiry"
 };
 
-const documentLabel = documentLabelMap[activeFlow] || "Documents";
+const now = new Date().toLocaleString();
 
-    // Optional: print queue ticket
-// const printContent = `
-// ===============================
-//    University of Rizal System
-//          Queue Ticket
-// ===============================
-
-
-// Name: ${fullName}
-// Queue No: ${queueNumber}
-
-
-// ${documentLabel}:
-// ${
-// activeFlow === "enrollment"
-// ? ` - ${selectedEnrollmentForm}`
-// : documentsText
-//     ? documentsText.split(", ").map(doc => " - " + doc).join("\n")
-//     : ""
-// }
-
-
-//     Please wait for your turn.
-//           Thank you!
-
-// -------------------------------
-//     Printed via REIGI Kiosk
-// `;
-// Manually center the queue number
 const printContent = `
-===============================
-   University of Rizal System
-         Queue Ticket
-===============================
+================================
+      UNIVERSITY OF RIZAL
+             SYSTEM
+================================
 
+Date: ${now}
 
-Name: ${fullName}
+Name:
+${fullName}
 
-${documentLabel}:
+Documents:
 ${
   activeFlow === "enrollment"
-    ? ` - ${selectedEnrollmentForm}`
+    ? selectedEnrollmentForm
     : documentsText
-        ? documentsText.split(", ").map(doc => " - " + doc).join("\n")
-        : ""
+      ? documentsText.split(", ").join("\n")
+      : ""
 }
 
-===============================
-\x1B\x61\x01   
-Your Queue Number is:
-\x1B\x21\xF0${queueNumber}\x1B\x21\x00
-\x1B\x61\x00         
-===============================
-   Please wait for your turn.
-          Thank you!
+--------------------------------
+
+      QUEUE NUMBER
+
+          ${queueNumber}
+
+--------------------------------
+
+Please wait for your turn.
+Thank you!
+
+\x1D\x56\x00
 `;
+
+// const documentLabel = documentLabelMap[activeFlow] || "Documents";
+
+// // Manually center the queue number
 // const printContent = `
 // ===============================
 //    University of Rizal System
@@ -693,12 +674,15 @@ Your Queue Number is:
 // }
 
 // ===============================
-// \x1B\x61\x01\x1B\x21\xF0${queueNumber}\x1B\x21\x00\x1B\x61\x00
+// \x1B\x61\x01   
+// Your Queue Number is:
+// \x1B\x21\xF0${queueNumber}\x1B\x21\x00
+// \x1B\x61\x00         
 // ===============================
 //    Please wait for your turn.
 //           Thank you!
 // `;
-// const printContent = `
+
 window.location.href = `rawbt:printText:${encodeURIComponent(printContent)}`;
   } catch (err) {
     console.error("❌ Error saving queue:", err);
