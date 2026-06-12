@@ -625,7 +625,7 @@ const LEFT = "\x1B\x61\x00";
 // Font size (normal / double width for headers)
 const NORMAL = "\x1D\x21\x00";
 // const BIG = "\x1D\x21\x11";
-const BIG = "\x1D\x21\x01";
+const BIG = "\x1D\x21\x10";
 const VERY_BIG = "\x1D\x21\x22";
 
 // Paper cut
