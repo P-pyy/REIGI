@@ -634,8 +634,8 @@ const CUT = "\x1D\x56\x00";
 const printContent = `
 ================================================
 ${CENTER}${BIG}
-UNIVERSITY OF RIZAL 
-      SYSTEM
+UNIVERSITY OF RIZAL
+SYSTEM
 ${NORMAL}
 ================================================
 
@@ -667,7 +667,7 @@ ${NORMAL}
 
 ${CENTER}
 Please wait for your turn.
-       Thank you!
+Thank you!
 
 ${CUT}
 `;
