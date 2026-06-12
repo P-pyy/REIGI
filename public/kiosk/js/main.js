@@ -624,15 +624,18 @@ const LEFT = "\x1B\x61\x00";
 
 // Font size (normal / double width for headers)
 const NORMAL = "\x1D\x21\x00";
-const BIG = "\x1D\x21\x11";
+// const BIG = "\x1D\x21\x11";
+const BIG = "\x1D\x21\x01";
 const VERY_BIG = "\x1D\x21\x22";
 
 // Paper cut
 const CUT = "\x1D\x56\x00";
 
 const printContent = `
+================================================
 ${CENTER}${BIG}
-UNIVERSITY OF RIZAL SYSTEM
+UNIVERSITY OF RIZAL 
+      SYSTEM
 ${NORMAL}
 ================================================
 
