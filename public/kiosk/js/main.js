@@ -638,7 +638,6 @@ UNIVERSITY OF RIZAL
 SYSTEM
 ${NORMAL}
 ================================================
-
 ${LEFT}
 Date: ${now}
 
@@ -655,16 +654,12 @@ ${
 }
 
 ------------------------------------------------
-
 ${CENTER}${BIG}
 QUEUE NUMBER
-
 ${VERY_BIG}
 ${queueNumber}
 ${NORMAL}
-
 ------------------------------------------------
-
 ${CENTER}
 Please wait for your turn.
 Thank you!
