@@ -632,7 +632,7 @@ const VERY_BIG = "\x1D\x21\x22";
 // Paper cut
 const CUT = "\x1D\x56\x00";
 
-const printContent = `       ${RIGHT}Date: ${now}
+const printContent = `           ${RIGHT}Date: ${now}
 ================================================
 ${CENTER}${BIG}
 UNIVERSITY OF RIZAL
@@ -640,7 +640,7 @@ UNIVERSITY OF RIZAL
 SYSTEM
 ${NORMAL}
 ================================================
-
+${LEFT}
 Name: ${fullName}
 
 Documents:
