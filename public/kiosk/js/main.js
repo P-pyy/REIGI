@@ -635,14 +635,14 @@ const printContent = `
 ================================================
 ${CENTER}${BIG}
 UNIVERSITY OF RIZAL
+
 SYSTEM
 ${NORMAL}
 ================================================
 ${LEFT}
 Date: ${now}
 
-Name:
-${fullName}
+Name: ${fullName}
 
 Documents:
 ${
@@ -663,6 +663,8 @@ ${NORMAL}
 ${CENTER}
 Please wait for your turn.
 Thank you!
+
+
 
 ${CUT}
 `;
