@@ -621,6 +621,7 @@ const now = new Date().toLocaleString();
 // ESC/POS commands
 const CENTER = "\x1B\x61\x01";
 const LEFT = "\x1B\x61\x00";
+const RIGHT = "\x1B\x61\x00";
 
 // Font size (normal / double width for headers)
 const NORMAL = "\x1D\x21\x00";
@@ -631,7 +632,7 @@ const VERY_BIG = "\x1D\x21\x22";
 // Paper cut
 const CUT = "\x1D\x56\x00";
 
-const printContent = `
+const printContent = ` ${RIGHT}Date: ${now}
 ================================================
 ${CENTER}${BIG}
 UNIVERSITY OF RIZAL
