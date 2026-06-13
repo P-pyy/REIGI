@@ -166,25 +166,30 @@ proceedBtn.addEventListener("click", async (e) => {
 
   try {
 
-    // ==========================================
-    // CHECK EXISTING WINDOW ADMIN
-    // ==========================================
-    const { data: existingAccount } = await supabaseClient
-      .from("campus_accounts")
-      .select("*")
-      .eq("campus", campus)
-      .eq("role", "window_admin")
-      .single();
+  // CHECK WINDOW ADMIN LIMIT (MAX 2)
+  const { count, error: countError } = await supabaseClient
+    .from("campus_accounts")
+    .select("*", { count: "exact", head: true })
+    .eq("campus", campus)
+    .eq("role", "window_admin");
 
-    if (existingAccount) {
-      status.textContent = "❌ This campus already has a window admin account.";
-      status.style.color = "red";
+  if (countError) {
+    status.textContent = "❌ Error checking existing accounts.";
+    status.style.color = "red";
 
-      proceedBtn.disabled = false;
-      proceedBtn.textContent = "Proceed";
+    proceedBtn.disabled = false;
+    proceedBtn.textContent = "Proceed";
+    return;
+  }
 
-      return;
-    }
+  if ((count || 0) >= 2) {
+    status.textContent = "❌ This campus already has 2 window admin accounts.";
+    status.style.color = "red";
+
+    proceedBtn.disabled = false;
+    proceedBtn.textContent = "Proceed";
+    return;
+  }
 
     // ==========================================
     // CREATE AUTH USER
