@@ -616,7 +616,15 @@ finishBtn.addEventListener("click", async (e) => {
     search: "Information / Inquiry"
 };
 
-const now = new Date().toLocaleString();
+const now = new Date().toLocaleDateString('en-US', {
+  year: 'numeric',
+  month: '2-digit',
+  day: '2-digit'
+}) + " " + new Date().toLocaleTimeString('en-US', {
+  hour: '2-digit',
+  minute: '2-digit',
+  hour12: true
+});
 
 // ESC/POS commands
 const CENTER = "\x1B\x61\x01";
@@ -631,9 +639,9 @@ const VERY_BIG = "\x1D\x21\x22";
 
 const printContent = `           ${RIGHT}Date: ${now}
 ================================================
-${CENTER}${BIG}
+${CENTER}${NORMAL}
 UNIVERSITY OF RIZAL SYSTEM 
-
+${BIG}
 Queue Ticket
 ${NORMAL}
 ================================================
