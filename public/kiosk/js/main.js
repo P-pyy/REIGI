@@ -643,7 +643,8 @@ const printContent = `             ${RIGHT}Date: ${now}
 ${CENTER}${WIDE}
 UNIVERSITY OF RIZAL 
 SYSTEM 
-${BIG}Queue Ticket
+${BIG}
+Queue Ticket
 ${NORMAL}
 ================================================
 ${LEFT}
