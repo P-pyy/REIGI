@@ -629,14 +629,12 @@ const NORMAL = "\x1D\x21\x00";
 const BIG = "\x1D\x21\x10";
 const VERY_BIG = "\x1D\x21\x22";
 
-// Paper cut
-// const CUT = "\x1D\x56\x00";
-
-const printContent = `          ${RIGHT}Date: ${now}
+const printContent = `           ${RIGHT}Date: ${now}
 ================================================
 ${CENTER}${BIG}
-UNIVERSITY OF RIZAL
-SYSTEM
+UNIVERSITY OF RIZAL SYSTEM 
+
+Queue Ticket
 ${NORMAL}
 ================================================
 ${LEFT}
@@ -662,37 +660,6 @@ ${CENTER}
 Please wait for your turn.
 Thank you!
 `;
-
-// const documentLabel = documentLabelMap[activeFlow] || "Documents";
-
-// // Manually center the queue number
-// const printContent = `
-// ===============================
-//    University of Rizal System
-//          Queue Ticket
-// ===============================
-
-
-// Name: ${fullName}
-
-// ${documentLabel}:
-// ${
-//   activeFlow === "enrollment"
-//     ? ` - ${selectedEnrollmentForm}`
-//     : documentsText
-//         ? documentsText.split(", ").map(doc => " - " + doc).join("\n")
-//         : ""
-// }
-
-// ===============================
-// \x1B\x61\x01   
-// Your Queue Number is:
-// \x1B\x21\xF0${queueNumber}\x1B\x21\x00
-// \x1B\x61\x00         
-// ===============================
-//    Please wait for your turn.
-//           Thank you!
-// `;
 
 window.location.href = `rawbt:printText:${encodeURIComponent(printContent)}`;
   } catch (err) {
