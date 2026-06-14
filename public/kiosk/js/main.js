@@ -636,10 +636,11 @@ const NORMAL = "\x1D\x21\x00";
 // const BIG = "\x1D\x21\x11";
 const BIG = "\x1D\x21\x10";
 const VERY_BIG = "\x1D\x21\x22";
+const WIDE = "\x1D\x21\x01"; // width only
 
-const printContent = `           ${RIGHT}Date: ${now}
+const printContent = `             ${RIGHT}Date: ${now}
 ================================================
-${CENTER}${NORMAL}
+${CENTER}${WIDE}${BIG}
 UNIVERSITY OF RIZAL SYSTEM 
 ${BIG}
 Queue Ticket
