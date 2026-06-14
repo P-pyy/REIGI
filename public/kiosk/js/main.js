@@ -640,7 +640,7 @@ const WIDE = "\x1D\x21\x01"; // width only
 
 const printContent = `             ${RIGHT}Date: ${now}
 ================================================
-${CENTER}${WIDE}${BIG}
+${CENTER}${WIDE}
 UNIVERSITY OF RIZAL SYSTEM 
 ${BIG}
 Queue Ticket
