@@ -630,13 +630,12 @@ const BIG = "\x1D\x21\x10";
 const VERY_BIG = "\x1D\x21\x22";
 
 // Paper cut
-const CUT = "\x1D\x56\x00";
+// const CUT = "\x1D\x56\x00";
 
-const printContent = `           ${RIGHT}Date: ${now}
+const printContent = `          ${RIGHT}Date: ${now}
 ================================================
 ${CENTER}${BIG}
 UNIVERSITY OF RIZAL
-
 SYSTEM
 ${NORMAL}
 ================================================
@@ -662,10 +661,6 @@ ${NORMAL}
 ${CENTER}
 Please wait for your turn.
 Thank you!
-
-
-
-${CUT}
 `;
 
 // const documentLabel = documentLabelMap[activeFlow] || "Documents";
