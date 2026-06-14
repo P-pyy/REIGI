@@ -640,13 +640,10 @@ const WIDE = "\x1D\x21\x10"; // width only
 
 const printContent = `             ${RIGHT}Date: ${now}
 ================================================
-${CENTER}${WIDE}
-UNIVERSITY OF RIZAL 
-SYSTEM 
-${BIG}
-Queue Ticket
-${NORMAL}
-================================================
+${CENTER}${WIDE}UNIVERSITY OF RIZAL 
+
+SYSTEM
+${NORMAL}================================================
 ${LEFT}
 Name: ${fullName}
 
