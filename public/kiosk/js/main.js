@@ -348,9 +348,6 @@ document.addEventListener("DOMContentLoaded", async () => {
   if (claimingCheckboxContainer && claimingProceedBtn) {
       setupCheckboxValidation(claimingCheckboxContainer, claimingProceedBtn);
   }
-  // if (detailsCheckboxContainer && detailsProceedBtn) {
-  //     setupCheckboxValidation(detailsCheckboxContainer, detailsProceedBtn);
-  // }
 
   // B. Apply Flow (Proceed -> Priority)
   setupProceedFlow(requestOverlay, requestProceedBtn);
@@ -382,28 +379,6 @@ if (enrollmentBtn) {
           await loadFAQs(); // Or loadEnrollmentFAQs if you have a specific one
       });
   }
-
-
-  // if (requestBtn) {
-  //     requestBtn.addEventListener("click", () => {
-  //         requestOverlay.classList.add("is-visible");
-  //         backdrop.classList.add("is-visible");
-  //     });
-  // }
-
-  // if (claimingBtn) {
-  //     claimingBtn.addEventListener("click", () => {
-  //         claimingOverlay.classList.add("is-visible");
-  //         backdrop.classList.add("is-visible");
-  //     });
-  // }
-
-  // if (enrollmentBtn) {
-  //     enrollmentBtn.addEventListener("click", () => {
-  //         enrollmentOverlay.classList.add("is-visible");
-  //         backdrop.classList.add("is-visible");
-  //     });
-  // }
 
   // D. Back Button Clicks (Close Specific Overlays & Reset)
   if (backBtnRequest) {
@@ -479,15 +454,6 @@ if (enrollmentBtn) {
   if (lastNameInput) lastNameInput.addEventListener("input", validateFormInputs);
     if (firstNameInput) sanitizeNameInput(firstNameInput);
     if (lastNameInput) sanitizeNameInput(lastNameInput);
-  // // E. Priority & Form Logic
-  // const handlePriorityClick = (isPriorityUser) => {
-  //     isPriority = isPriorityUser; 
-  //     priorityOverlay.classList.remove("is-visible");
-  //     formOverlay.classList.add("is-visible");
-  // };
-  
-  // yesBtn.addEventListener("click", () => handlePriorityClick(true));
-  // noBtn.addEventListener("click", () => handlePriorityClick(false));
 
   backBtn3.addEventListener("click", (e) => {
     e.preventDefault();
@@ -497,15 +463,6 @@ if (enrollmentBtn) {
     backdrop.classList.remove("is-visible");
   });
 
-  // backBtn2.addEventListener("click", (e) => {
-  //   e.preventDefault();
-  //   formOverlay.classList.remove("is-visible");
-  //   firstNameInput.value = lastNameInput.value = "";
-  //   priorityOverlay.classList.add("is-visible"); 
-  // });
-
-  // firstNameInput.addEventListener("input", validateFormInputs);
-  // lastNameInput.addEventListener("input", validateFormInputs);
 
 function collectDocumentsFromContainer(container) {
     if (!container) return [];
@@ -614,7 +571,11 @@ finishBtn.addEventListener("click", async (e) => {
     claiming: "Claiming Documents",
     enrollment: "Enrollment",
     search: "Information / Inquiry"
+
+    
 };
+
+const documentLabel = documentLabelMap[activeFlow] ?? "Documents";
 
 const now = new Date().toLocaleDateString('en-US', {
   year: 'numeric',
@@ -647,7 +608,7 @@ ${NORMAL}================================================
 ${LEFT}
 Name: ${fullName}
 
-Documents:
+${documentLabel}:
 ${
   activeFlow === "enrollment"
     ? selectedEnrollmentForm
@@ -655,7 +616,6 @@ ${
       ? documentsText.split(", ").join("\n")
       : ""
 }
-
 ------------------------------------------------
 ${CENTER}${BIG}
 QUEUE NUMBER
@@ -1271,18 +1231,6 @@ window.location.href = `rawbt:printText:${encodeURIComponent(printContent)}`;
   }
 }
 
-// if (enrollmentBtn) {
-//   enrollmentBtn.addEventListener("click", async () => {
-//     // Show overlay
-//     enrollmentOverlay.classList.add("is-visible");
-//     backdrop.classList.add("is-visible");
-
-//     // Load the kiosk buttons inside enrollment overlay
-//     await loadEnrollmentFAQs();
-//   });
-// }
-
-
 
   // ---------------------------------------------------------
   // 8. DATA LOADING
@@ -1444,13 +1392,6 @@ window.location.href = `rawbt:printText:${encodeURIComponent(printContent)}`;
         }
     }
 
-    // 7. Validation Listener (Enables/Disables Proceed)
-    // We remove old listeners by cloning or simply overwriting 'onchange'
-    // stepsContainer.onchange = () => {
-    //     const checked = stepsContainer.querySelectorAll(".inp-cbx:checked");
-    //     // Logic: Enable if at least 1 is checked
-    //     currentProceedBtn.disabled = !(checked.length > 0);
-    // };
 
     // 8. Handle Image Loading
     previewImage.classList.remove("loaded");
@@ -1793,50 +1734,3 @@ window.location.href = `rawbt:printText:${encodeURIComponent(printContent)}`;
   
 
 });
-//   const runPriorityTransition = (isPriorityUser) => {
-//       console.log("👉 Transition Triggered. Priority:", isPriorityUser);
-//       isPriority = isPriorityUser;
-
-//       // HIDE Priority Overlay
-//       if (priorityOverlay) {
-//           priorityOverlay.classList.remove("is-visible");
-//       }
-
-//       // SHOW Form Overlay (with slight delay for CSS handling)
-//       if (formOverlay) {
-//           setTimeout(() => {
-//               formOverlay.classList.add("is-visible");
-//           }, 10);
-//       }
-
-//       // ENSURE Backdrop is on
-//       if (backdrop) {
-//           backdrop.classList.add("is-visible");
-//       }
-//   };
-
-//   // 2. Attach Listeners (using onclick to override any potential duplicates)
-//   const safeYesBtn = document.getElementById("yes-btn");
-//   const safeNoBtn = document.getElementById("no-btn");
-
-//   if (safeYesBtn) {
-//       safeYesBtn.onclick = (e) => {
-//           e.preventDefault();
-//           runPriorityTransition(true);
-//       };
-//       console.log("✅ YES button listener active.");
-//   } else {
-//       console.error("❌ YES button missing.");
-//   }
-
-//   if (safeNoBtn) {
-//       safeNoBtn.onclick = (e) => {
-//           e.preventDefault();
-//           runPriorityTransition(false);
-//       };
-//       console.log("✅ NO button listener active.");
-//   } else {
-//       console.error("❌ NO button missing.");
-//   }
-
-// });
