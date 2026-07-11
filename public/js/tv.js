@@ -104,29 +104,108 @@ document.addEventListener("DOMContentLoaded", async () => {
   await loadTVData();
 
   let lastAnnouncedId = null;
+  let currentUtterance = null;
+  let announcementQueue = [];
+  let selectedVoice = null;
+
+  function loadVoices() {
+    const synth = window.speechSynthesis;
+    const voices = synth.getVoices();
+    if (voices.length === 0) return;
+
+    selectedVoice = voices.find(v => v.lang.startsWith("en") && /female|male|man|michael|david/i.test(v.name)) ||
+                    voices.find(v => v.lang.startsWith("en")) ||
+                    voices[0];
+  }
+
+  function playFallbackBeep() {
+    try {
+      const AudioContext = window.AudioContext || window.webkitAudioContext;
+      if (!AudioContext) return;
+      const ctx = new AudioContext();
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = 'sine';
+      osc.frequency.value = 880;
+      gain.gain.value = 0.03;
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start();
+      osc.stop(ctx.currentTime + 0.2);
+      osc.onended = () => ctx.close();
+    } catch (err) {
+      console.warn('Fallback beep failed:', err);
+    }
+  }
+
+  function processNextAnnouncement() {
+    if (currentUtterance || announcementQueue.length === 0) return;
+
+    const message = announcementQueue.shift();
+    if (!message) return;
+
+    const speech = new SpeechSynthesisUtterance(message);
+    speech.lang = "en-US";
+    speech.rate = 0.95;
+    speech.pitch = 1;
+    if (selectedVoice) {
+      speech.voice = selectedVoice;
+    }
+
+    speech.onstart = () => {
+      currentUtterance = speech;
+    };
+
+    speech.onend = speech.onerror = () => {
+      if (currentUtterance === speech) {
+        currentUtterance = null;
+      }
+      if (announcementQueue.length > 0) {
+        setTimeout(processNextAnnouncement, 100);
+      }
+    };
+
+    setTimeout(() => {
+      if (!window.speechSynthesis.speaking && !window.speechSynthesis.pending) {
+        window.speechSynthesis.speak(speech);
+      } else {
+        window.speechSynthesis.cancel();
+        window.speechSynthesis.speak(speech);
+      }
+      console.log("🔊 Announcing:", message);
+    }, 50);
+  }
 
   function announceQueue(queueNo, windowName) {
-  if (!queueNo || !windowName) return;
+    const message = `Queue number ${queueNo}, please proceed to ${windowName}`;
+    if (!queueNo || !windowName) return;
 
-  const message = `Queue number ${queueNo}, please proceed to ${windowName}`;
+    if (!('speechSynthesis' in window)) {
+      console.warn('Speech synthesis not supported. Playing fallback beep instead.');
+      playFallbackBeep();
+      return;
+    }
 
-  const speech = new SpeechSynthesisUtterance(message);
-  speech.lang = "en-US";
-  speech.rate = 0.9;   // speed (optional)
-  speech.pitch = 1;    // pitch (optional)
+    loadVoices();
+    if (currentUtterance?.text === message || announcementQueue.includes(message)) {
+      return;
+    }
 
-  window.speechSynthesis.cancel(); // stop previous voice
-  window.speechSynthesis.speak(speech);
+    announcementQueue.push(message);
+    processNextAnnouncement();
+  }
 
-  console.log("🔊 Announcing:", message);
-}
+  if ('speechSynthesis' in window) {
+    window.speechSynthesis.onvoiceschanged = loadVoices;
+    loadVoices();
+  }
 
 supabaseClient
     .channel("queue-tv") // Connect to the same channel name as Kiosk.js
     // 1. Listen for Database Changes (Automatic First Call)
     .on(
       "postgres_changes",
-      { event: "UPDATE", schema: "public", table: "queue" },
+      { event: "*", schema: "public", table: "queue" },
       (payload) => {
         const oldRow = payload.old;
         const newRow = payload.new;
@@ -134,7 +213,7 @@ supabaseClient
         loadTVData(); // Refresh screen numbers
 
         // Announce ONLY when moved to processing (First time)
-        if (oldRow.status !== "processing" && newRow.status === "processing") {
+        if (oldRow?.status !== "processing" && newRow?.status === "processing") {
           if (lastAnnouncedId === newRow.id) return;
           lastAnnouncedId = newRow.id;
           announceQueue(newRow.queue_no, newRow.window_name);

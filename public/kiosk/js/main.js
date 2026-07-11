@@ -552,7 +552,6 @@ finishBtn.addEventListener("click", async (e) => {
     const resetIdleTimer = () => {
       clearTimeout(idleTimer);
       idleTimer = setTimeout(() => {
-        // If the number screen is still open after 15s of no touches, reload the kiosk
         if (overlayNumber.classList.contains("is-visible")) {
           overlayNumber.classList.remove("is-visible");
           backdrop.classList.remove("is-visible");
@@ -591,13 +590,10 @@ const now = new Date().toLocaleDateString('en-US', {
 const CENTER = "\x1B\x61\x01";
 const LEFT = "\x1B\x61\x00";
 const RIGHT = "\x1B\x61\x00";
-
-// Font size (normal / double width for headers)
 const NORMAL = "\x1D\x21\x00";
-// const BIG = "\x1D\x21\x11";
 const BIG = "\x1D\x21\x10";
 const VERY_BIG = "\x1D\x21\x22";
-const WIDE = "\x1D\x21\x10"; // width only
+const WIDE = "\x1D\x21\x10"; 
 
 const printContent = `             ${RIGHT}Date: ${now}
 ================================================
@@ -630,23 +626,21 @@ Thank you!
 
 window.location.href = `rawbt:printText:${encodeURIComponent(printContent)}`;
   } catch (err) {
-    console.error("❌ Error saving queue:", err);
+    console.error("Error saving queue:", err);
     alert("Something went wrong while saving your queue. Please try again.");
     finishBtn.disabled = false;
   }
 });
 
-
-  finishBtnNum.addEventListener("click", () => {
+finishBtnNum.addEventListener("click", () => {
     overlayNumber.classList.remove("is-visible");
     backdrop.classList.remove("is-visible");
     window.location.reload();
-  });
+});
 
-  let voiceDebounceTimer = null; // NEW: Timer for debouncing
+let voiceDebounceTimer = null; 
 
-  // Helper to show "Not Found" or "Silence" UI
-  function showRetryUI(titleMessage) {
+function showRetryUI(titleMessage) {
       const voiceTitleEl = document.querySelector(".voice-title");
       voiceTitleEl.innerHTML = `${titleMessage} <a href="#" class="voice-retry" style="color: #ffeb3b; text-decoration: underline; cursor: pointer; margin-left: 10px;">Retry</a>`;
       
