@@ -597,30 +597,18 @@ const WIDE = "\x1D\x21\x10";
 
 const printContent = `             ${RIGHT}Date: ${now}
 ================================================
-${CENTER}${WIDE}UNIVERSITY OF RIZAL 
+${CENTER}${NORMAL}UNIVERSITY OF RIZAL 
 
 SYSTEM
 ${NORMAL}================================================
-${LEFT}
-Name: ${fullName}
+${LEFT}Name: ${fullName}
 
-${documentLabel}:
-${
-  activeFlow === "enrollment"
-    ? selectedEnrollmentForm
-    : documentsText
-      ? documentsText.split(", ").join("\n")
-      : ""
-}
 ------------------------------------------------
-${CENTER}${BIG}
-QUEUE NUMBER
+${CENTER}${BIG}QUEUE NUMBER
 ${VERY_BIG}
 ${queueNumber}
-${NORMAL}
-------------------------------------------------
-${CENTER}
-Please wait for your turn.
+${NORMAL}------------------------------------------------
+${CENTER}Please wait for your turn.
 Thank you!
 `;
 
