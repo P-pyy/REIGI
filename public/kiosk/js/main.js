@@ -597,12 +597,9 @@ const WIDE = "\x1D\x21\x10";
 
 const printContent = `             ${RIGHT}Date: ${now}
 ================================================
-${CENTER}${NORMAL}UNIVERSITY OF RIZAL 
-
-SYSTEM
+${CENTER}${NORMAL}UNIVERSITY OF RIZAL SYSTEM
 ${NORMAL}================================================
 ${LEFT}Name: ${fullName}
-
 ------------------------------------------------
 ${CENTER}${BIG}QUEUE NUMBER
 ${VERY_BIG}
