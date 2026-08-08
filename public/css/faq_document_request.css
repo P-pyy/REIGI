@@ -18,26 +18,26 @@ html, body {
 
 ::-webkit-scrollbar-track {
     background: #f1f1f1;
-    border-radius: 20px; 
+    border-radius: 20px;
     margin: 2px;
 }
 
 ::-webkit-scrollbar-thumb {
-    background-color: #3066B3; 
+    background-color: #3066B3;
     border-radius: 20px !important;
-    border: 3px solid #f1f1f1; 
+    border: 3px solid #f1f1f1;
     background-clip: padding-box;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-    background-color: #3378d3; 
+    background-color: #3378d3;
 }
 
 /* ! Parrallax */
 
 .parallax {
   background-image: url("/img/try.webp");
-  min-height: 500px; 
+  min-height: 500px;
   background-attachment: fixed;
   background-position: center;
   background-repeat: no-repeat;
@@ -97,14 +97,14 @@ html, body {
 }
 
 .faq-list {
-  list-style: none; 
-  padding-left: 0; 
+  list-style: none;
+  padding-left: 0;
   counter-reset: faq-counter;
 }
 
 .faq-list li {
   counter-increment: faq-counter;
-  margin-bottom: 1rem; 
+  margin-bottom: 1rem;
   font-size: 16px;
 }
 
@@ -115,7 +115,7 @@ html, body {
 }
 
 .faq-list li a {
-  text-decoration: underline; 
+  text-decoration: underline;
 }
 
 .ph-arrow-up-right {
@@ -137,14 +137,31 @@ pointer-events: visible;
 .faq-inquiry::before {
   content: counter(faq-counter) ".";
   font-weight: 600;
-  color: #0055A5; 
+  color: #0055A5;
   /* font-size: 1.1rem; */
-  min-width: 25px; 
+  min-width: 25px;
 }
 
+@media (max-width: 600px) {
+    .container{
+        padding: 1rem !important;
+    }
 
+     .container h1 {
+       font-size: 2.5rem;
+     }
 
+     .container input[type="text"] {
+       width: 2000%;
+     }
 
+     .faq-menu-title {
+       font-size: 2.5rem !important;
+     }
 
-
-
+     .faq-title {
+        margin-left: 0 !important;
+        justify-content: center;
+        display: flex;
+     }
+}
