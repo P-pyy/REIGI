@@ -172,7 +172,7 @@ main {
     right: -1rem !important;
     top: 0.75rem !important;
     font-size: 28px !important;
-    z-index: 10000 !important;
+    z-index: 1 !important;
   }
 
   .other-announcements-scroll {
@@ -183,6 +183,7 @@ main {
     -ms-overflow-style: none;
     display: flex;
     flex-direction: column;
+    gap: 1rem !important;
   }
 
   .other-announcements-scroll::-webkit-scrollbar {

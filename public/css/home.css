@@ -180,7 +180,6 @@ section{
 .card-container {
     display: flex;
     justify-content: center;
-    flex-wrap: wrap;
     gap: 2rem;
 }
 
@@ -268,8 +267,7 @@ section{
 }
 
 .see-more {
-     margin-top: 1rem;
-    padding: 5rem;
+    height: 100px;
 }
 
 .see-announcement-btn{
