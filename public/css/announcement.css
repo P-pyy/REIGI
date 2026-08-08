@@ -16,26 +16,26 @@ html, body {
 
 ::-webkit-scrollbar-track {
     background: #f1f1f1;
-    border-radius: 20px; 
+    border-radius: 20px;
     margin: 2px;
 }
 
 ::-webkit-scrollbar-thumb {
-    background-color: #3066B3; 
+    background-color: #3066B3;
     border-radius: 20px !important;
-    border: 3px solid #f1f1f1; 
+    border: 3px solid #f1f1f1;
     background-clip: padding-box;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-    background-color: #3378d3; 
+    background-color: #3378d3;
 }
 
 /* ! Parrallax */
 
 .parallax {
   background-image: url("/img/try.webp");
-  min-height: 100px; 
+  min-height: 100px;
   background-attachment: fixed;
   background-position: center;
   background-repeat: no-repeat;
@@ -65,8 +65,8 @@ html, body {
 
 .announcement-menu-title {
   font-size: clamp(1.5rem, 1.2rem + 2vw, 4rem);
-  font-weight:600; 
-  color:#0154A4; 
+  font-weight:600;
+  color:#0154A4;
   line-height:1.3;
 }
 
@@ -83,7 +83,7 @@ main {
     text-align: center;
     font-weight: 600;
     font-size: 2rem;
-    margin-top: 0 !important;   
+    margin-top: 0 !important;
 }
 
 
@@ -208,7 +208,7 @@ main {
   overflow: hidden;
   text-overflow: ellipsis;
   display: -webkit-box;
-  -webkit-line-clamp: 3; 
+  -webkit-line-clamp: 3;
   line-clamp: 3;
   -webkit-box-orient: vertical;
   line-height: 1.4;
@@ -228,9 +228,8 @@ main {
 .announcement-wrapper {
   background-color: #FCFCFC;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-  margin-top: -110px;
   margin-bottom: 0px;
-  overflow-y: auto;
+  overflow-y: hidden;
   width: 100%;
   height: 450px;
 }
@@ -246,7 +245,7 @@ body, .container-fluid {
   font-size: 32px;
   color: #0055A5;
   font-weight: 600;
-  padding: 1.5rem;
+  /*padding: 1.5rem;*/
 }
 
 .announcement-title {
@@ -324,26 +323,26 @@ body, .container-fluid {
 
 /* Expanded State: Show All */
 tr.row-expanded .expandable-content {
-  max-height: 1000px; 
+  max-height: 1000px;
   -webkit-line-clamp: unset;
   line-clamp: unset;
   overflow: visible;
 }
 
 /* Icon Hover */
-.toggle-cell:hover i, 
+.toggle-cell:hover i,
 .toggle-cell:hover svg {
   color: #0055A5;
   cursor: pointer;
 }
 
 .admin-esfaq-card {
-  max-width: 1800px; 
+  max-width: 1800px;
 }
 
 .announcement-table td {
   border: none !important;
-  background-color: transparent; 
+  background-color: transparent;
   text-align: left;
 }
 
@@ -360,10 +359,10 @@ tr.row-expanded .expandable-content {
 }
 
 .faq-table {
-  width: 100%; 
+  width: 100%;
   table-layout: fixed;
   border: none !important;
-  background-color: transparent; 
+  background-color: transparent;
   text-align: left;
 }
 
@@ -373,14 +372,14 @@ tr.row-expanded .expandable-content {
 }
 
 .table-title th {
-  font-size: 16px;   
-  font-weight: 600;     
-  color: #2C2C2C;        
+  font-size: 16px;
+  font-weight: 600;
+  color: #2C2C2C;
   vertical-align: top;
 
   position: sticky;
-  top: 0;           
-  z-index: 10;     
+  top: 0;
+  z-index: 10;
 }
 /* Ensure the table respects strict widths */
 .announcement-table {
@@ -390,44 +389,44 @@ tr.row-expanded .expandable-content {
 }
 
 /* 1. Toggle (Caret) */
-.announcement-table .table-title th:nth-child(1) { 
-  width: 50px; 
+.announcement-table .table-title th:nth-child(1) {
+  width: 50px;
   text-align: center;
 }
 
 /* 2. ID */
-.announcement-table .table-title th:nth-child(2) { 
-  width: 60px; 
+.announcement-table .table-title th:nth-child(2) {
+  width: 60px;
 }
 
 /* 3. Announcement Title (Flexible) */
-.announcement-table .table-title th:nth-child(3) { 
-  width: 18%; 
+.announcement-table .table-title th:nth-child(3) {
+  width: 18%;
 }
 
 /* 4. Announcement Details (Flexible - takes most space) */
-.announcement-table .table-title th:nth-child(4) { 
-  width: 32%; 
+.announcement-table .table-title th:nth-child(4) {
+  width: 32%;
 }
 
 /* 5. Image (Fixed, small thumbnail) */
-.announcement-table .table-title th:nth-child(5) { 
-  width: 100px; 
+.announcement-table .table-title th:nth-child(5) {
+  width: 100px;
 }
 
 /* 6. Scheduled Date */
-.announcement-table .table-title th:nth-child(6) { 
-  width: 110px; 
+.announcement-table .table-title th:nth-child(6) {
+  width: 110px;
 }
 
 /* 7. Time */
-.announcement-table .table-title th:nth-child(7) { 
-  width: 90px; 
+.announcement-table .table-title th:nth-child(7) {
+  width: 90px;
 }
 
 /* 8. Action */
-.announcement-table .table-title th:nth-child(8) { 
-  width: 100px; 
+.announcement-table .table-title th:nth-child(8) {
+  width: 100px;
 }
 
 /* Ensure toggle button is visible and centered */
@@ -481,6 +480,14 @@ tr.row-expanded .expandable-content {
 
 /* Optional: Hover effect */
 .announcement-table td.toggle-cell:hover i {
-  color: #0055A5; 
+  color: #0055A5;
   transform: scale(1.1);
+}
+
+@media (max-width: 600px) {
+    .announcement-page {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
 }

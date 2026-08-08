@@ -25,8 +25,8 @@ main {
 
 .card {
     width: 100%;
-    border-radius: 15px; 
-    overflow: hidden; 
+    border-radius: 15px;
+    overflow: hidden;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
 }
 
@@ -56,6 +56,7 @@ main {
     margin-bottom: 0.5rem;
     color: #2C2C2C;
     padding-top: 1rem;
+    width: 100% !important;
 }
 
 .card-subtitle {
@@ -74,37 +75,38 @@ main {
   /* display: flex;
   justify-content: flex-start !important; */
   align-items: center !important;
-  min-height: 150px;
+  /*min-height: 150px;*/
 }
 
-.card-title, .card-title2, .card-subtitle, .card-text {
+.card-title2, .card-subtitle, .card-text {
      padding-left: 4rem;
      padding-right: 4rem;
 }
 
 .read-more-2 {
 
-    display: inline-flex;      
-    align-items: center;       
-    gap: 4px;                 
-    margin-top: 30px;          
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    margin-top: 30px;
 }
 
 .arrow-left-icon {
   position: absolute;
   top: 0rem!important;
-  left: -3.5rem!important; 
+  left: -3.5rem!important;
   font-size: clamp(24px, 4vw, 45px);
   cursor: pointer;
   color: #333;
+  background-color: #A2CDF8;
   /* z-index: 9999; */
 }
 
 .card-wrapper {
-  position: relative; 
-  display: inline-block; 
-  max-width: 60rem;  
-  width: 100%;      
+  position: relative;
+  display: inline-block;
+  max-width: 60rem;
+  width: 100%;
   margin: 0 auto;
 }
 
@@ -117,10 +119,10 @@ main {
   display: flex;
   gap: 5rem;
   overflow-x: auto;
-  overflow-y: hidden;                
+  overflow-y: hidden;
   padding: 0 0.5rem;
   margin-top: 3rem;
-  scroll-snap-type: none;            
+  scroll-snap-type: none;
 }
 
 .other-announcements-scroll .card {
@@ -148,52 +150,94 @@ main {
 
 @media (max-width: 768px) {
   .card-wrapper {
-    max-width: 80%;   
-    margin: 0 auto;   
+    margin: 0 auto;
   }
 
   .card {
-    width: 100%;      
+    width: 100%;
+  }
+
+  .card-container {
+    padding: 8rem 1rem 4rem 1rem;
   }
 
   .arrow-left-icon {
-    left: -2rem !important; 
-    top: 0.75rem !important;
-    font-size: 28px !important;
-    z-index: 10000 !important; 
-  }
-
-  .arrow-right-icon {
-    right: -1rem !important;  
-    top: 0.75rem !important;
+    left: -.7rem !important;
+    top: -1.5rem !important;
     font-size: 28px !important;
     z-index: 10000 !important;
   }
-}
 
-@media (max-width: 768px) {
+  .arrow-right-icon {
+    right: -1rem !important;
+    top: 0.75rem !important;
+    font-size: 28px !important;
+    z-index: 1 !important;
+  }
+
   .other-announcements-scroll {
     scroll-snap-type: x mandatory;
-    -webkit-overflow-scrolling: touch; 
-    overscroll-behavior-x: contain;    
-    scrollbar-width: none;             
-    -ms-overflow-style: none;         
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-x: contain;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem !important;
   }
 
   .other-announcements-scroll::-webkit-scrollbar {
-    display: none;    
+    display: none;
     width: 0;
     height: 0;
     background: transparent;
   }
 
   .other-announcements-scroll .card {
-    scroll-snap-align: start;          
+    scroll-snap-align: start;
   }
+
+  .announcement-wrapper {
+    background-color: #FCFCFC;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    margin-bottom: 0px;
+    overflow-y: hidden;
+    width: 100%;
+    height: 100% !important;
+  }
+
+  .card-title2 {
+      width: 100%;
+  }
+}
+
+@media (max-width: 650px) {
+    .card-wrapper {
+        /*max-width: 80%;*/
+        gap: 1rem;
+        margin: 0 auto;
+    }
+    .card-title {
+        font-size: 1.5rem;
+      padding-top: 0 !important;
+
+      padding-left: 0 !important;
+      padding-right: 0 !important;
+    }
+    .card-subtitle {
+      padding-left: 0 !important;
+      padding-right: 0 !important;
+      padding-bottom: 0 !important;
+    }
+    .arrow-left-icon {
+        display: flex;
+      }
+    .card-body {
+        gap: 1rem;
+    }
 }
 
 .back-container {
   display: flex;
   margin-top: 0 !important;
 }
-

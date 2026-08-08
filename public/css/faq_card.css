@@ -118,3 +118,20 @@ a {
   font-size: 1.1rem !important;
   font-weight: 400 !important;
 }
+
+@media (max-width: 600px) {
+    .process-container {
+        display: flex;
+        flex-direction: column;
+        padding: 2.5rem 1rem 2.5rem 1rem !important;
+        gap: 1rem;
+    }
+
+    .faq-preview {
+        width: 100% !important;
+    }
+
+    .content-card {
+      padding: 2.5rem 1rem 2.5rem 1rem !important;
+    }
+}
