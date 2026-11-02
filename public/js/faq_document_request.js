@@ -35,7 +35,7 @@ import { supabaseClient } from '/js/supabase-client.js';
     resultsDiv.style.display = "none";
     return;
   } else {
-    resultsDiv.style.display = "block"; 
+    resultsDiv.style.display = "flex";
   }
 
   const { data, error } = await supabaseClient
@@ -80,4 +80,3 @@ import { supabaseClient } from '/js/supabase-client.js';
   }
   window.location.href = `/faq-article?id=${id}`;
 };
-

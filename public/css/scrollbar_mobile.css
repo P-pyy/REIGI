@@ -1,0 +1,15 @@
+/* ! Hide scrollbars on mobile view only (desktop keeps the styled scrollbars).
+    Elements stay scrollable — only the scroll bar visuals are hidden. */
+
+@media (max-width: 768px) {
+    /* Chrome, Edge, Safari */
+    ::-webkit-scrollbar {
+        display: none;
+    }
+
+    /* Firefox */
+    html,
+    body {
+        scrollbar-width: none;
+    }
+}

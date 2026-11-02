@@ -8,29 +8,7 @@ html, body {
     scroll-behavior: smooth;
 }
 
-/* ! Scrollbar */
 
-/* Chrome, Edge, Safari */
-::-webkit-scrollbar {
-    width: 12px;
-}
-
-::-webkit-scrollbar-track {
-    background: #f1f1f1;
-    border-radius: 20px;
-    margin: 2px;
-}
-
-::-webkit-scrollbar-thumb {
-    background-color: #3066B3;
-    border-radius: 20px !important;
-    border: 3px solid #f1f1f1;
-    background-clip: padding-box;
-}
-
-::-webkit-scrollbar-thumb:hover {
-    background-color: #3378d3;
-}
 
 /* ! Parrallax */
 
@@ -143,7 +121,7 @@ html, body {
 
 
 .faq-title {
-  font-size: 20px;
+  font-size: 2rem;
   font-weight: 600 !important;
   color: #2C2C2C !important;
 }
@@ -195,7 +173,89 @@ pointer-events: visible;
   min-width: 25px;
 }
 
+
+/* SEARCH DROPDOWN  */
+
+
+
+/* Anchor container */
+.faq-in-container {
+  position: relative;
+}
+
+/* Search dropdown */
+#search-results {
+    position: absolute;
+    flex-direction: column;
+    top: 40px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 300px;
+    max-width: 360px;
+    max-height: 300px;
+    overflow-y: auto;
+    background: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+    z-index: 99;
+    text-align: left;
+    display: none;
+    border: 1px solid #ddd;
+}
+
+/* Result links */
+#search-results a {
+  display: block;
+  padding: 12px 16px;
+  font-size: 14px;
+  color: #0154A4;
+  text-decoration: none;
+}
+
+#search-results a:hover {
+  background-color: #f5f7fa;
+}
+
+/* BORDER PER ITEM */
+#search-results a {
+    display: block;
+    padding: 10px 14px;
+    text-decoration: none;
+
+    color: #333;                      /* text color */
+    border-bottom: 1px solid #f1efef; /* divider line */
+}
+
+/* ! Scrollbar - Desktop Only */
+@media (min-width: 601px) {
+    ::-webkit-scrollbar {
+        width: 12px;
+    }
+
+    ::-webkit-scrollbar-track {
+        background: #f1f1f1;
+        border-radius: 20px;
+        margin: 2px;
+    }
+
+    ::-webkit-scrollbar-thumb {
+        background-color: #3066B3;
+        border-radius: 20px !important;
+        border: 3px solid #f1f1f1;
+        background-clip: padding-box;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+        background-color: #3378d3;
+    }
+}
+
+
 @media (max-width: 600px) {
+    .search-results{
+        width: 300px !important;
+    }
+
      .container h1 {
        font-size: 2.5rem;
      }
@@ -212,5 +272,21 @@ pointer-events: visible;
         margin-left: 0 !important;
         justify-content: center;
         display: flex;
+        font-size: 1.5rem;
      }
+}
+
+@media (max-width: 600px) {
+    /* Target the HTML and body specifically to override the global webkit rule */
+    html::-webkit-scrollbar,
+    body::-webkit-scrollbar,
+    #search-results::-webkit-scrollbar {
+        display: none !important;
+        width: 0 !important;
+    }
+
+    /* Hides the scrollbar UI for Firefox on mobile */
+    html, body, #search-results {
+        scrollbar-width: none !important;
+    }
 }

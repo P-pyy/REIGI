@@ -77,6 +77,7 @@ html, body {
   justify-content: center;
   align-items: center;
   width: 100%;
+  position: relative;
 }
 
 .search-bar {
@@ -261,11 +262,73 @@ font-weight: normal;
 }
 
 
+
+
+
+/* SEARCH DROPDOWN  */
+
+
+
+/* Anchor container */
+.faq-in-container {
+  position: relative;
+}
+
+/* Search dropdown */
+#search-results {
+    position: absolute;
+    flex-direction: column;
+    top: 40px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 300px;
+    max-width: 360px;
+    max-height: 300px;
+    overflow-y: auto;
+    background: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+    z-index: 99;
+    text-align: left;
+    display: none;
+    border: 1px solid #ddd;
+}
+
+/* Result links */
+#search-results a {
+  display: block;
+  padding: 12px 16px;
+  font-size: 14px;
+  color: #0154A4;
+  text-decoration: none;
+}
+
+#search-results a:hover {
+  background-color: #f5f7fa;
+}
+
+/* BORDER PER ITEM */
+#search-results a {
+    display: block;
+    padding: 10px 14px;
+    text-decoration: none;
+
+    color: #333;                      /* text color */
+    border-bottom: 1px solid #f1efef; /* divider line */
+}
+
+
 /*  Responsive layout */
 
 /* Phone */
 
  @media (max-width: 767px) {
+    .search-results{
+        left: 0 !important;
+        width: 300px !important;
+        transform: none !important;
+    }
+
     .faq-grid-menu {
       flex-direction: column;
     }
@@ -322,62 +385,3 @@ font-weight: normal;
   .faq-desc,
     font-size: 13px;
 }} */
-
-
-
-
-
-
-
-
-
-/* SEARCH DROPDOWN  */
-
-
-
-/* Anchor container */
-.faq-in-container {
-  position: relative;
-}
-
-/* Search dropdown */
-#search-results {
-  position: absolute;
-  top: 280px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 50%;
-  max-width: 360px;
-  max-height: 300px;     /* LIMIT HEIGHT */
-  overflow-y: auto;     /* ENABLE SCROLL */
-  background: #ffffff;
-  border-radius: 8px;
-  box-shadow: 0 8px 20px rgba(0,0,0,0.12);
-  z-index: 999;
-
-  display: none;
-  border: 1px solid #ddd;
-}
-
-/* Result links */
-#search-results a {
-  display: block;
-  padding: 12px 16px;
-  font-size: 14px;
-  color: #0154A4;
-  text-decoration: none;
-}
-
-#search-results a:hover {
-  background-color: #f5f7fa;
-}
-
-/* BORDER PER ITEM */
-#search-results a {
-    display: block;
-    padding: 10px 14px;
-    text-decoration: none;
-
-    color: #333;                      /* text color */
-    border-bottom: 1px solid #f1efef; /* divider line */
-}
