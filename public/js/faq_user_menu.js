@@ -15,11 +15,11 @@ import { supabaseClient } from '/js/supabase-client.js';
   async function searchFAQs(query) {
     if (!query.trim()) {
       resultsDiv.innerHTML = "";
-      resultsDiv.style.display = "none"; 
+      resultsDiv.style.display = "none";
       return;
     }
 
-    resultsDiv.style.display = "block"; 
+    resultsDiv.style.display = "flex";
 
     const { data, error } = await supabaseClient
       .from("faqs")
@@ -44,7 +44,7 @@ import { supabaseClient } from '/js/supabase-client.js';
       </div>
     `).join("");
   }
-  
+
 
   resultsDiv.addEventListener("click", async e => {
   const link = e.target.closest("a[data-faq-id]");

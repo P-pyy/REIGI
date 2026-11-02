@@ -165,7 +165,7 @@ main {
     left: -.7rem !important;
     top: -1.5rem !important;
     font-size: 28px !important;
-    z-index: 10000 !important;
+    z-index: 100 !important;
   }
 
   .arrow-right-icon {
